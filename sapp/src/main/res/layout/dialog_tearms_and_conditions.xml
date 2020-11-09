@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:innerRadius="5dp"
+        android:shape="ring"
+        android:thicknessRatio="0.9"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:id="@+id/source_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="10dp">
+
+
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="40dp"
+                android:layout_height="44dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/logo">
+
+            </ImageView>
+            <!--</androidx.cardview.widget.CardView>-->
+            <TextView
+                android:id="@+id/device_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView2"
+                android:layout_toEndOf="@+id/imageView2"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Time : "
+                android:visibility="gone"
+                android:textSize="12dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/device_status_val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/device_status"
+
+                android:layout_toRightOf="@+id/device_status"
+                android:text=" "
+
+                android:textSize="12dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/imageView2"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Terms and conditions"
+                android:textSize="25dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold" />
+
+
+
+            <!--</androidx.cardview.widget.CardView>-->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/content_lay"
+    android:layout_below="@+id/imageView2"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/messo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:layout_marginTop="15dp"
+        android:layout_toRightOf="@+id/imageView1"
+        android:text="Capture Solutions Ltd will use the data collected through this application in line with (a)the General Data Protection Regulation (GDPR); (b)Data Protection Act, No. 24 of 2019 of Kenya; or (c) any other legislation applicable to the protection of personal information in Kenya and/or the laws of the country you operate in. Capture Solutions Ltd, and its Agents will not use this information for any other use, other than that which it is intended for."
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/accept_chk"
+        android:text="Accept terms and conditions"/>
+
+
+
+</LinearLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_below="@+id/content_lay"
+                android:id="@+id/navigation_lay"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content">
+
+
+
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Procceed"
+                    android:id="@+id/procceed"
+                    android:textColor="@color/white"
+                    android:background="@drawable/accent_button"
+android:visibility="gone"
+
+                    android:layout_margin="5dp"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

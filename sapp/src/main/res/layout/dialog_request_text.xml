@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="@drawable/app_update_top"
+    android:id="@+id/dhead">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:scaleType="fitXY"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:id="@+id/title"
+        android:textColor="@color/white"
+        android:text="Declining random call"/>
+</RelativeLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:id="@+id/details"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_below="@+id/dhead"
+    android:layout_alignParentEnd="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="240dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+
+
+                    android:text="Put the reason onf failiure below"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/activity_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+
+
+                    android:text=""
+                    android:textSize="18dp"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:id="@+id/labour_sum_lay"
+                android:layout_height="wrap_content">
+                <TextView
+
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+
+
+                    android:text="Labour sum :"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/no_of_workers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+
+
+                    android:text="1"
+                    android:textSize="18dp"
+                    />
+
+            </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:hint="Reson"
+                android:layout_margin="50dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/textback"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/form_field_height"
+                    android:id="@+id/result_edt"
+                    android:padding="5dp"
+                    android:background="@null"
+
+                    android:text=""
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:padding="3dp"
+        android:id="@+id/progress_layout"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+
+
+        <TextView
+            android:id="@+id/prog_per"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="!!!"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/prog"
+
+            android:layout_below="@+id/prog_per"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:progress="0"
+            android:progressDrawable="@drawable/progress" />
+
+    </RelativeLayout>
+    <Button
+        android:layout_margin="15dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/details"
+        android:layout_centerHorizontal="true"
+        android:text="Decline"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/update"
+        android:background="@drawable/normalbutton"
+        android:textAllCaps="false"
+        android:textColor="#fff"/>
+</LinearLayout>
+
+</RelativeLayout>

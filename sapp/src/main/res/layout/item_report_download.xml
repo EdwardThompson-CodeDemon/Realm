@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="12dp"
+        android:id="@+id/view2"
+        app:cardCornerRadius="10dp"
+        android:innerRadius="5dp"
+        android:shape="ring"
+        android:thicknessRatio="0.9"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
+
+
+                android:layout_centerVertical="true"
+                android:layout_marginRight="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_log_file">
+
+            </ImageView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/imageView1"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/index_field"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_toRightOf="@+id/imageView1"
+                            android:text="File name" />
+                        <TextView
+                            android:id="@+id/file_name_val"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_toRightOf="@+id/index_field"
+                            android:text=" " />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentRight="true"
+android:id="@+id/download_icon"
+
+
+                        android:src="@drawable/download_icon"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/idv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14dp"
+
+                        android:textColor="@color/colorPrimary"
+
+                         android:text="Date :" />
+                    <TextView
+                        android:id="@+id/date_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14dp"
+
+
+                        android:textColor="@color/colorPrimary"
+
+                        android:text="  " />
+
+
+
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+android:id="@+id/progress_lay"
+
+                    android:layout_height="15dp">
+                    <sparta.realm_togo.spartautils.sparta_progress_bar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+android:layout_marginRight="15dp"
+                        android:id="@+id/download_progress"
+                        android:layout_toLeftOf="@+id/percent_label"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:progress="0"
+                        android:layout_alignParentBottom="true"
+                        android:progressDrawable="@drawable/progress" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0%"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="10dp"
+                        android:id="@+id/percent_label"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

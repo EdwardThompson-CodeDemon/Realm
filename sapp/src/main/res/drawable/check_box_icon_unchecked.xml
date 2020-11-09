@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/check_box_circle_back"></item>
+<!--  <item android:drawable="@drawable/white_circle_back"-->
+<!--      android:bottom="10dp"-->
+<!--      android:left="10dp"-->
+<!--  android:right="10dp"-->
+<!--      android:top="10dp">-->
+
+
+<!--  </item>-->
+
+
+<!--    <item-->
+<!--        android:drawable="@android:drawable/checkbox_on_background"-->
+<!--        android:bottom="20dp"-->
+<!--        android:left="20dp"-->
+<!--      android:width="80px"-->
+<!--      android:height="82px"-->
+<!--        android:right="20dp"-->
+<!--        android:top="20dp"/>-->
+</layer-list>

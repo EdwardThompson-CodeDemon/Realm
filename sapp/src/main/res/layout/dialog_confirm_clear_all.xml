@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="@drawable/app_update_top"
+    android:id="@+id/dhead">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:scaleType="fitXY"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:id="@+id/title"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="@string/alert"/>
+</RelativeLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:id="@+id/details"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_below="@+id/dhead"
+    android:layout_alignParentEnd="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+
+android:layout_marginBottom="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+
+
+                    android:text="@string/confirm_you_want_to_clear_data_for_all_fields_in_this_page"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:padding="3dp"
+        android:id="@+id/progress_layout"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+
+
+        <TextView
+            android:id="@+id/prog_per"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="!!!"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/prog"
+
+            android:layout_below="@+id/prog_per"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:progress="0"
+            android:progressDrawable="@drawable/progress" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+    <Button
+        android:layout_margin="5dp"
+android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/details"
+        android:layout_centerHorizontal="true"
+        android:text="@string/no"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/dismiss"
+        android:background="@drawable/normalbutton"
+        android:textAllCaps="false"
+        android:textColor="#fff"/>
+ <Button
+        android:layout_margin="5dp"
+android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/details"
+        android:layout_centerHorizontal="true"
+        android:text="@string/yes"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/clear_all"
+        android:background="@drawable/normalbutton"
+        android:textAllCaps="false"
+        android:textColor="#fff"/>
+
+    </LinearLayout>
+</LinearLayout>
+
+</RelativeLayout>

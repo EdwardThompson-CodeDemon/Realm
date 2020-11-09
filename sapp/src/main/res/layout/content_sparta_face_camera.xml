@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activities.SpartaFaceCamera"
+    tools:showIn="@layout/activity_sparta_face_camera">
+    <sparta.realm.spartautils.face.Preview
+        android:id="@+id/face_graphics_preview"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="120dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@null"
+        android:visibility="gone"
+        android:layout_height="wrap_content"/>
+    <sparta.realm.spartautils.face.CaptureHandler
+        android:layout_width="wrap_content"
+        android:background="@null"
+        android:layout_marginTop="120dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:id="@+id/face_graphics_overlay"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/normalbutton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/white"
+        android:id="@+id/capture"
+        android:text="Capture"/>
+</RelativeLayout>

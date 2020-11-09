@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:innerRadius="5dp"
+        android:shape="ring"
+        android:thicknessRatio="0.9"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:id="@+id/source_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="10dp">
+
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/imageView2"
+                android:layout_width="40dp"
+                android:layout_height="44dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/extraction2">
+
+            </pl.droidsonroids.gif.GifImageView>
+
+            <TextView
+                android:id="@+id/device_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView2"
+                android:layout_toEndOf="@+id/imageView2"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Time : "
+                android:visibility="gone"
+                android:textSize="12dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/device_status_val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/device_status"
+
+                android:layout_toRightOf="@+id/device_status"
+                android:text=" "
+
+                android:textSize="12dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/imageView2"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Face extraction"
+                android:textSize="25dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold" />
+
+
+
+            <!--</androidx.cardview.widget.CardView>-->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/imageView2"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/messo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/imageView1"
+        android:text="Extraction results"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+    <sparta.realm.spartaviews.FaceImageView
+        android:layout_width="200dp"
+        android:id="@+id/face_img"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="200dp"/>
+    <RelativeLayout
+        android:padding="3dp"
+        android:id="@+id/progress_layout"
+        android:layout_below="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+
+
+        <TextView
+            android:id="@+id/extracted_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+
+            android:gravity="center_vertical"
+            android:text="Extracted"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/per"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:id="@+id/progress"
+
+            android:layout_below="@+id/extracted_label"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:progress="0"
+            android:progressDrawable="@drawable/progress" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/messo"
+        android:id="@+id/navigation_lay"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Cancel"
+            android:id="@+id/dismiss"
+            android:visibility="visible"
+            android:textColor="@color/white"
+            android:background="@drawable/normalbutton"
+            android:layout_toLeftOf="@+id/sep1"
+            android:layout_margin="5dp"/>
+        <View
+            android:layout_width="2dp"
+            android:id="@+id/sep1"
+            android:layout_centerHorizontal="true"
+            android:layout_height="2dp"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Begin extraction"
+            android:id="@+id/exit"
+            android:textColor="@color/white"
+            android:background="@drawable/accent_button"
+            android:layout_toRightOf="@+id/sep1"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+
+
+         </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

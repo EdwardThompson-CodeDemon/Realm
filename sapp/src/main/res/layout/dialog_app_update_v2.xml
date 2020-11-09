@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="50dp"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:padding="10dp"
+        android:background="@drawable/app_update_top"
+        android:id="@+id/dhead">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:textColor="@color/white"
+            android:text="Version : 4.0.1"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/dhead"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabb"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@color/white"
+            app:tabTextColor="@color/yellow"
+            app:tabIndicatorColor="@color/red"
+            app:tabMode="fixed"
+            app:tabGravity="fill"/>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:id="@+id/details"
+        android:background="@color/white"
+        android:orientation="vertical"
+       android:visibility="gone"
+        android:layout_alignParentEnd="true">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="240dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+
+
+
+
+            <TextView
+                android:id="@+id/change_log_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+
+
+                android:text="Change log"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/changelog"
+                android:layout_below="@+id/change_log_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:scrollbars="vertical"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="⚫ A summary must be comprehensive: You should isolate all the important points in the original passage and note them down in a list. Review all the ideas on your list, and include in your summary all the ones that are indispensable to the author's development of her/his thesis or main idea.
+\n ⚫ A summary must be concise: Eliminate repetitions in your list, even if the author restates the same points. Your summary should be considerably shorter than the source. You are hoping to create an overview; therefore, you need not include every repetition of a point or every supporting detail.
+\n ⚫ A summary must be coherent: It should make sense as a piece of writing in its own right; it should not merely be taken directly from your list of notes or sound like a disjointed collection of points.
+\n ⚫ A summary must be independent: You are not being asked to imitate the author of the text you are writing about. On the contrary, you are expected to maintain your own voice throughout the summary. Don't simply quote the author; instead use your own words to express your understanding of what you have read. After all, your summary is based on your interpretation of the writer's points or ideas. However, you should be careful not to create any misrepresentation or distortion by introducing comments or criticisms of your own."
+                android:textSize="15dp"
+                />
+
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:padding="3dp"
+            android:id="@+id/progress_layout"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+
+
+            <TextView
+                android:id="@+id/prog_per"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="!!!"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/prog"
+
+                android:layout_below="@+id/prog_per"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress" />
+
+        </RelativeLayout>
+        <Button
+            android:layout_margin="15dp"
+
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/details"
+            android:layout_centerHorizontal="true"
+            android:text="Update"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/update"
+            android:background="@drawable/normalbutton"
+            android:textAllCaps="false"
+            android:textColor="#fff"/>
+    </LinearLayout>
+
+</RelativeLayout>

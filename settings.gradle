@@ -1,0 +1,2 @@
+include ':sapp', ':SpartaAnnotations', ':SpartaAnnotationProcessor'
+rootProject.name='Realm'

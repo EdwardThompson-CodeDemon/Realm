@@ -1,0 +1,581 @@
+<resources>
+    <string name="app_name">Realm</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+
+    <string name="authenticating">Authenticating ...</string>
+    <string name="authenticated">Authenticated ✔</string>
+    <string name="authentication_error">Authentication error !!!</string>
+    <string name="internet_connection_error">Internet connection error !!!</string>
+    <string name="last_sync_time">Last sync time :</string>
+    <string name="syncd_exception_codes">Synchronized Exception codes</string>
+    <string name="fetching_global_data">Fetching global data</string>
+    <string name="progress">progress :</string>
+    <string name="syncd_global_data">Synchronized Global data</string>
+    <string name="syncd_local_record">Synchronized local record</string>
+    <string name="today">Today</string>
+    <string name="status_prompt">Status :</string>
+    <string name="synchronizing">Synchronizing</string>
+    <string name="synchronization_complete">Synchronization complete</string>
+    <string name="synchronized_local">Synchronized local</string>
+    <string name="pending_data">,pending data :</string>
+
+
+    <string name="unable_to_do_online_sync">Unable to do online authentication...</string>
+    <string name="unable_to_do_back_sync">Unable to do background synchronization</string>
+    <string name="auto_back_synchronization">Auto-Back Sync</string>
+    <string name="global_data_sync">Global data Sync</string>
+    <string name="overall_sync_progress">Overall sync Progress</string>
+
+    <!--Backup-->
+    <string name="backup_title">Backup</string>
+    <string name="email_backup">Email backup</string>
+    <string name="sftp_backup">SFTP backup</string>
+    <string name="sd_card_backup">SD Card backup</string>
+    <string name="overal_backup_progress">Overall backup Progress</string>
+    <string name="initialize_backup">Initialize backup</string>
+    <string name="last_backup_time">Last backup time :</string>
+    <string name="backup">Backup</string>
+    <string name="info">Info</string>
+    <string name="home">Home</string>
+    <string name="staging_log_files">Staging Log files</string>
+    <string name="staging_current_database">Staging current database</string>
+    <string name="backup_location_ok">Backup location OK</string>
+    <string name="log_backup_ok">Log backup files OK</string>
+    <string name="log_file_ok">Log file OK</string>
+    <string name="db_backup_ok">Databases backup directory OK</string>
+    <string name="db_ok">Database OK</string>
+    <string name="image_files_ok">Image files OK</string>
+    <string name="verifying_files_to_backup">Verifying files to archive</string>
+    <string name="creating_archive">Creating archive</string>
+    <string name="employee_data_files_ok">Employee data files location verrified</string>
+    <string name="archive_creation_complete">Archive creation complete</string>
+    <string name="initializing_backup">Initializing backup</string>
+    <string name="email_backup_begun">Email backup begun</string>
+    <string name="sftp_backup_begun">SFTP backup begun</string>
+    <string name="sd_card_backup_begun">SD card backup begun</string>
+    <string name="sd_card_not_available">SD Card not available</string>
+    <string name="sd_card_backup_failed">SD Card backup failed</string>
+    <string name="sd_card_backup_terminated">SD card backup terminated</string>
+    <string name="sd_card_backup_complete">SD card backup Complete</string>
+    <string name="backup_complete">Backup Complete</string>
+    <string name="missing_file">False/missing file detected :</string>
+    <string name="connected_to_sftp_server">Connected to SFTP server</string>
+    <string name="connection_failed">Connection failed</string>
+    <string name="attempting_sftp_reconnection">Attempting SFTP reconnection</string>
+    <string name="uploading_backup">Uploading backup</string>
+    <string name="sftp_upload_failed">SFTP file transfer failed :</string>
+    <string name="sftp_upload_successfull">SFTP upload successful</string>
+
+    <string name="synchronization_status">Synchronization status :</string>
+    <string name="recursive">Recursive</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next </string>
+    <string name="dismiss">Dismiss</string>
+    <string name="prepairing_files_to_archive">Prepairing files to archive</string>
+    <string name="archiving">Archiving :</string>
+    <string name="unavailable_field">Unavailable !</string>
+    <string name="title_activity_login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="title_activity_performance_annalizer">Performance_annalizer</string>
+    <string name="title_activity_wall_mounted_fp">Wall_mounted_fp</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="txt_fingerplace">Please press finger &#8230;</string>
+    <string name="txt_fpbegin">Begin to Identify</string>
+    <string name="txt_fpplace">Please press finger</string>
+    <string name="txt_fpdisplay">Processing fingerprint image &#8230;</string>
+    <string name="txt_fpprocess">Start processing &#8230;</string>
+    <string name="txt_fpidentify">Being Identify &#8230;</string>
+    <string name="txt_fpfail">Failed to generate!</string>
+    <string name="txt_fpmatchok">Match OK!</string>
+    <string name="txt_fpmatchfail">Match Fail!</string>
+
+
+    <string name="usb_cable_connected_error">USB Interface has been occupied</string>
+    <string name="finger_reg_error">Not all fingers from both hands have been registered</string>
+    <string name="right_hand_registration">Right hand registration</string>
+    <string name="left_hand_registration">Left hand Registration</string>
+    <string name="image_is_too_small_error">Image is too small.</string>
+    <string name="hand_registration">Hand registration</string>
+    <string name="right_thumb_prompt">Place your right thumb finger on the fingerprint sensor</string>
+    <string name="right_index_prompt">Place your right index finger on the fingerprint sensor</string>
+    <string name="right_midle_prompt">Place your right middle finger on the fingerprint sensor</string>
+    <string name="right_ring_prompt">Place your right ring finger on the fingerprint sensor</string>
+    <string name="right_pinky_prompt">Place your right pinky finger on the fingerprint sensor</string>
+    <string name="left_thumb_prompt">Place your left thumb on the fingerprint sensor</string>
+    <string name="left_index_prompt">Place your left index finger on the fingerprint sensor</string>
+    <string name="left_middle_prompt">Place your left middle finger on the fingerprint sensor</string>
+    <string name="left_ring_prompt">Place your left ring finger on the fingerprint sensor</string>
+    <string name="left_pinky_prompt">Place your left pinky finger on the fingerprint sensor</string>
+
+    <string name="re_enroll_same_finger_message">Error in finger enrolment ,Please re-enroll the same finger</string>
+    <string name="finger_captured_text">Finger Captured !</string>
+    <string name="fingerprint_registration_complete">Finger registration Complete !</string>
+
+    <string name="already_registered_finger_error">The finger you placed has already been registered</string>
+
+    <string name="place_finger_prompt">Place the finger shown below on the sensor</string>
+    <string name="title_activity_reg_pg1">Reg_pg1</string>
+
+
+    <string name="current_device">Current device :</string>
+    <string name="initializing">initializing ...</string>
+    <string name="set_device">Set device :</string>
+    <string name="set_printer">Set printer :</string>
+    <string name="search_complete">Status : Search complete</string>
+    <string name="paired_to">Paired to :</string>
+    <string name="unpaired_to">Unpaired to :</string>
+    <string name="bt_not_available">Bluetooth not available ...!!!</string>
+    <string name="current_printer">Current Printer :</string>
+    <string name="current_fp_device">Current FP device :</string>
+
+    <string name="status_searching">Status : Searching ...</string>
+    <string name="bt_settings">Bt Settings|</string>
+    <string name="printer_selection">Printer Selection</string>
+    <string name="device_selection">Bt Settings|FP device Selection</string>
+    <string name="weighbridge_selection">Bt Settings|Weighbridge Selection</string>
+    <string name="synchronizing_cexception_codes">Synchronizing exception codes</string>
+    <string name="printer_not_connected">Printer not connected</string>
+    <!--PRINTING-->
+    <string name="str_printer_state">STATE</string>
+    <string name="str_printer_printing">Printing</string>
+    <string name="str_printer_lowpower">Low power</string>
+    <string name="str_printer_nopaper">No paper</string>
+    <string name="str_printer_bufferfull">Buffer full</string>
+    <string name="str_printer_buffernull">Buffer null</string>
+    <string name="str_printer_hightemperature">High temperature</string>
+    <string name="str_devecehasblue">Bluetooth equipment! </string>
+    <string name="str_nomatched">no matching equipment!</string>
+    <string name="str_connected">connected </string>
+    <string name="str_disconnected">not connected to </string>
+    <string name="str_connecting">connecting to </string>
+    <string name="str_hasnodevice">no Bluetooth devices! </string>
+    <string name="str_scanover">scanning is finished!</string>
+    <string name="chose">select</string>
+    <string name="mode_bt">BT Printer</string>
+    <string name="mode_wifi">Wifi Printer</string>
+    <string name="mode_usb">USB Printer</string>
+    <string name="str_printunicode">Print Unicode</string>
+    <string name="str_exit">Sure exit and close the equipment?</string>
+    <string name="str_autotime">Interval(ms):</string>
+    <string name="str_autoprint">Auto Print</string>
+    <string name="str_hintprint">Please enter a command print</string>
+    <string name="not_connected">not_connected</string>
+    <string name="connected_to">Connected to</string>
+    <string name="connecting">Connecting</string>
+    <string name="unable_to_connect_to_printer">Unable to connect to printer</string>
+
+    <!--Operation-->
+    <string name="acquired_name">Acquired name</string>
+    <string name="auto_confirm">Auto confirm</string>
+    <string name="activity_area">Activity area</string>
+    <string name="activity">Activity</string>
+    <string name="verify">Verify</string>
+    <string name="verification_details">Verification details</string>
+    <string name="check_out_reason">Check out reason</string>
+    <string name="device_status">Device status</string>
+    <string name="search">Search</string>
+    <string name="application_update_title">Application update</string>
+    <string name="apk_dowloading_label">Downloading :</string>
+    <string name="update_check_date_label">Update check date :</string>
+    <string name="current_app_version_label">Current Version :</string>
+    <string name="version_code_label">Version code :</string>
+    <string name="release_date_label">Release date :</string>
+    <string name="name_label">Name :</string>
+    <string name="full_name">Full name</string>
+    <string name="id_number">ID number</string>
+    <string name="employee_id">Employee id</string>
+    <string name="phone_number">Phone number</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="invalid_input">Invalid input</string>
+
+    <string name="permision_error">Sorry you cannot proceed with this app without any of the denied permissions</string>
+    <string name="create_one_now">|Create one now.</string>
+    <string name="dont_have_an_account">Dont have an account ?</string>
+    <string name="copyright_capture_solutions_ltd">copyright capture solutions ltd</string>
+    <string name="checked_out_list">Checked out list</string>
+    <string name="title_activity_ble_test">Ble_test</string>
+
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="label_data">Data:</string>
+    <string name="label_device_address">Device address:</string>
+    <string name="label_state">State:</string>
+    <string name="no_data">No data</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="title_devices">BLE Device Scan</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="date_format">dd-mm-yyyy</string>
+
+    <string name="title_activity_reg_photo">Reg_photo</string>
+    <string name="title_activity_main_menu">MainMenu</string>
+    <string name="registration">Registration</string>
+
+    <string name="configuration">Configuration</string>
+    <string name="statistics">Statistics</string>
+    <string name="sync">Sync</string>
+
+    <string name="title_activity_record_list">RecordList</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="you_are_about_to_leave_registration_are_you_sure_you_want_to_exit_you_may_loose_your_unsaved_work">You are about to leave registration are you sure you want to exit you may loose your unsaved work</string>
+    <string name="dates_error">Invalid date</string>
+    <string name="photo_not_taken_error">Photo not taken</string>
+    <string name="title_activity_reg_fingerprints">Reg_fingerprints</string>
+
+    <string name="match_not_found">Match not found</string>
+    <string name="title_activity_app_configuration">AppConfiguration</string>
+    <string name="have_an_account">Have an account ?</string>
+    <string name="title_activity_sparta_face_camera">SpartaFaceCamera</string>
+
+
+    <string name="title_activity_reg_save_and_print">Reg_save_and_print</string>
+
+
+    <string name="title_activity_reg_pg3">Reg_pg3</string>
+
+    <string name="title_activity_splash">splash</string>
+
+    <string name="surname">Surname</string>
+
+
+    <string name="passport_size_photo">Passport size photo</string>
+    <string name="skip_finger">Skip finger</string>
+    <string name="fingerprint_registration">Fingerprint Registration</string>
+
+
+    <string name="other_names">Other names</string>
+    <string name="place_of_birth">Place of birth</string>
+    <string name="title_activity_reg_pg4">Reg_pg4</string>
+    <string name="reprint">Reprint</string>
+    <string name="title_activity_document_capture">Document_capture</string>
+    <string name="title_activity_reg_pg6">Reg_pg6</string>
+    <string name="maiden_name">Maiden name</string>
+
+    <string name="id_type">ID type</string>
+    <string name="residence">Residence</string>
+    <string name="civillity">Civillity</string>
+    <string name="marital_status">Marital status</string>
+    <string name="occupation">Profession</string>
+
+
+    <string name="select_occupation">Select Occupation</string>
+    <string name="select_employee_organisation">Select Employee organisation</string>
+    <string name="select_id_type">Select ID type</string>
+    <string name="select_marital">Select marital status</string>
+    <string name="identity_piece">Piece of identity</string>
+    <string name="renewing">Renewing</string>
+
+
+    <string name="about_app">About app</string>
+    <string name="update_app">Update app</string>
+    <string name="log_out">Log out</string>
+    <string name="exit">Exit</string>
+    <string name="gender_error">Gender has not been selected</string>
+
+    <string name="dob_error">The date of birth is invalid</string>
+    <string name="pob_error">The place of birth is invalid</string>
+    <string name="name_error">Name should be at least 2 characters long</string>
+
+    <string name="select_gender">Select gender</string>
+
+    <string name="confirm_the_info_below">Confirm the info below</string>
+
+
+    <string name="reg_no">Reg no</string>
+    <string name="save">Save</string>
+    <string name="finish">Finish</string>
+
+    <string name="id_mode_error">ID type not selected</string>
+    <string name="residence_error">Reidence not selected</string>
+
+    <string name="marital_stt_error">Marital status not selected</string>
+    <string name="occupation_error">Occupation not selected</string>
+
+    <string name="phone_no_error">Phone number not set</string>
+    <string name="idno_error">ID number not set</string>
+
+
+    <string name="birth_cert">Consular card /Birth cert</string>
+    <string name="select_pob">Select place of birth</string>
+    <string name="title_activity_signature_capture">SignatureCapture</string>
+    <string name="payer_of_the_contribution">Payer of the contribution</string>
+    <string name="number_of_rights">Number of rights</string>
+    <string name="receipt_number_of_the_paying_insurer">Receipt number of the paying insurer</string>
+    <string name="insurance_type">Insurance type</string>
+    <string name="confirmation_message">This document certifies that you have been enrolled as a health insurance card applicant. It reproduces the information that concerns you as recorded by the system operators. It is your responsibility to check them and have any corrections to the encoding errors you have made immediately corrected.</string>
+    <string name="marriage_date">Marriage date</string>
+    <string name="maiden_name_error">Maiden name is invalid</string>
+    <string name="identification_document">Identification document</string>
+    <string name="collectivity">Collectivity</string>
+    <string name="select_collectivity">Select collectivity</string>
+    <string name="select_insurance_type">Select Insurance type</string>
+    <string name="dom_error">Marriage date not set</string>
+    <string name="marriage_cert_no_error">Marriage certificate nuber not set</string>
+
+
+    <string name="landline_number">Landline number</string>
+
+    <string name="scanning">Scanning</string>
+    <string name="flashlight">flashlight</string>
+    <string name="turn_flashlight_off">TURN FLASHLIGHT OFF</string>
+    <string name="turn_flashlight_on">TURN FLASHLIGHT ON</string>
+    <string name="cancelled">Cancelled</string>
+
+    <string name="uuid_rec_no">UUID REC NO</string>
+
+
+    <string name="search_field_data">Search field data</string>
+
+    <string name="enter_commune">Enter Commune</string>
+    <string name="enter_field_name">Enter field name</string>
+
+    <string name="birth_certificate">Birth certificate</string>
+
+
+    <string name="receipt_of_registration_of_contributor">Receipt of registration of contributor</string>
+    <string name="marriage_document">Marriage document</string>
+    <string name="marriage_cert_no">Marriage cert no</string>
+
+
+    <string name="place_of_residence">Place of residence</string>
+    <string name="synchronization">Synchronization</string>
+
+    <string name="receipt_picture">Receipt picture</string>
+    <string name="active">Active</string>
+    <string name="inactive">Deactivated</string>
+    <string name="sign_below_to_confirm">Sign below to confirm</string>
+    <string name="type_the_reason_of_skipping_below">Put the resaon of skipping below</string>
+    <string name="bt_printer">BT printer</string>
+    <string name="proceed">Procceed</string>
+    <string name="surnname_error">Surname should be atleast a character long</string>
+    <string name="other_names_error">Other names should be at least a character long</string>
+    <string name="location_error">Location invalid</string>
+    <string name="landline_no_error">Invalid landline number</string>
+
+
+    <string name="select_user">Select user</string>
+
+    <string name="pass_not_changed">Password has not been changed</string>
+
+
+    <string name="alert">Alert</string>
+    <string name="cancel">Cancel</string>
+    <string name="toogle_lock_signature">toogle lock signature</string>
+    <string name="confirm_to_save_the_details_you_will_not_be_able_to_edit_once_saved">Confirm to save the details,you will not be able to edit once saved</string>
+    <string name="documents_scanner">Documents à scanner</string>
+
+    <string name="icao_error">ICAO not available</string>
+    <string name="front">Front</string>
+    <string name="back">Back</string>
+
+    <string name="signature_error">Signature required to proceed with saving</string>
+
+    <string name="passprt_pic_error">Passport size photo has not been taken</string>
+
+
+    <string name="clear_all">Clear all</string>
+    <string name="confirm_you_want_to_clear_data_for_all_fields_in_this_page">Confirm you want to clear data for all fields in this page</string>
+    <string name="clear">Clear</string>
+    <string name="skiping_reason">Skiping reason</string>
+    <string name="select_reason_to_skip">Select the reason to skip below</string>
+    <string name="validate_signature">Validate signature</string>
+    <string name="modify_signature">Modify signature</string>
+    <string name="pg_6_7">pg :6/7</string>
+
+
+    <string name="type_the_exception_code_below">Put the exception code below</string>
+
+    <string name="commune">Commune</string>
+    <string name="sync_users">Synchronize users</string>
+    <string name="try_again">Try again</string>
+    <string name="creds_error_messo">Credentials error..do you want to synchronize</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="user">User</string>
+
+
+    <string name="validate">Validate</string>
+
+    <string name="internet_not_available">Internet connection not available ...</string>
+    <string name="loading_users">Loading users</string>
+
+
+    <string name="region_of_birth">Region of birth</string>
+    <string name="commune_of_residence">Commune of residence</string>
+
+    <string name="commune_of_residence_error">Commune of residence error</string>
+    <string name="locality_of_residence_error">Locality of residence not selected</string>
+    <string name="region_of_residence">Region of residence</string>
+    <string name="region_of_residence_error">Region of residence not selected</string>
+    <string name="locality_of_residence">Locality of residence</string>
+
+
+    <string name="save_and_print">Save and print</string>
+    <string name="select_region">Select region</string>
+
+    <string name="name_promt">Name :</string>
+    <string name="dob_prompt">Date of birth :</string>
+    <string name="phoneno_prompt">Phone number :</string>
+    <string name="reg_date_prompt">Registration date :</string>
+    <string name="data_not_found">No results from the search</string>
+
+
+    <string name="commune_of_birth">Commune of birth</string>
+    <string name="locality_of_birth">Locality of birth</string>
+    <string name="children">Children</string>
+
+
+    <string name="update">Update</string>
+
+
+    <string name="new_registration">New registration</string>
+
+    <string name="data_status">Data status</string>
+    <string name="fingerprint">Fingerprint</string>
+    <string name="fingerprint_wsq">Fingerprint WSQ</string>
+    <string name="images">Images</string>
+    <string name="local_data_count_prompt">Local data count :</string>
+    <string name="global_data_count_prompt">Global data count :</string>
+    <string name="issues_prompt">Issues :</string>
+    <string name="pending_prompt">Pending :</string>
+    <string name="upload_prompt">Uploaded :</string>
+    <string name="pg_1">Pg : 1/8</string>
+    <string name="pg_2">Pg : 2/8</string>
+    <string name="pg_3">Pg : 3/8</string>
+    <string name="pg_4">Pg : 4/8</string>
+    <string name="pg_5">Pg : 5/8</string>
+    <string name="pg_6">Pg : 6/8</string>
+    <string name="pg_7">Pg : 7/8</string>
+    <string name="pg_8">Pg : 8/8</string>
+
+    <string name="check_fingers">Check fingers</string>
+    <string name="matching_other_hand">Matching not found  Matching from other hand</string>
+    <string name="match_not_found_in_both_hands">Match not found in both hands</string>
+    <string name="match_found_in">Match found in</string>
+    <string name="match_not_found_in">Match not found in</string>
+    <string name="match_found">Match found :</string>
+    <string name="matching_fp">Matching fp ...</string>
+    <string name="local_backup">Local backup</string>
+    <string name="auth_failed">Authentication failed Credentials not found...</string>
+    <string name="procesing_credentials">Processing credentials...</string>
+    <string name="title_activity_configuration">Configuration</string>
+
+    <string name="images_prompt">Images :</string>
+    <string name="progress_prompt">Progress :</string>
+    <string name="syncing_fp">Synchronizing FP data ,pending data :</string>
+    <string name="local_data_sync">Local data sync</string>
+    <string name="global_app_data_synchronization">Global app data synchronization</string>
+    <string name="local_app_data_synchronization">Local app data synchronization</string>
+    <string name="gender">Gender</string>
+    <string name="select_blood_group">Select blood group</string>
+    <string name="title_activity_reg_fingerprint">RegFingerprint</string>
+    <string name="father_name_error">Father\'s name error</string>
+    <string name="mother_name_error">Mother\'s name error</string>
+    <string name="nickname">Nickname</string>
+    <string name="father_s_name">Father\'s name</string>
+    <string name="father_s_dob">Father\'s dob</string>
+    <string name="mother_s_name">Mother\'s name</string>
+    <string name="mother_s_dob">Mother\'s dob</string>
+    <string name="bukina_residence">Bukina Residence</string>
+    <string name="height">Height</string>
+    <string name="complexion">Complexion</string>
+    <string name="blood_group">Blood group</string>
+    <string name="contact_person">Contact person</string>
+    <string name="contact_person_to_notify">Contact person to notify</string>
+    <string name="id_authority">ID Authority</string>
+    <string name="id_establishent_date">ID establishent date</string>
+    <string name="locality">Locality</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="select_locality">Select locality</string>
+    <string name="payment_date">Payment date</string>
+    <string name="qr">QR</string>
+    <string name="formula_no">Formulaire numero</string>
+    <string name="payment_code">Payment code</string>
+    <string name="deligate">Deligate</string>
+    <string name="select_deligate">Select deligate</string>
+    <string name="barcode">Bar code</string>
+    <string name="bukina_residence_error">Bukina residence input is invalid</string>
+    <string name="height_error">Height input is invalid</string>
+    <string name="complexion_error">Complexion input is invalid</string>
+    <string name="blood_group_error">Blood group input is invalid</string>
+    <string name="profession_error">Profession input error</string>
+    <string name="deligate_error">Deligate input error</string>
+    <string name="local_residence_error">Local residence input error</string>
+    <string name="contact_person_error">Contact person input error</string>
+    <string name="contact_person_notify_error">Contact person to notify input error</string>
+    <string name="locality_error">Locality input error</string>
+    <string name="formulaire_no_error">Fomulaire no input error</string>
+    <string name="payment_code_error">Paymet code input error</string>
+    <string name="payment_date_error">Payment date input error</string>
+    <string name="id_date_error">Id date input error</string>
+    <string name="id_authority_error">Id authority input error</string>
+    <string name="title_activity_reg_documents">RegDocuments</string>
+    <string name="formulaire_card">Formulaire card</string>
+    <string name="other_profession">Other profession</string>
+    <string name="other_profession_error">Other profession input error</string>
+    <string name="printer_type_setup">Printer type setup</string>
+    <string name="printer_type">Printer type</string>
+    <string name="t12_bluetooth">T12 Bluetooth</string>
+    <string name="sft_bluetooth">SFT Bluetooth</string>
+    <string name="sft2_bluetooth">SFT2 Bluetooth</string>
+    <string name="restore_defaults">Restore defaults</string>
+    <string name="right_thumb">Right thumb </string>
+    <string name="right_index">Right index </string>
+    <string name="right_middle">Right middle</string>
+    <string name="right_ring">Right ring</string>
+    <string name="right_pinky">Right pinky</string>
+    <string name="left_thumb">Left thumb</string>
+    <string name="left_index">Left index</string>
+    <string name="left_middle">Left middle</string>
+    <string name="left_ring">Left ring</string>
+    <string name="left_pinky">Left pinky</string>
+    <string name="Fingerprint_captured_already">Fingerprint has been captured \n Check :</string>
+    <string name="finerprint_missing">Not alL fingers have been captured \n Check :</string>
+    <string name="enter_search_term">Enter search term</string>
+    <string name="title_activity_reg_pg0">RegPg0</string>
+    <string name="select">Select</string>
+    <string name="title_activity_reg_identification_document">RegIdentificationDocument</string>
+    <string name="select_complexion">Select complexion</string>
+    <string name="enrollment_location">Enrollment location</string>
+    <string name="duplicata">DUPLICATA</string>
+    <string name="kit_initialization">Kit initialization</string>
+    <string name="exception_procedure">Exception procedure</string>
+    <string name="exception_message">You have not captured the minimum required number of fingerprints.Enter the reason for skipping below to be excepted.</string>
+    <string name="number_selection">Number selection</string>
+    <string name="length_message">Select your length in cm below.</string>
+    <string name="payment_code_used_error">Ce numéro a déjà été utilisé , veuillez en utiliser un autre svp</string>
+    <string name="device_details_not_loaded">Device details not fully loaded</string>
+    <string name="receipt_withdraw_date">Receipt withdraw date</string>
+
+
+</resources>
+

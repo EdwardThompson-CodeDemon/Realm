@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/check_box_circle_back"
+        ></item>
+  <item android:drawable="@drawable/tick_vector_icon"
+      android:bottom="5dp"
+      android:left="5dp"
+  android:right="5dp"
+      android:top="5dp"
+      android:width="30px" android:height="30px">
+
+
+  </item>
+
+
+<!--    <item-->
+<!--        android:drawable="@android:drawable/checkbox_on_background"-->
+<!--        android:bottom="20dp"-->
+<!--        android:left="20dp"-->
+<!--      android:width="80px"-->
+<!--      android:height="82px"-->
+<!--        android:right="20dp"-->
+<!--        android:top="20dp"/>-->
+</layer-list>

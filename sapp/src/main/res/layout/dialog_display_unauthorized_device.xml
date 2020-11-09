@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="570dp"
+        android:layout_below="@+id/dhead"
+        android:layout_marginBottom="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/bg_main"
+        android:layout_marginRight="5dp"
+        android:padding="10dp"
+        android:id="@+id/details"
+        android:orientation="vertical">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:textSize="22dp"
+    android:textColor="@color/red"
+    android:textStyle="bold"
+    android:text="This device is not authorised to use this App"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="12dp"
+            android:layout_margin="20dp"
+            android:id="@+id/view2"
+            app:cardCornerRadius="10dp"
+            android:innerRadius="5dp"
+            android:shape="ring"
+
+            android:thicknessRatio="0.9"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:padding="10dp"
+
+
+                android:id="@+id/employee_inner_lay"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/error_image"
+                    android:layout_width="200dp"
+                    android:layout_height="350dp"
+                    android:visibility="gone"
+               android:layout_centerInParent="true"
+                    android:layout_marginRight="3dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/unauthorised">
+
+                </ImageView>
+                <ProgressBar
+                    android:layout_width="200dp"
+                    android:layout_height="350dp"
+                    android:layout_margin="16dp"
+                    android:layout_centerInParent="true"
+
+                    android:id="@+id/loader"
+                    />
+
+
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <Button
+            android:layout_marginTop="25dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+
+
+            android:layout_centerHorizontal="true"
+            android:text="Exit"
+            android:id="@+id/exit"
+            android:background="@drawable/normalbutton"
+            android:textAllCaps="false"
+            android:textColor="#fff"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+
+    android:layout_width="match_parent"
+   
+    android:layout_height="wrap_content">
+
+    
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/source_lay"
+            android:padding="5dp"
+            android:background="@null"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/module_icon"
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+               
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="3dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/fp_white_icon">
+
+            </ImageView>
+          
+            
+          
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:textStyle="italic"
+                android:layout_alignBottom="@+id/no_of_workers"
+
+                android:layout_alignParentRight="true"
+                android:textColor="@color/orange"
+                android:text="Active" />
+
+
+            <TextView
+                android:id="@+id/module_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+android:layout_centerVertical="true"
+                android:layout_marginTop="5dp"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:layout_toRightOf="@+id/module_icon"
+                android:text="Module name" />
+
+
+        </RelativeLayout>
+
+   
+    
+</LinearLayout>

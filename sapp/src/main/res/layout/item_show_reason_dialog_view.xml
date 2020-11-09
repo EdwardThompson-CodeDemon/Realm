@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:innerRadius="5dp"
+        android:shape="ring"
+        android:thicknessRatio="0.9"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:id="@+id/source_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="10dp">
+
+
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="40dp"
+                android:layout_height="44dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/fp_white_icon">
+
+            </ImageView>
+            <!--</androidx.cardview.widget.CardView>-->
+            <TextView
+                android:id="@+id/device_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView2"
+                android:layout_toEndOf="@+id/imageView2"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Time : "
+                android:textSize="12dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/device_status_val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/device_status"
+
+                android:layout_toRightOf="@+id/device_status"
+                android:text=" "
+
+                android:textSize="12dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Verification failed"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+
+
+            <!--</androidx.cardview.widget.CardView>-->
+
+
+            <TextView
+                android:id="@+id/employee_name_found"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/imageView2"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/imageView1"
+                android:text="Aquired name"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/info_lay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/employee_name_found"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/imageView1"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/location_lay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/activity_name_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:text="Failiure reason :" />
+ <TextView
+                        android:id="@+id/activity_name"
+     android:layout_below="@+id/activity_name_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+     android:textColor="@color/red"
+     android:textSize="20dp"
+     android:textStyle="bold"
+                        android:text="" />
+
+
+
+                </RelativeLayout>
+
+
+
+
+
+
+
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+android:layout_below="@+id/info_lay"
+                android:id="@+id/navigation_lay"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Cancel"
+                    android:id="@+id/cancel"
+                    android:textColor="@color/white"
+                    android:background="@drawable/normalbutton"
+                    android:layout_toLeftOf="@+id/sep1"
+                    android:layout_margin="5dp"/>
+                <View
+                    android:layout_width="2dp"
+                    android:id="@+id/sep1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="2dp"
+                    />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Confirm"
+                    android:id="@+id/confirm"
+                    android:textColor="@color/white"
+                    android:background="@drawable/normalbutton"
+                    android:layout_toRightOf="@+id/sep1"
+                    android:layout_margin="5dp"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

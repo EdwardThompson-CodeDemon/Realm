@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alpha="1"
+    android:background="@null"
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="1dp"
+        android:padding="5dp"
+        android:id="@+id/sync_lay"
+        android:background="@drawable/status_back"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Synchronization"
+            android:textStyle="bold"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:id="@+id/sync_status_txt"
+            android:layout_height="25dp" />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="15dp"
+            android:src="@drawable/sync_icon"
+            android:background="@null"
+            android:id="@+id/sync_status_icon"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"/>
+
+        <com.github.lzyzsd.circleprogress.ArcProgress
+            android:id="@+id/arc_progress"
+            android:background="@null"
+            android:layout_marginLeft="50dp"
+            android:layout_width="160dp"
+
+            android:layout_below="@+id/sync_status_txt"
+            custom:arc_text_color="@color/white"
+            custom:arc_angle="230"
+            android:layout_centerHorizontal="true"
+            android:layout_height="160dp"
+            android:layout_marginBottom="-40dp"
+            custom:arc_unfinished_color="@color/colorPrimaryDark"
+            custom:arc_finished_color="@color/colorAccent"
+            custom:arc_progress="0"
+            custom:arc_bottom_text="@string/overall_sync_progress"/>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:layout_below="@+id/arc_progress"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/hor_separator1"
+            android:layout_height="1dp"/>
+
+
+
+        <LinearLayout
+            android:padding="3dp"
+android:orientation="vertical"
+            android:id="@+id/progress_layout"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/hor_separator1"
+            android:layout_height="wrap_content">
+
+
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+
+               <TextView
+                   android:id="@+id/percent_title_label"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentTop="true"
+                   android:layout_centerVertical="true"
+                   android:gravity="center_vertical"
+                   android:textColor="@color/white"
+                   android:layout_gravity="right"
+                   android:text=" "
+                   android:textStyle="bold" />
+
+
+               <TextView
+                   android:id="@+id/percent_label"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentRight="true"
+                   android:layout_alignParentTop="true"
+
+                   android:textColor="@color/white"
+                   android:layout_gravity="right"
+                   android:text="0%"
+                   android:textSize="15dp"
+                   android:textStyle="bold" />
+           </RelativeLayout>
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:id="@+id/sync_percent"
+
+                android:layout_below="@+id/pending_percent"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress" />
+
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/synchronize"
+            android:id="@+id/sync_now"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+
+            android:textColor="@color/whitesmoke"
+            android:textAllCaps="false"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/progress_layout"
+            android:background="@drawable/normalbutton"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:id="@+id/autoback_sync_check"
+            android:textSize="10dp"
+
+            android:checked="true"
+            android:layout_marginTop="25dp"
+            android:textColor="@color/whitesmoke"
+            android:text="@string/auto_back_synchronization"/>
+     <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/global_data_sync_check"
+android:layout_below="@+id/autoback_sync_check"
+            android:checked="true"
+            android:layout_marginTop="25dp"
+         android:textSize="10dp"
+            android:textColor="@color/whitesmoke"
+            android:text="@string/global_data_sync"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/sync_now"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hor_separator1"
+        android:id="@+id/sync_status_label"
+        android:textStyle="bold"
+        android:checked="true"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/whitesmoke"
+        android:text="@string/last_sync_time"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/sync_status_label"
+        android:layout_alignBottom="@+id/sync_status_label"
+        android:id="@+id/sync_status_val"
+
+        android:checked="true"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/whitesmoke"
+        android:text="Synchronized"/>
+
+</LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:elevation="12dp"
+        android:innerRadius="5dp"
+        android:shape="ring"
+        android:thicknessRatio="0.9"
+        app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="10dp"  >
+    <RelativeLayout
+        android:id="@+id/source_lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="40dp"
+            android:layout_height="44dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="3dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo">
+
+        </ImageView>
+        <!--</androidx.cardview.widget.CardView>-->
+        <TextView
+            android:id="@+id/device_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageView2"
+            android:layout_toEndOf="@+id/imageView2"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="Time : "
+            android:visibility="gone"
+            android:textSize="12dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/device_status_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/device_status"
+
+            android:layout_toRightOf="@+id/device_status"
+            android:text=" "
+
+            android:textSize="12dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/imageView2"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="Storage report"
+            android:textSize="25dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
+
+
+
+        <!--</androidx.cardview.widget.CardView>-->
+
+
+
+    </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_below="@+id/dhead"
+            android:id="@+id/details"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp">
+
+
+
+
+                    <TextView
+                        android:id="@+id/current_version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="Mounted Storage"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+
+
+                </RelativeLayout>
+                <GridView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_margin="0dp"
+                    android:background="@drawable/list_back"
+                    android:padding="5dp"
+                    android:id="@+id/version_list"/>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
+
+
+                    <TextView
+                        android:id="@+id/update_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:text="Application files"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+
+
+                </RelativeLayout>
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="12dp"
+                    android:id="@+id/view2"
+                    app:cardCornerRadius="10dp"
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    android:layout_margin="2dp"
+                    android:thicknessRatio="0.9"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_margin="5dp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_log_file"></ImageView>
+                        <!--</androidx.cardview.widget.CardView>-->
+
+
+
+
+
+                        <TextView
+                            android:id="@+id/log_file_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_toEndOf="@+id/imageView1"
+                            android:layout_toRightOf="@+id/imageView1"
+                            android:text="App Log file" />
+
+                        <TextView
+                            android:id="@+id/log_file_size_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/log_file_label"
+                            android:layout_marginTop="5dp"
+                            android:layout_toEndOf="@+id/imageView1"
+                            android:layout_toRightOf="@+id/imageView1"
+                            android:text="Size :" />
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:elevation="12dp"
+
+                    app:cardCornerRadius="10dp"
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    android:thicknessRatio="0.9"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_margin="5dp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/db_img"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/db_icon"></ImageView>
+                        <!--</androidx.cardview.widget.CardView>-->
+
+
+
+
+
+                        <TextView
+                            android:id="@+id/database_file_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_toEndOf="@+id/db_img"
+                            android:layout_toRightOf="@+id/db_img"
+                            android:text="App Database" />
+
+                        <TextView
+                            android:id="@+id/database_file_size_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/database_file_label"
+                            android:layout_marginTop="5dp"
+                            android:layout_toEndOf="@+id/db_img"
+                            android:layout_toRightOf="@+id/db_img"
+                            android:text="Size :" />
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:elevation="12dp"
+
+                    app:cardCornerRadius="10dp"
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    android:thicknessRatio="0.9"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_margin="5dp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/backup_img"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/backup_icon"></ImageView>
+                        <!--</androidx.cardview.widget.CardView>-->
+
+
+
+
+
+                        <TextView
+                            android:id="@+id/backup_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="5dp"
+                            android:layout_toEndOf="@+id/backup_img"
+                            android:layout_toRightOf="@+id/backup_img"
+                            android:text="Backups" />
+
+                        <TextView
+                            android:id="@+id/backup_label_size_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/backup_label"
+                            android:layout_marginTop="5dp"
+                            android:layout_toEndOf="@+id/backup_img"
+                            android:layout_toRightOf="@+id/backup_img"
+                            android:text="Size :" />
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+
+                <Button
+                    android:layout_margin="15dp"
+
+                    android:layout_width="150dp"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/details"
+                    android:layout_centerHorizontal="true"
+                    android:text="Dismiss"
+                    android:id="@+id/update"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/normalbutton"
+                    android:textAllCaps="false"
+                    android:textColor="#fff"/>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+</RelativeLayout>
