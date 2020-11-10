@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sparta.realm">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <application
         android:name=".spartautils.app_control.SpartaApplication"
         android:allowBackup="true"
