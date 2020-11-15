@@ -26,8 +26,8 @@ allprojects {
 }
 subprojects {
 //    apply plugin: 'java'
-    apply plugin: 'maven'
-group='com.github.EdwardThompson-CodeDemon'
+
+    
 
 
 //    task sourcesJar(type: Jar, dependsOn: classes) {
