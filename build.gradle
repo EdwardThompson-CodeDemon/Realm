@@ -20,8 +20,12 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
     }
+
+
+
 }
 subprojects {
+//    apply plugin: 'java'
     apply plugin: 'maven'
 group='com.github.EdwardThompson-CodeDemon'
 
@@ -30,17 +34,18 @@ group='com.github.EdwardThompson-CodeDemon'
 //        classifier = 'sources'
 //        from sourceSets.main.allSource
 //    }
-//
+
 //    task javadocJar(type: Jar, dependsOn: javadoc) {
 //        classifier = 'javadoc'
 //        from javadoc.destinationDir
 //    }
-
+//
 //    artifacts {
 //        archives sourcesJar
 //        archives javadocJar
 //    }
 }
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
