@@ -20,5 +20,9 @@
         <module name="SpartaAnnotationProcessor" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="AnnotationProcessor" target="1.7" />
+      <module name="Annotations" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>

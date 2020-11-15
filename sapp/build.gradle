@@ -11,7 +11,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.8"
+        versionName "1.0.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -53,6 +53,7 @@ dependencies {
     implementation files('libs\\mail.jar')
     implementation files('libs\\printersdk.jar')
     implementation project(path: ':SpartaAnnotations')
+    implementation project(path: ':Annotations')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -76,6 +77,6 @@ dependencies {
 
 
     annotationProcessor project(path: ':SpartaAnnotationProcessor')
-    implementation project(path: ':SpartaAnnotationProcessor')
+    annotationProcessor project(path: ':AnnotationProcessor')
 
 }

@@ -1,2 +1,4 @@
+include ':AnnotationProcessor'
+include ':Annotations'
 include ':sapp', ':SpartaAnnotations', ':SpartaAnnotationProcessor'
 rootProject.name='Realm'
