@@ -88,7 +88,7 @@ String query = "SELECT transaction_date, quantity_in, quantity_out,zone_Code,con
 		return obj;
 
  */
-@DynamicClass(table_name = "cccoa_buyers")
+@DynamicClass(table_name = "stock_transactions")
 @SyncDescription(service_name = "InsertWeightBridge",service_type = Upload,download_link = svars.Weighbridge_add_upload_link)
 @SyncDescription(service_name = "InsertWeightBridge",service_type = Upload,download_link = svars.Weighbridge_dispatch_upload_link)
 public class weibridge_details extends db_class_ implements Serializable {

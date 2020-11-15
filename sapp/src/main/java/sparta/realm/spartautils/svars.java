@@ -271,8 +271,8 @@ return APPP;
 static SPARTA_APP SALES_WC()
 {
  //   SPARTA_APP APPP = new SPARTA_APP("https://ciw.cs4africa.com/ccburkina", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","SNEDAI","realm");
-  //  SPARTA_APP APPP = new SPARTA_APP("https://weightcapture.cs4africa.com/arqan", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
-    SPARTA_APP APPP = new SPARTA_APP("https://ciw.cs4africa.com/agricapture", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
+   SPARTA_APP APPP = new SPARTA_APP("https://weightcapture.cs4africa.com/arqan", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
+    // SPARTA_APP APPP = new SPARTA_APP("https://ciw.cs4africa.com/agricapture", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
 APPP.WORKING_PROFILE_MODE= SPARTA_APP.PROFILE_MODE.GENERAL;
 return APPP;
 }
@@ -327,6 +327,9 @@ return APPP;
     public static final String Mainlink =WORKING_APP.APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
     public static String update_root_link=WORKING_APP.APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
 
+    public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Employee/BiometricDetails/GetFingerPrints";
+    public static final String Fingerprint_uploading_link = Mainlink+"/WeightCAPTURE/MobiServices/SaveData/SaveFingerPrints";
+
 
 
     public static final String Collection_center_download_link ="/WeightCAPTURE/Inventory/CollectionCentre/GetUsersCentres";
@@ -346,6 +349,21 @@ return APPP;
     public static final String Lpo_upload_link ="/WeightCAPTURE/LPO/LPODetails/WestafricaAdd";
     public static final String Weighbridge_dispatch_upload_link ="/WeightCAPTURE/WeighBridgeDetails/DispatchWeighBridgeCocoa";
     public static final String Weighbridge_add_upload_link ="/WeightCAPTURE/WeighBridgeDetails/AddWeighbridgeCocoa";
+    public static final String Weighbridge_tag_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
+    public static final String receiving_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/AddVehicleReceivingSession";
+    public static final String agent_totals_upload_link ="/WeightCAPTURE/WeighBridgeDetails/AddAgentsAccountsDetails";
+    public static final String cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
+ //   public static String WeightCAPTURE = "WeightCAPTURE/";
+  /*  public static String Center_download_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleSessionWeighbridgeDispatch";
+    public static String Update_dispatch_link = surl + WeightCAPTURE + "LPO/LPODetails/UpdateDispatchCollectionSession";
+    public static String fetch_fingerprints_link = surl + WeightCAPTURE + "Members/Members/GetMemberFingerprints";
+    public static String pull_collections_link = surl + WeightCAPTURE + "LPO/LPODetails/GetCocoaFieldCollections";
+    public static String pull_weighbridge_collections_link = surl + WeightCAPTURE + "WeighBridgeDetails/PullCocoaWeighbridgeTags";
+    public static String send_weights_update_link = surl + WeightCAPTURE + "WeighBridgeDetails/UpdateWeighBridgeCocoaTag";
+    public static String send_capagri_link = "https://weightcapture.cs4africa.com/ivory_capagri/Loan/mainPesa/IvoryAdvances";
+    public static String receiving_session_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleReceivingSession";
+    public static String agent_totals_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleReceivingSession";*/
+
 
 
 
@@ -386,9 +404,7 @@ return APPP;
 
     public static String user_registration_link = Mainlink + "/Authentication/Login/AddIndividualUser";
 
-    public static final String Fingerprint_downloading_link = Mainlink+"/Employee/BiometricDetails/GetFingerPrints";
-    public static final String Fingerprint_uploading_link = Mainlink+"/MobiServices/SaveData/SaveFingerPrints";
- public static final String Fingerprint_uploading_link_ann = "/MobiServices/SaveData/SaveFingerPrints";
+  public static final String Fingerprint_uploading_link_ann = "/MobiServices/SaveData/SaveFingerPrints";
 
     public static final String Fingerprint_image_uploading_link = Mainlink+"/MobiServices/SaveData/SaveFingerImages";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
     public static final String Fingerprint_image_uploading_link_ann = "/MobiServices/SaveData/SaveFingerImages";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages

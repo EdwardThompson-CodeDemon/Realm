@@ -53,7 +53,7 @@ SupplierAccounts.put("company_name", jMembersacc.getString("company_name"));
 					}
  */
 @DynamicClass(table_name = "company_details")
-@SyncDescription(service_name = "JobGetCompanyDetails",service_type = Download,download_link = svars.Company_details_download_link,chunk_size = 1)
+@SyncDescription(service_name = "JobGetCompanyDetails",service_type = Download,download_link = svars.Company_details_download_link,chunk_size = 1,use_download_filter = false)
 public class company_details extends db_class_ implements Serializable {
 
 

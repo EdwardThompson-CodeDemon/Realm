@@ -49,7 +49,7 @@ case "InsertLPO":
 				break;
 
  */
-@DynamicClass(table_name = "cccoa_buyers")
+@DynamicClass(table_name = "TBL_inventory")
 @SyncDescription(service_name = "InsertLPO",service_type = Upload,download_link = svars.Lpo_upload_link )
 public class lpo extends db_class_ implements Serializable {
 

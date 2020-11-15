@@ -97,7 +97,7 @@ case "JobAllInventory":
 
 
  */
-@DynamicClass(table_name = "centers")
+@DynamicClass(table_name = "inventory_items")
 @SyncDescription(service_name = "JobAllInventory",service_type = Download,download_link = svars.Inventory_download_link,use_download_filter = false)
 public class inventory extends db_class_ implements Serializable {
 /*
@@ -123,7 +123,8 @@ AllinventoryItemTypes.put("gridcollection_id", json_data.getInt("inventory_id"))
 
  */
 
-
+// {"$id":"3","id":208,"inventory_id":208,"inventory_name":"ARGAN FRUIT","capacity":"KGS","selling_price":0.0,"current_buying_price":5.0,"transportation_cost":0.0,"inventory_item_type_id":351,"inventory_item_type_name_route":"ARQAN ROUTE","inventory_make_model_id":0,"inventory_make_model_name":null,"inventory_make_id":0,"inventory_make_name":null,"weight_per_reduction":80.0,"weighbridge_moisture":0.00,"reduction_weight":1.0,"isactive":false,"moisture_level":0.0,"inventorytypeid":1,"inventoryitemtypeid":215,"synch_date":"0001-01-01T00:00:00","blockId":203,"isActiveRoute":true,"isCapagri":false,"blockname":"ARQAN A","transacting_branch_id":1,"active":true,"datecomparer":16051913828520704}
+//    JobAllInventory::inventory_id=208 sync_status=1 transportcost=0 inventory_make_id=0 gridcollection_id=208 weight_per_reduction=80 moisture=0 make_model_id=0 capacity=KGS inv_itemtype_id=215 blockId=203 bp=5 rid=208 sid=208 isactive=false routename=ARQAN ROUTE inventory_make_name=null inv_name=ARGAN FRUIT reduction_weight=1 blockname=ARQAN A make_model_name=null sync_var=16051913828520704
     @DynamicProperty(json_key = "inventory_id", column_name = "gridcollection_id")
    public int gridcollection_id=0;
 

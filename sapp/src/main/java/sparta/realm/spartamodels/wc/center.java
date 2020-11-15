@@ -61,7 +61,7 @@ case "JobCenters" :
 @SyncDescription(service_name = "JobCenters",service_type = Download,download_link = svars.Center_download_link)
 public class center extends db_class_ implements Serializable {
 
-
+//    {"$id":"2","id":216,"route_id":215,"center_id":216,"centername":"ARQAN CENTRE","active":true,"datecomparer":16051913827886508}
 
     @DynamicProperty(json_key = "center_id", column_name = "center_id")
    public String center_id="";

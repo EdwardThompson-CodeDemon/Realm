@@ -22,6 +22,7 @@ import com.google.common.io.ByteStreams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -59,6 +60,7 @@ import sparta.spartaannotations.DynamicClass;
 import sparta.spartaannotations.SyncDescription;
 import sparta.spartaannotations.db_class_;
 import sparta.spartaannotations.sync_service_description;
+import sparta.spartaannotations.sync_status;
 
 import static sparta.spartaannotations.SyncDescription.service_type.Configuration;
 import static sparta.spartaannotations.SyncDescription.service_type.Download;
@@ -114,15 +116,7 @@ public class asbgw {
 
         };
     }
-    public enum sync_status{
-        pending,
-        syned
 
-    }
- public enum data_status{
-        pending,
-        syned
-    }
     public asbgw() {
 
 
@@ -688,7 +682,10 @@ public class asbgw {
 
 
                         JSONArray temp_ar;
-                        if(ssd.service_name.equalsIgnoreCase("Member fingerprints")){
+                        Object json = new JSONTokener(maindata.opt("Result").toString()).nextValue();
+                       temp_ar=json instanceof JSONArray?(JSONArray)json:((JSONObject)json).getJSONArray("Result");
+
+                       /* if(ssd.service_name.equalsIgnoreCase("Member fingerprints")){
                             temp_ar = maindata.getJSONObject("result").getJSONArray("result");
                             // ((member_data)obj_class).data.storage_mode=2;
                         }else if(ssd.service_name.equalsIgnoreCase("Member images")){
@@ -702,12 +699,12 @@ public class asbgw {
                             }else{
                                 temp_ar = maindata.getJSONArray("Result");
                             }
-                        }
+                        }*/
 
                         double den=(double) temp_ar.length();
                         sdb.register_object_auto_ann(true,null,ssd);
                         if(!ssd.use_download_filter){
-                            sdb.getDatabase().execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status ='"+sync_status.syned.ordinal()+"'");
+                            sdb.getDatabase().execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status ='"+ sync_status.syned.ordinal()+"'");
                         }
                         Log.e(ssd.service_name+" :: TX", "ISOK " );
                         for (int i = 0; i < temp_ar.length(); i++) {
@@ -742,7 +739,7 @@ public class asbgw {
 
 
 
-                        if( temp_ar.length()==ssd.chunk_size)
+                        if( temp_ar.length()>=ssd.chunk_size&&ssd.use_download_filter)
                         {
                             download_(ssd);
 
@@ -1337,7 +1334,7 @@ public class asbgw {
             System.arraycopy(ssd.table_filters,0,pending_records_filter,0,ssd.table_filters.length);
 
         }
-        pending_records_filter[pending_records_filter.length-1]="sync_status='"+sync_status.pending.ordinal()+"'";
+        pending_records_filter[pending_records_filter.length-1]="sync_status='"+ sync_status.pending.ordinal()+"'";
         // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
         ArrayList<Object> pending_records=sdb.load_dynamic_records_ann(ssd,pending_records_filter);
 

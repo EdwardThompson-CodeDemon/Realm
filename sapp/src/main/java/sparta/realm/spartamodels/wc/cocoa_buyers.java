@@ -67,14 +67,14 @@ case "JobCocoaBuyers":
 
 				break;
  */
-@DynamicClass(table_name = "cccoa_buyers")
+@DynamicClass(table_name = "coccoa_buyers")
 @SyncDescription(service_name = "JobCocoaBuyers",service_type = Download,download_link = svars.Cocoa_buyers_download_link )
 public class cocoa_buyers extends db_class_ implements Serializable {
 
-
-
-    @DynamicProperty(json_key = "id", column_name = "id")
-   public String id="";
+//    {"$id":"6","id":1,"buyer_name":"Cargill","buyer_contact":"892922","user_id":0,"datecomparer":16051913830732754,"registration_date":"0001-01-01T00:00:00"}
+//
+//    @DynamicProperty(json_key = "id", column_name = "id")
+//   public String id="";
 
     @DynamicProperty(json_key = "buyer_name", column_name = "buyer_name")
     public String buyer_name="";

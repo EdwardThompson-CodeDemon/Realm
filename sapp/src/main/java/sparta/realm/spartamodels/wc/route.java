@@ -25,7 +25,7 @@ inventoryItem.put("rid", json_data.getInt("inventory_id"));
 						inventoryItem1.put("blockname", json_data.getString("blockname"));
 
  */
-@DynamicClass(table_name = "inventory_items")
+@DynamicClass(table_name = "routes")
 //@SyncDescription(service_name = "JobRoutes",service_type = Download,download_link = svars.Route_download_link,chunk_size =svars.excuse_request_limit )
 public class route extends db_class_ implements Serializable {
 

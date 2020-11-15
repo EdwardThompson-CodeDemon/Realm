@@ -18,12 +18,12 @@
         android:id="@+id/username_edt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="capturesolutionsfin"/>
+        android:text="admin"/>
   <EditText
       android:id="@+id/password_edt"
       android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="12345"/>
+        android:text="admin123A"/>
 </LinearLayout>
 
 

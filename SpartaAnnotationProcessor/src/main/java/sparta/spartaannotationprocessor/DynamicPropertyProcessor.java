@@ -37,6 +37,7 @@ import sparta.spartaannotations.DynamicProperty;
 import sparta.spartaannotations.SyncDescription;
 import sparta.spartaannotations.db_class_;
 import sparta.spartaannotations.sync_service_description;
+import sparta.spartaannotations.sync_status;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"sparta.spartaannotations.DynamicClass","sparta.spartaannotations.DbSync"})
@@ -181,7 +182,7 @@ boolean initd=false;
             all_elements.addAll(super_element.getEnclosedElements());
             String create_sttm = "CREATE TABLE "+ann.table_name();
             String create_index_sttm = "";
-            String qry="DELETE FROM "+ann.table_name()+" WHERE ("+sid_column+"='\"+table_name+\"' OR "+sid_column+"=\"+sid+\") AND sync_status='i'";
+            String qry="DELETE FROM "+ann.table_name()+" WHERE ("+sid_column+"='\"+sid+\"' OR "+sid_column+"=\"+sid+\") AND sync_status='"+ sync_status.syned.ordinal()+"'";
 
             delete_records_sttment.put(ann.table_name(),qry);
             boolean started=false;

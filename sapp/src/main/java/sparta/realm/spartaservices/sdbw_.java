@@ -90,6 +90,7 @@ import sparta.realm.spartautils.sparta_string_compairer;
 import sparta.realm.spartautils.svars;
 import sparta.spartaannotations.DynamicProperty;
 import sparta.spartaannotations.sync_service_description;
+import sparta.spartaannotations.sync_status;
 
 import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_format;
 
@@ -1616,10 +1617,13 @@ public class sdbw_ {
             {
 
                 ContentValues cv= spartaDynamics.getContentValuesFromJson(j_obj,ssd.table_name);
-                cv.put("sync_status", asbgw.sync_status.syned.ordinal());
+                cv.put("sync_status", sync_status.syned.ordinal());
 
                 Log.e(ssd.service_name+":: Insert result =>"," "+database.insert(ssd.table_name, null, cv));
-
+if(ssd.service_name.equalsIgnoreCase("JobAllInventory"))
+{
+    Log.e("Timming error :",ssd.service_name+"::"+cv.toString());
+}
             }
 
 
