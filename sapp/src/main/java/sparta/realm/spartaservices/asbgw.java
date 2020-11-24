@@ -48,7 +48,6 @@ import sparta.realm.R;
 import sparta.realm.spartamodels.db_class;
 import sparta.realm.spartamodels.dyna_data_obj;
 import sparta.realm.spartamodels.dynamic_property;
-import sparta.realm.spartamodels.member;
 import sparta.realm.spartamodels.member_data;
 
 
@@ -56,19 +55,17 @@ import sparta.realm.spartamodels.member_data;
 
 import sparta.realm.spartautils.app_control.SpartaApplication;
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
-import sparta.spartaannotations.sync_service_description;
-import sparta.spartaannotations.sync_status;
+import com.realm.annotations.db_class_;
+import com.realm.annotations.sync_service_description;
+import com.realm.annotations.sync_status;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Configuration;
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
-import static sparta.spartaannotations.SyncDescription.service_type.Download_Upload;
-import static sparta.spartaannotations.SyncDescription.service_type.Upload;
+import static com.realm.annotations.SyncDescription.service_type.Configuration;
+import static com.realm.annotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download_Upload;
+import static com.realm.annotations.SyncDescription.service_type.Upload;
 
 
-public class asbgw {
+public class asbgw  {
     static Context act;
     String st="";
     Timer logintimer = new Timer();
@@ -77,10 +74,10 @@ public class asbgw {
     Timer sync_workers_timer = new Timer();
 
     Drawable icondrawable;
-    static sdbw_ sdb;
+    static dbh sdb;
     static {
         act= SpartaApplication.getAppContext();
-        sdb=new sdbw_(act);
+        sdb=new dbh(act);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
@@ -122,6 +119,33 @@ public class asbgw {
 
     }
 
+
+
+
+    public interface SynchronizationHandler
+    {
+        Boolean OnRequestToSync();
+        ArrayList<JSONObject> OnAboutToUploadObjects(sync_service_description ssd,ArrayList<JSONObject> objects);
+        JSONObject OnUploadingObject(sync_service_description ssd,JSONObject object);
+
+
+    }
+    static SynchronizationHandler Main_handler=new SynchronizationHandler() {
+        @Override
+        public Boolean OnRequestToSync() {
+            return null;
+        }
+
+        @Override
+        public ArrayList<JSONObject> OnAboutToUploadObjects(sync_service_description ssd, ArrayList<JSONObject> objects) {
+            return objects;
+        }
+
+        @Override
+        public JSONObject OnUploadingObject(sync_service_description ssd, JSONObject object) {
+            return object;
+        }
+    };
     public interface sync_status_interface
     {
         void on_status_code_changed(int status);
@@ -185,6 +209,7 @@ public class asbgw {
 
         }
     }
+
     static int sync_sum_counter=0;
     static int sync_complete_counter=0;
     static int sync_success_counter=0;
@@ -414,7 +439,7 @@ public class asbgw {
 
                         break;
                     case Upload:
-                        //upload_(ssd_t);
+                        upload_(ssd_t);
 
                         break;
                     case Download_Upload:
@@ -605,7 +630,7 @@ public class asbgw {
         }.execute(ssd.download_link,filter_object);
 
     }
-    void download_(sync_service_description ssd)
+  public static  void download_Live(sync_service_description ssd)
     {
 
         Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
@@ -774,6 +799,189 @@ public class asbgw {
 
 
         }.execute(svars.WORKING_APP.APP_MAINLINK+ssd.download_link,filter_object);
+
+    }
+ public static  void download_(sync_service_description ssd)
+    {
+
+        Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
+                +"Service name :"+ssd.service_name+"\n"
+                +"Service type :"+ssd.servic_type.name()+"\n"
+                +"download link :"+ssd.download_link+"\n");
+        sync_sum_counter++;
+        ssi.on_status_code_changed(2);
+        ssi.on_status_changed("Synchronizing "+ssd.service_name+" ↓");
+        JSONObject filter_object=ssd.use_download_filter?generate_filter(ssd.table_name,ssd.chunk_size,ssd.table_filters):new JSONObject();
+        Thread thread = new Thread() {
+            public void run() {
+                Looper.prepare();
+                final JSONObject[] maindata = new JSONObject[1];
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+
+                String data = "";
+                String error_data = "";
+
+                HttpURLConnection httpURLConnection = null;
+                try {
+
+                    httpURLConnection = (HttpURLConnection) new URL( svars.WORKING_APP.APP_MAINLINK+ssd.download_link).openConnection();
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setRequestProperty("Content-Type", "application/json");
+                    httpURLConnection.setRequestProperty("Authorization",svars.Service_token(act));
+
+                    httpURLConnection.setDoOutput(true);
+
+                    if(ssd.use_download_filter) {
+                        //  httpURLConnection.setDoOutput(true);
+                        DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+
+                        wr.writeBytes(filter_object.toString());
+                        wr.flush();
+                        wr.close();  /**/
+                    }
+                    int status = httpURLConnection.getResponseCode();
+                    Log.e(ssd.service_name+" :: RX", " status=> " + status);
+                    // ssi.on_status_changed("Synchronizing");
+
+                    try {
+                        InputStream in = httpURLConnection.getInputStream();
+                        InputStreamReader inputStreamReader = new InputStreamReader(in);
+
+
+                        data = new String(ByteStreams.toByteArray(in));
+
+
+                        Log.e(ssd.service_name+" :: RX =>", " " + data);
+
+
+
+                    } catch (Exception exx) {
+                        InputStream error = httpURLConnection.getErrorStream();
+                        InputStreamReader inputStreamReader2 = new InputStreamReader(error);
+
+                        int inputStreamData2 = inputStreamReader2.read();
+                        while (inputStreamData2 != -1) {
+                            char current = (char) inputStreamData2;
+                            inputStreamData2 = inputStreamReader2.read();
+                            error_data += current;
+                        }
+                        Log.e(ssd.service_name+" :: TX", "error => " + error_data);
+
+                    }
+                    maindata[0] = new JSONObject(data);
+                    data=null;
+                    //  ssi.on_main_percentage_changed(0);
+
+                    if (maindata[0].getBoolean("IsOkay")) {
+
+
+
+
+
+                        JSONArray temp_ar;
+                        Object json = new JSONTokener(maindata[0].opt("Result").toString()).nextValue();
+                       temp_ar=json instanceof JSONArray?(JSONArray)json:((JSONObject)json).getJSONArray("Result");
+
+                       /* if(ssd.service_name.equalsIgnoreCase("Member fingerprints")){
+                            temp_ar = maindata.getJSONObject("result").getJSONArray("result");
+                            // ((member_data)obj_class).data.storage_mode=2;
+                        }else if(ssd.service_name.equalsIgnoreCase("Member images")){
+                            //   temp_ar = maindata.getJSONObject("result").getJSONArray("result");
+                            temp_ar = maindata.getJSONArray("Result");
+                            // ((member_data)obj_class).data.storage_mode=2;
+                        }else{
+                            if(ssd.use_download_filter){
+                                temp_ar = maindata.getJSONObject("Result").getJSONArray("Result");
+
+                            }else{
+                                temp_ar = maindata.getJSONArray("Result");
+                            }
+                        }*/
+
+                        double den=(double) temp_ar.length();
+                        sdb.register_object_auto_ann(true,null,ssd);
+                        if(!ssd.use_download_filter){
+                            sdb.getDatabase().execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status ='"+ sync_status.syned.ordinal()+"'");
+                        }
+                        Log.e(ssd.service_name+" :: TX", "ISOK " );
+                        for (int i = 0; i < temp_ar.length(); i++) {
+                            ssi.on_status_changed("Synchronizing "+ssd.service_name);
+                            JSONObject jj =temp_ar.getJSONObject(i);
+
+
+                            sdb.register_object_auto_ann(null,jj,ssd);
+
+                            double num=(double) i+1;
+                            double per=(num/den)*100.0;
+                            ssi.on_secondary_progress_changed((int)per);
+                            //ssi.on_info_updated("Members :"+num+"/"+den+"    Total local members :"+sdb.employee_count());
+                            ssi.on_info_updated(ssd.service_name+" :"+num+"/"+den+"    Local data :"+Integer.parseInt(sdb.get_record_count(ssd.table_name,ssd.table_filters)));
+                            jj=null;
+                            //2832581/01
+
+                        }
+                        sdb.register_object_auto_ann(false,null,ssd);
+
+
+                        sync_complete_counter++;
+                        sync_success_counter++;
+                        double denm=(double) sync_sum_counter;
+                        ssi.on_status_changed("Synchronized "+ssd.service_name);
+
+                        double num=(double) sync_complete_counter;
+                        double per=(num/denm)*100.0;
+                        ssi.on_main_percentage_changed((int)per);
+
+
+
+                        if( temp_ar.length()>=ssd.chunk_size&&ssd.use_download_filter)
+                        {
+                            download_(ssd);
+
+
+                        }else{
+                            if(per==100.0)
+                            {
+                                ssi.on_main_percentage_changed(100);
+                                ssi.on_status_changed("Synchronization complete");
+                                ssi.on_secondary_progress_changed(100);
+                                ssi.on_main_percentage_changed(100);
+                                ssi.on_info_updated("Synchronization complete");
+                                ssi.on_status_code_changed(3);
+                            }
+
+                        }
+                        maindata[0] =null;
+                        temp_ar=null;
+                    }
+
+                } catch (Exception e) {
+                    Log.e(ssd.service_name+":: TX", " error => " + e.getMessage());
+                    e.printStackTrace();
+                } finally {
+                    if (httpURLConnection != null) {
+                        httpURLConnection.disconnect();
+                    }
+                }
+
+                        handler.removeCallbacks(this);
+                        Looper.myLooper().quit();
+                    }
+                }, 500);
+
+                Looper.loop();
+            }
+        };
+        thread.start();
+
+
+       // }.execute();
 
     }
 
@@ -1336,6 +1544,199 @@ public class asbgw {
         }
         pending_records_filter[pending_records_filter.length-1]="sync_status='"+ sync_status.pending.ordinal()+"'";
         // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
+        ArrayList<JSONObject> pending_records= Main_handler.OnAboutToUploadObjects(ssd,sdb.load_dynamic_json_records_ann(ssd,pending_records_filter));
+        final int[] upload_counter = {0};
+        final int upload_length = pending_records.size();
+        String table_name=ssd.table_name;
+        if(pending_records.size()<1){
+            Log.e(ssd.service_name+":: upload::","No records");
+            sync_complete_counter++;
+            sync_success_counter++;
+            Log.e("sync","Sync counter "+sync_complete_counter);
+            double denm=(double) sync_sum_counter;
+            ssi.on_status_changed("Synchronized local "+ssd.service_name);
+
+            double num=(double) sync_complete_counter;
+            double per=(num/denm)*100.0;
+            ssi.on_main_percentage_changed((int)per);
+            if(per==100.0)
+            {
+                ssi.on_main_percentage_changed(100);
+                ssi.on_status_changed(act.getResources().getString(R.string.synchronization_complete));
+                ssi.on_secondary_progress_changed(100);
+                ssi.on_main_percentage_changed(100);
+                ssi.on_info_updated(act.getResources().getString(R.string.synchronization_complete));
+                ssi.on_status_code_changed(3);
+            }
+        }else {
+
+            for (JSONObject obj : pending_records) {
+obj=Main_handler.OnUploadingObject(ssd,obj);
+if(obj==null)
+{
+    continue;
+}
+                if(ssd.service_name.equalsIgnoreCase("Member images")||ssd.service_name.equalsIgnoreCase("Member FP Images")){
+
+
+                    // ((member_data)obj).data.storage_mode=2;
+                }
+                if(ssd.service_name.equalsIgnoreCase("Member")){
+
+
+
+                }
+                JSONObject upload_object = sdb.load_JSON_from_object(obj);
+                Log.e(ssd.service_name+":: upload::"," "+upload_object.toString());
+                String lid=null;
+                try {
+                    lid = upload_object.getString("lid");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String finalLid = lid;
+                new AsyncTask() {
+                    JSONObject maindata;
+
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+
+                        ssi.on_status_code_changed(2);
+                        ssi.on_status_changed(act.getResources().getString(R.string.synchronizing)+ssd.service_name);
+
+                        AndroidNetworking.post(svars.WORKING_APP.APP_MAINLINK+ssd.upload_link)
+                                .addHeaders("Authorization", svars.Service_token(act))
+                                .addHeaders("content-type", "application/json")
+                                .addHeaders("cache-control", "no-cache")
+                                .addJSONObjectBody(upload_object)
+                                .setTag(this)
+                                .setPriority(Priority.MEDIUM)
+                                .build()
+                                .getAsJSONObject(new JSONObjectRequestListener() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Log.e("Response =>", "" + response.toString());
+
+                                        try {
+
+
+                                            if (response.getBoolean("IsOkay")) {
+
+
+                                                ContentValues cv = new ContentValues();
+
+                                                cv.put("sync_status", sync_status.syned.ordinal());
+                                                cv.put("sid", response.getJSONObject("Result").getString("id"));
+
+                                                sdb.database.update(table_name, cv, "id=" + finalLid, null);
+
+
+                                                sync_complete_counter++;
+                                                sync_success_counter++;
+                                                Log.e(ssd.service_name+" ::", "Sync counter" + sync_complete_counter);
+                                                double denm = (double) sync_sum_counter;
+                                                int pending_data_count = Integer.parseInt(new sdbw(act).get_record_count(table_name, pending_records_filter));
+
+
+                                                ssi.on_status_changed(pending_data_count == 0 ? act.getResources().getString(R.string.synchronized_local)+ssd.service_name : act.getResources().getString(R.string.synchronizing)+ssd.service_name +act.getResources().getString(R.string.pending_data) + pending_data_count);
+
+                                                double num = (double) sync_complete_counter;
+                                                double per = (num / denm) * 100.0;
+                                                ssi.on_main_percentage_changed((int) per);
+                                                if(per==100.0)
+                                                {
+                                                    ssi.on_main_percentage_changed(100);
+                                                    ssi.on_status_changed(act.getResources().getString(R.string.synchronization_complete));
+                                                    ssi.on_secondary_progress_changed(100);
+                                                    ssi.on_main_percentage_changed(100);
+                                                    ssi.on_info_updated(act.getResources().getString(R.string.synchronization_complete));
+                                                    ssi.on_status_code_changed(3);
+                                                }
+                                                upload_counter[0]++;
+                                                if (upload_counter[0] ==upload_length) {
+                                                    upload_(ssd);
+                                                }
+
+
+                                            }else {
+                                                ssi.on_status_changed("Update failed ...  =>" + finalLid);
+                                                ssi.on_status_code_changed(666);
+                                                String error=" "+upload_object.toString()+"\n"+response.toString();
+                                                Log.e(ssd.service_name+":: upload::error::",error);
+                                                sdbw.log_String(act,ssd.service_name+":: upload::error::"+error);
+                                            }
+                                        } catch (Exception ex) {
+                                            ssi.on_status_changed("Update failed ...  =>" + finalLid);
+                                            ssi.on_status_code_changed(666);
+                                            String error=" "+upload_object.toString()+"\n"+ex.getMessage();
+                                            Log.e(ssd.service_name+":: upload::error::",error);
+                                            sdbw.log_String(act,ssd.service_name+":: upload::error::"+error);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(ANError anError) {
+                                        Log.e("Response error=>", ssd.service_name+":: upload =>" + anError.getErrorBody());
+                                        ssi.on_status_code_changed(666);
+                                        ContentValues cv = new ContentValues();
+
+                                        cv.put("data_status", "e");
+
+                                        sdb.database.update(table_name, cv, "id=" + finalLid, null);
+                                        if(anError.getErrorBody().contains("Record Exist"))
+                                        {
+                                            ssi.on_status_changed("Synchronizing");
+
+                                            sdbw sd = new sdbw(act);
+                                            cv = new ContentValues();
+                                            cv.put("sync_status", sync_status.syned.ordinal());
+
+
+                                            sdb.database.update(table_name, cv, "id=" + finalLid, null);
+
+                                        }
+
+                                    }
+                                });
+
+
+                        return "";
+                    }
+
+
+                }.execute();
+
+
+            }
+        }
+
+
+    }
+  public static void upload_2(sync_service_description ssd)
+    {
+        Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
+                +"Service name :"+ssd.service_name+"\n"
+                +"Service type :"+ssd.servic_type.name()+"\n"
+                +"upload link :"+ssd.upload_link+"\n");
+
+        sync_sum_counter++;
+        ssi.on_status_code_changed(2);
+        //  ssi.on_status_changed("Sparta sync");
+        double denm2=(double) sync_sum_counter;
+        ssi.on_status_changed(act.getResources().getString(R.string.synchronizing)+ssd.service_name+" ↑");
+
+        double num2=(double) sync_complete_counter;
+        double per2=(num2/denm2)*100.0;
+        ssi.on_main_percentage_changed((int)per2);
+
+        String [] pending_records_filter=ssd.table_filters==null?new String[1]:new String[ssd.table_filters.length+1];
+        if(ssd.table_filters!=null)
+        {
+            System.arraycopy(ssd.table_filters,0,pending_records_filter,0,ssd.table_filters.length);
+
+        }
+        pending_records_filter[pending_records_filter.length-1]="sync_status='"+ sync_status.pending.ordinal()+"'";
+        // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
         ArrayList<Object> pending_records=sdb.load_dynamic_records_ann(ssd,pending_records_filter);
 
         final int[] upload_counter = {0};
@@ -1496,7 +1897,7 @@ public class asbgw {
 
     }
 
-    JSONObject generate_filter(String table_name,int chunk_size,String[] table_filters)
+    static JSONObject generate_filter(String table_name, int chunk_size, String[] table_filters)
     {
         JSONObject postData = new JSONObject();
         JSONObject filter = new JSONObject();
@@ -1579,15 +1980,7 @@ public class asbgw {
 
                         try {
                             InputStream in = httpURLConnection.getInputStream();
-                            InputStreamReader inputStreamReader = new InputStreamReader(in);
-
-                            int inputStreamData = inputStreamReader.read();
-
-                            while (inputStreamData != -1) {
-                                char current = (char) inputStreamData;
-                                inputStreamData = inputStreamReader.read();
-                                response += current;
-                            }
+                            response = new String(ByteStreams.toByteArray(in));
                             Log.e("LOGIN POST RX", " => " + response);
 
                             maindata = new JSONObject(response);

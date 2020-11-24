@@ -86,7 +86,7 @@ import sparta.realm.spartautils.sparta_loc_util;
 import sparta.realm.spartautils.sparta_mail_probe;
 import sparta.realm.spartautils.sparta_string_compairer;
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicProperty;
+import com.realm.annotations.DynamicProperty;
 
 import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_format;
 

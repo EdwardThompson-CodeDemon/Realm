@@ -1,15 +1,15 @@
-package sparta.realm.spartamodels.wc;
+package sparta.realm.spartamodels.wc.ok;
 
 
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download;
 
 /*
 case "JobAllInventory":
@@ -97,7 +97,7 @@ case "JobAllInventory":
 
 
  */
-@DynamicClass(table_name = "inventory_items")
+@DynamicClass(table_name = "TBL_all_inv_dtls")
 @SyncDescription(service_name = "JobAllInventory",service_type = Download,download_link = svars.Inventory_download_link,use_download_filter = false)
 public class inventory extends db_class_ implements Serializable {
 /*

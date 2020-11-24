@@ -2,7 +2,7 @@ package sparta.realm.spartamodels;
 
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicProperty;
+import com.realm.annotations.DynamicProperty;
 
 /**
  * Created by Thompsons on 1/8/2018.

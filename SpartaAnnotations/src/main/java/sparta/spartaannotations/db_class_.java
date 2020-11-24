@@ -1,4 +1,4 @@
-package sparta.spartaannotations;
+package com.realm.annotations;
 
 import java.io.Serializable;
 
@@ -10,10 +10,10 @@ public class db_class_ implements Cloneable, Serializable {
 
 
  //   @DynamicProperty(column_name = "id", json_key ="tablet_data_position", column_data_type = "INTEGER",extra_params = "PRIMARY KEY AUTOINCREMENT")
-    @DynamicProperty(column_name = "_id", json_key ="tablet_data_position", column_data_type = "INTEGER",extra_params = "PRIMARY KEY AUTOINCREMENT")
+    @DynamicProperty(column_name = "_id", json_key ="lid", column_data_type = "INTEGER",extra_params = "PRIMARY KEY AUTOINCREMENT")
     public String id="";
 
-    @DynamicProperty(json_key = "id", column_name = "sid", indexed_column = true)
+    @DynamicProperty(json_key = "id", column_name = "sid", indexed_column = true,extra_params = "UNIQUE")
     public String sid="";
 
     @DynamicProperty(column_name = "reg_time", column_data_type = "DATETIME", column_default_value = "(datetime('now','localtime'))")

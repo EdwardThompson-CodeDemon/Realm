@@ -88,9 +88,9 @@ import sparta.realm.spartautils.sparta_loc_util;
 import sparta.realm.spartautils.sparta_mail_probe;
 import sparta.realm.spartautils.sparta_string_compairer;
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.sync_service_description;
-import sparta.spartaannotations.sync_status;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.sync_service_description;
+import com.realm.annotations.sync_status;
 
 import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_format;
 
@@ -99,13 +99,13 @@ import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_for
  * Created by Thompsons on 01-Feb-17.
  */
 
-public class sdbw_ {
+public class dbh {
     static Context act;
     public static sdb_model main_db=null;
     public static SQLiteDatabase database=null;
     public static sdbw sd;
     public static boolean loaded_db=false;
-    public sdbw_(Context act)
+    public dbh(Context act)
     {
         this.act=act;
         if(!loaded_db)
@@ -784,7 +784,8 @@ public class sdbw_ {
                 }
                 cursor1.close();
             } catch (Exception e) {
-                database.execSQL(spartaDynamics.getTableCreateSttment(table_name));
+                database.execSQL(spartaDynamics.getTableCreateSttment(table_name,false));
+                database.execSQL(spartaDynamics.getTableCreateSttment(table_name,true));
                 String crt_stt=spartaDynamics.getTableCreateIndexSttment(table_name);
                 if(crt_stt.length()>1&crt_stt.contains(";"))
                 {

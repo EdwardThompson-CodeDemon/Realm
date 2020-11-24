@@ -25,6 +25,7 @@ public class dynamic_property implements Serializable {
         this.column_name=column_name;
         this.value=value;
 
+
     }
 
     public dynamic_property(String json_name,String column_name,String value,boolean index){

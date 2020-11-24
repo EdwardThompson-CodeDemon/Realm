@@ -4,12 +4,12 @@ package sparta.realm.spartamodels.wc;
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Upload;
+import static com.realm.annotations.SyncDescription.service_type.Upload;
 
 /*
 String query = "SELECT transaction_date, quantity_in, quantity_out,zone_Code,contact_type, net_weight, id, contact_type, session,user_id, transaction_no, separator, center_id, field_user_id, receiving_session, truck_id,transaction_type from stock_transactions where status IS NULL AND transaction_type != ? LIMIT 1";
@@ -91,7 +91,7 @@ String query = "SELECT transaction_date, quantity_in, quantity_out,zone_Code,con
 @DynamicClass(table_name = "stock_transactions")
 @SyncDescription(service_name = "InsertWeightBridge",service_type = Upload,download_link = svars.Weighbridge_add_upload_link)
 @SyncDescription(service_name = "InsertWeightBridge",service_type = Upload,download_link = svars.Weighbridge_dispatch_upload_link)
-public class weibridge_details extends db_class_ implements Serializable {
+public class stock_transaction extends db_class_ implements Serializable {
 
     String query = "SELECT transaction_date," +
             " quantity_in," +
@@ -106,7 +106,7 @@ obj.put("gross_weight", c.getDouble(1));
 					obj.put("transaction_date", c.getString(0));
 					obj.put("first_weight_time", c.getString(0));
 					obj.put("Transporter_id",c.getInt(3));
-					obj.put("user_id",dat.user_id);
+					//obj.put("user_id",dat.user_id);
 					obj.put("receipt_no",c.getString(10));
 					obj.put("session_no", c.getString(8));
 					obj.put("net_weight", c.getString(5));
@@ -123,8 +123,46 @@ obj.put("gross_weight", c.getDouble(1));
                     obj.put("outer_number", c.getString(16));
  */
 
-    @DynamicProperty(json_key = "gross_weight", column_name = "quantity_in")
+    @DynamicProperty(json_key = "outer_number", column_name = "transaction_type")
+   public String transaction_type="";
+
+
+
+    @DynamicProperty(json_key = "delivery_session", column_name = "receiving_session")
+   public String receiving_session="";
+
+
+ @DynamicProperty(json_key = "vehicle_registration_id", column_name = "truck_id")
+   public String truck_id="";
+
+
+
+ @DynamicProperty(json_key = "centre_id", column_name = "centre_id")
+   public String centre_id="";
+
+
+
+
+    @DynamicProperty(json_key = "net_weight", column_name = "quantity_in")
    public String quantity_in="";
+
+
+
+    @DynamicProperty(json_key = "tare_weight", column_name = "quantity_out")
+   public String quantity_out="";
+
+
+    @DynamicProperty(json_key = "transacting_branch_id", column_name = "transacting_branch_id",column_default_value = "1")
+   public String transacting_branch_id="";
+
+   @DynamicProperty(json_key = "route_id", column_name = "route_id",column_default_value = "1")
+   public String route_id="";
+
+    @DynamicProperty(json_key = "inventory_item_id", column_name = "inventory_item_id",column_default_value = "1")
+   public String inventory_item_id="";
+
+   @DynamicProperty(json_key = "gross_weight", column_name = "quantity_in")
+   public String gross_weight="";
 
   @DynamicProperty(json_key = "transaction_date", column_name = "transaction_date")
    public String transaction_date="";
@@ -132,20 +170,34 @@ obj.put("gross_weight", c.getDouble(1));
     @DynamicProperty(json_key = "first_weight_time", column_name = "transaction_date")
     public String first_weight_time="";
 
-    @DynamicProperty(json_key = "buyer_contact",column_name = "zone_Code")
+    @DynamicProperty(json_key = "Transporter_id",column_name = "zone_Code")
     public String zone_Code="";
 
 
- @DynamicProperty(json_key = "registration_date",column_name = "registration_date")
-    public String registration_date="";
+ @DynamicProperty(json_key = "receipt_no",column_name = "transaction_no")
+    public String receipt_no="";
+
+    @DynamicProperty(json_key = "session_no",column_name = "session")
+    public String session="";
+
+ @DynamicProperty(json_key = "net_weight",column_name = "net_weight")
+    public String net_weight="";
+
+
+ @DynamicProperty(json_key = "user_weighbridge_id",column_name = "user_id")
+    public String user_weighbridge_id="";
+
+
+
+@DynamicProperty(json_key = "user_field_id",column_name = "field_user_id")
+    public String field_user_id="";
 
 
 
 
 
 
-
-    public weibridge_details()
+    public stock_transaction()
     {
 
 

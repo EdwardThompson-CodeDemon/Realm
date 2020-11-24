@@ -1,8 +1,8 @@
 package sparta.realm.spartamodels;
 
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.db_class_;
 
 /**
  * Created by Thompsons on 01-Feb-17.

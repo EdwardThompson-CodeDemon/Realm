@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicProperty;
+import com.realm.annotations.DynamicProperty;
 
 
 public class member extends db_class implements Serializable {

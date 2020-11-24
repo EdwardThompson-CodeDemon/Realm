@@ -1,9 +1,9 @@
 package sparta.realm.spartamodels;
 
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
 @DynamicClass(table_name = "table_test")
 //@SyncDescription(service_type = SyncDescription.service_type.Download,download_link = "",upload_link = "",chunk_size =0 )

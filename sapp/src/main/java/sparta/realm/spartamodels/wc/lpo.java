@@ -4,13 +4,13 @@ package sparta.realm.spartamodels.wc;
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
-import static sparta.spartaannotations.SyncDescription.service_type.Upload;
+import static com.realm.annotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Upload;
 
 /*
 case "InsertLPO":
@@ -55,8 +55,8 @@ public class lpo extends db_class_ implements Serializable {
 
 
 
-    @DynamicProperty(json_key = "id", column_name = "id")
-   public String id="";
+
+
 
     @DynamicProperty(json_key = "buyer_name", column_name = "buyer_name")
     public String buyer_name="";

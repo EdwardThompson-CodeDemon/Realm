@@ -4,12 +4,12 @@ package sparta.realm.spartamodels.wc;
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download;
 
 /*
 case "JobCocoaBuyers":

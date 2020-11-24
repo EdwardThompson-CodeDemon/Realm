@@ -1,15 +1,16 @@
-package sparta.realm.spartamodels.wc;
+package sparta.realm.spartamodels.wc.sim;
 
 
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download_Upload;
 
 
 /*case "jobCocoaWeightBridgeCollections":
@@ -70,7 +71,7 @@ import static sparta.spartaannotations.SyncDescription.service_type.Download;
 				break;
 				*/
 @DynamicClass(table_name = "weighbridgepulltags")
-@SyncDescription(service_name = "jobCocoaWeightBridgeCollections",service_type = Download,download_link = svars.Weighbridge_tag_download_link )
+@SyncDescription(service_name = "jobCocoaWeightBridgeCollections",service_type = Download_Upload,download_link = svars.Weighbridge_tag_download_link,upload_link = svars.Weighbridge_tag_upload_link )
 public class weighbridge_tag extends db_class_ implements Serializable {
 
 
@@ -80,6 +81,24 @@ public class weighbridge_tag extends db_class_ implements Serializable {
 
     @DynamicProperty(json_key = "weighbridge_id", column_name = "weighbridge_id")
     public String weighbridge_id="";
+
+  @DynamicProperty(json_key = "cocoa_buyer_id", column_name = "buyer")
+    public String buyer="";
+
+  @DynamicProperty(json_key = "dispatch_date", column_name = "dispatch_date")
+    public String dispatch_date="";
+
+
+
+  @DynamicProperty(json_key = "dispatch_session", column_name = "dispatch_session")
+    public String dispatch_session="";
+
+
+
+
+
+  @DynamicProperty(json_key = "bag_weight", column_name = "bag_weight")
+    public String bag_weight="";
 
 
 

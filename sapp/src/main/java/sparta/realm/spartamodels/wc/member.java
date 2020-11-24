@@ -4,13 +4,14 @@ package sparta.realm.spartamodels.wc;
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
-import static sparta.spartaannotations.SyncDescription.service_type.Download_Upload;
+import static com.realm.annotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download_Upload;
+import static com.realm.annotations.SyncDescription.service_type.Upload;
 
 //			String query = "SELECT _id,full_name, phone1,nat_id,email,branch_id,branch,acc_no,acc_name,bank_details_id,membership_type_id,route, member_no, member_id, photo_name FROM TBL_members WHERE  status='pending'  LIMIT 1";
 
@@ -33,7 +34,8 @@ import static sparta.spartaannotations.SyncDescription.service_type.Download_Upl
 //				memberList.put("collection_centre_Id", ""+col_center);
 //				memberList.put("photo_name",  c.getString(14));
 @DynamicClass(table_name = "TBL_members")
-@SyncDescription(service_name = "Member",service_type = Download_Upload,download_link = svars.Member_download_link,upload_link = svars.Member_upload_link,chunk_size =svars.members_request_limit )
+@SyncDescription(service_name = "Member",service_type = Download,download_link = svars.Member_download_link )
+@SyncDescription(service_name = "Member",service_type = Upload,upload_link = svars.Member_upload_link )
 public class member extends db_class_ implements Serializable {
 
 

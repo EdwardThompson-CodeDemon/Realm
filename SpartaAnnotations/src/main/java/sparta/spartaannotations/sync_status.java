@@ -1,4 +1,4 @@
-package sparta.spartaannotations;
+package com.realm.annotations;
 
 public enum sync_status {
 

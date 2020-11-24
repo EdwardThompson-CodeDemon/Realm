@@ -32,15 +32,15 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
-import sparta.spartaannotations.sync_service_description;
-import sparta.spartaannotations.sync_status;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
+import com.realm.annotations.sync_service_description;
+import com.realm.annotations.sync_status;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes({"sparta.spartaannotations.DynamicClass","sparta.spartaannotations.DbSync"})
+@SupportedAnnotationTypes({"com.realm.annotations.DynamicClass","com.realm.annotations.DbSync"})
 public class DynamicPropertyProcessor extends AbstractProcessor {
 
     Messager messager;
@@ -180,7 +180,8 @@ boolean initd=false;
             Element super_element=processingEnv.getTypeUtils().asElement(((TypeElement)element).getSuperclass());
             List<Element> all_elements=new ArrayList<>(element.getEnclosedElements());
             all_elements.addAll(super_element.getEnclosedElements());
-            String create_sttm = "CREATE TABLE "+ann.table_name();
+            String create_sttm = "CREATE TABLE \\\"\"+(copy?\"CP_\":\"\")+\""+ann.table_name()+"\\\"";
+//            String create_sttm = "CREATE TABLE \\\""+ann.table_name()+"\\\"";
             String create_index_sttm = "";
             String qry="DELETE FROM "+ann.table_name()+" WHERE ("+sid_column+"='\"+sid+\"' OR "+sid_column+"=\"+sid+\") AND sync_status='"+ sync_status.syned.ordinal()+"'";
 
@@ -207,7 +208,7 @@ boolean initd=false;
                         create_sttm+=" (";
                     }
                     if(!columns_all.contains(dp.column_name())){
-                        create_sttm += dp.column_name() + " " + dp.column_data_type() + (dp.extra_params() == null || dp.extra_params().length() < 1 ? "" : " " + dp.extra_params()) + " " + (dp.column_default_value() == null || dp.column_default_value().length() < 1 ? "" : " DEFAULT " + dp.column_default_value()) + " ,";
+                        create_sttm += "\\\""+dp.column_name() + "\\\" " + dp.column_data_type() + (dp.extra_params() == null || dp.extra_params().length() < 1 ? "" : " " + dp.extra_params()) + " " + (dp.column_default_value() == null || dp.column_default_value().length() < 1 ? "" : " DEFAULT " + dp.column_default_value()) + " ,";
                         if(dp.indexed_column())
                         {
                             create_index_sttm+="CREATE INDEX "+ann.table_name()+"_"+dp.column_name()+" ON "+ann.table_name()+"("+dp.column_name()+");";
@@ -356,6 +357,7 @@ boolean initd=false;
         MethodSpec.Builder b4 = MethodSpec.methodBuilder("getTableCreateSttment")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(String.class, "table_name")
+                .addParameter(Boolean.class, "copy")
                 .returns(String.class);
 
         MethodSpec.Builder b3 = MethodSpec.methodBuilder("getTableColumns")
@@ -387,7 +389,7 @@ boolean initd=false;
                     "                   ssd_"+i+".chunk_size="+s.chunk_size+";\n" +
                     "                   ssd_"+i+".download_link=\""+s.download_link+"\";\n" +
                     "                   ssd_"+i+".use_download_filter="+s.use_download_filter+";\n" +
-                    "                   ssd_"+i+".servic_type=sparta.spartaannotations.SyncDescription.service_type.values()["+s.servic_type.ordinal()+"];\n" +
+                    "                   ssd_"+i+".servic_type=com.realm.annotations.SyncDescription.service_type.values()["+s.servic_type.ordinal()+"];\n" +
                     "                   ssd_"+i+".table_filters=new String[]{"+concat_string(s.table_filters)+"};\n" +
                     "                   ssd_"+i+".table_name=\""+s.table_name+"\";\n" +
                     "                   ssd_"+i+".upload_link=\""+s.upload_link+"\";\n" +
@@ -575,6 +577,7 @@ b12.endControlFlow();
         return true;
     }
     boolean writen_dyna_file=false;
+
     private void writePKGF(ArrayList<String> all_packages,ArrayList<String> sync_packages,
                            MethodSpec getSyncDescription,
                            MethodSpec getPackageTable,

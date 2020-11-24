@@ -2,17 +2,17 @@ package sparta.realm.spartamodels.wc.sim;
 
 import java.io.Serializable;
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-import static sparta.spartaannotations.SyncDescription.service_type.Download;
+import static com.realm.annotations.SyncDescription.service_type.Download;
 
 
 @DynamicClass(table_name = "field_collections")
-@SyncDescription(service_name = "jobCocoaFieldCollections", service_type = Download, download_link = svars.cocoa_collection_download_link)
-public class PullCollections extends db_class_ implements Serializable {
+@SyncDescription(service_name = "jobCocoaFieldCollections", service_type = Download, download_link = svars.Cocoa_collection_download_link)
+public class cocoa_collection extends db_class_ implements Serializable {
 
 
     @DynamicProperty(json_key = "user_id", column_name = "user_id")
@@ -46,6 +46,6 @@ public class PullCollections extends db_class_ implements Serializable {
     public String CentreId="";
 
 
-    public PullCollections()  {
+    public cocoa_collection()  {
     }
 }

@@ -327,8 +327,8 @@ return APPP;
     public static final String Mainlink =WORKING_APP.APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
     public static String update_root_link=WORKING_APP.APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
 
-    public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Employee/BiometricDetails/GetFingerPrints";
-    public static final String Fingerprint_uploading_link = Mainlink+"/WeightCAPTURE/MobiServices/SaveData/SaveFingerPrints";
+    public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Members/Members/GetMemberFingerprints";
+    public static final String Fingerprint_uploading_link = "/WeightCAPTURE/Members/HybridMembers/RegisterRecognition";
 
 
 
@@ -338,6 +338,7 @@ return APPP;
     public static final String Supply_account_download_link ="/WeightCAPTURE/Members/Members/GetMemberAccs";
     public static final String Company_details_download_link ="/SystemAccounts/Configuration/Accounts/GetCompanyDetails";
     public static final String Route_download_link ="/WeightCAPTURE/Inventory/InventoryItemsTypes/RebindGrid";
+    public static final String Route_inventory_assignment_download_link ="/WeightCAPTURE/Inventory/Inventories/GetMobileInventory";
     public static final String Center_download_link ="/WeightCAPTURE/Inventory/InventoryItemsTypes/GetCenters";
     public static final String Inventory_download_link ="/WeightCAPTURE/Inventory/Inventories/GetMobileInventory";
     public static final String Plucker_cost_download_link ="/WeightCAPTURE/Inventory/pluckercost/RebindGrid";
@@ -346,14 +347,26 @@ return APPP;
     public static final String Plucker_machine_assignment_download_link ="/WeightCAPTURE/Inventory/pluckerAssignment/RebindGrid";
     public static final String Vehicle_download_link ="/WeightCAPTURE/Vehicle/VehicleRegistration/RebindGrid";
     public static final String Cocoa_buyers_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaBuyers";
+    public static final String Weighbridge_tag_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
+    public static final String Cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
     public static final String Lpo_upload_link ="/WeightCAPTURE/LPO/LPODetails/WestafricaAdd";
     public static final String Weighbridge_dispatch_upload_link ="/WeightCAPTURE/WeighBridgeDetails/DispatchWeighBridgeCocoa";
     public static final String Weighbridge_add_upload_link ="/WeightCAPTURE/WeighBridgeDetails/AddWeighbridgeCocoa";
-    public static final String Weighbridge_tag_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
-    public static final String receiving_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/AddVehicleReceivingSession";
+    public static final String Weighbridge_tag_upload_link ="/WeightCAPTURE/WeighBridgeDetails/UpdateWeighBridgeCocoaTag";
+    public static final String Receiving_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/AddVehicleReceivingSession";
     public static final String agent_totals_upload_link ="/WeightCAPTURE/WeighBridgeDetails/AddAgentsAccountsDetails";
-    public static final String cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
- //   public static String WeightCAPTURE = "WeightCAPTURE/";
+    public static final String Cocoa_dispatch_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/UpdateDispatchCollectionSession";
+    public static final String Vehicle_dispatch_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/AddVehicleSessionWeighbridgeDispatch";
+
+    public static final String Farmer_advances_upload_link ="https://weightcapture.cs4africa.com/ivory_capagri/Loan/mainPesa/IvoryAdvances";
+
+
+//    public static final String Cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
+//    public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Members/Members/GetMemberFingerprints";
+//    public static final String Weighbridge_tag_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
+
+
+    //   public static String WeightCAPTURE = "WeightCAPTURE/";
   /*  public static String Center_download_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleSessionWeighbridgeDispatch";
     public static String Update_dispatch_link = surl + WeightCAPTURE + "LPO/LPODetails/UpdateDispatchCollectionSession";
     public static String fetch_fingerprints_link = surl + WeightCAPTURE + "Members/Members/GetMemberFingerprints";

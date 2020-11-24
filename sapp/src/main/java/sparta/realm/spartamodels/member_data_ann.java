@@ -4,16 +4,16 @@ package sparta.realm.spartamodels;
 import java.io.Serializable;
 
 import sparta.realm.spartautils.svars;
-import sparta.spartaannotations.DynamicClass;
-import sparta.spartaannotations.DynamicProperty;
-import sparta.spartaannotations.SyncDescription;
-import sparta.spartaannotations.db_class_;
+import com.realm.annotations.DynamicClass;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.SyncDescription;
+import com.realm.annotations.db_class_;
 
-@DynamicClass(table_name = "member_data_table")
-@SyncDescription(service_name = "Member fingerprints",service_type = SyncDescription.service_type.Upload,upload_link = svars.Fingerprint_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.fingerprints+"'"},use_download_filter =true,chunk_size =svars.fingerprints_request_limit )
-@SyncDescription(service_name = "Member images",service_type = SyncDescription.service_type.Upload,upload_link = svars.Image_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.photo+"'"},chunk_size =svars.images_request_limit )
-@SyncDescription(service_name = "Member FP Images",service_type = SyncDescription.service_type.Upload,upload_link = svars.Fingerprint_image_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.fingerprint_images_wsq+"'"},chunk_size =svars.images_request_limit )
-@SyncDescription(service_name = "Member Excuses",service_type = SyncDescription.service_type.Upload,upload_link = svars.Fingerprint_excuses_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.fingerprint_skipping_reason+"'"},chunk_size =svars.excuse_request_limit )
+//@DynamicClass(table_name = "member_data_table")
+//@SyncDescription(service_name = "Member fingerprints",service_type = SyncDescription.service_type.Upload,upload_link = svars.Fingerprint_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.fingerprints+"'"},use_download_filter =true,chunk_size =svars.fingerprints_request_limit )
+//@SyncDescription(service_name = "Member images",service_type = SyncDescription.service_type.Upload,upload_link = svars.Image_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.photo+"'"},chunk_size =svars.images_request_limit )
+//@SyncDescription(service_name = "Member FP Images",service_type = SyncDescription.service_type.Upload,upload_link = svars.Fingerprint_image_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.fingerprint_images_wsq+"'"},chunk_size =svars.images_request_limit )
+//@SyncDescription(service_name = "Member Excuses",service_type = SyncDescription.service_type.Upload,upload_link = svars.Fingerprint_excuses_uploading_link_ann,table_filters ={"data_type='"+ svars.data_type_indexes.fingerprint_skipping_reason+"'"},chunk_size =svars.excuse_request_limit )
 public class member_data_ann extends db_class_ implements Serializable {
 
     @DynamicProperty(json_key = "biometric_type_id", column_name = "data_type")
