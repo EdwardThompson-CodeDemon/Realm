@@ -1,46 +1,30 @@
 package sparta.realm.spartaservices;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.digitalpersona.uareu.Fmd;
-import com.digitalpersona.uareu.UareUException;
-import com.digitalpersona.uareu.UareUGlobal;
 
-
-import com.fpcore.FPMatch;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.common.base.Stopwatch;
 import com.google.common.reflect.ClassPath;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -51,19 +35,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.os.EnvironmentCompat;
+
 import dalvik.system.DexFile;
-import sparta.realm.Activities.RecordList;
 import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.BuildConfig;
 
@@ -75,29 +53,20 @@ import sparta.realm.spartamodels.dyna_data;
 import sparta.realm.spartamodels.dyna_data_obj;
 import sparta.realm.spartamodels.dynamic_property;
 import sparta.realm.spartamodels.member;
-import sparta.realm.spartamodels.geo_fence;
-import sparta.realm.spartamodels.percent_calculation;
 
 import sparta.realm.spartamodels.sdb_model;
 import sparta.realm.spartautils.Gpsprobe_r;
 import sparta.realm.spartautils.app_control.SpartaApplication;
 import sparta.realm.spartautils.app_control.models.sparta_app_version;
-import sparta.realm.spartautils.face.face_handler;
-import sparta.realm.spartautils.fp.sdks.fgtit.utils.ExtApi;
 import sparta.realm.spartautils.s_bitmap_handler;
 import sparta.realm.spartautils.s_cryptor;
-import sparta.realm.spartautils.sparta_loc_util;
-import sparta.realm.spartautils.sparta_mail_probe;
-import sparta.realm.spartautils.sparta_string_compairer;
 import sparta.realm.spartautils.svars;
 import com.realm.annotations.DynamicProperty;
 import com.realm.annotations.RealmDataClass;
 import com.realm.annotations.sync_service_description;
 import com.realm.annotations.sync_status;
 
-import static sparta.realm.spartautils.app_control.SpartaApplication.realm;
-import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_format;
-
+import static sparta.realm.Realm.realm;
 
 
 /**

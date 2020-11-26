@@ -512,7 +512,23 @@ public static class remember_indexes {
 
     }
 
-    public static void set_current_device(Context act, int current_device) {
+    public static void set_current_version(Context act, String current_version) {
+
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+        saver.putString("current_version", current_version);
+        saver.commit();
+
+    }
+
+    public static String current_version(Context act) {
+
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        return prefs.getString("current_version", "R.E.A.L.M");
+
+
+    }
+ public static void set_current_device(Context act, int current_device) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 

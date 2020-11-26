@@ -50,6 +50,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import sparta.realm.BuildConfig;
 import sparta.realm.R;
+import sparta.realm.Realm;
 import sparta.realm.spartamodels.percent_calculation;
 import sparta.realm.spartautils.app_control.models.sparta_app_version;
 import sparta.realm.spartaservices.sdbw;
@@ -322,7 +323,7 @@ boolean checking_for_updates=false;
     void check_for_app_versions() {
         checking_for_updates=true;
         final JSONObject postData=new JSONObject();
-       String[] app_package_name =new String[]{BuildConfig.APPLICATION_ID};
+       String[] app_package_name =new String[]{svars.device_code(Realm.context)};
         try{
             postData.put("RequestTime", Calendar.getInstance().getTime().toString());
             postData.put("RequestData", new JSONArray(app_package_name));

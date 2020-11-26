@@ -21,7 +21,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.json.JSONArray;
@@ -34,10 +33,10 @@ import sparta.realm.Dynamics.spartaDynamics;
 import sparta.realm.spartaservices.asbgw;
 import sparta.realm.spartaservices.dbh;
 import sparta.realm.spartautils.svars;
-import com.realm.annotations.DynamicProperty;
+
 import com.realm.annotations.RealmDataClass;
 
-import static sparta.realm.spartautils.app_control.SpartaApplication.realm;
+import static sparta.realm.Realm.realm;
 
 public class MainActivity2 extends SpartaAppCompactActivity {
 

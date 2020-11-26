@@ -43,7 +43,6 @@ import dalvik.system.DexFile;
 import sparta.realm.BuildConfig;
 
 
-import sparta.realm.Dynamics.spartaDynamics;
 import sparta.realm.R;
 import sparta.realm.spartamodels.db_class;
 import sparta.realm.spartamodels.dyna_data_obj;
@@ -63,7 +62,7 @@ import static com.realm.annotations.SyncDescription.service_type.Configuration;
 import static com.realm.annotations.SyncDescription.service_type.Download;
 import static com.realm.annotations.SyncDescription.service_type.Download_Upload;
 import static com.realm.annotations.SyncDescription.service_type.Upload;
-import static sparta.realm.spartautils.app_control.SpartaApplication.realm;
+import static sparta.realm.Realm.realm;
 
 
 public class asbgw  {
