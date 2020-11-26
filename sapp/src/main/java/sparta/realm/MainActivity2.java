@@ -35,6 +35,9 @@ import sparta.realm.spartaservices.asbgw;
 import sparta.realm.spartaservices.dbh;
 import sparta.realm.spartautils.svars;
 import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.RealmDataClass;
+
+import static sparta.realm.spartautils.app_control.SpartaApplication.realm;
 
 public class MainActivity2 extends SpartaAppCompactActivity {
 
@@ -107,6 +110,10 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
 
+
+
+
+
         String resp=response(1).toString();
         String resp2=response(1).toString();
         Log.e("Deleting :","");
@@ -153,8 +160,20 @@ public class MainActivity2 extends SpartaAppCompactActivity {
 
         Log.e("gson_ctm 3:",""+insert_from(resp));
 
-
+        test_realm();
     }
+
+    void test_realm(){
+        RealmDataClass rd= new spartaDynamics();
+        for (String s: rd.getDynamicClassPaths()) {
+
+
+            Log.e("Classes reflected =>", "Realm :" + s);
+        }
+
+        Log.e("Classes reflected =>", "Done " );
+    }
+
 JSONObject response(int cnt)
 {
     JSONObject jo=new JSONObject();
@@ -217,7 +236,7 @@ long insert_v1_sd(String jos)
 
 
 
-            dbh.database.insert("TBL_supplier_account",null, spartaDynamics.getContentValuesFromJson(jo,"TBL_supplier_account"));
+            dbh.database.insert("TBL_supplier_account",null, (ContentValues) realm.getContentValuesFromJson(jo,"TBL_supplier_account"));
 
         }
 

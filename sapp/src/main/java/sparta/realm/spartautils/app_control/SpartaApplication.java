@@ -8,7 +8,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.luxand.FSDK;
+import com.realm.annotations.RealmDataClass;
 
+import sparta.realm.Dynamics.spartaDynamics;
 import sparta.realm.spartaservices.asbgw;
 import sparta.realm.spartaservices.sdbw;
 import sparta.realm.spartautils.app_control.services.App_updates;
@@ -17,10 +19,13 @@ public class SpartaApplication extends Application {
 
     private static Context appContext;
 
+    public static RealmDataClass realm;
     @Override
     public void onCreate() {
         super.onCreate();
         appContext = getApplicationContext();
+        realm=realm==null?new spartaDynamics():realm;
+
         Thread.setDefaultUncaughtExceptionHandler(new SpartaApplicationErrorHandler(appContext));
         String[] supportedABIS = Build.SUPPORTED_ABIS; // Return an ordered list of ABIs supported by this device.
 for (String abi:supportedABIS) {

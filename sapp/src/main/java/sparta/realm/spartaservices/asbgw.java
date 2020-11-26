@@ -63,6 +63,7 @@ import static com.realm.annotations.SyncDescription.service_type.Configuration;
 import static com.realm.annotations.SyncDescription.service_type.Download;
 import static com.realm.annotations.SyncDescription.service_type.Download_Upload;
 import static com.realm.annotations.SyncDescription.service_type.Upload;
+import static sparta.realm.spartautils.app_control.SpartaApplication.realm;
 
 
 public class asbgw  {
@@ -362,7 +363,7 @@ public class asbgw  {
         try {
 
 
-            for(sync_service_description ssd_t:spartaDynamics.getSyncDescription()){
+            for(sync_service_description ssd_t:realm.getSyncDescription()){
                 if(ssd_t==null){continue;}
                 Class<?> clazz = Class.forName(ssd_t.object_package);
                 if (ssd_t.servic_type == Download_Upload) {
@@ -431,7 +432,7 @@ public class asbgw  {
         try {
 
 
-            for(sync_service_description ssd_t:spartaDynamics.getSyncDescription()){
+            for(sync_service_description ssd_t:realm.getSyncDescription()){
                 if(ssd_t==null){continue;}
                 switch (ssd_t.servic_type){
                     case Download:
@@ -630,7 +631,7 @@ public class asbgw  {
         }.execute(ssd.download_link,filter_object);
 
     }
-  public static  void download_Live(sync_service_description ssd)
+  public static  void download_(sync_service_description ssd)
     {
 
         Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
@@ -801,7 +802,7 @@ public class asbgw  {
         }.execute(svars.WORKING_APP.APP_MAINLINK+ssd.download_link,filter_object);
 
     }
- public static  void download_(sync_service_description ssd)
+ public static  void download__(sync_service_description ssd)
     {
 
         Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
@@ -942,7 +943,7 @@ public class asbgw  {
 
                         if( temp_ar.length()>=ssd.chunk_size&&ssd.use_download_filter)
                         {
-                            download_(ssd);
+                            download__(ssd);
 
 
                         }else{
@@ -982,6 +983,203 @@ public class asbgw  {
 
 
        // }.execute();
+
+    }
+
+    public static  void download_TL(sync_service_description ssd)
+    {
+
+        Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
+                +"Service name :"+ssd.service_name+"\n"
+                +"Service type :"+ssd.servic_type.name()+"\n"
+                +"download link :"+ssd.download_link+"\n");
+        sync_sum_counter++;
+        ssi.on_status_code_changed(2);
+        ssi.on_status_changed("Synchronizing "+ssd.service_name+" ↓");
+        JSONObject filter_object=ssd.use_download_filter?generate_filter(ssd.table_name,ssd.chunk_size,ssd.table_filters):new JSONObject();
+        Thread thread = new Thread() {
+            public void run() {
+                Looper.prepare();
+                final JSONObject[] maindata = new JSONObject[1];
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+
+                        String data = "";
+                        String error_data = "";
+
+                        HttpURLConnection httpURLConnection = null;
+                        try {
+
+                            httpURLConnection = (HttpURLConnection) new URL( svars.WORKING_APP.APP_MAINLINK+ssd.download_link).openConnection();
+                            httpURLConnection.setRequestMethod("POST");
+                            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+                            httpURLConnection.setRequestProperty("Authorization",svars.Service_token(act));
+
+                            httpURLConnection.setDoOutput(true);
+
+                            if(ssd.use_download_filter) {
+                                //  httpURLConnection.setDoOutput(true);
+                                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+
+                                wr.writeBytes(filter_object.toString());
+                                wr.flush();
+                                wr.close();  /**/
+                            }
+                            int status = httpURLConnection.getResponseCode();
+                            Log.e(ssd.service_name+" :: RX", " status=> " + status);
+                            // ssi.on_status_changed("Synchronizing");
+
+                            try {
+                                InputStream in = httpURLConnection.getInputStream();
+                                InputStreamReader inputStreamReader = new InputStreamReader(in);
+
+
+                                data = new String(ByteStreams.toByteArray(in));
+
+
+                                Log.e(ssd.service_name+" :: RX =>", " " + data);
+
+
+
+                            } catch (Exception exx) {
+                                InputStream error = httpURLConnection.getErrorStream();
+                                InputStreamReader inputStreamReader2 = new InputStreamReader(error);
+
+                                int inputStreamData2 = inputStreamReader2.read();
+                                while (inputStreamData2 != -1) {
+                                    char current = (char) inputStreamData2;
+                                    inputStreamData2 = inputStreamReader2.read();
+                                    error_data += current;
+                                }
+                                Log.e(ssd.service_name+" :: TX", "error => " + error_data);
+
+                            }
+                            maindata[0] = new JSONObject(data);
+                            data=null;
+                            //  ssi.on_main_percentage_changed(0);
+
+                            if (maindata[0].getBoolean("IsOkay")) {
+
+
+                                JSONArray temp_ar;
+                                Object json = new JSONTokener(maindata[0].opt("Result").toString()).nextValue();
+                                temp_ar = json instanceof JSONArray ? (JSONArray) json : ((JSONObject) json).getJSONArray("Result");
+
+                       /* if(ssd.service_name.equalsIgnoreCase("Member fingerprints")){
+                            temp_ar = maindata.getJSONObject("result").getJSONArray("result");
+                            // ((member_data)obj_class).data.storage_mode=2;
+                        }else if(ssd.service_name.equalsIgnoreCase("Member images")){
+                            //   temp_ar = maindata.getJSONObject("result").getJSONArray("result");
+                            temp_ar = maindata.getJSONArray("Result");
+                            // ((member_data)obj_class).data.storage_mode=2;
+                        }else{
+                            if(ssd.use_download_filter){
+                                temp_ar = maindata.getJSONObject("Result").getJSONArray("Result");
+
+                            }else{
+                                temp_ar = maindata.getJSONArray("Result");
+                            }
+                        }*/
+
+                                double den = (double) temp_ar.length();
+                                // sdb.register_object_auto_ann(true,null,ssd);
+                                if (!ssd.use_download_filter) {
+                                    sdb.getDatabase().execSQL("DELETE FROM " + ssd.table_name + " WHERE sync_status ='" + sync_status.syned.ordinal() + "'");
+                                }
+                                Log.e(ssd.service_name + " :: RX", "IS OK " + den);
+                                if (den>=0){
+                                    // synchronized (this) {
+                                    String[][] ins = realm.getInsertStatementsFromJson(temp_ar,ssd.object_package);
+                                    String sidz = ins[0][0];
+                                    String[] qryz = ins[1];
+                                    int q_length=qryz.length;
+                                    temp_ar = null;
+                                    //  while(dbh.database.inTransaction()){Log.e("Waiting .. ","In transaction ");}
+                                    ssi.on_status_changed("Synchronizing " + ssd.service_name);
+
+                                    dbh.database.beginTransaction();
+                                    dbh.database.execSQL("INSERT INTO CP_" + ssd.table_name + " SELECT * FROM " + ssd.table_name + " WHERE sid in " + sidz + " AND sync_status=" + sync_status.pending.ordinal() + "");
+
+                                    for (int i = 0; i < q_length; i++) {
+                                        dbh.database.execSQL(qryz[i]);
+                                        double num = (double) i + 1;
+                                        double per = (num / q_length) * 100.0;
+                                        ssi.on_secondary_progress_changed((int) per);
+                                        //ssi.on_info_updated("Members :"+num+"/"+den+"    Total local members :"+sdb.employee_count());
+                                        ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(sdb.get_record_count(ssd.table_name, ssd.table_filters)));
+                                    }
+
+                                    dbh.database.execSQL("REPLACE INTO " + ssd.table_name + " SELECT * FROM CP_" + ssd.table_name + "");
+                                    dbh.database.execSQL("DELETE FROM CP_" + ssd.table_name + "");
+                                    dbh.database.setTransactionSuccessful();
+                                    dbh.database.endTransaction();
+                                    //  }
+                                }
+
+                                Log.e(ssd.service_name+" :: RX", " DONE " );
+
+
+                                //   sdb.register_object_auto_ann(false,null,ssd);
+
+
+                                sync_complete_counter++;
+                                sync_success_counter++;
+                                double denm=(double) sync_sum_counter;
+                                ssi.on_status_changed("Synchronized "+ssd.service_name);
+
+                                double num=(double) sync_complete_counter;
+                                double per=(num/denm)*100.0;
+                                ssi.on_main_percentage_changed((int)per);
+
+
+
+                                if( den>=ssd.chunk_size&&ssd.use_download_filter)
+                                {
+                                    download_(ssd);
+
+
+                                }else{
+                                    if(per==100.0)
+                                    {
+                                        ssi.on_main_percentage_changed(100);
+                                        ssi.on_status_changed("Synchronization complete");
+                                        ssi.on_secondary_progress_changed(100);
+                                        ssi.on_main_percentage_changed(100);
+                                        ssi.on_info_updated("Synchronization complete");
+                                        ssi.on_status_code_changed(3);
+                                    }
+
+                                }
+                                maindata[0] =null;
+                                temp_ar=null;
+                            }
+
+                        } catch (Exception e) {
+                            Log.e(ssd.service_name+":: TX", " error => " + e.getMessage());
+                            e.printStackTrace();
+                        } finally {
+                            if (httpURLConnection != null) {
+                                httpURLConnection.disconnect();
+                            }
+                        }
+
+                        handler.removeCallbacks(this);
+                        Looper.myLooper().quit();
+                    }
+                }, 50);
+
+                Looper.loop();
+            }
+        };
+        thread.start();
+
+
+        // }.execute();
 
     }
 
@@ -1712,6 +1910,7 @@ if(obj==null)
 
 
     }
+
   public static void upload_2(sync_service_description ssd)
     {
         Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
@@ -1927,7 +2126,143 @@ if(obj==null)
 
     }
 
+
     void renew_token()
+    {
+        ssi.on_status_changed(act.getString(R.string.authenticating));
+        final JSONObject JO=new JSONObject();
+
+        JSONObject user=new JSONObject();
+        try {
+            SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+
+
+            user.put("PassWord", prefs.getString("pass", ""));
+            user.put("UserName", prefs.getString("username", ""));
+            user.put("Branch", svars.WORKING_APP.ACCOUNT_BRANCH);
+            user.put("AccountName", svars.WORKING_APP.ACCOUNT);
+            user.put("Language", "English");
+
+
+
+            JO.put("IsRenewalPasswordRequest", "false");
+            JO.put("CurrentUser", user);
+        }catch (Exception ex){}
+        Thread thread = new Thread() {
+            public void run() {
+                Looper.prepare();
+                final JSONObject[] maindata = {new JSONObject()};
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        if (svars.isInternetAvailable()) {
+                            String response = "";
+                            String error_data = "";
+                            HttpURLConnection httpURLConnection = null;
+
+                            try {
+                                Log.e("JSON ST PG =>", "" + svars.login_url);
+                                Log.e("LOGIN TX =>", "" + JO.toString());
+                                httpURLConnection = (HttpURLConnection) new URL(svars.login_url).openConnection();
+                                httpURLConnection.setRequestMethod("POST");
+                                httpURLConnection.setRequestProperty("Content-Type", "application/json");
+
+                                httpURLConnection.setDoOutput(true);
+
+                                Log.e("LOGIN TX =>", "Connected");
+//ByteStreams.copy(JO.toString().getBytes(),httpURLConnection.getOutputStream());
+                                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                                wr.write(JO.toString().getBytes());
+                                wr.flush();
+                                wr.close();
+                                int status = httpURLConnection.getResponseCode();
+                                Log.e("LOGIN POST RX", " status=> " + status);
+
+
+                                try {
+                                    InputStream in = httpURLConnection.getInputStream();
+                                    response = new String(ByteStreams.toByteArray(in));
+                                    Log.e("LOGIN POST RX", " => " + response);
+
+                                    maindata[0] = new JSONObject(response);
+                                    JSONObject RESULT = maindata[0].getJSONObject("Result");
+
+
+                                    if (RESULT.getBoolean("IsOkay")) {
+
+                                        svars.set_Service_token(act, httpURLConnection.getHeaderField("authorization"));
+                                        ssi.on_status_changed(act.getString(R.string.authenticated));
+                                        ssi.on_status_code_changed(1);
+
+                                        launch_services();
+
+
+                                    } else {
+                                        ssi.on_status_changed(act.getString(R.string.authentication_error));
+                                        ssi.on_status_code_changed(666);
+                                        ssi.on_status_code_changed(4);
+                                        sdb.database.execSQL("DELETE FROM user_table WHERE sid ='" + svars.user_id(act) + "'");
+
+                                        //   sdb.logout_user();
+                                        android.os.Process.killProcess(android.os.Process.myPid());
+
+                                    }
+                                    Log.e("JSON REC =>", "" + response);
+
+
+                                    Log.e("JSON TOKEN =>", "" + httpURLConnection.getHeaderField("authorization"));
+                                } catch (Exception ex) {
+                                    InputStream error = httpURLConnection.getErrorStream();
+                                    InputStreamReader inputStreamReader2 = new InputStreamReader(error);
+
+                                    int inputStreamData2 = inputStreamReader2.read();
+                                    while (inputStreamData2 != -1) {
+                                        char current = (char) inputStreamData2;
+                                        inputStreamData2 = inputStreamReader2.read();
+                                        error_data += current;
+                                    }
+                                    ssi.on_status_changed(act.getString(R.string.authentication_error));
+                                    ssi.on_status_code_changed(666);
+                                    ssi.on_status_code_changed(4);
+
+                                    Log.e("REG POST TX error =>", " " + error_data);
+                                    Log.e("JSON POST TX error =>", " " + error_data);
+                                    //JSONObject jo = new JSONObject(error_data);
+                                }
+
+
+                            } catch (final Exception e) {
+
+                                Log.e("Creds enquiry error", "" + e.getMessage());
+                                ssi.on_status_changed(act.getString(R.string.authentication_error));
+                                ssi.on_status_code_changed(666);
+                                ssi.on_status_code_changed(4);
+                            }
+                        } else {
+
+
+                            ssi.on_status_changed(act.getString(R.string.internet_connection_error));
+                            ssi.on_status_code_changed(4);
+                            ssi.on_status_code_changed(666);
+
+                        }
+                    }
+                }, 10);
+
+                Looper.loop();
+            }
+        };
+        thread.start();
+
+
+    }
+
+
+    void renew_token_()
     {
         ssi.on_status_changed(act.getString(R.string.authenticating));
         final JSONObject JO=new JSONObject();

@@ -67,7 +67,8 @@ import sparta.realm.Activities.RecordList;
 import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.BuildConfig;
 
-import sparta.realm.Dynamics.spartaDynamics;
+
+
 import sparta.realm.R;
 import sparta.realm.spartamodels.db_class;
 import sparta.realm.spartamodels.dyna_data;
@@ -79,6 +80,7 @@ import sparta.realm.spartamodels.percent_calculation;
 
 import sparta.realm.spartamodels.sdb_model;
 import sparta.realm.spartautils.Gpsprobe_r;
+import sparta.realm.spartautils.app_control.SpartaApplication;
 import sparta.realm.spartautils.app_control.models.sparta_app_version;
 import sparta.realm.spartautils.face.face_handler;
 import sparta.realm.spartautils.fp.sdks.fgtit.utils.ExtApi;
@@ -89,10 +91,13 @@ import sparta.realm.spartautils.sparta_mail_probe;
 import sparta.realm.spartautils.sparta_string_compairer;
 import sparta.realm.spartautils.svars;
 import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.RealmDataClass;
 import com.realm.annotations.sync_service_description;
 import com.realm.annotations.sync_status;
 
+import static sparta.realm.spartautils.app_control.SpartaApplication.realm;
 import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_format;
+
 
 
 /**
@@ -101,6 +106,8 @@ import static sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch.main_fmd_for
 
 public class dbh {
     static Context act;
+
+
     public static sdb_model main_db=null;
     public static SQLiteDatabase database=null;
     public static sdbw sd;
@@ -108,6 +115,25 @@ public class dbh {
     public dbh(Context act)
     {
         this.act=act;
+        if(!loaded_db)
+        {
+            //setup_db_model();
+            try {
+                //  setup_db();
+                setup_db_ann();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+
+    }
+    public dbh(RealmDataClass realm)
+    {
+        this.act= SpartaApplication.getAppContext();
+
         if(!loaded_db)
         {
             //setup_db_model();
@@ -768,12 +794,12 @@ public class dbh {
 
 
 
-        for (String s: spartaDynamics.getDynamicClassPaths()) {
+        for (String s: realm.getDynamicClassPaths()) {
 
 
             Log.e("Classes reflected =>", "Ann :" + s);
 
-            String table_name=spartaDynamics.getPackageTable(s);
+            String table_name=realm.getPackageTable(s);
             try {
                 Cursor cursor1 = database.rawQuery("SELECT * FROM "+table_name, null);
                 cursor1.moveToFirst();
@@ -784,9 +810,9 @@ public class dbh {
                 }
                 cursor1.close();
             } catch (Exception e) {
-                database.execSQL(spartaDynamics.getTableCreateSttment(table_name,false));
-                database.execSQL(spartaDynamics.getTableCreateSttment(table_name,true));
-                String crt_stt=spartaDynamics.getTableCreateIndexSttment(table_name);
+                database.execSQL(realm.getTableCreateSttment(table_name,false));
+                database.execSQL(realm.getTableCreateSttment(table_name,true));
+                String crt_stt=realm.getTableCreateIndexSttment(table_name);
                 if(crt_stt.length()>1&crt_stt.contains(";"))
                 {
 
@@ -806,7 +832,7 @@ public class dbh {
                 continue;
             }
 
-            for (Map.Entry<String, String> col : spartaDynamics.getTableColumns(table_name).entrySet()) {
+            for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
                 try {
                     Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM "+table_name, null);
                     cursor1.moveToFirst();
@@ -839,6 +865,115 @@ public class dbh {
         loaded_db=true;
 
     }
+/*
+I thot of useng an interface
+ */
+    interface  anna_db_setup_process{
+
+    }
+     public void setup_db_annwise(SQLiteDatabase DB,sdb_model dbm)  {
+
+
+//        sdb_model dbm=new sdb_model();
+        dbm.db_name=svars.DB_NAME;
+        dbm.db_path=svars.WORKING_APP.file_path_db(act);
+        //   dbm.db_path=act.getExternalFilesDir(null).getAbsolutePath()+"/"+svars.DB_NAME;
+        dbm.db_password=svars.DB_PASS;
+
+        SQLiteDatabase.loadLibs(act);
+
+
+
+        //  SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), , null);
+        database = SQLiteDatabase.openOrCreateDatabase(dbm.db_path, dbm.db_password, null);
+        // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
+
+        svars.set_photo_camera_type(act,svars.image_indexes.profile_photo,1);
+
+
+
+        Stopwatch sw=new Stopwatch();
+        sw.start();
+
+
+
+
+
+
+        for (String s: realm.getDynamicClassPaths()) {
+
+
+            Log.e("Classes reflected =>", "Ann :" + s);
+
+            String table_name=realm.getPackageTable(s);
+            try {
+                Cursor cursor1 = database.rawQuery("SELECT * FROM "+table_name, null);
+                cursor1.moveToFirst();
+                if (!cursor1.isAfterLast()) {
+                    do {
+                        cursor1.getString(0);
+                    } while (cursor1.moveToNext());
+                }
+                cursor1.close();
+            } catch (Exception e) {
+                database.execSQL(realm.getTableCreateSttment(table_name,false));
+                database.execSQL(realm.getTableCreateSttment(table_name,true));
+                String crt_stt=realm.getTableCreateIndexSttment(table_name);
+                if(crt_stt.length()>1&crt_stt.contains(";"))
+                {
+
+                    for(String st:crt_stt.split(";"))
+                    {
+                        try{
+                            Log.e("DB :","Index statement creating =>"+st);
+                            database.execSQL(st);
+                            Log.e("DB :","Index statement created =>"+st);
+                        }catch (Exception ex1){}
+
+                    }
+
+
+
+                }
+                continue;
+            }
+
+            for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
+                try {
+                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM "+table_name, null);
+                    cursor1.moveToFirst();
+                    if (!cursor1.isAfterLast()) {
+                        do {
+                            cursor1.getString(0);
+                        } while (cursor1.moveToNext());
+                    }
+                    cursor1.close();
+                } catch (Exception e) {
+                    database.execSQL("ALTER TABLE "+table_name+" ADD COLUMN " + col.getKey() );
+//                                database.execSQL("ALTER TABLE "+db_tb.table_name+" ADD COLUMN " + col.getKey() + " "+col.data_type+" "+col.default_value);
+                }
+            }
+
+
+
+
+
+
+
+
+        }
+
+        Log.e("Classes reflected :", "Ann :" + sw.elapsed(TimeUnit.MICROSECONDS));
+
+        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
+        Log.e("DB","Finished DB Verification");
+        main_db=null;
+        loaded_db=true;
+
+    }
+
+
+
 
     sdb_model.sdb_table table_from_dyna_property_class(Class<?> main_class)
     {
@@ -1493,7 +1628,7 @@ public class dbh {
 
                 try {
 
-                    objs.add(spartaDynamics.getObjectFromCursor(c,ssd.object_package));
+                    objs.add(realm.getObjectFromCursor(c,ssd.object_package));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1523,7 +1658,7 @@ public class dbh {
 
                 try {
 
-                    objs.add(spartaDynamics.getJsonFromCursor(c,ssd.object_package));
+                    objs.add(realm.getJsonFromCursor(c,ssd.object_package));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1607,17 +1742,17 @@ public class dbh {
             try{
                 if(ssd.use_download_filter)
                 {
-                    database.execSQL(spartaDynamics.getDeleteRecordSttment(ssd.table_name,j_obj.getString("id")));
+                    database.execSQL(realm.getDeleteRecordSttment(ssd.table_name,j_obj.getString("id")));
                 }
 
             }catch(Exception ex){
 
                 Log.e("DELETING ERROR =>",""+ex.getMessage());
             }
-            if(spartaDynamics.jsonHasActiveKey(j_obj))
+            if(realm.jsonHasActiveKey(j_obj))
             {
 
-                ContentValues cv= spartaDynamics.getContentValuesFromJson(j_obj,ssd.table_name);
+                ContentValues cv= (ContentValues)realm.getContentValuesFromJson(j_obj,ssd.table_name);
                 cv.put("sync_status", sync_status.syned.ordinal());
 
                 Log.e(ssd.service_name+":: Insert result =>"," "+database.insert(ssd.table_name, null, cv));
