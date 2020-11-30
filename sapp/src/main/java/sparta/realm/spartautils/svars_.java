@@ -34,10 +34,14 @@ import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
 import sparta.realm.BuildConfig;
+import sparta.realm.Realm;
 import sparta.realm.spartamodels.member;
-import sparta.realm.spartaservices.sdbw;
+
+
 import sparta.realm.spartautils.app_control.models.module;
 import sparta.realm.spartautils.bluetooth.bt_device_connector;
+
+import static sparta.realm.spartautils.svars.current_app_config;
 
 
 /**
@@ -46,7 +50,8 @@ import sparta.realm.spartautils.bluetooth.bt_device_connector;
 
 public class svars_ {
 
-    public static sdbw sd;
+
+
 
     public static String device_code(Activity act) {
         String deviceUniqueIdentifier = null;
@@ -270,7 +275,7 @@ return APPP;
 
 
 
-    public static SPARTA_APP WORKING_APP = BUKINA();
+//    public static SPARTA_APP current_app_config(Realm.context) = BUKINA();
 
 
     public static int members_request_limit = 1000;
@@ -313,8 +318,8 @@ return APPP;
 
 
     //  public static String Mainlink =APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
-    public static String Mainlink =WORKING_APP.APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
-    public static String update_root_link=WORKING_APP.APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
+    public static String Mainlink = current_app_config(Realm.context).APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
+    public static String update_root_link=current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
 
 
 
@@ -334,7 +339,7 @@ return APPP;
     public static String login_url =Mainlink+"/Administration/Login/Submit";///Authentication/Login/Submit
     public static String update_link= update_root_link+"apks/";
 
-    public static String update_check_link=WORKING_APP.APP_CONTROLL_MAIN_LINK;
+    public static String update_check_link=current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK;
 
      public static String device_code_authorisation_url=Mainlink+"/SystemAccounts/Authentication/Login/CheckCode";
 
@@ -528,7 +533,7 @@ public static class remember_indexes {
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         String pr_str=prefs.getString("v_a_" + va.name(), "");
         Log.e("VERSION CHECK :",""+pr_str);
-        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(BuildConfig.VERSION_NAME);
+        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(svars.current_version(act));
         Log.e("VERSION CHECK :",""+pr_str+" status "+ok);
         return ok;
 
@@ -538,7 +543,7 @@ public static class remember_indexes {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("v_a_" + va.name(), BuildConfig.VERSION_NAME);
+        saver.putString("v_a_" + va.name(), svars.current_version(act));
         saver.commit();
 
     }
@@ -672,7 +677,7 @@ public static void set_enrlock(Context act, String enrloc_rc) {
     public static boolean allow_employee_edition(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("allow_employee_edition", WORKING_APP.allow_employee_details_edition);
+        return prefs.getBoolean("allow_employee_edition", current_app_config(Realm.context).allow_employee_details_edition);
 
     }
 

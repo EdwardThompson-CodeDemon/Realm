@@ -33,9 +33,12 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
-import sparta.realm.BuildConfig;
+
+
+import sparta.realm.Realm;
 import sparta.realm.spartamodels.member;
-import sparta.realm.spartaservices.sdbw;
+
+
 import sparta.realm.spartautils.app_control.models.module;
 import sparta.realm.spartautils.bluetooth.bt_device_connector;
 
@@ -46,7 +49,8 @@ import sparta.realm.spartautils.bluetooth.bt_device_connector;
 
 public class svars {
 
-    public static sdbw sd;
+
+
     public static final String cash_payment_mode_id="1";
     public static final String mpesa_payment_mode_id="2";
     public static final  String cheque_payment_mode_id="3";
@@ -268,20 +272,13 @@ APPP.WORKING_PROFILE_MODE= SPARTA_APP.PROFILE_MODE.GENERAL;
 return APPP;
 }
 
-static SPARTA_APP SALES_WC()
-{
- //   SPARTA_APP APPP = new SPARTA_APP("https://ciw.cs4africa.com/ccburkina", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","SNEDAI","realm");
-   SPARTA_APP APPP = new SPARTA_APP("https://weightcapture.cs4africa.com/arqan", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
-    // SPARTA_APP APPP = new SPARTA_APP("https://ciw.cs4africa.com/agricapture", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
-APPP.WORKING_PROFILE_MODE= SPARTA_APP.PROFILE_MODE.GENERAL;
-return APPP;
-}
 
 
 
 
 
-    public static final SPARTA_APP WORKING_APP = SALES_WC();
+
+//    public static final SPARTA_APP WORKING_APP = current_app_config(Realm.context);
 
 
     public static final  int members_request_limit = 1000;
@@ -324,8 +321,8 @@ return APPP;
 
 
     //  public static String Mainlink =APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
-    public static final String Mainlink =WORKING_APP.APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
-    public static String update_root_link=WORKING_APP.APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
+    public static final String Mainlink="";// =current_app_config(Realm.context).APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
+//    public static String update_root_link=current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
 
     public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Members/Members/GetMemberFingerprints";
     public static final String Fingerprint_uploading_link = "/WeightCAPTURE/Members/HybridMembers/RegisterRecognition";
@@ -408,9 +405,9 @@ return APPP;
 
     public static String user_request_url =Mainlink+"/MobiServices/GeneralData/GetAllUsers/";//https://ciw.cs4africa.com/cmu/MobiServices/GeneralData/GetAllUsers
     public static String login_url =Mainlink+"/SystemAccounts/Authentication/Login/Submit";///Authentication/Login/Submit
-    public static String update_link= update_root_link+"apks/";
+//    public static String update_link= update_root_link+"apks/";
 
-    public static String update_check_link=WORKING_APP.APP_CONTROLL_MAIN_LINK;
+//    public static String update_check_link=current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK;
 
      public static String device_code_authorisation_url=Mainlink+"/SystemAccounts/Authentication/Login/CheckCode";
 
@@ -528,6 +525,30 @@ public static class remember_indexes {
 
 
     }
+  public static void set_current_app_config(Context act, SPARTA_APP app_config) {
+
+
+      SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+      Gson gson = new Gson();
+      String json = gson.toJson(app_config);
+
+      saver.putString("current_app_config",json);
+      saver.commit();
+
+    }
+
+    public static SPARTA_APP current_app_config(Context act) {
+
+        SPARTA_APP app=null;
+
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("current_app_config", "");
+        app = gson.fromJson(json, SPARTA_APP.class);
+        return app;
+
+
+    }
  public static void set_current_device(Context act, int current_device) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
@@ -537,10 +558,9 @@ public static class remember_indexes {
 
     }
 
-    public static int current_device(Context act) {
+    public static int current_device() {
 
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getInt("current_device", DEVICE.GENERAL.ordinal());
+       return Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE).getInt("current_device", DEVICE.GENERAL.ordinal());
 
 
     }
@@ -622,7 +642,7 @@ public static class remember_indexes {
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         String pr_str=prefs.getString("v_a_" + va.name(), "");
         Log.e("VERSION CHECK :",""+pr_str);
-        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(BuildConfig.VERSION_NAME);
+        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(current_version(act));
         Log.e("VERSION CHECK :",""+pr_str+" status "+ok);
         return ok;
 
@@ -632,7 +652,7 @@ public static class remember_indexes {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("v_a_" + va.name(), BuildConfig.VERSION_NAME);
+        saver.putString("v_a_" + va.name(), current_version(act));
         saver.commit();
 
     }
@@ -766,7 +786,7 @@ public static void set_enrlock(Context act, String enrloc_rc) {
     public static boolean allow_employee_edition(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("allow_employee_edition", WORKING_APP.allow_employee_details_edition);
+        return prefs.getBoolean("allow_employee_edition", current_app_config(Realm.context).allow_employee_details_edition);
 
     }
 

@@ -386,7 +386,7 @@ public class backup_ {
             e.printStackTrace();
         }
         //  File fp_images_folder = new File(Environment.getExternalStorageDirectory().toString() + "/realm", "/.UNCOMPRESSED_FP_IMGS");
-        File fp_images_folder = new File(svars.WORKING_APP.file_path_employee_data);
+        File fp_images_folder = new File(svars.current_app_config(act).file_path_employee_data);
         fp_images_folder.mkdirs();
         //   listener.on_secondary_status_changed(act.getString(R.string.image_files_ok));
         listener.on_secondary_status_changed(act.getString(R.string.employee_data_files_ok));
@@ -404,7 +404,7 @@ public class backup_ {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        File db_backup_folder = new File(svars.WORKING_APP.file_path_db_backup);
+        File db_backup_folder = new File(svars.current_app_config(act).file_path_db_backup);
         db_backup_folder.mkdirs();
         listener.on_secondary_status_changed(act.getString(R.string.db_backup_ok));
         listener.on_primary_progress_changed(20);
@@ -424,7 +424,7 @@ public class backup_ {
             e.printStackTrace();
         }
 
-        File log_files_backup_folder = new File(svars.WORKING_APP.file_path_log_backup);
+        File log_files_backup_folder = new File(svars.current_app_config(act).file_path_log_backup);
         log_files_backup_folder.mkdirs();
         listener.on_secondary_status_changed(act.getString(R.string.log_backup_ok));
         try {
@@ -434,7 +434,7 @@ public class backup_ {
         }
 
 
-        File global_backup_folder = new File(svars.WORKING_APP.file_path_general_backup);
+        File global_backup_folder = new File(svars.current_app_config(act).file_path_general_backup);
         global_backup_folder.mkdirs();
         listener.on_secondary_status_changed(act.getString(R.string.backup_location_ok));
         listener.on_primary_progress_changed(40);
@@ -721,7 +721,7 @@ public class backup_ {
             return;
         }
 
-        sparta_mail_probe smp = new sparta_mail_probe("Time and Attendance App data Backup", "Device =" + svars.device_code(act) + "\nUsername =" + svars.user_name(act) + "\nUser id=" + svars.user_id(act) + "\nM link=" + svars.WORKING_APP.ACCOUNT + "\nApp version " + BuildConfig.VERSION_NAME);
+        sparta_mail_probe smp = new sparta_mail_probe("Time and Attendance App data Backup", "Device =" + svars.device_code(act) + "\nUsername =" + svars.user_name(act) + "\nUser id=" + svars.user_id(act) + "\nM link=" + svars.current_app_config(act).ACCOUNT + "\nApp version " + svars.current_version(act));
 
         try {
             File file = new File(file_path);

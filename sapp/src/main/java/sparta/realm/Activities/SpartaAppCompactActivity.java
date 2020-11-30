@@ -58,14 +58,15 @@ import java.util.List;
 
 import sparta.realm.MainActivity;
 import sparta.realm.R;
+import sparta.realm.Realm;
 import sparta.realm.spartaadapters.dyna_data_adapter;
 import sparta.realm.spartaadapters.dyna_data_adapter_;
 import sparta.realm.spartamodels.dyna_data;
 import sparta.realm.spartamodels.dyna_data_obj;
-import sparta.realm.spartaservices.sdbw;
+import sparta.realm.Services.sdbw;
 import sparta.realm.spartautils.camera.CameraActivity;
 import sparta.realm.spartautils.camera.sparta_camera;
-import sparta.realm.spartautils.face.face_handler;
+import sparta.realm.spartautils.biometrics.face.face_handler;
 import sparta.realm.spartautils.svars;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
@@ -84,7 +85,8 @@ protected String select_item_index="";
 
 
         try{
-           sd=new sdbw(act);
+//           sd= Realm.databaseManager;
+           sd=new sdbw(Realm.context);
         }catch (Exception ex){}
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -677,12 +679,12 @@ edt.post(new Runnable() {
         //  String path = Environment.getExternalStorageDirectory().toString();
         OutputStream fOutputStream = null;
         //  File file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/");
-        File file = new File(svars.WORKING_APP.file_path_employee_data);
+        File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
         if (!file.exists()) {
             Log.e("Creating data dir=>",""+ String.valueOf(file.mkdirs()));
         }
         //  file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/", img_name);
-        file = new File(svars.WORKING_APP.file_path_employee_data, img_name);
+        file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
 
         try {
             fOutputStream = new FileOutputStream(file);
@@ -893,7 +895,7 @@ case 5:
 
             }
             try{
-                data.putExtra("FaceUrl", face_handler.extract_face(svars.WORKING_APP.file_path_employee_data+data_url));
+                data.putExtra("FaceUrl", face_handler.extract_face(svars.current_app_config(Realm.context).file_path_employee_data+data_url));
 
             }catch (Exception ex){}
         }else {

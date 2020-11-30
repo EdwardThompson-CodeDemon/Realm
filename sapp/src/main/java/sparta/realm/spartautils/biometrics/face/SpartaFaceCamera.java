@@ -1,4 +1,4 @@
-package sparta.realm.Activities;
+package sparta.realm.spartautils.biometrics.face;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,17 +8,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.luxand.FSDK;
 
+import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.R;
-import sparta.realm.spartautils.biometrics.face.CaptureHandler;
-import sparta.realm.spartautils.biometrics.face.Preview;
 
 
-public class SpartaFaceCamera extends AppCompatActivity {
+public class SpartaFaceCamera extends SpartaAppCompactActivity {
     private Preview mPreview;
     private CaptureHandler mDraw;
     private final String database = "Memory50.dat";
@@ -46,6 +44,7 @@ Button capture;
 
 
 if((sid=getIntent().getStringExtra("sid"))==null){
+    Toast.makeText(act,"Transaction no aint available", Toast.LENGTH_LONG).show();
     finish();
     return;
 }
@@ -57,7 +56,9 @@ if((sid=getIntent().getStringExtra("sid"))==null){
         mPreview.setVisibility(View.VISIBLE);
 
 mDraw.transaction_no=sid;
-mDraw.cpi=new CaptureHandler.capturing_interface() {
+mDraw.sDensity=	sDensity;
+mDraw.captureMode= CaptureHandler.CaptureMode.Registration;
+        mDraw.cpi=new CaptureHandler.capturing_interface() {
     @Override
     public void OnOkToCapture() {
         capture.post(new Runnable() {

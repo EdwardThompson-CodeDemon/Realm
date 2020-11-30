@@ -12,6 +12,7 @@ import android.media.ThumbnailUtils;
 import java.io.ByteArrayOutputStream;
 
 import sparta.realm.Activities.SpartaAppCompactActivity;
+import sparta.realm.Realm;
 
 /**
  * Created by Thompsons on 16-Feb-17.
@@ -128,8 +129,8 @@ public static byte[] getBytes_JPG(Bitmap bitmap) {
         return cs;
     }
     public static String combineImages(String c_path,String s_path) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
-        Bitmap c=BitmapFactory.decodeFile(svars.WORKING_APP.file_path_employee_data+c_path);
-         Bitmap s=BitmapFactory.decodeFile(svars.WORKING_APP.file_path_employee_data+s_path);
+        Bitmap c=BitmapFactory.decodeFile(svars.current_app_config(Realm.context).file_path_employee_data+c_path);
+         Bitmap s=BitmapFactory.decodeFile(svars.current_app_config(Realm.context).file_path_employee_data+s_path);
 
         Bitmap cs = null;
 

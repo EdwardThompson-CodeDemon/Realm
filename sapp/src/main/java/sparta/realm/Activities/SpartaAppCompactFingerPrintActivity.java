@@ -3,14 +3,11 @@ package sparta.realm.Activities;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
-import sparta.realm.R;
-import sparta.realm.spartautils.fp.fp_handler_bt;
-import sparta.realm.spartautils.fp.fp_handler_stf_usb_8_inch;
-import sparta.realm.spartautils.fp.fp_handler_wall_mounted;
-import sparta.realm.spartautils.fp.sfp_i;
+import sparta.realm.spartautils.biometrics.fp.fp_handler_bt;
+import sparta.realm.spartautils.biometrics.fp.fp_handler_stf_usb_8_inch;
+import sparta.realm.spartautils.biometrics.fp.fp_handler_wall_mounted;
+import sparta.realm.spartautils.biometrics.fp.sfp_i;
 import sparta.realm.spartautils.svars;
 
 
@@ -29,14 +26,14 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     @Override
     protected void onPause() {
         super.onPause();
-        if (svars.current_device(act)== svars.DEVICE.UAREU.ordinal())
+        if (svars.current_device()== svars.DEVICE.UAREU.ordinal())
         {
             try{   fph_8_inch.close();}catch (Exception ex){}
-        }else if(svars.current_device(act)== svars.DEVICE.WALL_MOUNTED.ordinal())
+        }else if(svars.current_device()== svars.DEVICE.WALL_MOUNTED.ordinal())
         {
             try{    fph_wall_mounted.close();}catch (Exception ex){}
 
-        }else if(svars.current_device(act)== svars.DEVICE.BIO_MINI.ordinal())
+        }else if(svars.current_device()== svars.DEVICE.BIO_MINI.ordinal())
         {
 //        try{    fph_biomini.stop_biomini();}catch (Exception ex){}
 
@@ -52,7 +49,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     @Override
     protected void onStart() {
         super.onStart();
-        if(svars.current_device(act)== svars.DEVICE.BIO_MINI.ordinal())
+        if(svars.current_device()== svars.DEVICE.BIO_MINI.ordinal())
         {
             try {
                 Log.e("Starting =>","Biomini");
@@ -84,14 +81,14 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
     @Override
     protected void onResume() {
-        if (svars.current_device(act)== svars.DEVICE.UAREU.ordinal())
+        if (svars.current_device()== svars.DEVICE.UAREU.ordinal())
         {
             fph_8_inch=new fp_handler_stf_usb_8_inch(act);
-        }else if(svars.current_device(act)== svars.DEVICE.WALL_MOUNTED.ordinal())
+        }else if(svars.current_device()== svars.DEVICE.WALL_MOUNTED.ordinal())
         {
             fph_wall_mounted=new fp_handler_wall_mounted(act);
 
-        }else if(svars.current_device(act)== svars.DEVICE.BIO_MINI.ordinal())
+        }else if(svars.current_device()== svars.DEVICE.BIO_MINI.ordinal())
         {
             try {
                 Log.e("Resuming =>","Biomini");

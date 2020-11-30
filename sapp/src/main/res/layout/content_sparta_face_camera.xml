@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Activities.SpartaFaceCamera"
     tools:showIn="@layout/activity_sparta_face_camera">
-    <sparta.realm.spartautils.face.Preview
+    <sparta.realm.spartautils.biometrics.face.Preview
         android:id="@+id/face_graphics_preview"
         android:layout_width="wrap_content"
         android:layout_marginTop="120dp"
@@ -16,7 +16,7 @@
         android:background="@null"
         android:visibility="gone"
         android:layout_height="wrap_content"/>
-    <sparta.realm.spartautils.face.CaptureHandler
+    <sparta.realm.spartautils.biometrics.face.CaptureHandler
         android:layout_width="wrap_content"
         android:background="@null"
         android:layout_marginTop="120dp"

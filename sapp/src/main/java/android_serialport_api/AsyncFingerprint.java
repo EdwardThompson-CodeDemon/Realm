@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import sparta.realm.spartautils.fp.sdks.fgtit.utils.DataUtils;
+import sparta.realm.spartautils.biometrics.fp.sdks.fgtit.utils.DataUtils;
 
 
 public class AsyncFingerprint extends Handler {

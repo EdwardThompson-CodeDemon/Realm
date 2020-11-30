@@ -52,7 +52,7 @@ public class employees_adapter extends BaseAdapter {
         //TextView id=(TextView)convertView.findViewById(R.id.idno);
         ((TextView)convertView.findViewById(R.id.employee_name)).setText(obj.surname.value);
         ((TextView)convertView.findViewById(R.id.idno)).setText(obj.idno.value);
-        if(svars.current_device(act)==svars.DEVICE.BIO_MINI.ordinal()) {
+        if(svars.current_device()==svars.DEVICE.BIO_MINI.ordinal()) {
             /*CircleImageView data_icon = (CircleImageView) convertView.findViewById(R.id.title_icon1);
 
 data_icon.setImageDrawable(null);*/

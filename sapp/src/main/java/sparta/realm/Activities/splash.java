@@ -7,7 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import sparta.realm.MainActivity;
 import sparta.realm.R;
-import sparta.realm.spartaservices.sdbw;
+
+
 
 
 public class splash extends SpartaAppCompactActivity {
@@ -29,7 +30,8 @@ new Thread(new Runnable() {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }*/
-        sd=new sdbw(act);
+
+
         sd.load_employee("0");
         finish();
         startActivity(new Intent(act, MainActivity.class));

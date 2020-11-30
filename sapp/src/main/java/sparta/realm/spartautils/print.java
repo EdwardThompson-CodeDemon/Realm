@@ -617,7 +617,7 @@ public  boolean conected=false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             options.inPreferredColorSpace = ColorSpace.get(ColorSpace.Named.ACES);
         }
-//        cp.drawImage(240,0, s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.WORKING_APP.file_path_employee_data+svars.working_employee.images[svars.image_indexes.profile_photo],options), 120, 165, false)));
+//        cp.drawImage(240,0, s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.current_app_config(Realm.context).file_path_employee_data+svars.working_employee.images[svars.image_indexes.profile_photo],options), 120, 165, false)));
         cp.drawImage(200,0, (Bitmap.createScaledBitmap(BitmapFactory.decodeResource(act.getResources(), R.drawable.logo), 165, 130, false)));
 
 
@@ -638,7 +638,7 @@ public  boolean conected=false;
 
 
         Log.e("Print pos :","i"+  cp.getCurrentPointY());
-        cp.drawImage( s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.WORKING_APP.file_path_employee_data+svars.working_member.images[svars.image_indexes.signature]), 170, 100, false)));
+        cp.drawImage( s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.current_app_config(act).file_path_employee_data+svars.working_member.images[svars.image_indexes.signature]), 170, 100, false)));
         Log.e("Print pos :","ii"+  cp.getCurrentPointY());
         mPrinter.printImage(cp.getCanvasImage());
      cp= new CanvasPrint();
@@ -650,7 +650,7 @@ public  boolean conected=false;
         cp.setFontProperty(fp);
 
 
-       // cp.drawImage(0,0, s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.WORKING_APP.file_path_employee_data+svars.working_employee.images[svars.image_indexes.signature]), 120, 100, true)));
+       // cp.drawImage(0,0, s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.current_app_config(Realm.context).file_path_employee_data+svars.working_employee.images[svars.image_indexes.signature]), 120, 100, true)));
        // cp.drawText("----------------------------------------------------------");
         //  cp.drawText("--------------------------GUID------------------------");
        // cp.drawText(".");

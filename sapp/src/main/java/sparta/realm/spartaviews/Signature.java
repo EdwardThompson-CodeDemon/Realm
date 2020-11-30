@@ -19,7 +19,8 @@ import android.widget.LinearLayout;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import sparta.realm.spartaservices.sdbw;
+
+import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.s_bitmap_handler;
 
 
@@ -110,7 +111,7 @@ public class Signature extends View
         {
             Log.v("log_tag", e.toString());
         }
-        return sdbw.save_doc(Base64.encodeToString(s_bitmap_handler.getBytes(decoded),0));
+        return DatabaseManager.save_doc(Base64.encodeToString(s_bitmap_handler.getBytes(decoded),0));
     }
 
     public void save()

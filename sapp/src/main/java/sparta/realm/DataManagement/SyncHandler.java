@@ -1,8 +1,8 @@
 package sparta.realm.DataManagement;
 
-import sparta.realm.spartaservices.asbgw;
+import sparta.realm.Services.SynchronizationManager;
 
-public class SyncHandler extends asbgw {
+public class SyncHandler extends SynchronizationManager {
 
 
 }

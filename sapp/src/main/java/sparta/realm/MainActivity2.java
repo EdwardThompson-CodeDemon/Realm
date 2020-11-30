@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Dynamics.spartaDynamics;
-import sparta.realm.spartaservices.asbgw;
-import sparta.realm.spartaservices.dbh;
+import sparta.realm.Services.SynchronizationManager;
+import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.svars;
 
 import com.realm.annotations.RealmDataClass;
@@ -48,7 +48,7 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        asbgw as=new asbgw(new asbgw.sync_status_interface() {
+        SynchronizationManager as=new SynchronizationManager(new SynchronizationManager.sync_status_interface() {
             @Override
             public void on_status_code_changed(int status) {
 
@@ -116,39 +116,39 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         String resp=response(1).toString();
         String resp2=response(1).toString();
         Log.e("Deleting :","");
-        dbh.database.execSQL("DELETE FROM TBL_supplier_account");
-        dbh.database.execSQL("DELETE FROM CP_TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM CP_TBL_supplier_account");
         Log.e("Deleted :","");
 
 //        Log.e("gson :",""+insert_gson(resp));
 
         Log.e("Deleting :","");
-        dbh.database.execSQL("DELETE FROM TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
 //        Log.e("Json :",""+insert_v1(resp));
 
     Log.e("Deleting :","");
-        dbh.database.execSQL("DELETE FROM TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
 //        Log.e("Json 2 :",""+insert_v1_sd(resp));
 
         Log.e("Deleting :","");
-        dbh.database.execSQL("DELETE FROM TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
 //Log.e("gson2 :",""+insert_gson2(resp));
 
         Log.e("Deleting :","Deleting");
-        dbh.database.execSQL("DELETE FROM TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","Deleted");
 
         Log.e("gson_ctm 2 :",""+insert_v2_2(resp));
 
 
         Log.e("Deleting :","Deleting");
-        dbh.database.execSQL("DELETE FROM TBL_supplier_account");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","Deleted");
 
         Log.e("gson_ctm :",""+insert_v2(resp2));
@@ -213,7 +213,7 @@ long insert_v1(String jos)
             cv.put("sync_var",jo.getString("datecomparer"));
 
 
-            dbh.database.insert("TBL_supplier_account",null,cv);
+            DatabaseManager.database.insert("TBL_supplier_account",null,cv);
 
         }
 
@@ -235,7 +235,7 @@ long insert_v1_sd(String jos)
 
 
 
-            dbh.database.insert("TBL_supplier_account",null, (ContentValues) realm.getContentValuesFromJson(jo,"TBL_supplier_account"));
+            DatabaseManager.database.insert("TBL_supplier_account",null, (ContentValues) realm.getContentValuesFromJson(jo,"TBL_supplier_account"));
 
         }
 
@@ -263,7 +263,7 @@ long insert_gson(String jos)
             cv.put("sync_var",jo.get("datecomparer").getAsString());
 
 
-            dbh.database.insert("TBL_supplier_account",null,cv);
+            DatabaseManager.database.insert("TBL_supplier_account",null,cv);
 
         }
 
@@ -291,7 +291,7 @@ long insert_gson2(String jos)
             cv.put("sync_var", String.valueOf(jo.get("datecomparer")));
 
 
-            dbh.database.insert("TBL_supplier_account",null,cv);
+            DatabaseManager.database.insert("TBL_supplier_account",null,cv);
 
         }
 
@@ -313,7 +313,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
             int max=ar_sz<=500?1:ar_sz%500>0?(ar_sz/500)+1:(ar_sz/500);
             Log.e("Max :",""+max);
             Log.e("Arr :",""+ar_sz);
-            dbh.database.beginTransaction();
+            DatabaseManager.database.beginTransaction();
             for(int m=0;m<max;m++)
             {
                 StringBuffer sb=new StringBuffer();
@@ -345,10 +345,10 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
                 }
              //   Log.e("INSERT QUERY :",sb.toString());
              //   dbh.log_String(act,"QRY v1 :"+sb.toString());
-                dbh.database.execSQL(sb.toString());
+                DatabaseManager.database.execSQL(sb.toString());
               }
-            dbh.database.setTransactionSuccessful();
-            dbh.database.endTransaction();
+            DatabaseManager.database.setTransactionSuccessful();
+            DatabaseManager.database.endTransaction();
 
 //            for(int i=0;i<ar_sz;i++){
 //                JsonObject jo= (JsonObject) array.get(i);
@@ -432,7 +432,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
                 }
               // Log.e("INSERT QUERY :",sb.toString());
               //  dbh.log_String(act,"QRY :"+sb.toString());
-                dbh.database.execSQL(sb.toString());
+                DatabaseManager.database.execSQL(sb.toString());
               }
           //  dbh.database.setTransactionSuccessful();
            // dbh.database.endTransaction();
@@ -550,22 +550,22 @@ int det=(((m2)+compound_limit)<=ar_sz?compound_limit:l2);
               String[] qryz=ins[1];
              long tr_time=stw.elapsed(TimeUnit.MILLISECONDS);
 
-                        dbh.database.beginTransaction();
+                        DatabaseManager.database.beginTransaction();
 
 
-                      dbh.database.execSQL("INSERT INTO CP_TBL_supplier_account SELECT * FROM TBL_supplier_account WHERE sid in "+sidz_qry+" AND sync_status=2");
+                      DatabaseManager.database.execSQL("INSERT INTO CP_TBL_supplier_account SELECT * FROM TBL_supplier_account WHERE sid in "+sidz_qry+" AND sync_status=2");
 
 
 
             for (int i=0;i<qryz.length;i++)
             {
-                dbh.database.execSQL(qryz[i]);
+                DatabaseManager.database.execSQL(qryz[i]);
             }
 
-            dbh.database.execSQL("REPLACE INTO TBL_supplier_account SELECT * FROM CP_TBL_supplier_account");
-            dbh.database.execSQL("DELETE FROM CP_TBL_supplier_account");
-            dbh.database.setTransactionSuccessful();
-            dbh.database.endTransaction();
+            DatabaseManager.database.execSQL("REPLACE INTO TBL_supplier_account SELECT * FROM CP_TBL_supplier_account");
+            DatabaseManager.database.execSQL("DELETE FROM CP_TBL_supplier_account");
+            DatabaseManager.database.setTransactionSuccessful();
+            DatabaseManager.database.endTransaction();
 
             Log.e("Exec time ",""+(stw.elapsed(TimeUnit.MILLISECONDS)-tr_time));
 
@@ -588,7 +588,7 @@ int det=(((m2)+compound_limit)<=ar_sz?compound_limit:l2);
             int max=ar_sz<=500?1:ar_sz%500>0?(ar_sz/500)+1:(ar_sz/500);
             Log.e("Max :",""+max);
             Log.e("Arr :",""+ar_sz);
-            dbh.database.beginTransaction();
+            DatabaseManager.database.beginTransaction();
             for(int m=0;m<max;m++)
             {
 
@@ -616,13 +616,13 @@ int det=(((m2)+compound_limit)<=ar_sz?compound_limit:l2);
                     ","+String.valueOf(jo.get("acc_id"))+","+String.valueOf(jo.get("acc_name"))+","+String.valueOf(jo.get("datecomparer"))+")");
 
                   //  Log.e("INSERT QUERY :",sb.toString());
-                    dbh.database.execSQL(sb.toString());
+                    DatabaseManager.database.execSQL(sb.toString());
 
                 }
 
               }
-            dbh.database.setTransactionSuccessful();
-            dbh.database.endTransaction();
+            DatabaseManager.database.setTransactionSuccessful();
+            DatabaseManager.database.endTransaction();
 
 //            for(int i=0;i<ar_sz;i++){
 //                JsonObject jo= (JsonObject) array.get(i);

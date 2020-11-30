@@ -14,7 +14,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;
-import android.text.method.NumberKeyListener;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
@@ -44,7 +43,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
@@ -52,16 +50,18 @@ import sparta.realm.BuildConfig;
 import sparta.realm.R;
 import sparta.realm.Realm;
 import sparta.realm.spartamodels.percent_calculation;
+import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.app_control.models.sparta_app_version;
-import sparta.realm.spartaservices.sdbw;
 import sparta.realm.spartautils.svars;
+
+import static sparta.realm.spartautils.svars.current_app_config;
 
 
 public class App_updates extends Service {
    
     Timer update_check_timer=new Timer();
    
-    static sdbw db;
+    static DatabaseManager db;
     static AlertDialog ald;
 
 
@@ -92,7 +92,7 @@ static sparta_app_version w_sav;
     public void onCreate() {
         super.onCreate();
         act=this;
-        db=new sdbw(act);
+        db=Realm.databaseManager;
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(act);
         mBuilder.setContentTitle("APK Update")
@@ -193,7 +193,7 @@ static sparta_app_version w_sav;
                         builder.detectFileUriExposure();
                     }
                     final Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(new File(svars.WORKING_APP.file_path_app_downloads + "/" + w_sav.download_link.split("/")[w_sav.download_link.split("/").length - 1])), "application/vnd.android.package-archive");
+                    intent.setDataAndType(Uri.fromFile(new File(current_app_config(Realm.context).file_path_app_downloads + "/" + w_sav.download_link.split("/")[w_sav.download_link.split("/").length - 1])), "application/vnd.android.package-archive");
 
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -214,7 +214,7 @@ boolean first_done=false;
     public int onStartCommand(Intent intent, int flags, int startId) {
           Log.e("App_updates","Start trigger");
           if(!first_done){first_done=true;return START_STICKY;}
-        db=db==null?new sdbw(act):db;
+        db=db==null?Realm.databaseManager:db;
         if(mNotifyManager==null){
             mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mBuilder = new NotificationCompat.Builder(act);
@@ -358,7 +358,7 @@ boolean checking_for_updates=false;
                         HttpURLConnection httpURLConnection = null;
                         try {
 
-                            httpURLConnection = (HttpURLConnection) new URL(svars.update_check_link).openConnection();
+                            httpURLConnection = (HttpURLConnection) new URL(current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK).openConnection();
                             httpURLConnection.setRequestMethod("POST");
                             httpURLConnection.setRequestProperty("Content-Type", "application/json");
                             // httpURLConnection.setRequestProperty("Authorization", "Bearer" + svars.Service_token(act));
@@ -480,7 +480,7 @@ boolean checking_for_updates=false;
 public static void show_dialog()
 {
 if(w_sav==null){
-    version_name.setText(BuildConfig.VERSION_NAME);
+    version_name.setText(svars.current_version(act));
     change_log.setText("latest version");
 
 }else {
@@ -675,10 +675,10 @@ downloading=false;
         }*/
         try {
            // Log.e("download initializing ", " xxx");
-            final File file = new File(svars.WORKING_APP.file_path_app_downloads);
+            final File file = new File(current_app_config(Realm.context).file_path_app_downloads);
                             file.mkdirs();
 
-                            AndroidNetworking.download(sav.download_link,svars.WORKING_APP.file_path_app_downloads,sav.download_link.split("/")[sav.download_link.split("/").length-1])
+                            AndroidNetworking.download(sav.download_link, current_app_config(Realm.context).file_path_app_downloads,sav.download_link.split("/")[sav.download_link.split("/").length-1])
                                     .setTag("downloadTest")
                                     .setPriority(Priority.LOW)
                                     .build()
@@ -708,9 +708,9 @@ cur_per= Integer.parseInt(per.per_balance);
                                             downloading=false;
                                             main_inter.on_download_complete();
                                             mBuilder.setProgress(100, 100, true);
-                                            db.update_downloaded_versions(sav.version_id,svars.WORKING_APP.file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1]);
+                                            db.update_downloaded_versions(sav.version_id, current_app_config(Realm.context).file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1]);
                                             main_inter.on_status_changed(download_install_status.installing, download_install_status.getMessge(download_install_status.installing));
-                                            sav.local_path=svars.WORKING_APP.file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1];
+                                            sav.local_path= current_app_config(Realm.context).file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1];
                                             w_sav=sav;
                                             re_download_count=0;
                                             //downloaded=true;

@@ -18,7 +18,7 @@ import com.github.lzyzsd.circleprogress.ArcProgress;
 import java.util.ArrayList;
 
 import sparta.realm.R;
-import sparta.realm.spartaservices.asbgw;
+import sparta.realm.Services.SynchronizationManager;
 
 
 
@@ -31,7 +31,7 @@ public class synchro_ {
     ArrayList<View> launch_buttons;
     RelativeLayout main;
     Activity act;
-    asbgw sb=null;
+    SynchronizationManager sb=null;
     TextView last_sync_time_txt;
     ImageView sync_icon;
    public synchro_(Activity act, RelativeLayout main, ArrayList<View> launch_buttons, TextView last_sync_time_txt, ImageView special_synchro_view)
@@ -154,7 +154,7 @@ public void triger_sync()
         sync_spinn_annimator.setRepeatCount(ValueAnimator.INFINITE);
         sync_spinn_annimator.start();
 
-        sb = new asbgw( new asbgw.sync_status_interface() {
+        sb = new SynchronizationManager(new SynchronizationManager.sync_status_interface() {
             @Override
             public void on_status_code_changed(final int status) {
                 act.runOnUiThread(new Runnable() {

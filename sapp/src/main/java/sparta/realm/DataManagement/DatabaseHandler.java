@@ -2,9 +2,9 @@ package sparta.realm.DataManagement;
 
 import android.content.Context;
 
-import sparta.realm.spartaservices.dbh;
+import sparta.realm.Services.DatabaseManager;
 
-public class DatabaseHandler extends dbh {
+public class DatabaseHandler extends DatabaseManager {
 
 
     public DatabaseHandler(Context act) {
