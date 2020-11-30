@@ -1,8 +1,6 @@
 package sparta.realm.spartautils.printing;
 
-import android.util.Log;
-
-import com.smartdevicesdk.btprinter.StringUtility;
+//import com.smartdevicesdk.btprinter.StringUtility;
 
 public class PrintCommand {
 	private static final String TAG = "PrintStyle";
@@ -72,8 +70,7 @@ public class PrintCommand {
 		String str = underLine+"0"+doubleWidth+doubleHeight+blod+"00" +font;
 		byte bt = decodeBinaryString(str);
 		CMD.ESC_font_style[2] = bt;
-		Log.d(TAG, StringUtility.ByteArrayToString(CMD.ESC_font_style,
-				CMD.ESC_font_style.length));
+		//Log.d(TAG, StringUtility.ByteArrayToString(CMD.ESC_font_style,CMD.ESC_font_style.length));
 		return CMD.ESC_font_style;
 	}
 

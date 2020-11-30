@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -76,7 +78,7 @@ fp_device,
         act.startActivityForResult(enableIntent, 2);
 
     }
-    if(device_type==bt_device_type.lb_access_point){
+    if(device_type== bt_device_type.lb_access_point){
         if (!act.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(act, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             return;
@@ -95,7 +97,7 @@ fp_device,
 
     public interface device_selection_handler{
 
-        void on_device_paired_and_slected(BluetoothDevice device);
+        void on_device_paired_and_selected(BluetoothDevice device);
         void on_device_slected(BluetoothDevice device);
         void on_device_paired(BluetoothDevice device);
 
@@ -112,6 +114,7 @@ fp_device,
             ald=new AlertDialog.Builder(act)
                     .setView(main)
                     .show();
+            ald.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             discovered_list=(GridView)main.findViewById(R.id.device_list);
             bt_search=(ImageView)main.findViewById(R.id.status_image);
             connection_status=(TextView)main.findViewById(R.id.value1);
@@ -430,18 +433,18 @@ fp_device,
     {
          for (BluetoothDevice device : pairedDevices) {
             paired_devices.add(device);
-            if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act,bt_device_type.fp_device))&&device_type== bt_device_type.fp_device)
+            if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act, bt_device_type.fp_device))&&device_type== bt_device_type.fp_device)
             {
                return device;
-            }else if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act,bt_device_type.printer))&&device_type== bt_device_type.printer)
+            }else if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act, bt_device_type.printer))&&device_type== bt_device_type.printer)
             {
                 return device;
 
-            }else if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act,bt_device_type.weighbridge_model))&&device_type== bt_device_type.weighbridge_model)
+            }else if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act, bt_device_type.weighbridge_model))&&device_type== bt_device_type.weighbridge_model)
             {
                 return device;
 
-            }else if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act,bt_device_type.lb_access_point))&&device_type== bt_device_type.lb_access_point)
+            }else if(device.getAddress().equalsIgnoreCase(svars.bt_device_address(act, bt_device_type.lb_access_point))&&device_type== bt_device_type.lb_access_point)
             {
                 return device;
 

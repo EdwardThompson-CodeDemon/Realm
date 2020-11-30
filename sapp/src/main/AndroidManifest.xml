@@ -25,6 +25,16 @@
         <activity android:name=".MainActivity">
 
         </activity>
+        <activity
+            android:name=".Activities.PrintActivity"
+            android:label="Realm Print"
+            android:theme="@style/Theme.Transparent">
+            <intent-filter>
+                <action android:name="sparta.linga.PrintActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@
     <color name="primary_semi_transparent">#907AB2FF</color>
     <color name="accent_transparent">#50ff8c00</color>
     <color name="accent_semi_transparent">#90ff8c00</color>
+    <color name="semi_transparent">#82ffffff</color>
 
     <!--    <color name="colorAccent">#7BAFFF</color>-->
     <!--    <color name="primary_transparent">#507AB2FF</color>-->
