@@ -24,7 +24,7 @@ public class order extends db_class_ implements Serializable {
     @DynamicProperty(json_key = "total_amount")
     public String total_amount="";
 
-    @DynamicProperty(json_key = "order_items")
+   // @DynamicProperty(json_key = "order_items")
     public ArrayList<order_item> sales_items=new ArrayList<>();
 
 

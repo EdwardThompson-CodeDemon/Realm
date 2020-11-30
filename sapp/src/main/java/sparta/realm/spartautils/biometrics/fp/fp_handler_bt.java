@@ -233,8 +233,11 @@ interf=(sfp_i) act;
             if(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device)==null)
             {
                 new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
+
+
+
                     @Override
-                    public void on_device_paired_and_slected(BluetoothDevice device) {
+                    public void on_device_paired_and_selected(BluetoothDevice device) {
                         mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
 
                     }

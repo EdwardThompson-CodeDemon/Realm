@@ -134,8 +134,10 @@ working_printer_type=pt;
 if(devicemac==null)
 {
     new bt_device_connector(act,bt_device_connector.bt_device_type.printer).show(new bt_device_connector.device_selection_handler() {
+
+
         @Override
-        public void on_device_paired_and_slected(BluetoothDevice device) {
+        public void on_device_paired_and_selected(BluetoothDevice device) {
 
         }
 
@@ -251,7 +253,7 @@ if(devicemac==null)
 {
     new bt_device_connector(act,bt_device_connector.bt_device_type.printer).show(new bt_device_connector.device_selection_handler() {
         @Override
-        public void on_device_paired_and_slected(BluetoothDevice device) {
+        public void on_device_paired_and_selected(BluetoothDevice device) {
 
         }
 
@@ -290,7 +292,7 @@ act.runOnUiThread(new Runnable() {
         Toast.makeText(act, act.getString(R.string.unable_to_connect_to_printer), Toast.LENGTH_LONG).show();
         new bt_device_connector(act,bt_device_connector.bt_device_type.printer).show(new bt_device_connector.device_selection_handler() {
             @Override
-            public void on_device_paired_and_slected(BluetoothDevice device) {
+            public void on_device_paired_and_selected(BluetoothDevice device) {
                 PrintService.pl().connect(new bt_device_connector(act, bt_device_connector.bt_device_type.printer).set_device(bt_device_connector.bt_device_type.printer).getAddress());
             }
 
@@ -381,7 +383,7 @@ act.runOnUiThread(new Runnable() {
                     Toast.makeText(act, act.getString(R.string.unable_to_connect_to_printer), Toast.LENGTH_LONG).show();
                     new bt_device_connector(act,bt_device_connector.bt_device_type.printer).show(new bt_device_connector.device_selection_handler() {
                         @Override
-                        public void on_device_paired_and_slected(BluetoothDevice device) {
+                        public void on_device_paired_and_selected(BluetoothDevice device) {
                             try{
                                 Intent intent = new Intent();
                                 intent.putExtra(EXTRA_DEVICE_ADDRESS, new bt_device_connector(act, bt_device_connector.bt_device_type.printer).set_device(bt_device_connector.bt_device_type.printer).getAddress());
@@ -988,7 +990,7 @@ BluetoothDevice saved_dev()
                                 Toast.makeText(act, act.getString(R.string.unable_to_connect_to_printer), Toast.LENGTH_LONG).show();
                                 new bt_device_connector(act,bt_device_connector.bt_device_type.printer).show(new bt_device_connector.device_selection_handler() {
                                     @Override
-                                    public void on_device_paired_and_slected(BluetoothDevice device) {
+                                    public void on_device_paired_and_selected(BluetoothDevice device) {
                                         try{
                                             Intent intent = new Intent();
                                             intent.putExtra(EXTRA_DEVICE_ADDRESS, new bt_device_connector(act, bt_device_connector.bt_device_type.printer).set_device(bt_device_connector.bt_device_type.printer).getAddress());
