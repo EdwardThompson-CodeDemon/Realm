@@ -433,6 +433,7 @@ member_info_table.columns.add(new sdb_model.sdb_table.column("first_name"));
             Log.e("Employee insert error",""+ex.getMessage());}
 return objs;
     }
+
     public String[] load_employee_data(String sid, int data_type) {
 
         String raw_qry="SELECT * FROM member_data_table WHERE member_id ='"+sid+"' AND data_type='"+data_type+"'";
@@ -449,7 +450,7 @@ return objs;
         return loaded_employee_data;
     }
 
- private String[] load_employee_data_from_transaction_no(String transaction_no, int data_type) {
+    private String[] load_employee_data_from_transaction_no(String transaction_no, int data_type) {
 
         String raw_qry="SELECT * FROM member_data_table WHERE transaction_no ='"+transaction_no+"' AND data_type='"+data_type+"'";
         Cursor c = database.rawQuery(raw_qry, null);

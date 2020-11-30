@@ -1,13 +1,32 @@
 package sparta.realm.Services;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInstaller;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.common.base.Stopwatch;
@@ -24,11 +43,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,9 +62,11 @@ import java.util.concurrent.TimeUnit;
 
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import dalvik.system.DexFile;
 import sparta.realm.Activities.SpartaAppCompactActivity;
+import sparta.realm.Activities.splash;
 import sparta.realm.BuildConfig;
 
 
@@ -56,6 +81,8 @@ import sparta.realm.spartamodels.member;
 import sparta.realm.spartamodels.sdb_model;
 import sparta.realm.spartautils.Gpsprobe_r;
 import sparta.realm.spartautils.app_control.SpartaApplication;
+import sparta.realm.spartautils.app_control.adapters.apk_versions_adapter;
+import sparta.realm.spartautils.app_control.models.apk_version;
 import sparta.realm.spartautils.app_control.models.sparta_app_version;
 import sparta.realm.spartautils.s_bitmap_handler;
 import sparta.realm.spartautils.s_cryptor;
@@ -2229,7 +2256,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String conccat_sql_filters(String[] str_to_join)
+    public  String conccat_sql_filters(String[] str_to_join)
     {
         String result="";
         for(int i=0;i<str_to_join.length;i++)
@@ -2241,7 +2268,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
     }
 
 
-    String conccat_sql_string(String[] str_to_join)
+    public   String conccat_sql_string(String[] str_to_join)
     {
         String result="";
         for(int i=0;i<str_to_join.length;i++)
@@ -2253,7 +2280,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
     }
 
 
-    String conccat_sql_string(String[] str_to_join, ArrayList<String> str_to_join2)
+    public  String conccat_sql_string(String[] str_to_join, ArrayList<String> str_to_join2)
     {
         String result="";
         for(int i=0;i<str_to_join.length;i++)
@@ -2268,7 +2295,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
 
     }
 
-    String conccat_sql_string(ArrayList<String> str_to_join2)
+    public  String conccat_sql_string(ArrayList<String> str_to_join2)
     {
         String result="";
 
@@ -2322,7 +2349,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
         return  null;
     }
 
-    String save_doc_us(String base64_bytes)
+   public String save_doc_us(String base64_bytes)
     {
         byte[] file_bytes= Base64.decode(base64_bytes,0);
 
@@ -2486,7 +2513,370 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
 
 
 
+    private static void addApkToInstallSession(Context context, Uri uri, PackageInstaller.Session session)
+    {
+        Log.i("TAG", "addApkToInstallSession " + uri);
+        // It's recommended to pass the file size to openWrite(). Otherwise installation may fail
+        // if the disk is almost full.
+        try {
+            OutputStream packageInSession = session.openWrite("package", 0, -1);
+            InputStream input;
+//            Uri uri = Uri.parse(filename);
+            input = context.getContentResolver().openInputStream(uri);
 
+            if(input != null) {
+                Log.i("TAG", "input.available: " + input.available());
+                byte[] buffer = new byte[16384];
+                int n;
+                while ((n = input.read(buffer)) >= 0) {
+                    packageInSession.write(buffer, 0, n);
+                }
+            }
+            else {
+                Log.i("TAG", "addApkToInstallSession failed");
+                throw new IOException ("addApkToInstallSession");
+            }
+            packageInSession.close();  //need to close this stream
+            input.close();             //need to close this stream
+        }
+        catch (Exception e) {
+            Log.i("TAG", "addApkToInstallSession failed2 " + e.toString());
+        }
+    }
+
+    private void addApkToInstallSession(String assetName, PackageInstaller.Session session)
+            throws IOException {
+        // It's recommended to pass the file size to openWrite(). Otherwise installation may fail
+        // if the disk is almost full.
+        try (OutputStream packageInSession = session.openWrite("package", 0, -1);
+             InputStream is = act.getAssets().open(assetName)) {
+            byte[] buffer = new byte[16384];
+            int n;
+            while ((n = is.read(buffer)) >= 0) {
+                packageInSession.write(buffer, 0, n);
+            }
+        }
+    }
+    private static final String PACKAGE_INSTALLED_ACTION =
+            "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
+    public static void install(Uri uri) {
+        PackageInstaller.Session session = null;
+        try {
+            PackageInstaller packageInstaller = act.getPackageManager().getPackageInstaller();
+            PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
+                    PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+            int sessionId = packageInstaller.createSession(params);
+            session = packageInstaller.openSession(sessionId);
+            addApkToInstallSession(act,uri, session);
+            // Create an install status receiver.
+            Context context = act;
+            Intent intent = new Intent(context, splash.class);
+            intent.setAction(PACKAGE_INSTALLED_ACTION);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            IntentSender statusReceiver = pendingIntent.getIntentSender();
+            // Commit the session (this will start the installation workflow).
+            session.commit(statusReceiver);
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't install package", e);
+        } catch (RuntimeException e) {
+            if (session != null) {
+                session.abandon();
+            }
+            throw e;
+        }
+
+    }
+    public static void quick_update(Activity act) {
+
+        try {
+            final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_app_update, null);
+            final ProgressBar pb = (ProgressBar) aldv.findViewById(R.id.prog);
+            final ProgressBar loading_bar = (ProgressBar) aldv.findViewById(R.id.loading_bar);
+            final GridView version_list = (GridView) aldv.findViewById(R.id.version_list);
+
+            final TextView version = (TextView) aldv.findViewById(R.id.current_version);
+            final TextView update_date = (TextView) aldv.findViewById(R.id.update_date);
+            final TextView per = (TextView) aldv.findViewById(R.id.prog_per);
+            final Button update = (Button) aldv.findViewById(R.id.update);
+
+            final RelativeLayout progres_layout = (RelativeLayout) aldv.findViewById(R.id.progress_layout);
+            final AlertDialog[] ald = new AlertDialog[1];
+            final boolean[] loaded_ver = {false};
+            ArrayList<apk_version> versions = new ArrayList<>();
+            final ArrayList<apk_version> finalVersions = versions;
+            final String[] apk_name = {null};
+            try {
+                ald[0] = new AlertDialog.Builder(act)
+                        .setView(aldv)
+                        .show();
+                ald[0].getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                progres_layout.setVisibility(View.GONE);
+
+                update_date.setText("Update check date : " + svars.version_check_time(act));
+                version.setText("Current Version : " + BuildConfig.VERSION_NAME);
+
+                version_list.setAdapter(new apk_versions_adapter(act, finalVersions));
+                version_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        apk_name[0] = finalVersions.get(position).path;
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Thread thread = new Thread() {
+                public void run() {
+                    Looper.prepare();
+                    final JSONObject[] maindata = new JSONObject[1];
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Do your web calls here
+
+                            if (svars.isInternetAvailable()) {
+                                String data = "";
+                                String error_data = "";
+
+                                HttpURLConnection httpURLConnection = null;
+                                try {
+
+                                    httpURLConnection = (HttpURLConnection) new URL("http://ta.cs4africa.com/SPARTA/linga/services/get_version.php").openConnection();
+                                    httpURLConnection.setRequestMethod("POST");
+                                    httpURLConnection.setRequestProperty("Content-Type", "application/json");
+                                    // httpURLConnection.setRequestProperty("Authorization", "Bearer" + svars.Service_token(act));
+
+                                    httpURLConnection.setDoOutput(true);
+
+
+                     /*   DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+
+                        wr.writeBytes(params[1].toString());
+                        wr.flush();
+                        wr.close();*/
+
+                                    int status = httpURLConnection.getResponseCode();
+                                    Log.e("version POST RX", " status=> " + status);
+
+                                    try {
+                                        InputStream in = httpURLConnection.getInputStream();
+                                        InputStreamReader inputStreamReader = new InputStreamReader(in);
+
+                                        int inputStreamData = inputStreamReader.read();
+                                        while (inputStreamData != -1) {
+                                            char current = (char) inputStreamData;
+                                            inputStreamData = inputStreamReader.read();
+                                            data += current;
+                                        }
+                                        maindata[0] = new JSONObject(data);
+
+                                        for (int i = 0; i < maindata[0].getJSONArray("versions").length(); i++) {
+                                            JSONObject jj = maindata[0].getJSONArray("versions").getJSONObject(i);
+                                            finalVersions.add(new apk_version(jj.getString("id"), jj.getString("version_name"), jj.getString("version_code"), jj.getString("date"), jj.getString("path"), jj.getString("status")));
+                                            if (jj.getString("status").equalsIgnoreCase("1")) {
+                                                if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(jj.getString("version_name")) | BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))) {
+                                                    act.runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            version.setText("Current Version : " + BuildConfig.VERSION_NAME + " Out of date");
+                                                            version.setTextColor(Color.RED);
+                                                            version_list.setAdapter(new apk_versions_adapter(act, finalVersions));
+                                                            // Toast.makeText(act, "App out of date", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                                } else {
+                                                    act.runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            version.setText("Current Version : " + BuildConfig.VERSION_NAME + " Latest");
+                                                            version.setTextColor(Color.GREEN);
+                                                            // Toast.makeText(act, "App out of date", Toast.LENGTH_LONG).show();
+                                                            version_list.setAdapter(new apk_versions_adapter(act, finalVersions));
+                                                        }
+                                                    });
+                                                }
+                                            }
+
+                                        }
+                                        loaded_ver[0] = true;
+                                        act.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loading_bar.setVisibility(View.GONE);
+
+                                            }
+                                        });
+
+
+                                    } catch (Exception exx) {
+                                        InputStream error = httpURLConnection.getErrorStream();
+                                        InputStreamReader inputStreamReader2 = new InputStreamReader(error);
+
+                                        int inputStreamData2 = inputStreamReader2.read();
+                                        while (inputStreamData2 != -1) {
+                                            char current = (char) inputStreamData2;
+                                            inputStreamData2 = inputStreamReader2.read();
+                                            error_data += current;
+                                        }
+                                        Log.e("version POST RX", "error => " + error_data);
+
+                                    }
+
+
+                                } catch (Exception e) {
+                                    Log.e("version POST TX", "External error => " + e.getMessage());
+                                    e.printStackTrace();
+                                } finally {
+                                    if (httpURLConnection != null) {
+                                        httpURLConnection.disconnect();
+                                    }
+                                }
+                            } else {
+
+                                act.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(act, "Internet not available \n Unable to update application...", Toast.LENGTH_LONG).show();
+
+                                    }
+                                });
+                            }
+                            handler.removeCallbacks(this);
+                            Looper.myLooper().quit();
+                        }
+                    }, 2000);
+
+                    Looper.loop();
+                }
+            };
+            thread.start();
+
+
+            update.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (apk_name[0] != null) {
+                        update.setVisibility(View.GONE);
+                        ald[0].setCancelable(false);
+                        Thread thread = new Thread() {
+                            public void run() {
+                                Looper.prepare();
+
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            URL url = new URL("http://ta.cs4africa.com/SPARTA/linga/apks/"+ apk_name[0]);
+                                            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                                            c.setRequestMethod("GET");
+                                            c.setDoOutput(true);
+                                            c.connect();
+                                            act.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    progres_layout.setVisibility(View.VISIBLE);
+                                                    version_list.setVisibility(View.GONE);
+
+                                                }
+                                            });
+
+                                            String PATH = act.getExternalFilesDir(null).getAbsolutePath() + "/apks";
+                                            Log.e("LOG_TAG", "PATH: " + PATH);
+
+                                            File file = new File(PATH);
+                                            file.mkdirs();
+                                            final File outputFile = new File(file, apk_name[0]);
+                                            FileOutputStream fos = new FileOutputStream(outputFile);
+                                            InputStream is = c.getInputStream();
+
+                                            byte[] buffer = new byte[4096];
+                                            int len1 = 0;
+                                            int per_counter = 0;
+
+                                            while ((len1 = is.read(buffer)) != -1) {
+                                                fos.write(buffer, 0, len1);
+                                                per_counter += len1;
+                                                final double finalPercent = Math.round(((double) per_counter / (double) c.getContentLength()) * 100);
+                                                Log.e("Download ", "per: " + finalPercent + "%");
+                                                act.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        per.setText("Downloading :" + finalPercent + "%");
+                                                        pb.setProgress((int) finalPercent);
+                                                    }
+                                                });
+                                            }
+
+                                            fos.close();
+                                            is.close();
+                                            act.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    ald[0].setCancelable(true);
+                                                    per.setText("Installing ...");
+                                                    pb.setIndeterminate(true);
+                                                    Toast.makeText(act, " Apk downloaded successfully", Toast.LENGTH_LONG).show();
+                                                    install( Uri.fromFile(outputFile));
+                                                    per.setText("Installed");
+                                                   /* final Intent intent = new Intent(Intent.ACTION_VIEW);
+                                                    intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
+
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    act.startActivity(intent);*/
+                                                    String compdate = "";
+
+                                                    Cursor c = database.rawQuery("SELECT CURRENT_TIMESTAMP", null);
+                                                    if (c.moveToFirst()) {
+                                                        do {
+                                                            Log.e("nowdate =>", " " + c.getString(0));
+                                                            svars.version_check_time(act, c.getString(0));
+                                                        } while (c.moveToNext());
+                                                    }
+                                                    c.close();
+
+                                                }
+                                            });
+                                        } catch (Exception ex)
+
+                                        {
+                                            Log.e("download error ", "" + ex.getMessage());
+                                            ex.printStackTrace();
+                                            act.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    ald[0].setCancelable(true);
+
+                                                }
+                                            });
+                                        }
+                                    }
+                                }, 2000);
+
+                                Looper.loop();
+                            }
+                        };
+                        thread.start();
+                    }
+                }
+
+            });
+
+
+        } catch (Exception e) {
+            Log.e("download error ", "" + e.getMessage());
+            e.printStackTrace();
+
+
+        }
+
+
+    }
 
 
 
