@@ -10,7 +10,8 @@ import android.widget.Toast;
 import com.luxand.FSDK;
 import com.realm.annotations.RealmDataClass;
 
-import sparta.realm.Dynamics.spartaDynamics;
+
+
 import sparta.realm.Realm;
 import sparta.realm.spartautils.svars;
 
@@ -28,7 +29,7 @@ public class SpartaApplication extends Application {
         APPP.WORKING_PROFILE_MODE= svars.SPARTA_APP.PROFILE_MODE.GENERAL;
 
 
-        Realm.Initialize(this,new spartaDynamics(),"REALM",APPP);
+      //  Realm.Initialize(this,new spartaDynamics(),"REALM",APPP);
     }
 
     public static Context getAppContext() {

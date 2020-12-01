@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 
 import sparta.realm.Activities.SpartaAppCompactActivity;
-import sparta.realm.Dynamics.spartaDynamics;
+
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.svars;
@@ -163,14 +163,14 @@ public class MainActivity2 extends SpartaAppCompactActivity {
     }
 
     void test_realm(){
-        RealmDataClass rd= new spartaDynamics();
-        for (String s: rd.getDynamicClassPaths()) {
-
-
-            Log.e("Classes reflected =>", "Realm :" + s);
-        }
-
-        Log.e("Classes reflected =>", "Done " );
+//        RealmDataClass rd= new spartaDynamics();
+//        for (String s: rd.getDynamicClassPaths()) {
+//
+//
+//            Log.e("Classes reflected =>", "Realm :" + s);
+//        }
+//
+//        Log.e("Classes reflected =>", "Done " );
     }
 
 JSONObject response(int cnt)
