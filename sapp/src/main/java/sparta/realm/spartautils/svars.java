@@ -202,12 +202,12 @@ public class svars {
             this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
 
         }
-   public SPARTA_APP(String APP_MAINLINK, String APP_CONTROLL_MAIN_LINK, String ACCOUNT, String ACCOUNT_BRANCH,String Login_url,boolean result_caps) {
+   public SPARTA_APP(String APP_MAINLINK, String APP_CONTROLL_MAIN_LINK, String ACCOUNT, String ACCOUNT_BRANCH,String AUTHENTICATION_URL,boolean result_caps) {
             this.APP_MAINLINK = APP_MAINLINK;
             this.APP_CONTROLL_MAIN_LINK = APP_CONTROLL_MAIN_LINK;
             this.ACCOUNT = ACCOUNT;
             this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
-       AUTHENTICATION_URL=login_url;
+       this.AUTHENTICATION_URL=AUTHENTICATION_URL;
        SYNC_USE_CAPS=result_caps;
 
         }
