@@ -8,6 +8,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.media.ThumbnailUtils;
+import android.text.TextUtils;
 
 import java.io.ByteArrayOutputStream;
 
@@ -194,4 +195,32 @@ public static byte[] getBytes_JPG(Bitmap bitmap) {
         Bitmap resizeBmp = ThumbnailUtils.extractThumbnail(newBmp, 380, 460);
         return resizeBmp;
     }
+
+
+//import com.amulyakhare.textdrawable.TextDrawable;
+//import com.amulyakhare.textdrawable.util.ColorGenerator;
+//    private TextDrawable getTextDrawable(String displayName) {
+//        TextDrawable drawable = null;
+//        if (!TextUtils.isEmpty(displayName)) {
+//            int color2 = ColorGenerator.MATERIAL.getColor(displayName);
+//            drawable = TextDrawable.builder()
+//                    .beginConfig()
+//                    .width(UITools.dpToPx(mContext, 32))
+//                    .height(UITools.dpToPx(mContext, 32))
+//                    .textColor(Color.WHITE)
+//                    .toUpperCase()
+//                    .endConfig()
+//                    .round()
+//                    .build(displayName.substring(0, 1), color2);
+//        } else {
+//            drawable = TextDrawable.builder()
+//                    .beginConfig()
+//                    .width(UITools.dpToPx(mContext, 32))
+//                    .height(UITools.dpToPx(mContext, 32))
+//                    .endConfig()
+//                    .round()
+//                    .build("?", Color.GRAY);
+//        }
+//        return drawable;
+//    }
 }

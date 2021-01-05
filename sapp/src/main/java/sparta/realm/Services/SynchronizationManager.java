@@ -2245,7 +2245,8 @@ if(maindata[0]==null){
                             try {
                                 Log.e("JSON ST PG =>", "" + svars.login_url);
                                 Log.e("LOGIN TX =>", "" + JO.toString());
-                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(act).APP_MAINLINK+"/SystemAccounts/Authentication/Login/Submit").openConnection();
+//                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(act).APP_MAINLINK+"/SystemAccounts/Authentication/Login/Submit").openConnection();
+                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(act).APP_MAINLINK+"/Authentication/Login/Submit").openConnection();
                                 httpURLConnection.setRequestMethod("POST");
                                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
 
