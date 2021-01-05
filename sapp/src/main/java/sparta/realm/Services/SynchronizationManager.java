@@ -118,6 +118,7 @@ public class SynchronizationManager {
 
     public SynchronizationManager() {
 
+        app_config=current_app_config(act);
 
     }
 
@@ -161,10 +162,14 @@ public class SynchronizationManager {
         void on_secondary_progress_changed(int progress);
     }
     static sync_status_interface ssi;
+   static svars.SPARTA_APP app_config;
     public SynchronizationManager(sync_status_interface ssi) {
 
 
         this.ssi=ssi;
+        app_config=current_app_config(act);
+
+
 
 
 
@@ -808,7 +813,7 @@ Main_handler=synchronizationHandler;
             }
 
 
-        }.execute(current_app_config(Realm.context).APP_MAINLINK+ssd.download_link,filter_object);
+        }.execute(app_config.APP_MAINLINK+ssd.download_link,filter_object);
 
     }
 
@@ -845,7 +850,7 @@ Main_handler=synchronizationHandler;
                 HttpURLConnection httpURLConnection = null;
                 try {
 
-                    httpURLConnection = (HttpURLConnection) new URL( current_app_config(Realm.context).APP_MAINLINK+ssd.download_link).openConnection();
+                    httpURLConnection = (HttpURLConnection) new URL( app_config.APP_MAINLINK+ssd.download_link).openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setRequestProperty("Content-Type", "application/json");
                     httpURLConnection.setRequestProperty("Authorization",svars.Service_token(act));
@@ -1046,7 +1051,7 @@ Main_handler=synchronizationHandler;
                         HttpURLConnection httpURLConnection = null;
                         try {
 
-                            httpURLConnection = (HttpURLConnection) new URL( current_app_config(Realm.context).APP_MAINLINK+ssd.download_link).openConnection();
+                            httpURLConnection = (HttpURLConnection) new URL( app_config.APP_MAINLINK+ssd.download_link).openConnection();
                             httpURLConnection.setRequestMethod("POST");
                             httpURLConnection.setRequestProperty("Content-Type", "application/json");
                             httpURLConnection.setRequestProperty("Authorization",svars.Service_token(act));
@@ -1107,12 +1112,12 @@ if(maindata[0]==null){
                             data=null;
                             //  ssi.on_main_percentage_changed(0);
 
-                            if (maindata[0].getBoolean("IsOkay")) {
+                            if (maindata[0].getBoolean(app_config.SYNC_USE_CAPS?"IsOkay":"isOkay")) {
 
 
                                 JSONArray temp_ar;
-                                Object json = new JSONTokener(maindata[0].opt("Result").toString()).nextValue();
-                                temp_ar = json instanceof JSONArray ? (JSONArray) json : ((JSONObject) json).getJSONArray("Result");
+                                Object json = new JSONTokener(maindata[0].opt(app_config.SYNC_USE_CAPS?"Result":"result").toString()).nextValue();
+                                temp_ar = json instanceof JSONArray ? (JSONArray) json : ((JSONObject) json).getJSONArray(app_config.SYNC_USE_CAPS?"Result":"result");
 
                        /* if(ssd.service_name.equalsIgnoreCase("Member fingerprints")){
                             temp_ar = maindata.getJSONObject("result").getJSONArray("result");
@@ -1570,7 +1575,7 @@ if(maindata[0]==null){
             }
 
 
-        }.execute(current_app_config(Realm.context).APP_MAINLINK+ssd.download_link,filter_object);
+        }.execute(app_config.APP_MAINLINK+ssd.download_link,filter_object);
 
     }
 
@@ -1847,7 +1852,7 @@ if(maindata[0]==null){
                         ssi.on_status_code_changed(2);
                         ssi.on_status_changed(act.getResources().getString(R.string.synchronizing)+ssd.service_name);
 
-                        AndroidNetworking.post(current_app_config(Realm.context).APP_MAINLINK+ssd.upload_link)
+                        AndroidNetworking.post(app_config.APP_MAINLINK+ssd.upload_link)
                                 .addHeaders("Authorization", svars.Service_token(act))
                                 .addHeaders("content-type", "application/json")
                                 .addHeaders("cache-control", "no-cache")
@@ -1873,13 +1878,13 @@ if(maindata[0]==null){
                                         try {
 
 
-                                            if (response.getBoolean("IsOkay")) {
+                                            if (response.getBoolean(app_config.SYNC_USE_CAPS?"IsOkay":"isOkay")) {
 
 
                                                 ContentValues cv = new ContentValues();
 
                                                 cv.put("sync_status", sync_status.syned.ordinal());
-                                                cv.put("sid", response.getJSONObject("Result").getString("id"));
+                                                cv.put("sid", response.getJSONObject(app_config.SYNC_USE_CAPS?"Result":"result").getString("id"));
 
                                                 sdb.database.update(table_name, cv, "id=" + finalLid, null);
 
@@ -2065,7 +2070,7 @@ if(maindata[0]==null){
                         ssi.on_status_code_changed(2);
                         ssi.on_status_changed(act.getResources().getString(R.string.synchronizing)+ssd.service_name);
 
-                        AndroidNetworking.post(current_app_config(Realm.context).APP_MAINLINK+ssd.upload_link)
+                        AndroidNetworking.post(app_config.APP_MAINLINK+ssd.upload_link)
                                 .addHeaders("Authorization", svars.Service_token(act))
                                 .addHeaders("content-type", "application/json")
                                 .addHeaders("cache-control", "no-cache")
@@ -2217,8 +2222,8 @@ if(maindata[0]==null){
 
             user.put("PassWord", prefs.getString("pass", ""));
             user.put("UserName", prefs.getString("username", ""));
-            user.put("Branch", current_app_config(Realm.context).ACCOUNT_BRANCH);
-            user.put("AccountName", current_app_config(Realm.context).ACCOUNT);
+            user.put("Branch", app_config.ACCOUNT_BRANCH);
+            user.put("AccountName",app_config.ACCOUNT);
             user.put("Language", "English");
 
 
@@ -2246,7 +2251,7 @@ if(maindata[0]==null){
                                 Log.e("JSON ST PG =>", "" + svars.login_url);
                                 Log.e("LOGIN TX =>", "" + JO.toString());
 //                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(act).APP_MAINLINK+"/SystemAccounts/Authentication/Login/Submit").openConnection();
-                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(act).APP_MAINLINK+"/Authentication/Login/Submit").openConnection();
+                                httpURLConnection = (HttpURLConnection) new URL(app_config.APP_MAINLINK+app_config.AUTHENTICATION_URL).openConnection();
                                 httpURLConnection.setRequestMethod("POST");
                                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
 
@@ -2268,10 +2273,10 @@ if(maindata[0]==null){
                                     Log.e("LOGIN POST RX", " => " + response);
 
                                     maindata[0] = new JSONObject(response);
-                                    JSONObject RESULT = maindata[0].getJSONObject("Result");
+                                    JSONObject RESULT = maindata[0].getJSONObject(app_config.SYNC_USE_CAPS?"Result":"result");
 
 
-                                    if (RESULT.getBoolean("IsOkay")) {
+                                    if (RESULT.getBoolean(app_config.SYNC_USE_CAPS?"IsOkay":"isOkay")) {
 
                                         svars.set_Service_token(act, httpURLConnection.getHeaderField("authorization"));
                                         ssi.on_status_changed(act.getString(R.string.authenticated));

@@ -170,7 +170,9 @@ public class svars {
         public String APP_MAINLINK = "",
                 APP_CONTROLL_MAIN_LINK = "",
                 ACCOUNT = "",
-                ACCOUNT_BRANCH = "";
+                ACCOUNT_BRANCH = "",
+                AUTHENTICATION_URL = "";
+        public boolean SYNC_USE_CAPS=true;
         public boolean print_receipt_on_registration = false;
         public boolean allow_employee_details_edition = false;
 
@@ -198,6 +200,15 @@ public class svars {
             this.APP_CONTROLL_MAIN_LINK = APP_CONTROLL_MAIN_LINK;
             this.ACCOUNT = ACCOUNT;
             this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
+
+        }
+   public SPARTA_APP(String APP_MAINLINK, String APP_CONTROLL_MAIN_LINK, String ACCOUNT, String ACCOUNT_BRANCH,String Login_url,boolean result_caps) {
+            this.APP_MAINLINK = APP_MAINLINK;
+            this.APP_CONTROLL_MAIN_LINK = APP_CONTROLL_MAIN_LINK;
+            this.ACCOUNT = ACCOUNT;
+            this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
+       AUTHENTICATION_URL=login_url;
+       SYNC_USE_CAPS=result_caps;
 
         }
         public  MODULES WORKING_MODULES=new MODULES();
