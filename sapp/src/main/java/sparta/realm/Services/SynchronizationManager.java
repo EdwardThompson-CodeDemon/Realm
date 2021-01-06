@@ -2214,6 +2214,8 @@ if(maindata[0]==null){
    public static Object getJsonValue(String pos, JSONObject jo)
     {
         Object json=jo;
+        if(!pos.contains(":")){return null;}
+        if(!pos.contains(";")){pos+=";";}
         for(String s:pos.split(";")){
             if(s.length()>0) {
                 try {
