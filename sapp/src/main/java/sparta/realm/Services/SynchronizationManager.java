@@ -1112,12 +1112,14 @@ if(maindata[0]==null){
                             data=null;
                             //  ssi.on_main_percentage_changed(0);
 
-                            if (maindata[0].getBoolean(app_config.SYNC_USE_CAPS?"IsOkay":"isOkay")) {
+                            if (ssd.is_ok_position==null||(boolean)getJsonValue(ssd.is_ok_position,maindata[0] )) {
+//  if (maindata[0].getBoolean(app_config.SYNC_USE_CAPS?"IsOkay":"isOkay")) {
 
 
-                                JSONArray temp_ar;
-                                Object json = new JSONTokener(maindata[0].opt(app_config.SYNC_USE_CAPS?"Result":"result").toString()).nextValue();
-                                temp_ar = json instanceof JSONArray ? (JSONArray) json : ((JSONObject) json).getJSONArray(app_config.SYNC_USE_CAPS?"Result":"result");
+                                JSONArray temp_ar=(JSONArray)getJsonValue(ssd.download_array_position,maindata[0] );
+//                                Object json = new JSONTokener(maindata[0].opt(app_config.SYNC_USE_CAPS?"Result":"result").toString()).nextValue();
+//                                temp_ar = json instanceof JSONArray ? (JSONArray) json : ((JSONObject) json).getJSONArray(app_config.SYNC_USE_CAPS?"Result":"result");
+                                temp_ar=new JSONArray(temp_ar.toString().replace("'","''"));
 
                        /* if(ssd.service_name.equalsIgnoreCase("Member fingerprints")){
                             temp_ar = maindata.getJSONObject("result").getJSONArray("result");
@@ -2209,7 +2211,31 @@ if(maindata[0]==null){
 
     }
 
+   public static Object getJsonValue(String pos, JSONObject jo)
+    {
+        Object json=jo;
+        for(String s:pos.split(";")){
+            if(s.length()>0) {
+                try {
+//            if(json instanceof JSONObject){
+                    if (s.split(":")[0].equalsIgnoreCase("JO")) {
+                        json = new JSONTokener(((JSONObject)json).opt(s.split(":")[1]).toString()).nextValue();
 
+                    } else if (s.split(":")[0].equalsIgnoreCase("JA")) {
+
+//                if (json instanceof JSONArray){
+
+                        json = ((JSONArray) json).get(Integer.parseInt(s.split(":")[1]));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return json;
+    }
     void renew_token()
     {
         ssi.on_status_changed(act.getString(R.string.authenticating));
