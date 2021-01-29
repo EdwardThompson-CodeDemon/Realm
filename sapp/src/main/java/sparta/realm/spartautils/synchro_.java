@@ -3,6 +3,9 @@ package sparta.realm.spartautils;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.lzyzsd.circleprogress.ArcProgress;
+import com.jem.rubberpicker.RubberSeekBar;
 
 import java.util.ArrayList;
 
@@ -36,7 +40,7 @@ public class synchro_ {
     ImageView sync_icon;
    public synchro_(Activity act, RelativeLayout main, ArrayList<View> launch_buttons, TextView last_sync_time_txt, ImageView special_synchro_view)
     {
-     this.act=act;   
+     this.act=act;
      this.main=main;
      this.last_sync_time_txt=last_sync_time_txt==null?new TextView(act):last_sync_time_txt;
      this.launch_buttons=launch_buttons;
@@ -106,6 +110,7 @@ public void triger_sync()
     ArcProgress ARC1;
     ProgressBar sync_percent;
     CheckBox autoback_sync,global_data_sync;
+    ImageView sync_config;
 
     RelativeLayout sync_lay;
     void setyp_synchro()
@@ -114,6 +119,7 @@ public void triger_sync()
         sync_view = LayoutInflater.from(act).inflate(R.layout.item_sync_view, null, false);
         sync_lay=(RelativeLayout)sync_view.findViewById(R.id.sync_lay);
         sync_now=(Button)sync_view.findViewById(R.id.sync_now);
+        sync_config=(ImageView) sync_view.findViewById(R.id.sync_config);
         ARC1=(ArcProgress)sync_view.findViewById(R.id.arc_progress);
 
         percent_title_label=(TextView)sync_view.findViewById(R.id.percent_title_label);
@@ -121,7 +127,12 @@ public void triger_sync()
         sync_status_txt=(TextView)sync_view.findViewById(R.id.sync_status_txt);
         sync_time=(TextView)sync_view.findViewById(R.id.sync_status_val);
 
-
+        sync_config.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                show_sync_config_dialog();
+            }
+        });
       sync_icon =sync_icon==null?(ImageView)sync_view.findViewById(R.id.sync_status_icon):sync_icon;
 
         sync_percent=(ProgressBar)sync_view.findViewById(R.id.sync_percent);
@@ -154,7 +165,7 @@ public void triger_sync()
         sync_spinn_annimator.setRepeatCount(ValueAnimator.INFINITE);
         sync_spinn_annimator.start();
 
-        sb = new SynchronizationManager(new SynchronizationManager.sync_status_interface() {
+        sb = new SynchronizationManager(new SynchronizationManager.SynchronizationStatusHandler() {
             @Override
             public void on_status_code_changed(final int status) {
                 act.runOnUiThread(new Runnable() {
@@ -286,5 +297,62 @@ public void triger_sync()
             }
         });
     }
+    String timesp(long timeSec)
+    {
+        ;// Json output
+        int hours = (int) timeSec/ 3600;
+        int temp = (int) timeSec- hours * 3600;
+        int mins = temp / 60;
+        temp = temp - mins * 60;
+        int secs = temp;
 
+        return hours>1?hours+ " Hrs ":hours>0?hours+ " Hr ":""+mins+" mins  ";//hh:mm:ss formatte
+    }
+    public void show_sync_config_dialog() {
+        View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_config_sync, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
+                .setView(aldv)
+                .show();
+        ald.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        RubberSeekBar rsb=aldv.findViewById(R.id.rrp);
+        ((TextView)aldv.findViewById(R.id.time_span)).setText(timesp(svars.sync_interval_mins(act)*60));
+        rsb.setCurrentValue(svars.sync_interval_mins(act));
+
+        rsb.setOnRubberSeekBarChangeListener(new RubberSeekBar.OnRubberSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(RubberSeekBar rubberSeekBar, int i, boolean b) {
+                ((TextView)aldv.findViewById(R.id.time_span)).setText(timesp(i*60));
+                svars.set_sync_interval_mins(act,i);
+                sb.syncregisterdtimer.cancel();
+                sb.syncregisterdtimer=null;
+                sb.InitialiseAutosync();
+
+            }
+
+            @Override
+            public void onStartTrackingTouch( RubberSeekBar rubberSeekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(RubberSeekBar rubberSeekBar) {
+
+            }
+        });
+
+        (aldv.findViewById(R.id.restore_defaults)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rsb.setCurrentValue(svars.default_sync_interval_mins);
+                svars.set_sync_interval_mins(act,svars.default_sync_interval_mins);
+            }
+        });
+        (aldv.findViewById(R.id.dismiss)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ald.dismiss();
+            }
+        });
+
+    }
 }

@@ -790,12 +790,12 @@ public class DatabaseManager {
             String table_name=realm.getPackageTable(s);
             try {
                 Cursor cursor1 = database.rawQuery("SELECT * FROM "+table_name, null);
-                cursor1.moveToFirst();
-                if (!cursor1.isAfterLast()) {
-                    do {
-                        cursor1.getString(0);
-                    } while (cursor1.moveToNext());
-                }
+//                cursor1.moveToFirst();
+//                if (!cursor1.isAfterLast()) {
+//                    do {
+//                        cursor1.getString(0);
+//                    } while (cursor1.moveToNext());
+//                }
                 cursor1.close();
             } catch (Exception e) {
                 database.execSQL(realm.getTableCreateSttment(table_name,false));
@@ -823,12 +823,12 @@ public class DatabaseManager {
             for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
                 try {
                     Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM "+table_name, null);
-                    cursor1.moveToFirst();
-                    if (!cursor1.isAfterLast()) {
-                        do {
-                            cursor1.getString(0);
-                        } while (cursor1.moveToNext());
-                    }
+//                    cursor1.moveToFirst();
+//                    if (!cursor1.isAfterLast()) {
+//                        do {
+//                            cursor1.getString(0);
+//                        } while (cursor1.moveToNext());
+//                    }
                     cursor1.close();
                 } catch (Exception e) {
                     database.execSQL("ALTER TABLE "+table_name+" ADD COLUMN " + col.getKey() );
@@ -2223,7 +2223,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
 
         if(svars.sync_time(act)==null)
         {
-            return svars.regsyncinterval_mins;
+            return svars.sync_interval_mins(act);
         }
         Date time1=null;
         try {
@@ -2245,7 +2245,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
             // return (int)Math.round((double)diffference/60000);
             int diff_1=(int) ((diffference/ (1000*60)) % 60);
             return  diff_1+(((int) ((diffference / (1000*60*60)) % 24))*60);
-        }catch (Exception ex){return svars.regsyncinterval_mins;}
+        }catch (Exception ex){return svars.sync_interval_mins(act);}
 
 
 

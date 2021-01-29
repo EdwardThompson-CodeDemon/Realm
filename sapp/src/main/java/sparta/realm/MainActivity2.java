@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,6 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import sparta.realm.Activities.SpartaAppCompactActivity;
@@ -33,8 +37,7 @@ import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.svars;
-
-import com.realm.annotations.RealmDataClass;
+import sparta.realm.spartautils.synchro_;
 
 import static sparta.realm.Realm.realm;
 
@@ -48,7 +51,7 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SynchronizationManager as=new SynchronizationManager(new SynchronizationManager.sync_status_interface() {
+        SynchronizationManager as=new SynchronizationManager(new SynchronizationManager.SynchronizationStatusHandler() {
             @Override
             public void on_status_code_changed(int status) {
 
@@ -74,7 +77,12 @@ public class MainActivity2 extends SpartaAppCompactActivity {
 
             }
         });
-      //  as.InitialiseAutosync();
+        ArrayList<View> sync_views=new ArrayList<View>();
+        ArrayList<View> backup_views=new ArrayList<View>();
+
+        synchro_ sync=new synchro_(act,(RelativeLayout)findViewById(R.id.main_content),sync_views,(TextView) findViewById(R.id.sync_time),(ImageView) findViewById(R.id.sync_icon));
+
+        //  as.InitialiseAutosync();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +101,9 @@ public class MainActivity2 extends SpartaAppCompactActivity {
 
 
                 saver.commit();
-                as.sync_now();
+              //  as.sync_now();
+
+                sync.triger_sync();
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -113,32 +123,32 @@ public class MainActivity2 extends SpartaAppCompactActivity {
 
 
 
-        String resp=response(1).toString();
-        String resp2=response(1).toString();
+        String resp=response(1000).toString();
+        String resp2=response(1000).toString();
         Log.e("Deleting :","");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         DatabaseManager.database.execSQL("DELETE FROM CP_TBL_supplier_account");
         Log.e("Deleted :","");
 
-//        Log.e("gson :",""+insert_gson(resp));
+        Log.e("gson :",""+insert_gson(resp));
 
         Log.e("Deleting :","");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
-//        Log.e("Json :",""+insert_v1(resp));
+       Log.e("Json :",""+insert_v1(resp));
 
     Log.e("Deleting :","");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
-//        Log.e("Json 2 :",""+insert_v1_sd(resp));
+       Log.e("Json 2 :",""+insert_v1_sd(resp));
 
         Log.e("Deleting :","");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
-//Log.e("gson2 :",""+insert_gson2(resp));
+Log.e("gson2 :",""+insert_gson2(resp));
 
         Log.e("Deleting :","Deleting");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");

@@ -48,6 +48,14 @@
             custom:arc_finished_color="@color/colorAccent"
             custom:arc_progress="0"
             custom:arc_bottom_text="@string/overall_sync_progress"/>
+        <ImageView
+            android:id="@+id/sync_config"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/sync_status_icon"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_settings_black_24dp"/>
         <View
             android:layout_width="match_parent"
             android:background="@color/white"

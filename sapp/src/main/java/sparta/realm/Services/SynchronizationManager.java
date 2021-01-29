@@ -51,9 +51,6 @@ import sparta.realm.spartamodels.dynamic_property;
 import sparta.realm.spartamodels.member_data;
 
 
-
-
-import sparta.realm.spartautils.app_control.SpartaApplication;
 import sparta.realm.spartautils.svars;
 import com.realm.annotations.db_class_;
 import com.realm.annotations.sync_service_description;
@@ -65,6 +62,8 @@ import static com.realm.annotations.SyncDescription.service_type.Download_Upload
 import static com.realm.annotations.SyncDescription.service_type.Upload;
 import static sparta.realm.Realm.realm;
 import static sparta.realm.spartautils.svars.current_app_config;
+import static sparta.realm.spartautils.svars.set_version_action_done;
+import static sparta.realm.spartautils.svars.shared_pref_boolean;
 
 
 public class SynchronizationManager {
@@ -87,7 +86,7 @@ public class SynchronizationManager {
             builder.detectFileUriExposure();
         }
         AndroidNetworking.initialize(act);
-        ssi=new sync_status_interface() {
+        ssi=new SynchronizationStatusHandler() {
             @Override
             public void on_status_code_changed(int status) {
 
@@ -153,17 +152,19 @@ public class SynchronizationManager {
 
     }
     static SynchronizationHandler Main_handler=new SynchronizationHandler() {    };
-    public interface sync_status_interface
+    public interface SynchronizationStatusHandler
     {
        default void on_status_code_changed(int status){};
         void on_status_changed(String status);
         void on_info_updated(String status);
         void on_main_percentage_changed(int progress);
         void on_secondary_progress_changed(int progress);
+        default void onSynchronizationBegun(){};
+        default void onSynchronizationCompleted(){};
     }
-    static sync_status_interface ssi;
+    static SynchronizationStatusHandler ssi;
    static svars.SPARTA_APP app_config;
-    public SynchronizationManager(sync_status_interface ssi) {
+    public SynchronizationManager(SynchronizationStatusHandler ssi) {
 
 
         this.ssi=ssi;
@@ -177,6 +178,10 @@ public class SynchronizationManager {
  public void OverrideSynchronization(SynchronizationHandler synchronizationHandler) {
 Main_handler=synchronizationHandler;
     }
+public void setSynchronizationStatusHandler(SynchronizationStatusHandler synchronizationstatushandler) {
+ssi=synchronizationstatushandler;
+    }
+
     public void InitialiseAutosync()
     {
         if(syncregisterdtimer!=null){return;}
@@ -201,7 +206,7 @@ Main_handler=synchronizationHandler;
 
 
             }
-        }, 1000, svars.regsyncinterval_mins*60000);
+        }, 1000, svars.sync_interval_mins(act)*60000);
 
     }
 
@@ -231,7 +236,7 @@ Main_handler=synchronizationHandler;
     {
         //sync_unregistered_employees(act);
         //  sync_unregistered_employee_fingerprints(act);
-
+ssi.onSynchronizationBegun();
         sync_sum_counter=0;
         sync_success_counter=0;
         sync_complete_counter=0;
@@ -247,6 +252,11 @@ Main_handler=synchronizationHandler;
 
 
 
+    }
+   public void set_sync(boolean sync)
+    {
+
+    svars.set_shared_pref_boolean(act, svars.shared_prefs_booleans.should_sync,sync);
     }
     /**
      * Sets up synchronization based on ? extends db_class classes with dynamic_property types defined
@@ -1203,6 +1213,7 @@ if(maindata[0]==null){
                                         ssi.on_main_percentage_changed(100);
                                         ssi.on_info_updated("Synchronization complete");
                                         ssi.on_status_code_changed(3);
+                                        ssi.onSynchronizationCompleted();
                                     }
 
                                 }
@@ -1816,6 +1827,7 @@ if(maindata[0]==null){
                 ssi.on_main_percentage_changed(100);
                 ssi.on_info_updated(act.getResources().getString(R.string.synchronization_complete));
                 ssi.on_status_code_changed(3);
+                ssi.onSynchronizationCompleted();
             }
         }else {
 
@@ -2238,6 +2250,7 @@ if(maindata[0]==null){
         }
         return json;
     }
+
     void renew_token()
     {
         ssi.on_status_changed(act.getString(R.string.authenticating));

@@ -11,7 +11,7 @@ import com.luxand.FSDK;
 import com.realm.annotations.RealmDataClass;
 
 
-
+import sparta.realm.Dynamics.spartaDynamics;
 import sparta.realm.Realm;
 import sparta.realm.spartautils.svars;
 
@@ -24,12 +24,12 @@ public class SpartaApplication extends Application {
 //        Realm.context = getApplicationContext();
        // realm=realm==null?new spartaDynamics():realm;
 
-        svars.SPARTA_APP APPP = new svars.SPARTA_APP("https://weightcapture.cs4africa.com/arqan", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm");
+        svars.SPARTA_APP APPP = new svars.SPARTA_APP("https://weightcapture.cs4africa.com/arqan", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm","/SystemAccounts/Authentication/Login/Submit",true);
 
         APPP.WORKING_PROFILE_MODE= svars.SPARTA_APP.PROFILE_MODE.GENERAL;
 
 
-      //  Realm.Initialize(this,new spartaDynamics(),"REALM",APPP);
+        Realm.Initialize(this,new spartaDynamics(),"REALM",APPP);
     }
 
     public static Context getAppContext() {

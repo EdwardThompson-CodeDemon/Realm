@@ -560,6 +560,8 @@ public static class remember_indexes {
 
 
     }
+
+
  public static void set_current_device(Context act, int current_device) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
@@ -573,6 +575,23 @@ public static class remember_indexes {
 
        return Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE).getInt("current_device", DEVICE.GENERAL.ordinal());
 
+
+    }
+    public static int default_sync_interval_mins = 20;
+
+    public static int sync_interval_mins(Context act) {
+
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        return prefs.getInt("sync_interval_mins", default_sync_interval_mins);
+
+    }
+
+    public static void set_sync_interval_mins(Context act, int sync_interval_mins) {
+
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+        saver.putInt("sync_interval_mins", sync_interval_mins);
+        saver.commit();
 
     }
 
@@ -703,6 +722,25 @@ public static class remember_indexes {
     public static String deligate(Context act) {
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         return prefs.getString("deligate_rc", null);
+
+    }
+ public static void set_shared_pref_boolean(Context act, shared_prefs_booleans var,boolean data) {
+
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+        saver.putBoolean("b"+var.ordinal(), data);
+        saver.commit();
+
+    }
+
+    public static boolean shared_pref_boolean(Context act, shared_prefs_booleans var) {
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        return prefs.getBoolean("b"+var.ordinal(), false);
+
+    }
+
+  public   enum shared_prefs_booleans{
+         should_sync
 
     }
 public static void set_enrlock(Context act, String enrloc_rc) {
