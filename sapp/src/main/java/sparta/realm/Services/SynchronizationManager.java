@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -160,6 +161,7 @@ public class SynchronizationManager {
         void on_main_percentage_changed(int progress);
         void on_secondary_progress_changed(int progress);
         default void onSynchronizationBegun(){};
+        default void onSynchronizationCompleted(sync_service_description ssd){};
         default void onSynchronizationCompleted(){};
     }
     static SynchronizationStatusHandler ssi;
@@ -453,9 +455,9 @@ ssi.onSynchronizationBegun();
         Stopwatch sw=new Stopwatch();
         sw.start();
         try {
-
-
-            for(sync_service_description ssd_t:realm.getSyncDescription()){
+List<sync_service_description> sync_services=realm.getSyncDescription();
+sync_sum_counter=sync_services.size();
+            for(sync_service_description ssd_t:sync_services){
                 if(ssd_t==null){continue;}
                 switch (ssd_t.servic_type){
                     case Download:
@@ -1022,7 +1024,7 @@ ssi.onSynchronizationBegun();
                 +"Service name :"+ssd.service_name+"\n"
                 +"Service type :"+ssd.servic_type.name()+"\n"
                 +"download link :"+ssd.download_link+"\n");
-        sync_sum_counter++;
+     //   sync_sum_counter++;
         ssi.on_status_code_changed(2);
         ssi.on_status_changed("Synchronizing "+ssd.service_name+" ↓");
         final JSONObject[] filter_object = {ssd.use_download_filter ? generate_filter(ssd.table_name, ssd.chunk_size, ssd.table_filters) : new JSONObject()};
@@ -1213,7 +1215,11 @@ if(maindata[0]==null){
                                         ssi.on_main_percentage_changed(100);
                                         ssi.on_info_updated("Synchronization complete");
                                         ssi.on_status_code_changed(3);
+                                        ssi.onSynchronizationCompleted(ssd);
                                         ssi.onSynchronizationCompleted();
+                                    }else{
+                                        ssi.onSynchronizationCompleted(ssd);
+
                                     }
 
                                 }
@@ -1252,7 +1258,7 @@ if(maindata[0]==null){
                 +"Service type :"+ssd.servic_type.name()+"\n"
                 +"download link :"+ssd.download_link+"\n");
 
-        sync_sum_counter++;
+      //  sync_sum_counter++;
         ssi.on_status_code_changed(2);
         ssi.on_status_changed(act.getResources().getString(R.string.synchronizing)+ssd.service_name+" ↓");
         JSONObject filter_object=ssd.use_download_filter?generate_filter(ssd.table_name,ssd.chunk_size,ssd.table_filters):new JSONObject();
@@ -1786,7 +1792,7 @@ if(maindata[0]==null){
                 +"Service type :"+ssd.servic_type.name()+"\n"
                 +"upload link :"+ssd.upload_link+"\n");
 
-        sync_sum_counter++;
+     //   sync_sum_counter++;
         ssi.on_status_code_changed(2);
         //  ssi.on_status_changed("Sparta sync");
         double denm2=(double) sync_sum_counter;
@@ -1819,6 +1825,8 @@ if(maindata[0]==null){
             double num=(double) sync_complete_counter;
             double per=(num/denm)*100.0;
             ssi.on_main_percentage_changed((int)per);
+            ssi.onSynchronizationCompleted(ssd);
+
             if(per==100.0)
             {
                 ssi.on_main_percentage_changed(100);
@@ -1828,6 +1836,7 @@ if(maindata[0]==null){
                 ssi.on_info_updated(act.getResources().getString(R.string.synchronization_complete));
                 ssi.on_status_code_changed(3);
                 ssi.onSynchronizationCompleted();
+
             }
         }else {
 
