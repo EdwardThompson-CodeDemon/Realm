@@ -1203,6 +1203,7 @@ if(maindata[0]==null){
 
                                 if( den>=ssd.chunk_size&&ssd.use_download_filter)
                                 {
+                                       sync_sum_counter++;
                                     download_(ssd);
 
 
