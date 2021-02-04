@@ -195,7 +195,7 @@ ssi=synchronizationstatushandler;
                 // svars.set_sync_time(act,time_now);
                 Log.e("Initializing sync", " time =>" + time_now);
                 Log.e("Initializing sync", " PERIOD =>" + sdb.sync_period());
-                if(sdb.sync_period()>=(svars.regsyncinterval_mins-1)||sdb.sync_period()<0) {
+                if(sdb.sync_period()>=(svars.sync_interval_mins(act)-1)||sdb.sync_period()<0) {
 
                     if(svars.background_sync(act))
                     {
@@ -1084,7 +1084,7 @@ sync_sum_counter=sync_services.size();
 
                             try {
                                 InputStream in = httpURLConnection.getInputStream();
-                                InputStreamReader inputStreamReader = new InputStreamReader(in);
+                               // InputStreamReader inputStreamReader = new InputStreamReader(in);
 
 
                                 data = new String(ByteStreams.toByteArray(in));
