@@ -1910,7 +1910,7 @@ if(maindata[0]==null){
                                                 cv.put("sync_status", sync_status.syned.ordinal());
                                                 cv.put("sid", response.getJSONObject(app_config.SYNC_USE_CAPS?"Result":"result").getString("id"));
 
-                                                sdb.database.update(table_name, cv, "id=" + finalLid, null);
+                                                sdb.database.update(table_name, cv, "_id=" + finalLid, null);
 
 
                                                 update_counter(ssd,pending_records_filter);
