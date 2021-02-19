@@ -149,6 +149,10 @@ public class SynchronizationManager {
 
             return response;
         }
+ default JSONObject OnAuthenticated(String token, JSONObject response) {
+
+            return response;
+        }
 
 
     }
@@ -2323,7 +2327,8 @@ if(maindata[0]==null){
                                     response = new String(ByteStreams.toByteArray(in));
                                     Log.e("LOGIN POST RX", " => " + response);
 
-                                    maindata[0] = new JSONObject(response);
+                                    maindata[0] = Main_handler.OnAuthenticated(httpURLConnection.getHeaderField("authorization"),new JSONObject(response));
+//                                    maindata[0] = new JSONObject(response);
                                     JSONObject RESULT = maindata[0].getJSONObject(app_config.SYNC_USE_CAPS?"Result":"result");
 
 
