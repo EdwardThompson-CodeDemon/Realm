@@ -99,7 +99,7 @@ public class svars {
 
     }
 
-    public static String transaction_code(Activity act) {
+    public static String transaction_code(Context act) {
 
 
         return device_code(act).substring(device_code(act).length()-12)+gett_date();
@@ -1087,7 +1087,7 @@ public static void set_enrlock(Context act, String enrloc_rc) {
         saver.commit();
 
     }
-    public static void set_user_id(Activity act,String user_id)
+    public static void set_user_id(Context act,String user_id)
     {
 
         SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
@@ -1537,7 +1537,7 @@ public static int printer_type(Context act, int print_job_index) {
 
     }
 
-    public static boolean gps_enabled(Activity act) {
+    public static boolean gps_enabled(Context act) {
 
         LocationManager mlocManager = (LocationManager) act.getSystemService(act.LOCATION_SERVICE);
 
