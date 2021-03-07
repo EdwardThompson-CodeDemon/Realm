@@ -1163,6 +1163,7 @@ if(maindata[0]==null){
                                      synchronized (this) {
                                     String[][] ins = realm.getInsertStatementsFromJson(temp_ar,ssd.object_package);
                                     String sidz = ins[0][0];
+                                   String sidz_inactive = ins[0][1];
                                     String[] qryz = ins[1];
                                     int q_length=qryz.length;
                                     temp_ar = null;
@@ -1181,7 +1182,9 @@ if(maindata[0]==null){
                                         ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(sdb.get_record_count(ssd.table_name, ssd.table_filters)));
                                     }
 
-                                    DatabaseManager.database.execSQL("REPLACE INTO " + ssd.table_name + " SELECT * FROM CP_" + ssd.table_name + "");
+                                         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sid IN("+sidz_inactive+")AND sync_status<>" + sync_status.pending.ordinal());
+//                                         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sid IN("+DatabaseManager.conccat_sql_string(sidz_inactive)+")AND sync_status<>" + sync_status.pending.ordinal());
+                                         DatabaseManager.database.execSQL("REPLACE INTO " + ssd.table_name + " SELECT * FROM CP_" + ssd.table_name + "");
                                     DatabaseManager.database.execSQL("DELETE FROM CP_" + ssd.table_name + "");
                                     DatabaseManager.database.setTransactionSuccessful();
                                     DatabaseManager.database.endTransaction();

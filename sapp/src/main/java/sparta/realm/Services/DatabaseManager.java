@@ -2268,7 +2268,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
     }
 
 
-    public   String conccat_sql_string(String[] str_to_join)
+    public  static  String conccat_sql_string(String[] str_to_join)
     {
         String result="";
         for(int i=0;i<str_to_join.length;i++)
@@ -2295,7 +2295,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
 
     }
 
-    public  String conccat_sql_string(ArrayList<String> str_to_join2)
+    public static String conccat_sql_string(ArrayList<String> str_to_join2)
     {
         String result="";
 
