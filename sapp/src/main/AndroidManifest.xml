@@ -33,6 +33,7 @@
         </activity>
         <activity android:name=".spartautils.bluetooth.activities.DeviceControlActivity" />
         <activity android:name=".spartautils.bluetooth.activities.DeviceScanActivity" />
+        <activity android:name=".Activities.SpartaAppCompactFingerPrintGateActivity" />
     </application>
 
 </manifest>
