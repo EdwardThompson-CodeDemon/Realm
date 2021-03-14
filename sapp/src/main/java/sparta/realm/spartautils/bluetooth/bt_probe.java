@@ -1,4 +1,4 @@
-package sparta.realm.spartautils;
+package sparta.realm.spartautils.bluetooth;
 
 
 import android.app.Activity;
@@ -38,6 +38,7 @@ public class bt_probe {
         void on_data_received(BluetoothDevice device, String data);
         void on_device_connection_failed(BluetoothDevice device);
         void on_data_sent(BluetoothDevice device, String data);
+        void on_data_sent(BluetoothDevice device, byte[] data);
         void on_data_parsed(BluetoothDevice device, String data);
         void on_device_connection_changed(boolean connected, BluetoothDevice device);
         void on_device_reonnected(BluetoothDevice device);
@@ -73,7 +74,7 @@ public static void setup_bt(Activity acti)
                 try {
                     findBT(true);
                     openBT();
-                    bti.on_device_connection_changed(true,mmDevice);
+                    //bti.on_device_connection_changed(true,mmDevice);
                 }catch (IOException EX)
                 {
                     bti.on_device_connection_changed(false,mmDevice);
@@ -114,6 +115,17 @@ public static void setup_bt(Activity acti)
     {
         try {
             mmOutputStream.write(val.getBytes());
+            mmOutputStream.flush();
+            bti.on_data_sent(mmDevice,val);
+
+        }catch (Exception ex){
+            bti.on_device_error(mmDevice,ex.getMessage());
+            Log.e("Bluetooth tx error =>"," "+ex);}
+    }
+ public static void send_data(byte[] val)
+    {
+        try {
+            mmOutputStream.write(val);
             mmOutputStream.flush();
             bti.on_data_sent(mmDevice,val);
 

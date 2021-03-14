@@ -1,7 +1,5 @@
 package sparta.realm.spartautils.bluetooth;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -12,16 +10,13 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.SimpleExpandableListAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 
 import sparta.realm.spartautils.bluetooth.services.BluetoothLeService;
-import sparta.realm.spartautils.bt_probe;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 

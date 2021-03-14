@@ -8,7 +8,7 @@ import java.util.TimerTask;
 
 import sparta.realm.spartautils.bluetooth.ble_probe;
 import sparta.realm.spartautils.bluetooth.bt_device_connector;
-import sparta.realm.spartautils.bt_probe;
+import sparta.realm.spartautils.bluetooth.bt_probe;
 import sparta.realm.spartautils.svars;
 
 

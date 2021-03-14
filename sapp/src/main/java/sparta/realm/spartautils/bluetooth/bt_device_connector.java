@@ -270,7 +270,7 @@ fp_device,
             }
 
         }else {
-            Toast.makeText(act,"Bluetooth not available ...!!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(act,"Bluetooth not available ...!!!", Toast.LENGTH_LONG).show();//00:14:03:05:EC:D0
         }
     }
     private android.os.Handler mHandler=new android.os.Handler();
