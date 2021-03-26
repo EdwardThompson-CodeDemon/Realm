@@ -34,6 +34,8 @@
         <activity android:name=".spartautils.bluetooth.activities.DeviceControlActivity" />
         <activity android:name=".spartautils.bluetooth.activities.DeviceScanActivity" />
         <activity android:name=".Activities.SpartaAppCompactFingerPrintGateActivity" />
+        <activity android:name=".Activities.SpartaFaceCamera" />
+        <activity android:name=".spartautils.biometrics.face.SpartaFaceCamera" />
     </application>
 
 </manifest>

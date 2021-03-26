@@ -84,7 +84,7 @@ gate.Resume();
 
     @Override
     public void on_data_sent(BluetoothDevice device, byte[] data) {
-        
+
     }
 
     @Override
