@@ -839,7 +839,7 @@ public class DatabaseManager {
 
 for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
                 try {
-                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM "+table_name, null);
+                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM CP_"+table_name, null);
 //                    cursor1.moveToFirst();
 //                    if (!cursor1.isAfterLast()) {
 //                        do {
