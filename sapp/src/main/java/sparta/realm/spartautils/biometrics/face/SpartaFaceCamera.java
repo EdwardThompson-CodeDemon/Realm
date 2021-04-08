@@ -2,7 +2,9 @@ package sparta.realm.spartautils.biometrics.face;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -12,18 +14,25 @@ import android.widget.Toast;
 
 import com.luxand.FSDK;
 
+import java.io.File;
+
 import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.R;
+import sparta.realm.Realm;
+import sparta.realm.spartautils.svars;
 
 
 public class SpartaFaceCamera extends SpartaAppCompactActivity {
     private Preview mPreview;
     private CaptureHandler mDraw;
-    private final String database = "Memory50.dat";
+    private final String database = "MemoryR080.dat";
     public static float sDensity = 1.0f;
     private boolean mIsFailed = false;
 String sid=null;
-Button capture;
+Button capture,generate;
+    int ok_count=0;
+    int ok_max_count=100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +41,7 @@ Button capture;
 
         setContentView(R.layout.activity_sparta_face_camera);
         capture=findViewById(R.id.capture);
+        generate=findViewById(R.id.generate_templates);
 
 
     sDensity = getResources().getDisplayMetrics().scaledDensity;
@@ -58,19 +68,27 @@ if((sid=getIntent().getStringExtra("sid"))==null){
 mDraw.transaction_no=sid;
 mDraw.sDensity=	sDensity;
 mDraw.captureMode= CaptureHandler.CaptureMode.Registration;
+
         mDraw.cpi=new CaptureHandler.capturing_interface() {
     @Override
     public void OnOkToCapture() {
         capture.post(new Runnable() {
             @Override
             public void run() {
+             //   ok_count++;
                 capture.setVisibility(View.VISIBLE);
+//                mDraw.capture=true;
             }
         });
 
     }
 
-    @Override
+            @Override
+            public void OnOkToCapture(int gender, float age) {
+                mDraw.capture=true;
+            }
+
+            @Override
     public void OnNotOkToCapture() {
         capture.post(new Runnable() {
             @Override
@@ -80,15 +98,25 @@ mDraw.captureMode= CaptureHandler.CaptureMode.Registration;
         });
     }
 
-    @Override
-    public void OnCaptured(String path) {
+            @Override
+            public void OnCaptured(String path) {
+                Intent data=new Intent();
+                data.putExtra("ImageUrl", path);
+                setResult(Activity.RESULT_OK,data);
+                finish();
+            }
+
+            @Override
+    public void OnCaptured(String path,int gender,float age) {
       /* closeCamera();
                     stopBackgroundThread();*/
-
+                mDraw.capture=false;
         Intent data=new Intent();
         data.putExtra("ImageUrl", path);
+        data.putExtra("Age", age);
+        data.putExtra("Gender", gender);
        setResult(Activity.RESULT_OK,data);
-        finish();
+       // finish();
     }
 };
 
@@ -98,17 +126,42 @@ mDraw.captureMode= CaptureHandler.CaptureMode.Registration;
 mDraw.capture=true;
             }
         });
+ generate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File main_file=new File(Environment.getExternalStorageDirectory().toString() + "/realm_BUKINA/.RAW_EMPLOYEE_DATA/");
+                if(main_file.exists()) {
+                    File[] images = main_file.listFiles();
+                    Log.e("Number of Images :", "" + images.length);
+                    for (int i = 0; i < images.length; i++) {
+                        mDraw.generate_templates(images[i].getAbsolutePath());
+                    }
+                }
+            }
+        });
 
-        mPreview.setup_overlay(mDraw);
+        mPreview.setup_overlay(mDraw,1,270);//face :0 for back and 1 for front
         mDraw.mTracker = new FSDK.HTracker();
+//        int[] err=new int[2];
+//        int err=0;
+//        Log.e("SET PARAMs :"," AGE : "+  FSDK.SetTrackerMultipleParameters(mDraw.mTracker,"DetectGender=true;DetectAge=true;",err)+"   Err :"+err[0]);
+//        "Parameter1=Value1[;Parameter2=Value2[;…]]"  //format
+//        String templatePath = this.getApplicationInfo().dataDir + "/" + database;
         String templatePath = this.getApplicationInfo().dataDir + "/" + database;
-        if (FSDK.FSDKE_OK != FSDK.LoadTrackerMemoryFromFile(mDraw.mTracker, templatePath)) {
+        int load_tracker= FSDK.LoadTrackerMemoryFromFile(mDraw.mTracker, templatePath);
+        if (FSDK.FSDKE_OK != load_tracker) {
 
 
             if (FSDK.FSDKE_OK !=  FSDK.CreateTracker(mDraw.mTracker)) {
                 Log.e("Error creating tracker","Errror");
                 finish();
             }
+     //       Log.e("SET PARAM :"," GENDER : "+   FSDK.SetTrackerParameter(mDraw.mTracker,"DetectGender", "1"));
+            //        Log.e("SET PARAM :"," AGE : "+  FSDK.SetTrackerParameter(mDraw.mTracker,"DetectAge", "true"));
+
+            int[] err=new int[2];
+//        int err=0;
+        Log.e("SET PARAMs :"," AGE : "+  FSDK.SetTrackerMultipleParameters(mDraw.mTracker,"DetectGender=true;DetectAge=true;",err)+"   Err :"+err[0]);
         }
 
         resetTrackerParameters();
@@ -154,7 +207,7 @@ mDraw.capture=true;
 
     private void resetTrackerParameters() {
         int errpos[] = new int[1];
-        FSDK.SetTrackerMultipleParameters(mDraw.mTracker, "ContinuousVideoFeed=true;FacialFeatureJitterSuppression=0;RecognitionPrecision=1;Threshold=0.996;Threshold2=0.9995;ThresholdFeed=0.97;MemoryLimit=2000;HandleArbitraryRotations=false;DetermineFaceRotationAngle=false;InternalResizeWidth=70;FaceDetectionThreshold=3;", errpos);
+        FSDK.SetTrackerMultipleParameters(mDraw.mTracker, "DetectGender=true;DetectAge=true;ContinuousVideoFeed=true;FacialFeatureJitterSuppression=0;RecognitionPrecision=1;Threshold=0.996;Threshold2=0.9995;ThresholdFeed=0.97;MemoryLimit=2000;HandleArbitraryRotations=false;DetermineFaceRotationAngle=false;InternalResizeWidth=70;FaceDetectionThreshold=3;", errpos);
         if (errpos[0] != 0) {
             Log.e("Error"," setting tracker parameters, position"+ errpos[0]);
         }

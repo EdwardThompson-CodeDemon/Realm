@@ -837,6 +837,23 @@ public class DatabaseManager {
             }
 
 
+for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
+                try {
+                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM "+table_name, null);
+//                    cursor1.moveToFirst();
+//                    if (!cursor1.isAfterLast()) {
+//                        do {
+//                            cursor1.getString(0);
+//                        } while (cursor1.moveToNext());
+//                    }
+                    cursor1.close();
+                } catch (Exception e) {
+                    database.execSQL("ALTER TABLE CP_"+table_name+" ADD COLUMN " + col.getKey() );
+//                                database.execSQL("ALTER TABLE "+db_tb.table_name+" ADD COLUMN " + col.getKey() + " "+col.data_type+" "+col.default_value);
+                }
+            }
+
+
 
 
 
@@ -1180,19 +1197,22 @@ I thot of using an interface ,dint work
     {
 
 
+try {
 
+    Cursor c = database.rawQuery("SELECT * FROM member_info_table WHERE sid='" + sid + "'", null);
 
-        Cursor c = database.rawQuery("SELECT * FROM member_info_table WHERE sid='"+sid+"'", null);
+    if (c.moveToFirst()) {
+        do {
+            member emp = (member) load_object_from_Cursor(c, new member());
+            c.close();
+            return emp;
+        } while (c.moveToNext());
+    }
 
-        if (c.moveToFirst()) {
-            do {
-                member emp= (member) load_object_from_Cursor(c,new member());
-                c.close();
-                return emp;
-            } while (c.moveToNext());
-        }
+    c.close();
+}catch (Exception ex){
 
-        c.close();
+}
         return null;
     }
 

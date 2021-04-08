@@ -53,6 +53,7 @@ public class Realm {
                 FSDK.SetFaceDetectionThreshold(5);
 
                 if (res == FSDK.FSDKE_OK) {
+                    Log.d("FSDK : ","Initialization OK" );
 
                 } else {
                     Log.e("FSDK Error : ","Initialization failed" );

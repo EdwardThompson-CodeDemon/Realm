@@ -10,21 +10,24 @@
     <sparta.realm.spartautils.biometrics.face.Preview
         android:id="@+id/face_graphics_preview"
         android:layout_width="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
+
         android:background="@null"
         android:visibility="gone"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
     <sparta.realm.spartautils.biometrics.face.CaptureHandler
         android:layout_width="wrap_content"
         android:background="@null"
-        android:layout_marginTop="120dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:visibility="gone"
+
+         android:visibility="gone"
         android:id="@+id/face_graphics_overlay"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="20dp"
+    android:layout_height="wrap_content">
 
     <Button
         android:layout_width="200dp"
@@ -36,4 +39,14 @@
         android:textColor="@color/white"
         android:id="@+id/capture"
         android:text="Capture"/>
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/normalbutton"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:id="@+id/generate_templates"
+        android:text="Generate templates"/>
+</LinearLayout>
+
 </RelativeLayout>

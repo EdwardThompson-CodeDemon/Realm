@@ -1,6 +1,7 @@
 package sparta.realm;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,7 @@ import sparta.realm.Activities.SpartaAppCompactActivity;
 
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
+import sparta.realm.spartautils.biometrics.face.SpartaFaceCamera;
 import sparta.realm.spartautils.svars;
 import sparta.realm.spartautils.synchro_;
 
@@ -51,36 +53,36 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SynchronizationManager as=new SynchronizationManager(new SynchronizationManager.SynchronizationStatusHandler() {
-            @Override
-            public void on_status_code_changed(int status) {
+//        SynchronizationManager as=new SynchronizationManager(new SynchronizationManager.SynchronizationStatusHandler() {
+//            @Override
+//            public void on_status_code_changed(int status) {
+//
+//            }
+//
+//            @Override
+//            public void on_status_changed(String status) {
+//
+//            }
+//
+//            @Override
+//            public void on_info_updated(String status) {
+//
+//            }
+//
+//            @Override
+//            public void on_main_percentage_changed(int progress) {
+//
+//            }
+//
+//            @Override
+//            public void on_secondary_progress_changed(int progress) {
+//
+//            }
+//        });
+        ArrayList<View> sync_views = new ArrayList<View>();
+        ArrayList<View> backup_views = new ArrayList<View>();
 
-            }
-
-            @Override
-            public void on_status_changed(String status) {
-
-            }
-
-            @Override
-            public void on_info_updated(String status) {
-
-            }
-
-            @Override
-            public void on_main_percentage_changed(int progress) {
-
-            }
-
-            @Override
-            public void on_secondary_progress_changed(int progress) {
-
-            }
-        });
-        ArrayList<View> sync_views=new ArrayList<View>();
-        ArrayList<View> backup_views=new ArrayList<View>();
-
-        synchro_ sync=new synchro_(act,(RelativeLayout)findViewById(R.id.main_content),sync_views,(TextView) findViewById(R.id.sync_time),(ImageView) findViewById(R.id.sync_icon));
+//        synchro_ sync=new synchro_(act,(RelativeLayout)findViewById(R.id.main_content),sync_views,(TextView) findViewById(R.id.sync_time),(ImageView) findViewById(R.id.sync_icon));
 
         //  as.InitialiseAutosync();
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -89,21 +91,26 @@ public class MainActivity2 extends SpartaAppCompactActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
-                SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-                saver.putString("user_name", ((EditText)findViewById(R.id.username_edt)).getText().toString());
-                saver.putString("username", ((EditText)findViewById(R.id.username_edt)).getText().toString());
-                saver.putString("pass", ((EditText)findViewById(R.id.password_edt)).getText().toString());
-
-
-
-
-
-                saver.commit();
-              //  as.sync_now();
-
-                sync.triger_sync();
+//
+//                SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+//
+//                saver.putString("user_name", ((EditText)findViewById(R.id.username_edt)).getText().toString());
+//                saver.putString("username", ((EditText)findViewById(R.id.username_edt)).getText().toString());
+//                saver.putString("pass", ((EditText)findViewById(R.id.password_edt)).getText().toString());
+//
+//
+//
+//
+//
+//                saver.commit();
+//              //  as.sync_now();
+//
+//                sync.triger_sync();
+                svars.set_photo_camera_type(act,1,3);
+//take_photo(1,"666");
+                Intent intt = new Intent(act, SpartaFaceCamera.class);
+                intt.putExtra("sid", "666");
+                startActivityForResult(intt, 1);
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -117,6 +124,13 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+//    test_db_operations();
+
+    }
+
+
+    void test_db_operations()
+    {
 
 
 
@@ -136,19 +150,19 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
-       Log.e("Json :",""+insert_v1(resp));
-
-    Log.e("Deleting :","");
-        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
-        Log.e("Deleted :","");
-
-       Log.e("Json 2 :",""+insert_v1_sd(resp));
+        Log.e("Json :",""+insert_v1(resp));
 
         Log.e("Deleting :","");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
         Log.e("Deleted :","");
 
-Log.e("gson2 :",""+insert_gson2(resp));
+        Log.e("Json 2 :",""+insert_v1_sd(resp));
+
+        Log.e("Deleting :","");
+        DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
+        Log.e("Deleted :","");
+
+        Log.e("gson2 :",""+insert_gson2(resp));
 
         Log.e("Deleting :","Deleting");
         DatabaseManager.database.execSQL("DELETE FROM TBL_supplier_account");
@@ -170,6 +184,8 @@ Log.e("gson2 :",""+insert_gson2(resp));
         Log.e("gson_ctm 3:",""+insert_from(resp));
 
         test_realm();
+
+
     }
 
     void test_realm(){

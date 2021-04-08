@@ -927,7 +927,7 @@ case 5:
 
                             break;
                          case 3:
-                             Intent intt=new Intent(act, SpartaFaceCamera.class);
+                             Intent intt=new Intent(act,sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
                              intt.putExtra("sid",sid);
                             startActivityForResult(intt, image_index);
 

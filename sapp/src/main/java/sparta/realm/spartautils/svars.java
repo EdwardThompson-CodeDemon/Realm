@@ -176,7 +176,7 @@ public class svars {
         public boolean print_receipt_on_registration = false;
         public boolean allow_employee_details_edition = false;
 
-        public String app_folder_path= Environment.getExternalStorageDirectory().toString() + "/realm_BUKINA/";
+        public String app_folder_path= Environment.getExternalStorageDirectory().toString() + "/Realm/";
         public String file_path_app_downloads=app_folder_path + ".RAW_D_APKS/";
         public String file_path_app_uploads= app_folder_path+ ".RAW_U_APKS/";
 
@@ -209,6 +209,11 @@ public class svars {
             this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
        this.AUTHENTICATION_URL=AUTHENTICATION_URL;
        SYNC_USE_CAPS=result_caps;
+
+        }
+        public void set_app_folder()
+        {
+
 
         }
         public  MODULES WORKING_MODULES=new MODULES();

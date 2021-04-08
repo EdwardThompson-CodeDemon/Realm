@@ -1903,6 +1903,7 @@ if(maindata[0]==null){
                                             update_counter(ssd,pending_records_filter);
                                             upload_counter[0]++;
                                             if (upload_counter[0] ==upload_length) {
+                                                sync_sum_counter++;
                                                 upload_(ssd);
                                             }
                                             return;
@@ -1924,6 +1925,7 @@ if(maindata[0]==null){
                                                 update_counter(ssd,pending_records_filter);
                                                 upload_counter[0]++;
                                                 if (upload_counter[0] ==upload_length) {
+                                                    sync_sum_counter++;
                                                     upload_(ssd);
                                                 }
 
@@ -1952,6 +1954,7 @@ if(maindata[0]==null){
                                             update_counter(ssd,pending_records_filter);
                                             upload_counter[0]++;
                                             if (upload_counter[0] ==upload_length) {
+                                                sync_sum_counter++;
                                                 upload_(ssd);
                                             }
                                             return;
@@ -1972,6 +1975,7 @@ if(maindata[0]==null){
                                             update_counter(ssd,pending_records_filter);
                                             upload_counter[0]++;
                                             if (upload_counter[0] ==upload_length) {
+                                                sync_sum_counter++;
                                                 upload_(ssd);
                                             }
                                         }else {

@@ -56,8 +56,10 @@ public class CaptureHandler extends View {
 float sDensity=1.0f;
 	public interface capturing_interface{
 		void OnOkToCapture();
+		void OnOkToCapture(int gender,float age);
 		void OnNotOkToCapture();
 		void OnCaptured(String path);
+		void OnCaptured(String path,int gender,float age);
 	}
 	public enum CaptureMode{
 		Registration,
@@ -71,12 +73,22 @@ public capturing_interface cpi=new capturing_interface() {
 	}
 
 	@Override
+	public void OnOkToCapture(int gender, float age) {
+
+	}
+
+	@Override
 	public void OnNotOkToCapture() {
 
 	}
 
 	@Override
 	public void OnCaptured(String path) {
+
+	}
+
+	@Override
+	public void OnCaptured(String path, int gender, float age) {
 
 	}
 };
@@ -225,7 +237,7 @@ public capturing_interface cpi=new capturing_interface() {
 		FSDK.FSDK_IMAGEMODE imagemode = new FSDK.FSDK_IMAGEMODE();
 		imagemode.mode = FSDK.FSDK_IMAGEMODE.FSDK_IMAGE_COLOR_24BIT;
 		FSDK.LoadImageFromBuffer(Image, mRGBData, mImageWidth, mImageHeight, mImageWidth*3, imagemode);
-		FSDK.MirrorImage(Image, false);
+	//	FSDK.MirrorImage(Image, false);
 		FSDK.HImage RotatedImage = new FSDK.HImage();
 	//	FSDK.HImage s_img = new FSDK.HImage();
 		FSDK.CreateEmptyImage(RotatedImage);
@@ -263,9 +275,13 @@ public capturing_interface cpi=new capturing_interface() {
 
 		FSDK.FeedFrame(mTracker, 0, RotatedImage, face_count, IDs);
 		//FSDK.FreeImage(RotatedImage);
+if( (int)face_count[0]<1){
+	cpi.OnNotOkToCapture();
 
+}
 		faceLock.lock();
-
+Boolean male=false;
+Float age=0F;
 		for (int i=0; i<MAX_FACES; ++i) {
 			mFacePositions[i] = new FaceRectangle();
 			mFacePositions[i].x1 = 0;
@@ -279,7 +295,23 @@ public capturing_interface cpi=new capturing_interface() {
 		for (int i = 0; i < (int)face_count[0]; ++i) {
 			FSDK.FSDK_Features Eyes = new FSDK.FSDK_Features();
 			FSDK.GetTrackerEyes(mTracker, 0, mIDs[i], Eyes);
+String[] Gender_values=new String[1];
+String[] Age_values=new String[1];
+			FSDK.GetTrackerFacialAttribute(mTracker, 0, mIDs[i], "Gender",Gender_values,100);
+			FSDK.GetTrackerFacialAttribute(mTracker, 0, mIDs[i], "Age",Age_values,100);
+//	FSDK.DetectFacialAttributeUsingFeatures(mTracker, Eyes, "Gender",Attribute_values,100);
+for(int z=0;z<Gender_values.length;z++){
+	Log.e("Attributes "+z,"GEN :"+Gender_values[z]);
+	double ml=Double.parseDouble(Gender_values[z].split(";")[0].split("=")[1]);
+	double fm=Double.parseDouble(Gender_values[z].split(";")[1].split("=")[1]);
+	male=ml>fm;
+//	GEN :Male=0.88976; Female=0.11024
 
+}
+for(int z=0;z<Age_values.length;z++){
+	Log.e("Attributes "+z,"Age :"+Age_values[z]);
+	 age=Float.parseFloat(Age_values[z].split("=")[1]);
+}
 			GetFaceFrame(Eyes, mFacePositions[i]);
 			mFacePositions[i].x1 *= ratio;
 			mFacePositions[i].y1 *= ratio;
@@ -305,7 +337,8 @@ public capturing_interface cpi=new capturing_interface() {
 						FSDK.PurgeID(mTracker, IDs[i]);
 
 						cpi.OnOkToCapture();
-						canvas.drawText(IDs[0]+"", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
+						cpi.OnOkToCapture(male?1:0,age);
+						canvas.drawText(IDs[0]+" xxxx", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
 						named=false;
 
 					}else {
@@ -324,8 +357,9 @@ public capturing_interface cpi=new capturing_interface() {
 
 						if(captureMode== CaptureMode.Registration&&transaction_no!=null) {
 							cpi.OnOkToCapture();
+							cpi.OnOkToCapture(male?1:0,age);
 							if (capture) {
-								save_face(RotatedImage, active_false_id, transaction_no);
+								save_face(RotatedImage, active_false_id, transaction_no,male?1:0,age);
 								capture = false;
 							}
 						}else {
@@ -351,8 +385,11 @@ public capturing_interface cpi=new capturing_interface() {
 						}else if(captureMode== CaptureMode.Registration){
 						if(transaction_no!=null) {
 								cpi.OnOkToCapture();
-								if (capture) {
-									save_face(RotatedImage, active_false_id, transaction_no);
+							cpi.OnOkToCapture(male?1:0,age);
+							canvas.drawText("Guy is a :"+age+" Year Old "+(male?"Male":"Female"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
+							if (capture) {
+								save_face(RotatedImage, active_false_id, transaction_no,male?1:0,age);
+//								save_face(RotatedImage, active_false_id, transaction_no);
 									capture = false;
 								}
 							}else {
@@ -360,7 +397,7 @@ public capturing_interface cpi=new capturing_interface() {
 							}
 							//
 						}
-						false_count=0;
+					//	false_count=0;
 
 					}else {
 						canvas.drawText(IDs[0]+" :: Learning ..", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
@@ -379,6 +416,81 @@ public capturing_interface cpi=new capturing_interface() {
 		FSDK.FreeImage(RotatedImage);
 
 		super.onDraw(canvas);
+	} // end onDraw method
+	public  void generate_templates(String path) {
+		FSDK.HImage Image = new FSDK.HImage();
+		FSDK.LoadImageFromFile(Image,path);
+
+		long IDs[] = new long[MAX_FACES];
+		long face_count[] = new long[1];
+
+		FSDK.FeedFrame(mTracker, 0, Image, face_count, IDs);
+
+
+
+		faceLock.lock();
+Boolean male=false;
+Float age=0F;
+		for (int i=0; i<MAX_FACES; ++i) {
+			mFacePositions[i] = new FaceRectangle();
+			mFacePositions[i].x1 = 0;
+			mFacePositions[i].y1 = 0;
+			mFacePositions[i].x2 = 0;
+			mFacePositions[i].y2 = 0;
+			mIDs[i] = IDs[i];
+		}
+
+		//float ratio = (canvasWidth * 1.0f) / ImageWidth;
+		for (int i = 0; i < (int)face_count[0]; ++i) {
+			FSDK.FSDK_Features Eyes = new FSDK.FSDK_Features();
+			FSDK.GetTrackerEyes(mTracker, 0, mIDs[i], Eyes);
+String[] Gender_values=new String[1];
+String[] Age_values=new String[1];
+			FSDK.GetTrackerFacialAttribute(mTracker, 0, mIDs[i], "Gender",Gender_values,100);
+			FSDK.GetTrackerFacialAttribute(mTracker, 0, mIDs[i], "Age",Age_values,100);
+
+			for(int z=0;z<Gender_values.length;z++){
+	Log.e("Attributes "+z,"GEN :"+Gender_values[z]);
+	double ml=Double.parseDouble(Gender_values[z].split(";")[0].split("=")[1]);
+	double fm=Double.parseDouble(Gender_values[z].split(";")[1].split("=")[1]);
+	male=ml>fm;
+//	GEN :Male=0.88976; Female=0.11024
+
+}
+for(int z=0;z<Age_values.length;z++){
+	Log.e("Attributes "+z,"Age :"+Age_values[z]);
+	 age=Float.parseFloat(Age_values[z].split("=")[1]);
+}
+			GetFaceFrame(Eyes, mFacePositions[i]);
+
+		}
+
+		faceLock.unlock();
+
+		int shift = (int)(22 * sDensity);
+
+		Log.e("FACES FOUND :",""+face_count[0]);
+		for (int i=0; i<face_count[0]; ++i) {
+
+
+			boolean named = false;
+			if (IDs[i] != -1) {
+				String names[] = new String[1];
+				FSDK.GetAllNames(mTracker, IDs[i], names, 1024);
+				if (names[0] != null && names[0].length() > 0) {
+					//save_face(Image, active_false_id, transaction_no);
+
+
+
+
+				}
+			}
+
+
+		}
+		FSDK.FreeImage(Image);
+
+
 	} // end onDraw method
 public boolean capture=false;
 boolean auto_capture=false;
@@ -439,8 +551,25 @@ boolean searching=false;
 
 		}
 
-	}
+	}//saving the fucking face transaction will not work for this fucking bitch as
 void save_face(FSDK.HImage frame, long tracker_index, String transaction_no)
+{
+
+	save_face_to_tracker(tracker_index,transaction_no);
+	String img_name="";
+	img_name="TA_DAT"+ System.currentTimeMillis()+"FB_SCH.JPG";
+	FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).file_path_employee_data +img_name);
+
+	try{
+
+	cpi.OnCaptured(img_name);
+
+	}catch (Throwable ex){ex.printStackTrace();
+
+
+	}
+}
+void save_face(FSDK.HImage frame, long tracker_index, String transaction_no,int gender,float age)
 {
 
 	save_face_to_tracker(tracker_index,transaction_no);
@@ -490,7 +619,7 @@ void save_face_to_tracker( long tracker_index, String transaction_no)
 
 }
 	int false_count=0;
-	int max_false_count=0;
+	int max_false_count=2;
 	long active_false_id=0;
 	@Override
 	public boolean onTouchEvent(MotionEvent event) { //NOTE: the method can be implemented in Preview class

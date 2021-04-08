@@ -36,6 +36,17 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		mHolder.addCallback(this);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
+	int camera_face, rotation;
+public  void setup_overlay(CaptureHandler draw,int camera_face,int rotation)
+	{
+		mDraw = draw;
+this.camera_face=camera_face;
+this.rotation=rotation;
+		//Install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed.
+		mHolder = getHolder();
+		mHolder.addCallback(this);
+		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+	}
 	public Preview(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		mContext = context;
@@ -60,12 +71,14 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 		for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
 			Camera.getCameraInfo(i, cameraInfo);
-			//if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK)
-			if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			//	if (cameraInfo.facing == camera_face){
+		if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 				cameraId = i;
 				frontCameraFound = true;
+				break;
 			}
 		}
+	//	frontCameraFound = false;
 
 		if (frontCameraFound) {
 			mCamera = Camera.open(cameraId);
@@ -99,7 +112,7 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		catch (Exception exception) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-			builder.setMessage("Cannot open camera" )
+			builder.setMessage("Cannot open camera\n"+exception.getMessage() )
 				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
@@ -151,6 +164,7 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 			parameters.set("orientation", "landscape");
 			mCamera.setDisplayOrientation(0); // For Android 2.2 and above
 		}
+		mCamera.setDisplayOrientation(rotation); // For Android 2.2 and above
 		/**/
 
         // choose preview size closer to 640x480 for optimal performance

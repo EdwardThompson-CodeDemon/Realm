@@ -70,6 +70,11 @@ mDraw.cpi=new CaptureHandler.capturing_interface() {
     }
 
     @Override
+    public void OnOkToCapture(int gender, float age) {
+
+    }
+
+    @Override
     public void OnNotOkToCapture() {
         capture.post(new Runnable() {
             @Override
@@ -88,6 +93,11 @@ mDraw.cpi=new CaptureHandler.capturing_interface() {
         data.putExtra("ImageUrl", path);
        setResult(Activity.RESULT_OK,data);
         finish();
+    }
+
+    @Override
+    public void OnCaptured(String path, int gender, float age) {
+
     }
 };
 
