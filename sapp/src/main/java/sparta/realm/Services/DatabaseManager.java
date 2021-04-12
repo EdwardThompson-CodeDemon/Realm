@@ -34,6 +34,7 @@ import com.google.common.reflect.ClassPath;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -1531,6 +1532,34 @@ try {
                 try {
 
                     objs.add(realm.getJsonFromCursor(c,ssd.object_package));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+
+        return objs;
+    }
+public JSONArray loadJsonArray_Ann(sync_service_description ssd, String[] table_filters)
+    {
+        JSONArray objs=new JSONArray();
+
+        Cursor c = database.rawQuery("SELECT * FROM "+ssd.table_name+(table_filters==null?"":" "+conccat_sql_filters(table_filters))+" ORDER BY data_status DESC LIMIT "+ssd.chunk_size, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.put(realm.getJsonFromCursor(c,ssd.object_package));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

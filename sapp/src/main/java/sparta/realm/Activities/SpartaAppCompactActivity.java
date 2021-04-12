@@ -59,6 +59,7 @@ import java.util.List;
 import sparta.realm.MainActivity;
 import sparta.realm.R;
 import sparta.realm.Realm;
+import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartaadapters.dyna_data_adapter;
 import sparta.realm.spartaadapters.dyna_data_adapter_;
 import sparta.realm.spartamodels.dyna_data;
@@ -75,6 +76,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 public class SpartaAppCompactActivity extends AppCompatActivity {
 public Activity act;
 public sdbw sd;
+public DatabaseManager dbm;
 public Drawable error_drawable;
 protected  Button next,previous,clear_all;
 Boolean registering=false;
@@ -85,7 +87,7 @@ protected String select_item_index="";
 
 
         try{
-//           sd= Realm.databaseManager;
+           dbm= Realm.databaseManager;
            sd=new sdbw(Realm.context);
         }catch (Exception ex){}
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

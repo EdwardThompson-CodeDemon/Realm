@@ -9,13 +9,13 @@
     tools:showIn="@layout/activity_sparta_face_camera">
     <sparta.realm.spartautils.biometrics.face.Preview
         android:id="@+id/face_graphics_preview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
 
         android:background="@null"
         android:visibility="gone"
         android:layout_height="match_parent"/>
     <sparta.realm.spartautils.biometrics.face.CaptureHandler
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:background="@null"
 
          android:visibility="gone"

@@ -158,9 +158,9 @@ String member_category=null;
                 if(search_counter==int_counter)
                 { /* */
                     if(search_tearm==null ||search_tearm.length()<1) {
-                        total = Integer.parseInt(sd.get_record_count("member_info_table", "category='"+member_category+"'"));
+                        total = Integer.parseInt(dbm.get_record_count("member_info_table", "category='"+member_category+"'"));
                     }else{
-                        total = Integer.parseInt(sd.get_record_count("member_info_table", "UPPER(fullname) LIKE '%" + search_tearm + "%' OR UPPER(idno) LIKE '%" + search_tearm + "%'", "category='"+member_category+"'"));
+                        total = Integer.parseInt(dbm.get_record_count("member_info_table", "UPPER(fullname) LIKE '%" + search_tearm + "%' OR UPPER(idno) LIKE '%" + search_tearm + "%'", "category='"+member_category+"'"));
 
                     }
 //                    if(employees.size()<limit)

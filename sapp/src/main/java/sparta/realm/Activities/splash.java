@@ -32,7 +32,7 @@ new Thread(new Runnable() {
         }*/
 
 
-        sd.load_employee("0");
+
         finish();
         startActivity(new Intent(act, MainActivity.class));
     }

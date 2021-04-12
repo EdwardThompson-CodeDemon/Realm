@@ -23,11 +23,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
@@ -165,7 +168,68 @@ public class svars {
         Log.e("Dev code =>", "" + deviceUniqueIdentifier);
         return deviceUniqueIdentifier+"_"+System.currentTimeMillis()+"_"+svars.user_id(act);
     }
+ public static   String get_ip_forcefully(){
+        String ipAddress = "";
+        try {
+            while(!ipAddress.startsWith("192.168.")){
+                overal :
+                for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                    NetworkInterface intf = en.nextElement();
+                    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                        InetAddress inetAddress = enumIpAddr.nextElement();
+                        if (!inetAddress.isLoopbackAddress()) {
+                            ipAddress = inetAddress.getHostAddress().toString();
+                            if(ipAddress.startsWith("192.168.")) {
+                                Log.e("Seraching IP :", "OK :" + inetAddress.getHostAddress());
+                                Log.e("Seraching IP :", "OK :" + ipAddress);
+                                break overal;
+                            }
+                        }else {
 
+                            Log.e("Seraching IP :","Loopback"+inetAddress.getHostAddress());
+
+                        }
+                    }
+                }
+
+            }
+        } catch (SocketException ex) {}
+
+        Log.e("Current IP :",""+ipAddress);
+        return ipAddress;
+    }
+    public static   String get_ip(){
+        String ipAddress = "";
+        try {
+
+
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        ipAddress = inetAddress.getHostAddress().toString();
+                        if(ipAddress.startsWith("192.168.")) {
+                            Log.e("Seraching IP :", "OK :" + inetAddress.getHostAddress());
+                            Log.e("Seraching IP :", "OK :" + ipAddress);
+
+
+                        }
+                    }else {
+
+                        Log.e("Seraching IP :","Loopback"+inetAddress.getHostAddress());
+
+                    }
+                }
+            }
+
+
+
+        } catch (SocketException ex) {}
+
+        Log.e("Current IP :",""+ipAddress);
+        return ipAddress;
+    }
     public static class SPARTA_APP {
         public String APP_MAINLINK = "",
                 APP_CONTROLL_MAIN_LINK = "",
