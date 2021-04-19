@@ -1930,6 +1930,10 @@ if(maindata[0]==null){
                                                 }
 
                                             }else {
+                                                ContentValues cv = new ContentValues();
+                                                cv.put("data_status", "e");
+
+                                                sdb.database.update(table_name, cv, "id=" + finalLid, null);
                                                 ssi.on_status_changed("Update failed ...  =>" + finalLid);
                                                 ssi.on_status_code_changed(666);
                                                 String error=" "+upload_object.toString()+"\n"+response.toString();

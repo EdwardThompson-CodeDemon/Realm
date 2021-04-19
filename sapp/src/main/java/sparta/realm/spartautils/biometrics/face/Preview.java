@@ -71,8 +71,8 @@ this.rotation=rotation;
 		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 		for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
 			Camera.getCameraInfo(i, cameraInfo);
-			//	if (cameraInfo.facing == camera_face){
-		if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+				if (cameraInfo.facing == camera_face){
+//		if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 				cameraId = i;
 				frontCameraFound = true;
 				break;
