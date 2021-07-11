@@ -208,7 +208,7 @@ if(m_reader==null){
     private boolean m_resultAvailableToDisplay = false;
     int session =0;
 
-    public  void begin_capture()
+    public void begin_capture()
     {
         session ++;
         new Thread(new Runnable()

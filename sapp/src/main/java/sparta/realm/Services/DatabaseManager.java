@@ -2327,6 +2327,16 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
         return result;
 
     }
+ public  static  String concatRealmClientString(String delimeter,String[] params)
+    {
+        String result="";
+        for(int i=0;i<params.length;i++)
+        {
+            result=result+(i==0?"":delimeter)+"'"+params[i]+"'";
+        }
+        return result;
+
+    }
 
 
     public  String conccat_sql_string(String[] str_to_join, ArrayList<String> str_to_join2)

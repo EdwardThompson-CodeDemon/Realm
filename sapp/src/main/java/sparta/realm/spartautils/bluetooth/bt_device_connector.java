@@ -171,9 +171,11 @@ fp_device,
             discovered_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    current_device.setText("Current device : "+paired_devices.get(position).getName());
-                   // sg_vars.set_bt_dev_address(act,paired_devices.get(position).getAddress());
-                    svars.set_bt_device_address(act,device_type, paired_devices.get(position).getAddress());
+                    BluetoothDevice btdv=paired_devices.get(position);
+                    current_device.setText("Current device : "+btdv.getName());
+
+                     svars.set_bt_device_address(act,device_type, btdv.getAddress());
+                    dhm.on_device_slected(btdv);
 //                    if(device_type== bt_device_type.fp_device) {
 //                        svars.set_bt_device_address(act, paired_devices.get(position).getAddress());
 //

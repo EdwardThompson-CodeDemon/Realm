@@ -1,6 +1,7 @@
 package sparta.realm;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import sparta.realm.Activities.SpartaAppCompactActivity;
 
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
+import sparta.realm.realmclient.RealmClient;
 import sparta.realm.spartautils.biometrics.face.SpartaFaceCamera;
 import sparta.realm.spartautils.svars;
 import sparta.realm.spartautils.synchro_;
@@ -46,6 +48,7 @@ import static sparta.realm.Realm.realm;
 public class MainActivity2 extends SpartaAppCompactActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    RealmClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,18 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Context rt=Realm.context;
+        client=new RealmClient(svars.device_code(rt),"demo","demo123");
+        // Example of a call to a native method
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //    RC();
+//
+                client.InitializeClient("192.168.1.107",8888,"DEVICE CODE","demo","demo123");
+            }
+        }).start();
+
 //        SynchronizationManager as=new SynchronizationManager(new SynchronizationManager.SynchronizationStatusHandler() {
 //            @Override
 //            public void on_status_code_changed(int status) {

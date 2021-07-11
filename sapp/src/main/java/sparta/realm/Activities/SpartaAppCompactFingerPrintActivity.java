@@ -12,10 +12,10 @@ import sparta.realm.spartautils.svars;
 
 
 public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivity implements sfp_i {
-    fp_handler_wall_mounted fph_wall_mounted;
-    fp_handler_stf_usb_8_inch fph_8_inch;
+    public fp_handler_wall_mounted fph_wall_mounted;
+  public  fp_handler_stf_usb_8_inch fph_8_inch;
   //  fp_handler_biomini fph_biomini;
-    fp_handler_bt fph_bt;
+  public  fp_handler_bt fph_bt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
