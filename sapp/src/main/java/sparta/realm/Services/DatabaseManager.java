@@ -2332,7 +2332,7 @@ public String greatest_sync_var(String table_name, @Nullable String...filters)
         String result="";
         for(int i=0;i<params.length;i++)
         {
-            result=result+(i==0?"":delimeter)+"'"+params[i]+"'";
+            result=result+(i==0?"":delimeter)+""+params[i]+"";
         }
         return result;
 

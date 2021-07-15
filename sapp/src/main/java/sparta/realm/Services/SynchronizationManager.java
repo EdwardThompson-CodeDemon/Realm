@@ -1024,7 +1024,7 @@ sync_sum_counter=sync_services.size();
     public static  void download_(sync_service_description ssd)
     {
 
-        Log.e("SYNC ::  ","Object table :"+ssd.table_name+"\n"
+        Log.e("SYNC ::  ","\nObject table :"+ssd.table_name+"\n"
                 +"Service name :"+ssd.service_name+"\n"
                 +"Service type :"+ssd.servic_type.name()+"\n"
                 +"download link :"+ssd.download_link+"\n");
@@ -1896,6 +1896,7 @@ if(maindata[0]==null){
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Log.e("Response =>", "" + response.toString());
+                                        Log.e(ssd.service_name+":: upload response ::"," "+response.toString());
 
                                         response=Main_handler.OnUploadedObject(ssd,upload_object,response);
                                         if(response==null)
