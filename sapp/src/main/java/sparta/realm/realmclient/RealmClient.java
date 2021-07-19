@@ -1,5 +1,6 @@
 package sparta.realm.realmclient;
 
+import android.content.ContentValues;
 import android.os.Build;
 import android.util.Log;
 
@@ -60,6 +61,10 @@ rch.onAuthenticated(this,data_segments[2].equals("1"));
              break;
          case "2"://data uploaded
 
+             String upload_result=data_segments[4];
+
+             rch.onDataUploaded(this,service_id,upload_result);
+             dpm.addTransaction(dataProcess.transferTypeRx,transaction_no,dataProcess.serviceTypeIo,null,data);
 
              break;
          case "3"://data available for download
@@ -210,7 +215,27 @@ try {
 }
 
         }
-         default void onDataUploaded(int LIST_OF_transaction_no_and_sid_or_rsid){ }
+         default void onDataUploaded(RealmClient rc,String service_id,String data){
+
+             sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
+             if(ssd==null) {
+
+             }else {
+                 try {
+                     JSONObject res=new JSONObject(data);
+                     ContentValues cv=new ContentValues();
+                     cv.put("syc_var",res.getString("id"));
+                     cv.put("sync_status",sync_status.syned.ordinal());
+                     Log.e(rc.logTag, "Updated :"+DatabaseManager.database.update(ssd.table_name,cv,"transaction_no="+res.getString("transaction_no"),null));
+
+
+                 } catch (Exception ex) {
+                     Log.e(rc.logTag, "Error updating  :"+ex.getMessage());
+
+                 }
+             }
+
+                 }
         default void onConnected(int service_id){ }
     }
 
