@@ -157,7 +157,7 @@ static sparta_app_version w_sav;
     }
 
     private static void create_dialog() {
-        View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_app_update_v2,null);
+        View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_app_update_2019,null);
         ald=new AlertDialog.Builder(act,R.style.AppTheme)
                 .setView(aldv)
                 .setCancelable(true)
@@ -323,7 +323,7 @@ boolean checking_for_updates=false;
     void check_for_app_versions() {
         checking_for_updates=true;
         final JSONObject postData=new JSONObject();
-       String[] app_package_name =new String[]{svars.device_code(Realm.context)};
+       String[] app_package_name =new String[]{svars.current_app_name(act)};
         try{
             postData.put("RequestTime", Calendar.getInstance().getTime().toString());
             postData.put("RequestData", new JSONArray(app_package_name));
@@ -537,7 +537,7 @@ ald.show();
 
                 case 2:
 
-                    return "Insatalling";
+                    return "Installing";
 
 
                 case 3:
@@ -677,10 +677,14 @@ downloading=false;
            // Log.e("download initializing ", " xxx");
             final File file = new File(current_app_config(Realm.context).file_path_app_downloads);
                             file.mkdirs();
+            File d_path=new File(current_app_config(Realm.context).file_path_app_downloads);
+            if (!d_path.exists()){
 
+                Log.e("Creating directory :",d_path.mkdir()+"") ;
+            }
                             AndroidNetworking.download(sav.download_link, current_app_config(Realm.context).file_path_app_downloads,sav.download_link.split("/")[sav.download_link.split("/").length-1])
                                     .setTag("downloadTest")
-                                    .setPriority(Priority.LOW)
+                                    .setPriority(Priority.HIGH)
                                     .build()
                                     .setDownloadProgressListener(new DownloadProgressListener() {
                                         @Override
@@ -708,7 +712,8 @@ cur_per= Integer.parseInt(per.per_balance);
                                             downloading=false;
                                             main_inter.on_download_complete();
                                             mBuilder.setProgress(100, 100, true);
-                                            db.update_downloaded_versions(sav.version_id, current_app_config(Realm.context).file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1]);
+
+                                            db.update_downloaded_versions(sav.version_id,current_app_config(Realm.context).file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1] );
                                             main_inter.on_status_changed(download_install_status.installing, download_install_status.getMessge(download_install_status.installing));
                                             sav.local_path= current_app_config(Realm.context).file_path_app_downloads+sav.download_link.split("/")[sav.download_link.split("/").length-1];
                                             w_sav=sav;

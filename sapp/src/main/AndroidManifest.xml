@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sparta.realm">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-feature
@@ -45,6 +46,12 @@
         <activity android:name=".spartautils.biometrics.face.SpartaFaceCamera"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".spartautils.NFC.NfcProbe" />
+
+        <service
+            android:name=".spartautils.app_control.services.App_updates"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":.app_update" />
     </application>
 
 </manifest>

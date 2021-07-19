@@ -23,10 +23,11 @@ public class Realm {
     public static RealmDataClass realm;
     public static DatabaseManager databaseManager;
 
-    public static void Initialize(Context cont, RealmDataClass realm_, String app_version, svars.SPARTA_APP app_config){
+    public static void Initialize(Context cont, RealmDataClass realm_, String version_code, String app_name, svars.SPARTA_APP app_config){
     context=cont;
     realm=realm_;
-        svars.set_current_version(cont,app_version);
+        svars.set_current_version(cont,version_code);
+        svars.set_current_app_name(cont,app_name);
        svars.set_current_app_config(cont,app_config);
         Thread.setDefaultUncaughtExceptionHandler(new SpartaApplicationErrorHandler(Realm.context));
         String[] supportedABIS = Build.SUPPORTED_ABIS; // Return an ordered list of ABIs supported by this device.
@@ -42,8 +43,8 @@ public class Realm {
         }catch (Exception ex){}
 
 }
-    public static void Initialize( Context cont,RealmDataClass realm_,String app_version, svars.SPARTA_APP app_config,String FSDK_KEY){
-        Initialize(cont,realm_, app_version,app_config);
+    public static void Initialize( Context cont,RealmDataClass realm_, String version_code, String app_name, svars.SPARTA_APP app_config,String FSDK_KEY){
+        Initialize(cont,realm_, version_code,app_name,app_config);
 
         if(FSDK_KEY!=null){
             try {

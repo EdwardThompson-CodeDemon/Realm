@@ -598,10 +598,26 @@ public static class remember_indexes {
 
     }
 
+   public static void set_current_app_name(Context act, String current_app_name) {
+
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+        saver.putString("current_app_name", current_app_name);
+        saver.commit();
+
+    }
+
     public static String current_version(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         return prefs.getString("current_version", "R.E.A.L.M");
+
+
+    }
+ public static String current_app_name(Context act) {
+
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        return prefs.getString("current_app_name", "R.E.A.L.M");
 
 
     }

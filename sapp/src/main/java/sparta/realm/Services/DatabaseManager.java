@@ -1188,7 +1188,7 @@ I thot of using an interface ,dint work
     }
     boolean version_exists(String sid)
     {
-        return database.rawQuery("SELECT id FROM app_versions_table WHERE sid='"+sid+"'",null).moveToFirst();
+        return database.rawQuery("SELECT _id FROM app_versions_table WHERE sid='"+sid+"'",null).moveToFirst();
     }
 
     //////////////////////////////////////////////////////////////////////////////
