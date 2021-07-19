@@ -226,7 +226,7 @@ try {
                      ContentValues cv=new ContentValues();
                      cv.put("syc_var",res.getString("id"));
                      cv.put("sync_status",sync_status.syned.ordinal());
-                     Log.e(rc.logTag, "Updated :"+DatabaseManager.database.update(ssd.table_name,cv,"transaction_no="+res.getString("transaction_no"),null));
+                     Log.e(rc.logTag, "Updated :"+DatabaseManager.database.update(ssd.table_name,cv,"transaction_no='"+res.getString("transaction_no")+"'",null));
 
 
                  } catch (Exception ex) {
