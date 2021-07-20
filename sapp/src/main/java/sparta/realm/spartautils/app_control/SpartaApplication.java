@@ -31,7 +31,7 @@ public class SpartaApplication extends Application {
 
 //        Realm.Initialize(this,new spartaDynamics(),"REALM",APPP,"ihdBXU3FcZAawN2qayK9PG3kGz1BocN0EjHOe6hn2LhCubiwJYP7XsbIxildd0hfE9Tio36fGMdwoH4kC0HJNjzs5GbdWchRPmn5O/omstCi37+w7VNFkOgWxDhQSiDn4Apb77g0FwoNvyhVgE7lBx9DxcSnqvniTyKidXlHCak=");
         Realm.Initialize(this,new spartaDynamics(),"0.0.1","megvii.testfacepass",APPP);
-        Realm.databaseManager.database.execSQL("DELETE FROM app_versions_table");
+//        Realm.databaseManager.database.execSQL("DELETE FROM app_versions_table");
     }
 
     public static Context getAppContext() {

@@ -36,7 +36,9 @@ public class Realm {
             Toast arc = Toast.makeText(Realm.context, "Device Architecture is " + abi, Toast.LENGTH_LONG);
             // arc.show();
         }
-        context.startService(new Intent(Realm.context, App_updates.class));
+        if(app_config.APP_CONTROLL_MAIN_LINK!=null){
+            context.startService(new Intent(Realm.context, App_updates.class));
+        }
         try{
             databaseManager=new DatabaseManager(Realm.context);
 

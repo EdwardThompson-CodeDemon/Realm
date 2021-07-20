@@ -1081,6 +1081,8 @@ sync_sum_counter=sync_services.size();
                                 wr.writeBytes(filter_object[0].toString());
                                 wr.flush();
                                 wr.close();  /**/
+                                Log.e(ssd.service_name+" :: TX =>", " " + filter_object[0].toString());
+
                             }
                             int status = httpURLConnection.getResponseCode();
                             Log.e(ssd.service_name+" :: RX", " status=> " + status);
@@ -1123,6 +1125,20 @@ if(maindata[0]==null){
     double num=(double) sync_complete_counter;
     double per=(num/denm)*100.0;
     ssi.on_main_percentage_changed((int)per);
+    if(per==100.0)
+    {
+        ssi.on_main_percentage_changed(100);
+        ssi.on_status_changed("Synchronization complete");
+        ssi.on_secondary_progress_changed(100);
+        ssi.on_main_percentage_changed(100);
+        ssi.on_info_updated("Synchronization complete");
+        ssi.on_status_code_changed(3);
+        ssi.onSynchronizationCompleted(ssd);
+        ssi.onSynchronizationCompleted();
+    }else{
+        ssi.onSynchronizationCompleted(ssd);
+
+    }
     return;
 }
                             data=null;
