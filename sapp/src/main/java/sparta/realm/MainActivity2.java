@@ -1,10 +1,16 @@
 package sparta.realm;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -32,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import sparta.realm.Activities.SpartaAppCompactActivity;
@@ -50,6 +57,93 @@ public class MainActivity2 extends SpartaAppCompactActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     RealmClient client;
+    RealmClientInterface realmClientInterface ;
+    RealmClientInterface.Stub realmClientInterfaceRX = new RealmClientInterface.Stub() {
+        @Override
+        public void registerCallback(RealmClientInterface cb) throws RemoteException {
+
+        }
+
+        @Override
+        public void unregisterCallback(RealmClientInterface cb) throws RemoteException {
+
+        }
+
+        @Override
+        public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
+
+        }
+
+        @Override
+        public int InitializeClient(String server_ip, int port, String device_code, String username, String password) throws RemoteException {
+
+            return 0;
+        }
+
+        @Override
+        public void on_status_code_changed(int status) throws RemoteException {
+
+        }
+
+        @Override
+        public void on_status_changed(String status) throws RemoteException {
+
+        }
+
+        @Override
+        public void on_info_updated(String status) throws RemoteException {
+Log.e("Client IDL :",""+status);
+        }
+
+        @Override
+        public void on_main_percentage_changed(int progress) throws RemoteException {
+
+        }
+
+        @Override
+        public void on_secondary_progress_changed(int progress) throws RemoteException {
+
+        }
+
+        @Override
+        public void onSynchronizationBegun() throws RemoteException {
+
+        }
+
+        @Override
+        public void onServiceSynchronizationCompleted(int service_id) throws RemoteException {
+
+        }
+
+        @Override
+        public void onSynchronizationCompleted() throws RemoteException {
+
+        }
+
+
+    };
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.e("TAG", name.getClassName() + " onServiceConnected");
+            realmClientInterface =  RealmClientInterface.Stub.asInterface(service);
+            try {
+                realmClientInterface.registerCallback(realmClientInterfaceRX);
+                realmClientInterface.InitializeClient("192.168.1.107",8888,"DEVICE CODE","demo","demo123");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            unbindService(serviceConnection);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +161,7 @@ public class MainActivity2 extends SpartaAppCompactActivity {
             public void run() {
                 //    RC();
 //
-                client.InitializeClient("192.168.1.107",8888,"DEVICE CODE","demo","demo123");
+//                client.InitializeClient("192.168.1.107",8888,"DEVICE CODE","demo","demo123");
             }
         }).start();
 
@@ -143,9 +237,29 @@ public class MainActivity2 extends SpartaAppCompactActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 //    test_db_operations();
+        Intent rci=new Intent("sparta.realm.RealmClientInterface");
+        bindService(convertImplicitIntentToExplicitIntent(rci,Realm.context),serviceConnection,BIND_AUTO_CREATE);
+
+//        try {
+//            realmClientInterface.on_info_updated("");
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
 
     }
+    public static Intent convertImplicitIntentToExplicitIntent(Intent implicitIntent, Context context) {
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfoList = pm.queryIntentServices(implicitIntent, 0);
 
+        if (resolveInfoList == null || resolveInfoList.size() != 1) {
+            return null;
+        }
+        ResolveInfo serviceInfo = resolveInfoList.get(0);
+        ComponentName component = new ComponentName(serviceInfo.serviceInfo.packageName, serviceInfo.serviceInfo.name);
+        Intent explicitIntent = new Intent(implicitIntent);
+        explicitIntent.setComponent(component);
+        return explicitIntent;
+    }
 
     void test_db_operations()
     {

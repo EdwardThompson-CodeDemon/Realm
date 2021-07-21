@@ -74,6 +74,7 @@ public class App_updates extends Service {
     public static boolean active=false;
     private static final int NOTIFICATION_ID = 151;
     public static String UPDATE_CHECK_LINK="http://ta.cs4africa.com:2222/api/AppStore/LoadApp";
+    public static String log_tag="App Update";
 
     public App_updates() {
     }
@@ -198,7 +199,10 @@ static sparta_app_version w_sav;
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     act.startActivity(intent);
-                }catch (Exception ex){}
+                }catch (Exception ex){
+                    Log.e(log_tag,"Error installing :"+ex.getMessage());
+
+                }
 
             }
         });
