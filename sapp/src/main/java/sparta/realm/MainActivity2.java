@@ -46,6 +46,7 @@ import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.realmclient.RealmClient;
+import sparta.realm.realmclient.RealmClientServiceManager;
 import sparta.realm.spartautils.app_control.services.App_updates;
 import sparta.realm.spartautils.biometrics.face.SpartaFaceCamera;
 import sparta.realm.spartautils.svars;
@@ -57,33 +58,7 @@ public class MainActivity2 extends SpartaAppCompactActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     RealmClient client;
-    RealmClientInterface realmClientInterface ;
-    RealmClientInterface.Stub realmClientInterfaceRX = new RealmClientInterface.Stub() {
-        @Override
-        public void registerCallback(RealmClientInterface cb) throws RemoteException {
-
-        }
-
-        @Override
-        public void unregisterCallback(RealmClientInterface cb) throws RemoteException {
-
-        }
-
-        @Override
-        public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
-
-        }
-
-        @Override
-        public int InitializeClient(String server_ip, int port, String device_code, String username, String password) throws RemoteException {
-
-            return 0;
-        }
-
-        @Override
-        public void on_status_code_changed(int status) throws RemoteException {
-
-        }
+     RealmClientCallbackInterface.Stub realmClientInterfaceRX = new RealmClientCallbackInterface.Stub() {
 
         @Override
         public void on_status_changed(String status) throws RemoteException {
@@ -97,6 +72,7 @@ Log.e("Client IDL :",""+status);
 
         @Override
         public void on_main_percentage_changed(int progress) throws RemoteException {
+            Log.e("Client IDL :","Primary progress :"+progress);
 
         }
 
@@ -120,29 +96,14 @@ Log.e("Client IDL :",""+status);
 
         }
 
-
-    };
-
-    ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.e("TAG", name.getClassName() + " onServiceConnected");
-            realmClientInterface =  RealmClientInterface.Stub.asInterface(service);
-            try {
-                realmClientInterface.registerCallback(realmClientInterfaceRX);
-                realmClientInterface.InitializeClient("192.168.1.107",8888,"DEVICE CODE","demo","demo123");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-
+        public List<String> OnAboutToUploadObjects(String service_id, List<String> objects) throws RemoteException {
+            return objects;
         }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
 
-            unbindService(serviceConnection);
-        }
     };
+RealmClientServiceManager rcsm;
 
 
     @Override
@@ -152,9 +113,11 @@ Log.e("Client IDL :",""+status);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Context rt=Realm.context;
-        client=new RealmClient(svars.device_code(rt),"demo","demo123");
+//        client=new RealmClient(svars.device_code(rt),"demo","demo123");
         startService(new Intent(this, App_updates.class));
+        rcsm=new RealmClientServiceManager(realmClientInterfaceRX,"192.168.1.107",8888,"demo","demo123");
 
+//        rcsm=new RealmClientServiceManager(realmClientInterfaceRX);
         // Example of a call to a native method
         new Thread(new Runnable() {
             @Override
@@ -203,6 +166,15 @@ Log.e("Client IDL :",""+status);
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                rcsm.uploadAll();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                    }
+                }).start();
 //
 //                SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 //
@@ -218,11 +190,11 @@ Log.e("Client IDL :",""+status);
 //              //  as.sync_now();
 //
 //                sync.triger_sync();
-                svars.set_photo_camera_type(act,1,3);
+                /*svars.set_photo_camera_type(act,1,3);
 //take_photo(1,"666");
                 Intent intt = new Intent(act, SpartaFaceCamera.class);
                 intt.putExtra("sid", "666");
-                startActivityForResult(intt, 1);
+                startActivityForResult(intt, 1);*/
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -237,8 +209,6 @@ Log.e("Client IDL :",""+status);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 //    test_db_operations();
-        Intent rci=new Intent("sparta.realm.RealmClientInterface");
-        bindService(convertImplicitIntentToExplicitIntent(rci,Realm.context),serviceConnection,BIND_AUTO_CREATE);
 
 //        try {
 //            realmClientInterface.on_info_updated("");
@@ -246,19 +216,6 @@ Log.e("Client IDL :",""+status);
 //            e.printStackTrace();
 //        }
 
-    }
-    public static Intent convertImplicitIntentToExplicitIntent(Intent implicitIntent, Context context) {
-        PackageManager pm = context.getPackageManager();
-        List<ResolveInfo> resolveInfoList = pm.queryIntentServices(implicitIntent, 0);
-
-        if (resolveInfoList == null || resolveInfoList.size() != 1) {
-            return null;
-        }
-        ResolveInfo serviceInfo = resolveInfoList.get(0);
-        ComponentName component = new ComponentName(serviceInfo.serviceInfo.packageName, serviceInfo.serviceInfo.name);
-        Intent explicitIntent = new Intent(implicitIntent);
-        explicitIntent.setComponent(component);
-        return explicitIntent;
     }
 
     void test_db_operations()

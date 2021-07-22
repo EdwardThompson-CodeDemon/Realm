@@ -2,6 +2,7 @@ package sparta.realm.realmclient;
 
 import android.content.ContentValues;
 import android.os.Build;
+import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -21,9 +22,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import sparta.realm.Realm;
+import sparta.realm.RealmClientCallbackInterface;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.spartamodels.member;
+import sparta.realm.spartamodels.percent_calculation;
 
 import static sparta.realm.Realm.realm;
 
@@ -32,8 +35,8 @@ public class RealmClient {
     static {
         System.loadLibrary("RealmSocket");
     }
-    public native String stringFromJNI();
-    public native int addFromJNI(int a,int b);
+
+
     public void MessageReceived(String data){
 //Log.e("Rx Java :",data);
 //SendMessageJ(null,"412010000");
@@ -79,6 +82,7 @@ rch.onAuthenticated(this,data_segments[2].equals("1"));
      break;
 }
 data=null;
+        calc_progress();
     }
     public native int SendMessage(String data);
     public native int InitializeClient(String server_ip,int port,String device_code,String username,String password);
@@ -110,12 +114,11 @@ data=null;
     public String device_code, username,password;
 RealmClientComHandler rch=new RealmClientComHandler() {};
     public dataProcessManager dpm=new dataProcessManager();
+    public RealmClientCallbackInterface realmClientInterfaceTX ;
 
 
-    public RealmClient (String device_code,String username,String password){
-        this.device_code=device_code;
-        this.username=username;
-        this.password=password;
+    public RealmClient ( RealmClientCallbackInterface realmClientInterfaceTX ){
+        this.realmClientInterfaceTX=realmClientInterfaceTX;
 
 
     }
@@ -129,7 +132,8 @@ RealmClientComHandler rch=new RealmClientComHandler() {};
     }
 
 String logTag="Realm client Java";
-
+  public   int io_operations_counter=0;
+    public int io_operation_complete_counter=0;
 
 
     interface  RealmClientComHandler{
@@ -137,6 +141,11 @@ String logTag="Realm client Java";
         default void onRequestToDownloadReceived(RealmClient rc,String tx_transaction_no,String service_id){
              sync_service_description sr= Realm.realm.getHashedSyncDescriptions().get(service_id);//should include service id to get one syncdesc
             Log.e(rc.logTag,"Requested to download "+sr.service_name);
+            try {
+                rc.realmClientInterfaceTX.on_info_updated("Request to receive data");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             if(sr.service_id!=null&&!sr.service_id.equals("null")) {
               rc.download(tx_transaction_no,sr);
           } else {
@@ -144,18 +153,25 @@ String logTag="Realm client Java";
           }
         }
         default void onAuthenticated(RealmClient rc, boolean authentication_status){
+            try {
+                rc.realmClientInterfaceTX.on_info_updated(authentication_status?"Authenticated":"Authentication failed");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
             if(authentication_status) {
-                Log.e("Auth :","Authenticated  Synchronizing");
+//                Log.e("Auth :","Authenticated  Synchronizing");
                 rc.Synchronize();
 
             }else{
-                Log.e("Auth :","Authentication failed");
+//                Log.e("Auth :","Authentication failed");
 
             }
 
         }
+
         default void onDataDownloaded(RealmClient rc,String service_id,String data){
-            Log.e(rc.logTag,"Data been downloaded "+data);
+//            Log.e(rc.logTag,"Data been downloaded "+data);
 
             sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
 if(ssd==null) {
@@ -175,7 +191,7 @@ try {
     }
     Log.e(ssd.service_name + " :: RX", "IS OK " + den);
     if (den >= 0) {
-        synchronized (this) {
+        synchronized (DatabaseManager.database) {
             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
             String sidz = ins[0][0];
             String sidz_inactive = ins[0][1];
@@ -213,7 +229,12 @@ try {
 
 }
 }
-
+            try {
+                rc.realmClientInterfaceTX.on_info_updated("Downloaded: "+ssd.service_name);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            rc.io_operation_complete_counter++;
         }
          default void onDataUploaded(RealmClient rc,String service_id,String data){
 
@@ -233,8 +254,14 @@ try {
                      Log.e(rc.logTag, "Error updating  :"+ex.getMessage());
 
                  }
+                 try {
+                     rc.realmClientInterfaceTX.on_info_updated("Uploaded: "+ssd.service_name);
+                 } catch (RemoteException e) {
+                     e.printStackTrace();
+                 }
              }
 
+             rc.io_operation_complete_counter++;
                  }
         default void onConnected(int service_id){ }
     }
@@ -254,7 +281,7 @@ try {
 
         }
     }
-    public void UploadAll (){
+    public void uploadAll (){
         for (Map.Entry<String, sync_service_description> e : Realm.realm.getHashedSyncDescriptions().entrySet()) {
             if( e.getValue().service_id!=null&&!e.getValue().service_id.equals("null"))
             {
@@ -271,14 +298,21 @@ try {
         }
     }
   public void Synchronize (){
+      io_operations_counter=0;
+      io_operation_complete_counter=0;
+      try {
+          realmClientInterfaceTX.on_info_updated("Syncing ");
+      } catch (RemoteException e) {
+          e.printStackTrace();
+      }
         for (Map.Entry<String, sync_service_description> e : Realm.realm.getHashedSyncDescriptions().entrySet()) {
            if( e.getValue().service_id!=null&&!e.getValue().service_id.equals("null"))
            {
                if(e.getValue().servic_type== SyncDescription.service_type.Download){
-                   Log.e(logTag,"Downloading :"+ e.getValue().service_name);
+//                   Log.e(logTag,"Downloading :"+ e.getValue().service_name);
                    download(null, e.getValue());
                 }else if(e.getValue().servic_type== SyncDescription.service_type.Upload){
-                   Log.e(logTag,"Uploading  :"+ e.getValue().service_name);
+//                   Log.e(logTag,"Uploading  :"+ e.getValue().service_name);
                    upload( e.getValue());
                }
 
@@ -290,15 +324,22 @@ try {
         }
     }
    public void download (String tx_transation_no,sync_service_description ssd){
-        SendMessageJ(tx_transation_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size);
+       try {
+           realmClientInterfaceTX.on_info_updated("Downloading "+ssd.service_name);
+       } catch (RemoteException e) {
+           e.printStackTrace();
+       }
+       io_operations_counter++;
+       SendMessageJ(tx_transation_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size);
 dpm.addTransaction(dataProcess.transferTypeTx,tx_transation_no,dataProcess.serviceTypeIo,ssd,(tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
-    }
-    public void SendMessageJ (String tx_transation_no,String... data){
-        SendMessage((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,data));
-//Log.e(logTag,"TX :"+((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,data)));
-    }
 
-    public void upload (sync_service_description ssd){
+    }
+       public void upload (sync_service_description ssd){
+        try {
+            realmClientInterfaceTX.on_info_updated("Uploading "+ssd.service_name);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         String transaction_no="R"+System.currentTimeMillis()+"S";
         String [] pending_records_filter=ssd.table_filters==null?new String[1]:new String[ssd.table_filters.length+1];
         if(ssd.table_filters!=null)
@@ -318,12 +359,27 @@ dpm.addTransaction(dataProcess.transferTypeTx,tx_transation_no,dataProcess.servi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            io_operations_counter++;
             SendMessageJ(transaction_no,"4","1",ssd.service_id+"",jo.toString());
+
         }
 //        dpm.addTransaction(dataProcess.transferTypeTx,transaction_no,dataProcess.serviceTypeIo,ssd,transaction_no+""+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
 
 
     }
-
+    public void SendMessageJ (String tx_transation_no,String... data){
+        SendMessage((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,data));
+        calc_progress();
+//Log.e(logTag,"TX :"+((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,data)));
+    }
+public void calc_progress(){
+    percent_calculation pc = new percent_calculation(io_operations_counter + "", io_operation_complete_counter + "");
+//    Log.e(logTag,"Progress: "+io_operation_complete_counter+" / "+ io_operations_counter);
+    try {
+        realmClientInterfaceTX.on_main_percentage_changed(Integer.parseInt(pc.per_balance));
+    } catch (RemoteException e) {
+        e.printStackTrace();
+    }
+}
 
 }

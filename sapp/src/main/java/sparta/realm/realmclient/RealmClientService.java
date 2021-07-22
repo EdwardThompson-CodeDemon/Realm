@@ -13,6 +13,7 @@ import androidx.core.app.JobIntentService;
 
 import sparta.realm.Realm;
 
+import sparta.realm.RealmClientCallbackInterface;
 import sparta.realm.RealmClientInterface;
 import sparta.realm.spartautils.svars;
 
@@ -33,70 +34,59 @@ public class RealmClientService extends JobIntentService{
         Log.e("Realm Client ","Started Handling");
 
     }
-    RealmClientInterface realmClientInterfaceTX ;
+    public RealmClientCallbackInterface realmClientInterfaceTX ;
+    public static String log_tag="Realm Client Service";
 
     RealmClientInterface.Stub realmClientInterface = new RealmClientInterface.Stub() {
+
+
         @Override
-        public void registerCallback(RealmClientInterface cb) throws RemoteException {
+        public void registerCallback(RealmClientCallbackInterface cb) throws RemoteException {
             realmClientInterfaceTX=cb;
-            realmClientInterfaceTX.on_info_updated("test info update");
-
+            realmClientInterfaceTX.on_info_updated("Sync registered");
         }
 
         @Override
-        public void unregisterCallback(RealmClientInterface cb) throws RemoteException {
-
-        }
-
-        @Override
-        public void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat, double aDouble, String aString) throws RemoteException {
+        public void unregisterCallback(RealmClientCallbackInterface cb) throws RemoteException {
 
         }
 
         @Override
         public int InitializeClient(String server_ip, int port, String device_code, String username, String password) throws RemoteException {
-            start_service();
+          Log.e(log_tag,"Initializing client");
+            start_service(server_ip,port,device_code,username,password);
+
+
             return 0;
         }
 
         @Override
-        public void on_status_code_changed(int status) throws RemoteException {
+        public void upload(String service_id) throws RemoteException {
+            main_client.upload(Realm.realm.getHashedSyncDescriptions().get(service_id));
 
         }
 
         @Override
-        public void on_status_changed(String status) throws RemoteException {
+        public void download(String service_id) throws RemoteException {
+main_client.download(null,Realm.realm.getHashedSyncDescriptions().get(service_id));
+        }
+
+        @Override
+        public void downloadAll() throws RemoteException {
+            Log.e(log_tag,"Downloading all interf");
+            main_client.downloadAll();
 
         }
 
         @Override
-        public void on_info_updated(String status) throws RemoteException {
+        public void uploadAll() throws RemoteException {
+            main_client.uploadAll();
 
         }
 
         @Override
-        public void on_main_percentage_changed(int progress) throws RemoteException {
-
-        }
-
-        @Override
-        public void on_secondary_progress_changed(int progress) throws RemoteException {
-
-        }
-
-        @Override
-        public void onSynchronizationBegun() throws RemoteException {
-
-        }
-
-        @Override
-        public void onServiceSynchronizationCompleted(int service_id) throws RemoteException {
-
-        }
-
-        @Override
-        public void onSynchronizationCompleted() throws RemoteException {
-
+        public void synchronize() throws RemoteException {
+main_client.Synchronize();
         }
 
 
@@ -107,11 +97,11 @@ public class RealmClientService extends JobIntentService{
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.e("TAG", name.getClassName() + " onServiceConnected");
             realmClientInterface = (RealmClientInterface.Stub) RealmClientInterface.Stub.asInterface(service);
-            try {
-                realmClientInterface.on_info_updated("test info update");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                realmClientInterface.on_info_updated("test info update");
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            }
         }
 
 
@@ -140,20 +130,22 @@ public class RealmClientService extends JobIntentService{
     public static final int uploadAll=4;
     public static final int DownloadAll=5;
 
-    public void start_service(){
+    public void start_service(String server_ip,int port,String devicecode,String username,String password){
         if(main_client==null) {
             try {
-                client_thread= new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+//                client_thread= new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
                         Log.e("Realm Client ","Starting ...");
-                        main_client = new RealmClient(svars.device_code(Realm.context),"demo","demo123");
-                        main_client.InitializeClient("192.168.1.107",8888,svars.device_code(Realm.context),"demo","demo123");
-                        Log.e("Realm Client ","Stopped Running");
+                        main_client = new RealmClient(realmClientInterfaceTX);
+                        main_client.InitializeClient(server_ip,port,devicecode,username,password);
+                        Log.e(log_tag,"Stopping Run");
                         stopSelf();
-                    }
-                });
-                client_thread.start();
+                        Log.e(log_tag,"Stopped Running");
+
+//                    }
+//                });
+//                client_thread.start();
 
 
 
@@ -185,7 +177,7 @@ public class RealmClientService extends JobIntentService{
                     break;
                 case uploadAll:
                     Log.e("Realm Client ","Uploading all :");
-                    main_client.UploadAll();
+                    main_client.uploadAll();
                     break;
                 case upload:
                     main_client.upload(Realm.realm.getHashedSyncDescriptions().get(intent.getStringExtra("service_id")));
