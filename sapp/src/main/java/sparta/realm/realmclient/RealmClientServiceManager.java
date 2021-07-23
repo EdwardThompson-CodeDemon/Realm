@@ -71,12 +71,13 @@ public class RealmClientServiceManager {
 
         Intent rci= null;
         try {
-            rci = new Intent(Realm.context,Class.forName("sparta.realm.RealmClientInterface"));
-        } catch (ClassNotFoundException e) {
+//            rci = new Intent(Realm.context,Class.forName("sparta.realm.RealmClientInterface"));
+            rci = new Intent("sparta.realm.RealmClientInterface");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
-//        convertImplicitIntentToExplicitIntent(rci, Realm.context)
+//        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
+        Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
     }
     public void registerCallback(RealmClientCallbackInterface.Stub realmClientInterfaceRX)
     {
