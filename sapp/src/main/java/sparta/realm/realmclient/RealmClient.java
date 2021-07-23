@@ -439,7 +439,9 @@ JSONArray arr=new JSONArray();
 
             arr.put(jo);
         }
-        SendMessageJ(transaction_no,"4","1",ssd.service_id+"",arr.toString());
+        if(arr.length()>0){
+            SendMessageJ(transaction_no,"4","1",ssd.service_id+"",arr.toString());
+        }
 //        dpm.addTransaction(dataProcess.transferTypeTx,transaction_no,dataProcess.serviceTypeIo,ssd,transaction_no+""+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
 
 

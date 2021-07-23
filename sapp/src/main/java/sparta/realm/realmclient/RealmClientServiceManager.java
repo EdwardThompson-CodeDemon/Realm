@@ -75,8 +75,8 @@ public class RealmClientServiceManager {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
-
+        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
+//        convertImplicitIntentToExplicitIntent(rci, Realm.context)
     }
     public void registerCallback(RealmClientCallbackInterface.Stub realmClientInterfaceRX)
     {
@@ -135,8 +135,6 @@ public void downloadAll(){
         if (resolveInfoList == null || resolveInfoList.size() != 1) {
             return null;
         }
-
-
         ResolveInfo serviceInfo = resolveInfoList.get(0);
         ComponentName component = new ComponentName(serviceInfo.serviceInfo.packageName, serviceInfo.serviceInfo.name);
         Intent explicitIntent = new Intent(implicitIntent);
