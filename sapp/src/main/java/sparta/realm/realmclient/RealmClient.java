@@ -371,7 +371,7 @@ try {
        }
        io_operations_counter++;
        SendMessageJ(tx_transation_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size);
-dpm.addTransaction(dataProcess.transferTypeTx,tx_transation_no,dataProcess.serviceTypeIo,ssd,(tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
+dpm.addTransaction(dataProcess.transferTypeTx,tx_transation_no,dataProcess.serviceTypeIo,ssd,(tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
 
     }
        public void uploadSingle (sync_service_description ssd){
@@ -449,9 +449,9 @@ JSONArray arr=new JSONArray();
 
 
     public void SendMessageJ (String tx_transation_no,String... data){
-        SendMessage((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,data));
+        SendMessage((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,data));
         calc_progress();
-//Log.e(logTag,"TX :"+((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+""+DatabaseManager.concatRealmClientString(delimeter,data)));
+//Log.e(logTag,"TX :"+((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,data)));
     }
 public void calc_progress(){
     percent_calculation pc = new percent_calculation(io_operations_counter + "", io_operation_complete_counter + "");
