@@ -795,20 +795,8 @@ public static class remember_indexes {
 
     }
 
- public static void set_deligate(Context act, String deligate_rc) {
 
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("deligate_rc", deligate_rc);
-        saver.commit();
-
-    }
-
-    public static String deligate(Context act) {
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("deligate_rc", null);
-
-    }
  public static void set_shared_pref_boolean(Context act, shared_prefs_booleans var,boolean data) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
@@ -828,20 +816,7 @@ public static class remember_indexes {
          should_sync
 
     }
-public static void set_enrlock(Context act, String enrloc_rc) {
 
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putString("enrloc_rc", enrloc_rc);
-        saver.commit();
-
-    }
-
-    public static String enrloc(Context act) {
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("enrloc_rc", null);
-
-    }
     public static String all_records(Context act)
     {
 

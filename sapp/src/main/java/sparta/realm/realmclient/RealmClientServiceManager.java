@@ -69,8 +69,24 @@ public class RealmClientServiceManager {
         this.password=password;
 
 
-        Intent rci=new Intent("sparta.realm.RealmClientInterface");
+        Intent rci= null;
+        try {
+            rci = new Intent(Realm.context,Class.forName("sparta.realm.RealmClientInterface"));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
+
+    }
+    public void registerCallback(RealmClientCallbackInterface.Stub realmClientInterfaceRX)
+    {
+        this.realmClientInterfaceRX=realmClientInterfaceRX;
+        try {
+            realmClientInterface.registerCallback(realmClientInterfaceRX);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
 
     }
 public void upload(String service_id){
@@ -119,6 +135,8 @@ public void downloadAll(){
         if (resolveInfoList == null || resolveInfoList.size() != 1) {
             return null;
         }
+
+
         ResolveInfo serviceInfo = resolveInfoList.get(0);
         ComponentName component = new ComponentName(serviceInfo.serviceInfo.packageName, serviceInfo.serviceInfo.name);
         Intent explicitIntent = new Intent(implicitIntent);
