@@ -136,12 +136,16 @@ main_client.Synchronize();
 //                client_thread= new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
-                        Log.e("Realm Client ","Starting ...");
-                        main_client = new RealmClient(realmClientInterfaceTX);
-                        main_client.InitializeClient(server_ip,port,devicecode,username,password);
-                        Log.e(log_tag,"Stopping Run");
-                        stopSelf();
-                        Log.e(log_tag,"Stopped Running");
+                while (true){
+                    Log.e("Realm Client ","Starting ...");
+                    main_client = new RealmClient(realmClientInterfaceTX);
+                    main_client.InitializeClient(server_ip,port,devicecode,username,password);
+                    Log.e(log_tag,"Stopping Run");
+                    stopSelf();
+                    Log.e(log_tag,"Stopped Running");
+
+                }
+
 
 //                    }
 //                });

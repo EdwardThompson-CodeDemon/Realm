@@ -60,10 +60,11 @@ public class RealmClientServiceManager {
     public  String device_code;
     public  String username;
     public  String password;
-    public  RealmClientServiceManager(RealmClientCallbackInterface.Stub realmClientInterfaceRX,String server_ip, int port, String username, String password){
+    public  RealmClientServiceManager(RealmClientCallbackInterface.Stub realmClientInterfaceRX,String device_code,String server_ip, int port, String username, String password){
 
         this.realmClientInterfaceRX=realmClientInterfaceRX;
         this.server_ip=server_ip;
+        this.device_code=device_code;
         this.port=port;
         this.username=username;
         this.password=password;

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Base64;
 import android.util.Log;
 
+import com.digitalpersona.uareu.Engine;
 import com.digitalpersona.uareu.Fmd;
 import com.digitalpersona.uareu.UareUException;
 import com.digitalpersona.uareu.UareUGlobal;
@@ -154,6 +155,10 @@ public class DataMatcher {
 
 
                                         mm_score = UareUGlobal.GetEngine().Compare(ffm1, 0, ffm2, 0);
+                                        Engine.Candidate[] can = UareUGlobal.GetEngine().Identify(ffm1, 0,new Fmd[]{}, svars.matching_error_margin, 1);
+//                                        public Engine.Candidate[] Identify(Fmd fmd1, int view_index1, Fmd[] fmds, int threshold_score, int candidates_requested) throws UareUException {
+
+                                            int i=can[0].fmd_index;
                                     }catch (UareUException EX){
 
                                         Log.e("Turbo match =>","Matching error ur=>"+EX.getMessage());
