@@ -50,6 +50,9 @@ public class RealmClientService extends JobIntentService{
         public void registerCallback(RealmClientCallbackInterface cb) throws RemoteException {
             realmClientInterfaceTX=cb;
             realmClientInterfaceTX.on_info_updated("Sync registered");
+            if(main_client!=null){
+                main_client.registerCallBack(realmClientInterfaceTX);
+            }
         }
 
         @Override

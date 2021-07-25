@@ -36,6 +36,19 @@
         android:src="@drawable/sync_icon"
         android:background="@color/paleturquoise"
         android:id="@+id/sync_icon"/>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/sync_icon"
+        android:background="@color/paleturquoise"
+        android:id="@+id/realm_sync"/>
+ <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/capturelogo"
+        android:background="@color/paleturquoise"
+        android:id="@+id/realm_regcall"/>
 </LinearLayout>
 
 

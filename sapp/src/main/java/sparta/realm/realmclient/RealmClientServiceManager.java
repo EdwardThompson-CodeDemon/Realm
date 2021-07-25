@@ -78,8 +78,12 @@ public class RealmClientServiceManager {
             e.printStackTrace();
         }
 //        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
-        Realm.context.startService(convertImplicitIntentToExplicitIntent(rci, Realm.context));
-                Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
+                  Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
+//        Realm.context.startService(convertImplicitIntentToExplicitIntent(rci, Realm.context));
+    }
+    void  unbind()
+    {
+        Realm.context.unbindService(serviceConnection);
     }
     public void registerCallback(RealmClientCallbackInterface.Stub realmClientInterfaceRX)
     {

@@ -122,6 +122,11 @@ RealmClientComHandler rch=new RealmClientComHandler() {};
 
 
     }
+   public void registerCallBack( RealmClientCallbackInterface realmClientInterfaceTX ){
+        this.realmClientInterfaceTX=realmClientInterfaceTX;
+
+
+    }
  public RealmClient (String device_code,String username,String password,RealmClientComHandler rch){
         this.device_code=device_code;
         this.username=username;

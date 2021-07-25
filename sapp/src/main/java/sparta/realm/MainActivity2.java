@@ -41,8 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import sparta.realm.Activities.SpartaAppCompactActivity;
 
+import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.realmclient.RealmClient;
@@ -57,7 +57,6 @@ import static sparta.realm.Realm.realm;
 public class MainActivity2 extends SpartaAppCompactActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    RealmClient client;
      RealmClientCallbackInterface.Stub realmClientInterfaceRX = new RealmClientCallbackInterface.Stub() {
 
         @Override
@@ -160,13 +159,31 @@ RealmClientServiceManager rcsm;
 //        synchro_ sync=new synchro_(act,(RelativeLayout)findViewById(R.id.main_content),sync_views,(TextView) findViewById(R.id.sync_time),(ImageView) findViewById(R.id.sync_icon));
 
         //  as.InitialiseAutosync();
+        findViewById(R.id.realm_sync).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+//                rcsm.Synchronize();
+                String s=null;
+                s.equalsIgnoreCase("f");
+
+            }
+        });
+ findViewById(R.id.realm_regcall).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              rcsm.registerCallback(realmClientInterfaceRX);
+
+            }
+        });
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                rcsm.uploadAll();
+                rcsm.Synchronize();
 
                 new Thread(new Runnable() {
                     @Override
