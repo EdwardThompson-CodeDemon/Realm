@@ -30,6 +30,12 @@ public class RealmClientService extends JobIntentService{
     }
 
     @Override
+    public void onRebind(Intent intent) {
+        Log.e("Realm Client ","onReBind");
+        super.onRebind(intent);
+    }
+
+    @Override
     protected void onHandleWork(@NonNull Intent intent) {
         Log.e("Realm Client ","Started Handling");
 
