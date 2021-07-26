@@ -97,6 +97,10 @@ public class RealmClientServiceManager {
 //        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
                         Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
 
+                    }else {
+                        Intent rci = new Intent("sparta.realm.RealmClientInterface");
+                        Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
+
                     }
                                }
             },1000,10000);
