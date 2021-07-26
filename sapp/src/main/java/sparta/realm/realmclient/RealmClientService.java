@@ -151,6 +151,7 @@ main_client.Synchronize();
                     main_client.InitializeClient(server_ip,port,devicecode,username,password);
                     Log.e(log_tag,"Stopping Run");
                     stopSelf();
+                    main_client=null;
                     Log.e(log_tag,"Stopped Running");
 
 //                }
