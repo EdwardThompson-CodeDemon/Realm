@@ -150,9 +150,10 @@ main_client.Synchronize();
                     main_client = new RealmClient(realmClientInterfaceTX);
                     main_client.InitializeClient(server_ip,port,devicecode,username,password);
                     Log.e(log_tag,"Stopping Run");
-                    stopSelf();
+
                     main_client=null;
-                    Log.e(log_tag,"Stopped Running");
+                android.os.Process.killProcess(android.os.Process.myPid());
+                Log.e(log_tag,"Stopped Running");
 
 //                }
 
