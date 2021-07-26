@@ -145,17 +145,17 @@ main_client.Synchronize();
 //                client_thread= new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                while (true){
+                while (true){
                     Log.e("Realm Client ","Starting ...");
                     main_client = new RealmClient(realmClientInterfaceTX);
                     main_client.InitializeClient(server_ip,port,devicecode,username,password);
                     Log.e(log_tag,"Stopping Run");
 
                     main_client=null;
-                android.os.Process.killProcess(android.os.Process.myPid());
+//                android.os.Process.killProcess(android.os.Process.myPid());
                 Log.e(log_tag,"Stopped Running");
 
-//                }
+                }
 
 
 //                    }
