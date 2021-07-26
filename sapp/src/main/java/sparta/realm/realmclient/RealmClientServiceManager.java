@@ -83,8 +83,8 @@ public class RealmClientServiceManager {
                 public void run() {
 
                     Boolean service_running=isServiceRunning(Realm.context, RealmClientService.class);
+                    Log.e("Checking RC service",""+(service_running?"Running ...":"Restarting !!!"));
                     if(!service_running){
-                        Log.e("Checking RC service",""+(service_running?"Running ...":"Restarting !!!"));
                         Intent rci= null;
                         try {
 //            rci = new Intent(Realm.context,Class.forName("sparta.realm.RealmClientInterface"));
@@ -98,6 +98,7 @@ public class RealmClientServiceManager {
                     }
                                }
             },1000,10000);
+
         }
     }
     public static boolean isServiceRunning(Context act, Class<?> serviceClass) {
