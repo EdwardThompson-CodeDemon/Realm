@@ -1,5 +1,6 @@
 package sparta.realm.realmclient;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sparta.realm.R;
 import sparta.realm.Realm;
@@ -70,17 +73,46 @@ public class RealmClientServiceManager {
         this.password=password;
 
 
-        Intent rci= null;
-        try {
-//            rci = new Intent(Realm.context,Class.forName("sparta.realm.RealmClientInterface"));
-            rci = new Intent("sparta.realm.RealmClientInterface");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
-                  Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
+
+
 //        Realm.context.startService(convertImplicitIntentToExplicitIntent(rci, Realm.context));
+        if(sync_check_timer==null){
+            sync_check_timer=new Timer();
+            sync_check_timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                    Boolean service_running=isServiceRunning(Realm.context, RealmClientService.class);
+                    if(!service_running){
+                        Log.e("Checking RC service",""+(service_running?"Running ...":"Restarting !!!"));
+                        Intent rci= null;
+                        try {
+//            rci = new Intent(Realm.context,Class.forName("sparta.realm.RealmClientInterface"));
+                            rci = new Intent("sparta.realm.RealmClientInterface");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//        Realm.context.bindService(rci,serviceConnection,BIND_AUTO_CREATE);
+                        Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
+
+                    }
+                               }
+            },1000,10000);
+        }
     }
+    public static boolean isServiceRunning(Context act, Class<?> serviceClass) {
+//        Class<?> serviceClass=App_updates.class;
+
+        ActivityManager manager;
+        manager = (ActivityManager) act.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    Timer sync_check_timer=null;
     void  unbind()
     {
         Realm.context.unbindService(serviceConnection);
