@@ -72,6 +72,8 @@ public class RealmClientServiceManager {
         this.username=username;
         this.password=password;
 
+        Intent rci = new Intent("sparta.realm.RealmClientInterface");
+        Realm.context.bindService(convertImplicitIntentToExplicitIntent(rci, Realm.context),serviceConnection,BIND_AUTO_CREATE);
 
 
 
