@@ -2206,8 +2206,12 @@ if(ssd.service_name.equalsIgnoreCase("JobAllInventory"))
 public String greatest_sync_var(String table_name, @Nullable String...filters)
     {
 
-
-        Cursor c=database.rawQuery("SELECT CAST(sync_var AS INTEGER) FROM "+table_name+(filters==null?"":" "+conccat_sql_filters(filters))+" ORDER BY CAST(sync_var AS INTEGER) DESC LIMIT 1",null);
+String[] flts=new String[filters.length+1];
+flts[0]="sync_var NOT NULL";
+for (int i =0;i<filters.length;i++){
+    flts[i+1]=filters[i];
+}
+        Cursor c=database.rawQuery("SELECT CAST(sync_var AS INTEGER) FROM "+table_name+(filters==null?"":" "+conccat_sql_filters(flts))+" ORDER BY CAST(sync_var AS INTEGER) DESC LIMIT 1",null);
 
         if(c.moveToFirst())
         {
