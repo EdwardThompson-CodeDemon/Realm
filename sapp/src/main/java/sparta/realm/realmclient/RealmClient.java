@@ -226,7 +226,18 @@ try {
             DatabaseManager.database.setTransactionSuccessful();
             DatabaseManager.database.endTransaction();
             if(den>=ssd.chunk_size){
+                try {
+                    rc.realmClientInterfaceTX.on_info_updated("Downloaded "+ssd.service_name);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 rc.download(transaction_no,ssd);
+            }else {
+                try {
+                    rc.realmClientInterfaceTX.on_info_updated("Synchronized");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -237,11 +248,7 @@ try {
 
 }
 }
-            try {
-                rc.realmClientInterfaceTX.on_info_updated("Downloaded: "+ssd.service_name);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+
             rc.io_operation_complete_counter++;
         }
          default void _onDataUploaded(RealmClient rc,String service_id,String data){
@@ -297,7 +304,7 @@ try {
 
                  }
                  try {
-                     rc.realmClientInterfaceTX.on_info_updated("Uploaded: "+ssd.service_name);
+                     rc.realmClientInterfaceTX.on_info_updated("Uploaded "+ssd.service_name);
                  } catch (RemoteException e) {
                      e.printStackTrace();
                  }
@@ -446,6 +453,12 @@ JSONArray arr=new JSONArray();
         }
         if(arr.length()>0){
             SendMessageJ(transaction_no,"4","1",ssd.service_id+"",arr.toString());
+        }else{
+            try {
+                realmClientInterfaceTX.on_info_updated("Synchronized");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 //        dpm.addTransaction(dataProcess.transferTypeTx,transaction_no,dataProcess.serviceTypeIo,ssd,transaction_no+""+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
 
@@ -463,6 +476,9 @@ public void calc_progress(){
 //    Log.e(logTag,"Progress: "+io_operation_complete_counter+" / "+ io_operations_counter);
     try {
         realmClientInterfaceTX.on_main_percentage_changed(Integer.parseInt(pc.per_balance));
+        if(Integer.parseInt(pc.per_balance)==100){
+            realmClientInterfaceTX.on_info_updated("Synchronization complete");
+        }
     } catch (RemoteException e) {
         e.printStackTrace();
     }

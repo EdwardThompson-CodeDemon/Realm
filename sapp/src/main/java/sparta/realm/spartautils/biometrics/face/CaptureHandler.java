@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -325,7 +327,8 @@ for(int z=0;z<Age_values.length;z++){
 
 		// Mark and name faces
 		for (int i=0; i<face_count[0]; ++i) {
-			canvas.drawRect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2, mPaintBlueTransparent);
+			draw_circle_success(new Rect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2),canvas);
+//			canvas.drawRect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2, mPaintBlueTransparent);
 
 			boolean named = false;
 			if (IDs[i] != -1) {
@@ -346,7 +349,7 @@ for(int z=0;z<Age_values.length;z++){
 							if(dm.can_clock(vt== DataMatcher.verification_type.clock_in, discovered_member.sid.value)){
 								main_matching_interface.on_match_found(discovered_member.sid.value,""+IDs[0],"00", vt.ordinal(),4);
 							}else {
-								canvas.drawRect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2, mPaintGREENbox);
+//								canvas.drawRect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2, mPaintGREENbox);
 								canvas.drawText(discovered_member.father_name+" "+(vt== DataMatcher.verification_type.clock_in?"Clocked in":"Clocked out"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintGREEN);
 
 							}
@@ -386,7 +389,7 @@ for(int z=0;z<Age_values.length;z++){
 						if(transaction_no!=null) {
 								cpi.OnOkToCapture();
 							cpi.OnOkToCapture(male?1:0,age);
-							canvas.drawText("Guy is a :"+age+" Year Old "+(male?"Male":"Female"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
+							canvas.drawText(""+age+" Year Old "+(male?"Male":"Female"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
 							if (capture) {
 								save_face(RotatedImage, active_false_id, transaction_no,male?1:0,age);
 //								save_face(RotatedImage, active_false_id, transaction_no);
@@ -618,6 +621,27 @@ void save_face_to_tracker( long tracker_index, String transaction_no)
 
 
 }
+
+	void draw_error_circle(Rect r, Canvas c){
+		Drawable d = getResources().getDrawable(R.drawable.bg_circle_detect_result_failed, null);
+		d.setBounds(r.left-120, r.top-100,r. right+120, r.bottom+200);
+		d.draw(c);
+	}
+	void draw_circle_normal(Rect r,Canvas c){
+		Drawable d = getResources().getDrawable(R.drawable.bg_circle_v2, null);
+		d.setBounds(r.left, r.top,r. right, r.bottom);
+		d.draw(c);
+	}
+	void draw_circle_success(Rect r,Canvas c){
+		Drawable d = getResources().getDrawable(R.drawable.bg_circle_detect_result_success, null);
+		d.setBounds(r.left-120, r.top-100,r. right+120, r.bottom+200);
+		d.draw(c);
+	}
+	void draw_horns(Rect r,Canvas c){
+		Drawable d = getResources().getDrawable(R.drawable.horns, null);
+		d.setBounds(r.left-120, r.top-100,r. right+120, r.bottom+100);
+		d.draw(c);
+	}
 	int false_count=0;
 	int max_false_count=2;
 	long active_false_id=0;
