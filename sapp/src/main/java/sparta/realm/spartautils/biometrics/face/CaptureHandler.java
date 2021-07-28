@@ -283,7 +283,7 @@ if( (int)face_count[0]<1){
 }
 		faceLock.lock();
 Boolean male=false;
-Float age=0F;
+float age=0F;
 		for (int i=0; i<MAX_FACES; ++i) {
 			mFacePositions[i] = new FaceRectangle();
 			mFacePositions[i].x1 = 0;
@@ -389,7 +389,7 @@ for(int z=0;z<Age_values.length;z++){
 						if(transaction_no!=null) {
 								cpi.OnOkToCapture();
 							cpi.OnOkToCapture(male?1:0,age);
-							canvas.drawText(""+age+" Year Old "+(male?"Male":"Female"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
+							canvas.drawText(""+(int)age+" Year Old "+(male?"Male":"Female"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
 							if (capture) {
 								save_face(RotatedImage, active_false_id, transaction_no,male?1:0,age);
 //								save_face(RotatedImage, active_false_id, transaction_no);
