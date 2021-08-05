@@ -11,7 +11,7 @@ interface RealmClientCallbackInterface {
     void on_main_percentage_changed(int progress);
     void on_secondary_progress_changed(int progress);
     void onSynchronizationBegun();
-    void onServiceSynchronizationCompleted(int service_id);
+    void onServiceSynchronizationCompleted(String service_id);
     void onSynchronizationCompleted();
 
 

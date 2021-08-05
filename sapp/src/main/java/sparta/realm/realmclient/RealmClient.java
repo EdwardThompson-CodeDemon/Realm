@@ -235,12 +235,14 @@ try {
             }else {
                 try {
                     rc.realmClientInterfaceTX.on_info_updated("Synchronized");
+                    rc.realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
+    Log.e(ssd.service_name + " :: RX", "INSERTED OK " + den);
 
     Log.e(ssd.service_name + " :: RX", " DONE ");
 }catch (Exception ex) {
@@ -282,40 +284,92 @@ try {
              rc.io_operation_complete_counter++;
                  }
          default void onDataUploaded(RealmClient rc,String service_id,String data){
+             rc.updateUploadedData(service_id,data);
 
-             sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
-             if(ssd==null) {
-
-             }else {
-                 try {
-                     JSONArray arr=new JSONArray(data);
-                     for(int i=0;i<arr.length();i++){
-                         JSONObject res=arr.getJSONObject(i);
-                         ContentValues cv=new ContentValues();
-                         cv.put("sync_var",res.getString("id"));
-                         cv.put("sync_status",sync_status.syned.ordinal());
-                         Log.e(rc.logTag, "Updated :"+DatabaseManager.database.update(ssd.table_name,cv,"transaction_no='"+res.getString("transaction_no")+"'",null));
-
-                     }
-
-
-                 } catch (Exception ex) {
-                     Log.e(rc.logTag, "Error updating  :"+ex.getMessage());
-
-                 }
-                 try {
-                     rc.realmClientInterfaceTX.on_info_updated("Uploaded "+ssd.service_name);
-                 } catch (RemoteException e) {
-                     e.printStackTrace();
-                 }
-
-                     rc.upload(ssd);
-
-             }
-
-             rc.io_operation_complete_counter++;
                  }
         default void onConnected(int service_id){ }
+    }
+     void updateUploadedData_(String service_id,String data){
+         sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
+         if(ssd==null) {
+
+         }else {
+             try {
+                 JSONArray arr=new JSONArray(data);
+                 for(int i=0;i<arr.length();i++){
+                     JSONObject res=arr.getJSONObject(i);
+                     ContentValues cv=new ContentValues();
+                     cv.put("sync_var",res.getString("id"));
+                     cv.put("sync_status",sync_status.syned.ordinal());
+                     Log.e(logTag, "Updated :"+DatabaseManager.database.update(ssd.table_name,cv,"transaction_no='"+res.getString("transaction_no")+"'",null));
+
+                 }
+
+
+             } catch (Exception ex) {
+                 Log.e(logTag, "Error updating  :"+ex.getMessage());
+
+             }
+             try {
+                 realmClientInterfaceTX.on_info_updated("Uploaded "+ssd.service_name);
+             } catch (RemoteException e) {
+                 e.printStackTrace();
+             }
+
+             upload(ssd);
+
+         }
+
+         io_operation_complete_counter++;
+     }
+   void updateUploadedData(String service_id,String data){
+
+        sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
+        if(ssd==null) {
+
+        }else {
+            try {
+                JSONArray arr=new JSONArray(data);
+                if(arr.length()>0) {
+                    Log.e(logTag, "Updating "+arr.length());
+                    StringBuilder sbqry = new StringBuilder();
+                    sbqry.append("WITH RealmClientResult(transaction_no, sync_var, sync_status) AS (VALUES");
+                    for (int i = 0; i < arr.length(); i++) {
+                        sbqry.append((i != 0) ? "," : "");
+                        JSONObject res = arr.getJSONObject(i);
+                        sbqry.append("('");
+                        sbqry.append(res.getString("transaction_no"));
+                        sbqry.append("','");
+                        sbqry.append(res.getString("id"));
+                        sbqry.append("',");
+                        sbqry.append(sync_status.syned.ordinal());
+                        sbqry.append(")");
+                    }
+                    sbqry.append(") UPDATE " + ssd.table_name + " SET " +
+                            "  sync_var = (SELECT sync_var FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
+                            "  sync_status = (SELECT sync_status FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)\n" +
+                            "WHERE transaction_no IN (SELECT transaction_no FROM RealmClientResult)");
+                    DatabaseManager.database.execSQL(sbqry.toString());
+                    Log.e(logTag, "Updated OK "+arr.length());
+                }
+
+
+
+            } catch (Exception ex) {
+                Log.e(logTag, "Error updating  :"+ex.getMessage());
+
+            }
+            try {
+                realmClientInterfaceTX.on_info_updated("Uploaded "+ssd.service_name);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            upload(ssd);
+
+        }
+
+        io_operation_complete_counter++;
     }
 
     public void downloadAll (){
@@ -456,6 +510,7 @@ JSONArray arr=new JSONArray();
         }else{
             try {
                 realmClientInterfaceTX.on_info_updated("Synchronized");
+                realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -477,7 +532,8 @@ public void calc_progress(){
     try {
         realmClientInterfaceTX.on_main_percentage_changed(Integer.parseInt(pc.per_balance));
         if(Integer.parseInt(pc.per_balance)==100){
-            realmClientInterfaceTX.on_info_updated("Synchronization complete");
+            realmClientInterfaceTX.on_info_updated("Sync complete");
+            realmClientInterfaceTX.onSynchronizationCompleted();
         }
     } catch (RemoteException e) {
         e.printStackTrace();

@@ -97,7 +97,7 @@ public class svars {
      }
 
      deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
+//        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
         return deviceUniqueIdentifier;
 
     }
@@ -165,7 +165,7 @@ public class svars {
         }
 
         deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
+//        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
         return deviceUniqueIdentifier+"_"+System.currentTimeMillis()+"_"+svars.user_id(act);
     }
  public static   String get_ip_forcefully(){

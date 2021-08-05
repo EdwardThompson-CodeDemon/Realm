@@ -14,6 +14,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +27,7 @@ import com.google.common.base.Stopwatch;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.realm.annotations.sync_status;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -39,6 +41,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
@@ -47,6 +51,7 @@ import sparta.realm.Services.SynchronizationManager;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.realmclient.RealmClient;
 import sparta.realm.realmclient.RealmClientServiceManager;
+import sparta.realm.spartamodels.tike.ticket;
 import sparta.realm.spartautils.app_control.services.App_updates;
 import sparta.realm.spartautils.biometrics.face.SpartaFaceCamera;
 import sparta.realm.spartautils.svars;
@@ -86,7 +91,7 @@ Log.e("Client IDL :",""+status);
         }
 
         @Override
-        public void onServiceSynchronizationCompleted(int service_id) throws RemoteException {
+        public void onServiceSynchronizationCompleted(String service_id) throws RemoteException {
 
         }
 
@@ -113,7 +118,7 @@ RealmClientServiceManager rcsm;
         setSupportActionBar(toolbar);
         Context rt=Realm.context;
 //        client=new RealmClient(svars.device_code(rt),"demo","demo123");
-        startService(new Intent(this, App_updates.class));
+//        startService(new Intent(this, App_updates.class));
         rcsm=new RealmClientServiceManager(realmClientInterfaceRX,svars.device_code(act),"192.168.1.107",8888,"demo","demo123");
 
 //        rcsm=new RealmClientServiceManager(realmClientInterfaceRX);
@@ -170,6 +175,15 @@ RealmClientServiceManager rcsm;
 
             }
         });
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //cnt++;
+                generate_tickets();
+//
+            }
+        },10000);
  findViewById(R.id.realm_regcall).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,7 +248,54 @@ RealmClientServiceManager rcsm;
 //        }
 
     }
+    void generate_tickets(){
+        ArrayList<String> qr_codes=new ArrayList<>();
+        ArrayList<String> transaction_nos=new ArrayList<>();
+        for(int i=0;i<10000;i++) {
 
+            ticket tick = new ticket();
+            tick.qr_code = (int) (Math.random() * 10000000) + "" + (int) (Math.random() * 10000000);
+            while (qr_codes.contains(tick.qr_code)){
+                tick.qr_code = (int) (Math.random() * 10000000) + "" + (int) (Math.random() * 10000000);
+                Log.e("Repeating QR :", i + " :: " +tick.qr_code);
+
+            }
+            qr_codes.add(tick.qr_code);
+            tick.event_id = "1";
+            tick.seat_no = "1";
+            tick.seat_range_id = "1";
+            tick.transaction_no = (Math.random()*10000000)+"::"+i+svars.device_specific_transaction_no(act);
+            while (transaction_nos.contains(tick.transaction_no)){
+                tick.transaction_no = (Math.random()*10000000)+"::"+i+svars.device_specific_transaction_no(act);
+                Log.e("Repeating transaction :", i + " :: " +tick.transaction_no);
+            }
+            transaction_nos.add(tick.transaction_no);
+            save_ticket(tick, i);
+//            Log.e("Insert :", i + " :: " + save_ticket(tick, i));
+        }
+           rcsm.upload("2");
+    }
+    boolean save_ticket(ticket tike,int i){
+
+        ContentValues cv=new ContentValues();
+        cv.put("qr_code",tike.qr_code);
+        cv.put("event_id",tike.event_id);
+        cv.put("seat_range_id",tike.seat_range_id);
+        cv.put("seat_no",tike.seat_no);
+        cv.put("ticket_all_events",tike.ticket_all_events);
+        cv.put("device_code",svars.device_code(act));
+
+        cv.put("sync_status",""+ sync_status.pending.ordinal());
+        cv.put("transaction_no",tike.transaction_no);
+
+        long insert_= Realm.databaseManager.database.insert("tickets",null,cv);
+
+
+
+//        rcso.upload(Realm.realm.getSyncDescription(tike).get(0).service_id);
+//        rcso.upload("2");
+        return insert_>0;
+    }
     void test_db_operations()
     {
 

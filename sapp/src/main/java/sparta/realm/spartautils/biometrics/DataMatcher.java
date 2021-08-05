@@ -12,6 +12,9 @@ import com.digitalpersona.uareu.UareUGlobal;
 import com.fpcore.FPMatch;
 import com.google.common.base.Stopwatch;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import sparta.realm.Realm;
@@ -29,7 +32,7 @@ import static sparta.realm.spartautils.biometrics.fp.fp_handler_stf_usb_8_inch.m
 
 public class DataMatcher {
 
-
+public static String logTag="DataMatcher";
 
 
     Thread[] exceutioner_threads;
@@ -44,181 +47,75 @@ public class DataMatcher {
         check_in
 
     }
+    public Fmd base_64_tofmd(String base64_fp){
+        try {
+            Fmd ffm = UareUGlobal.GetImporter().ImportFmd(Base64.decode(base64_fp, 0), main_fmd_format, main_fmd_format);
+            return ffm;
+        } catch (UareUException e) {
+            e.printStackTrace();
+        }
+Log.e(logTag,"Invalid fingerprint");
+        return null;
 
-    public void load_match(final byte[] model, final matching_interface inter, final int clock_mode)
+    }
+
+public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse64){
+    LinkedHashMap <String,Fmd> fpId_fmd=new LinkedHashMap <>();
+
+    for(Map.Entry e :fpId_fpbse64.entrySet()){
+
+        fpId_fmd.put((String)e.getKey(),base_64_tofmd((String) e.getValue()));
+    }
+
+        return fpId_fmd;
+
+    }
+
+    /***
+     *
+     * @param model
+     * @param inter
+     * @param fpId_fmd
+     * Hashmap doesn't maintain any order of entries while LinkedHashMap does and insertions ar of the same speed as with hashmaps
+     * Treemap is absolutely slower due to emm...the ... whats it called ..  Red-Black .that's it.. compared to hashtable its slower
+     *
+     */
+    public void load_match_uareu(final byte[] model, final matching_interface inter, LinkedHashMap<String,Fmd> fpId_fmd)
     {
-        Log.e("CPU CORE COUNT :",""+ svars.getCpuCores());
-        if(svars.current_device()==svars.DEVICE.WALL_MOUNTED.ordinal()||svars.current_device()==svars.DEVICE.BIO_MINI.ordinal()) {
-            FPMatch.getInstance().InitMatch(0,"http://www.fgtit.com/");
-        }
-        int employee_count_actual=0;
-        Cursor cnt_c=database.rawQuery("SELECT COUNT(*) FROM employee_data_table WHERE data_type='"+svars.data_type_indexes.fingerprints+"'",null);
-        if(cnt_c.moveToFirst()){
-            do{
-                employee_count_actual=cnt_c.getInt(0);
-            }while(cnt_c.moveToNext());}
+
+        Log.e(logTag,"CPU CORE COUNT :"+ svars.getCpuCores());
         final Stopwatch stw=new Stopwatch();
-
-
         stw.start();
-        final int employee_count=employee_count_actual;
-        // final int emp_per_thread=2500;
-        //    final int max_thread_count=(employee_count+(emp_per_thread-1))/emp_per_thread;
-        final int max_thread_count=1;//svars.getCpuCores();
-        final int emp_per_thread=(employee_count+(max_thread_count-1))/max_thread_count;
+        int mm_score=1000;
+        try {
 
+                Fmd ffm1 = UareUGlobal.GetImporter().ImportFmd(model, main_fmd_format, main_fmd_format);
+                Log.e(logTag, "Fpmach count:" + fpId_fmd.size());
+                Engine.Candidate[] can = UareUGlobal.GetEngine().Identify(ffm1, 0, fpId_fmd.values().toArray(new Fmd[0]), svars.matching_error_margin, 1);
+                int i = can[0].fmd_index;
 
-        Log.e("Turbo match =>","Employee loading_time =>"+stw.elapsed(TimeUnit.MILLISECONDS));
-        Log.e("Turbo match =>","Employee fp count =>"+employee_count);
+                String fpid = fpId_fmd.keySet().toArray(new String[0])[i];
+                Fmd ffm2 = fpId_fmd.keySet().toArray(new Fmd[0])[i];
+                mm_score = UareUGlobal.GetEngine().Compare(ffm1, 0, ffm2, 0);
+                if (mm_score < svars.matching_error_margin) {
 
+                    Log.e("FPMATCH ", "OBTAINED ");
 
-        stw.stop();
-        stw.reset();
-        stw.start();
-        //final int max_thread_count=employee_count/emp_per_thread;
-        // (value + 14) / 15;
-        Log.e("Turbo match =>","Threads to generate =>"+max_thread_count);
-
-        exceutioner_threads= new Thread[max_thread_count];
-
-        turbo_match_found=false;
-        final int[] finish_count = {0};
-        for(int i=0;i<exceutioner_threads.length;i++)
-        {
-//           final FPMatch fpm=new FPMatch();
-//           fpm.InitMatch(0,"http://www.fgtit.com/");
-            Log.e("Turbo match =>","Generating thread =>"+i+"/"+exceutioner_threads.length);
-
-            if(turbo_match_found)break;
-            final int finalI = i;
-            // try {
-            exceutioner_threads[i] = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        int actual_var_index = (emp_per_thread * finalI);
-                        int emp_per_thread_intt = employee_count - actual_var_index;
-                        String qry="SELECT * FROM employee_data_table WHERE data_type='"+svars.data_type_indexes.fingerprints+"' AND employee_id NOT NULL LIMIT " + emp_per_thread + " OFFSET " + actual_var_index;
-                        switch (clock_mode)
-                        {
-                            case 0:
-                                qry="SELECT * FROM employee_data_table WHERE data_type='"+svars.data_type_indexes.fingerprints+"' AND employee_id NOT NULL AND employee_id NOT IN(SELECT eit.sid FROM employee_info_table eit INNER JOIN employee_clocking_table ect ON eit.sid=ect.employee_id WHERE ect.clock_out_time IS NULL OR ect.clock_out_time ='') ORDER BY data_usage_frequency DESC LIMIT " + emp_per_thread + " OFFSET " + actual_var_index;
-
-                                break;
-                            case 1:
-
-
-
-                                qry="SELECT * FROM employee_data_table WHERE data_type='"+svars.data_type_indexes.fingerprints+"' AND employee_id IN(SELECT eit.sid FROM employee_info_table eit INNER JOIN employee_clocking_table ect ON eit.sid=ect.employee_id WHERE ect.clock_out_time IS NULL OR ect.clock_out_time ='') ORDER BY data_usage_frequency DESC LIMIT " + emp_per_thread + " OFFSET " + actual_var_index;
-                                break;
-                            case 5:
-
-
-
-                                qry="SELECT * FROM employee_data_table WHERE data_type='"+svars.data_type_indexes.fingerprints+"' AND employee_id IN(SELECT eit.sid FROM employee_info_table eit INNER JOIN employee_clocking_table ect ON eit.sid=ect.employee_id WHERE ect.clock_out_time IS NULL OR ect.clock_out_time ='') ORDER BY data_usage_frequency DESC LIMIT " + emp_per_thread + " OFFSET " + actual_var_index;
-                                break;
-                            case 6:
-
-
-
-                                qry="SELECT * FROM employee_data_table WHERE data_type='"+svars.data_type_indexes.fingerprints+"' AND employee_id IN(SELECT eit.sid FROM employee_info_table eit INNER JOIN employee_checking_table ect ON eit.sid=ect.employee_id WHERE ect.check_in_time IS NULL OR ect.check_in_time ='') ORDER BY data_usage_frequency DESC LIMIT " + emp_per_thread + " OFFSET " + actual_var_index;
-                                break;
-                        }
-                        Cursor c = database.rawQuery(qry, null);
-                        if (c.moveToFirst()) {
-                            do {
-                                if (turbo_match_found) break;
-                                Log.e("Turbo match =>", finalI+" :Matching =>" + c.getString(c.getColumnIndex("employee_id")));
-                                if(svars.current_device()==svars.DEVICE.WALL_MOUNTED.ordinal()/*||svars.current_device(act)==svars.DEVICE.BIO_MINI.ordinal()*/)
-                                {
-//            if (FPMatch.getInstance().MatchTemplate(model, ExtApi.Base64ToBytes(svars.fp_my_r_thumb_bt_device)) > svars.matching_acuracy) {
-
-                                    if (FPMatch.getInstance().MatchTemplate(model, ExtApi.Base64ToBytes(c.getString(c.getColumnIndex("data")))) > svars.matching_acuracy) {
-
-
-
-                                        Log.e("FPMATCH ", "OBTAINED ");
-
-
-                                        inter.on_match_found(c.getString(c.getColumnIndex("employee_id")), c.getString(c.getColumnIndex("data_index")), "" + stw.elapsed(TimeUnit.MILLISECONDS), clock_mode,1);
-                                        turbo_match_found = true;
-                                    }
-                                }else{
-                                    int mm_score=1000;
-                                    try {
-
-                                        Fmd ffm1 = UareUGlobal.GetImporter().ImportFmd(model, main_fmd_format, main_fmd_format);
-                                        Fmd ffm2 = UareUGlobal.GetImporter().ImportFmd(Base64.decode(c.getString(c.getColumnIndex("data")), 0), main_fmd_format, main_fmd_format);
-                                        //   Fmd ffm2 = UareUGlobal.GetImporter().ImportFmd(Base64.decode(svars.fp_my_r_index_wall_mat_device, 0), main_fmd_format, main_fmd_format);
-                                        //  Fmd ffm2 = UareUGlobal.GetImporter().ImportFmd(Base64.decode(svars.fp_my_r_index_8_inch, 0), main_fmd_format, main_fmd_format);
-
-
-
-                                        mm_score = UareUGlobal.GetEngine().Compare(ffm1, 0, ffm2, 0);
-                                        Engine.Candidate[] can = UareUGlobal.GetEngine().Identify(ffm1, 0,new Fmd[]{}, svars.matching_error_margin, 1);
-//                                        public Engine.Candidate[] Identify(Fmd fmd1, int view_index1, Fmd[] fmds, int threshold_score, int candidates_requested) throws UareUException {
-
-                                            int i=can[0].fmd_index;
-                                    }catch (UareUException EX){
-
-                                        Log.e("Turbo match =>","Matching error ur=>"+EX.getMessage());
-
-                                    }catch (Throwable ex){
-                                        ex.printStackTrace();
-                                        Log.e("Turbo match =>","Matching error th =>"+ex.getMessage());
-
-                                    }
-                                    Log.e("Turbo match =>","Matching error score=>"+mm_score);
-                                    if (mm_score <svars.matching_error_margin) {
-
-                                        Log.e("FPMATCH ", "OBTAINED ");
-                                        ContentValues cv =new ContentValues();
-                                        cv.put("data_usage_frequency",""+System.currentTimeMillis());
-                                        database.update("employee_data_table",cv,"id="+c.getInt(c.getColumnIndex("id")),null);
-
-                                        inter.on_match_found(c.getString(c.getColumnIndex("employee_id")), c.getString(c.getColumnIndex("data_index")), "" + stw.elapsed(TimeUnit.MILLISECONDS), clock_mode,1);
-                                        turbo_match_found = true;
-                                    }
-                                }
-
-
-
-
-
-                            } while (c.moveToNext());
-
-                        } else {
-
-                            Log.e("Turbo match =>", "Thread " + finalI + " has no records to match");
-                            inter.on_match_complete(turbo_match_found,stw.elapsed(TimeUnit.MILLISECONDS)+"");/*kill_threads();*/
-                            if(!turbo_match_found){load_match_not_found_reason(model,inter,clock_mode);}
-
-                        }
-                        finish_count[0]++;
-                        Log.e("Turbo match =>", "Thread finish : " + finish_count[0]);
-                        percent_calculation pc = new percent_calculation(max_thread_count + "", finish_count[0] + "");
-                        inter.on_match_progress_changed(Integer.parseInt(pc.per_balance));
-                        if (max_thread_count == finish_count[0]) {
-                            inter.on_match_complete(turbo_match_found,stw.elapsed(TimeUnit.MILLISECONDS)+"");/*kill_threads();*/
-                            if(!turbo_match_found){load_match_not_found_reason(model,inter,clock_mode);}
-                        }
-
-
-                    }catch (Throwable ex){
-
-                        Log.e("Main Turbo match =>", "Thread " + finalI + " has no records to match");
-
-                    }
+                    inter.on_finger_match_found(fpid, mm_score, "" + stw.elapsed(TimeUnit.MILLISECONDS));
+                    turbo_match_found = true;
                 }
-            });
-            exceutioner_threads[i].start();
-            /*}catch (Throwable ex){
+                inter.on_match_complete(turbo_match_found, stw.elapsed(TimeUnit.MILLISECONDS) + "");
 
-                Log.e("Turbo match =>","Thread generation error =>"+i+ex.getMessage());
-
-            }*/
+        }catch (UareUException EX){
+            Log.e("Turbo match =>","Matching error ur=>"+EX.getMessage());
+        }catch (Throwable ex){
+            ex.printStackTrace();
+            Log.e("Turbo fp match =>","Matching error th =>"+ex.getMessage());
+            inter.on_match_complete(turbo_match_found, stw.elapsed(TimeUnit.MILLISECONDS) + "");
         }
-        Log.e("Turbo match =>","Thread generation time =>"+stw.elapsed(TimeUnit.MILLISECONDS));
+        Log.e("Turbo match =>","Matching dissemblance score=>"+mm_score);
+
+    Log.e("Turbo match =>","Thread generation time =>"+stw.elapsed(TimeUnit.MILLISECONDS));
 
     }
     public int load_match(final byte[] model, final matching_interface inter, final boolean load_match_failed_reason)

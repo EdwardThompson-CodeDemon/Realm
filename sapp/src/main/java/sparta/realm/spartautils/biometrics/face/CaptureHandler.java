@@ -180,6 +180,11 @@ public capturing_interface cpi=new capturing_interface() {
 
 		}
 
+		@Override
+		public void on_finger_match_found(String fp_id, int score, String match_time) {
+
+		}
+
 
 		@Override
 		public void on_match_progress_changed(int progress) {
@@ -537,6 +542,11 @@ boolean searching=false;
 						FSDK.UnlockID(mTracker, tracker_index);
 						main_matching_interface.on_match_found(employee_id,data_index,match_time,v_type,4);
 					}
+
+				}
+
+				@Override
+				public void on_finger_match_found(String fp_id, int score, String match_time) {
 
 				}
 
