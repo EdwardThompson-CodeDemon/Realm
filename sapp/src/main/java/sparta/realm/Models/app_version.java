@@ -1,4 +1,4 @@
-package sparta.realm.spartamodels;
+package sparta.realm.Models;
 
 import com.realm.annotations.DynamicClass;
 import com.realm.annotations.DynamicProperty;

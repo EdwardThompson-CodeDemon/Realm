@@ -275,6 +275,7 @@ RealmClientServiceManager rcsm;
         }
            rcsm.upload("2");
     }
+    String dev_code=svars.device_code(Realm.context);
     boolean save_ticket(ticket tike,int i){
 
         ContentValues cv=new ContentValues();
@@ -283,7 +284,7 @@ RealmClientServiceManager rcsm;
         cv.put("seat_range_id",tike.seat_range_id);
         cv.put("seat_no",tike.seat_no);
         cv.put("ticket_all_events",tike.ticket_all_events);
-        cv.put("device_code",svars.device_code(act));
+        cv.put("device_code",dev_code);
 
         cv.put("sync_status",""+ sync_status.pending.ordinal());
         cv.put("transaction_no",tike.transaction_no);

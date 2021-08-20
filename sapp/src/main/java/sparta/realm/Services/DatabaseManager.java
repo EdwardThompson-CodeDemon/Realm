@@ -108,6 +108,7 @@ public class DatabaseManager {
     public static SQLiteDatabase database=null;
  //   public static sdbw sd;
     public static boolean loaded_db=false;
+    public static String logTag="DatabaseManager";
     public DatabaseManager(Context act)
     {
         this.act=act;
@@ -2205,25 +2206,29 @@ if(ssd.service_name.equalsIgnoreCase("JobAllInventory"))
 
 public String greatest_sync_var(String table_name, @Nullable String...filters)
     {
+try {
+    String[] flts = new String[filters.length + 1];
+    flts[0] = "sync_var NOT NULL";
+    for (int i = 0; i < filters.length; i++) {
+        flts[i + 1] = filters[i];
+    }
+    String qry="SELECT CAST(sync_var AS INTEGER) FROM " + table_name + (filters == null ? "" : " " + conccat_sql_filters(flts)) + " ORDER BY CAST(sync_var AS INTEGER) DESC LIMIT 1";
+    Cursor c = database.rawQuery(qry, null);
 
-String[] flts=new String[filters.length+1];
-flts[0]="sync_var NOT NULL";
-for (int i =0;i<filters.length;i++){
-    flts[i+1]=filters[i];
+    if (c.moveToFirst()) {
+        do {
+
+            String res = c.getString(0);
+            c.close();
+            return res;
+        } while (c.moveToNext());
+    }
+    c.close();
+    return "0";
+}catch (Exception e){
+    Log.e("DatabaseManager",""+e.getMessage());
+    return null;
 }
-        Cursor c=database.rawQuery("SELECT CAST(sync_var AS INTEGER) FROM "+table_name+(filters==null?"":" "+conccat_sql_filters(flts))+" ORDER BY CAST(sync_var AS INTEGER) DESC LIMIT 1",null);
-
-        if(c.moveToFirst())
-        {
-            do{
-
-                String res=c.getString(0);
-                c.close();
-                return res;
-            }while (c.moveToNext());
-        }
-        c.close();
-        return "0";
     }
 
     public String get_record_count(String table_name, @Nullable String...filters)
