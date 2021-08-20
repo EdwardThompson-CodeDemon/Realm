@@ -68,6 +68,7 @@ import static sparta.realm.spartautils.svars.shared_pref_boolean;
 
 
 public class SynchronizationManager {
+    public static String logTag="SynchronizationManager";
     static Context act;
     String st="";
     Timer logintimer = new Timer();
@@ -495,7 +496,7 @@ sync_sum_counter=sync_services.size();
 
             }
         } catch (Exception ex) {
-
+Log.e(logTag,""+ex.getMessage());
         }
 
         sw.stop();
