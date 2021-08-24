@@ -143,8 +143,11 @@ public class SynchronizationManager {
         default ANError OnUploadedObjectError(sync_service_description ssd,JSONObject object, ANError error) {
             return error;
         }
-        default Boolean OnAboutToDownload(sync_service_description ssd, JSONObject filter) {
-            return true;
+//        default Boolean OnAboutToDownload(sync_service_description ssd, JSONObject filter) {
+//            return true;
+//        }
+       default JSONObject OnAboutToDownload(sync_service_description ssd, JSONObject filter) {
+            return filter;
         }
         default JSONObject OnDownloadedObject(sync_service_description ssd,JSONObject object, JSONObject response) {
 
@@ -1043,7 +1046,10 @@ Log.e(logTag,""+ex.getMessage());
                     @Override
                     public void run() {
 
-                        if(!Main_handler.OnAboutToDownload(ssd, filter_object[0]))
+//                        if(!Main_handler.OnAboutToDownload(ssd, filter_object[0]))
+//                        {
+                        filter_object[0]=Main_handler.OnAboutToDownload(ssd, filter_object[0]);
+                          if(filter_object[0]==null)
                         {
                             sync_complete_counter++;
                             sync_success_counter++;
