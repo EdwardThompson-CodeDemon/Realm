@@ -12,7 +12,7 @@ import com.luxand.FSDK;
 import com.realm.annotations.RealmDataClass;
 
 
-import sparta.realm.Models.RealmDynamics.spartaDynamics;
+import sparta.realm.spartamodels.RealmDynamics.spartaDynamics;
 import sparta.realm.Realm;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.svars;

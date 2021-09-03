@@ -12,7 +12,7 @@ import sparta.realm.spartautils.svars;
 import static com.realm.annotations.SyncDescription.service_type.Download;
 
 
-@DynamicClass(table_name = "app_versions_table")
+//@DynamicClass(table_name = "app_versions_table")
 public class app_version extends db_class_ implements Serializable {
 
 
