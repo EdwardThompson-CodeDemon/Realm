@@ -105,8 +105,13 @@ Log.e("Client IDL :",""+status);
             return objects;
         }
 
+         @Override
+         public String OnAboutToDownloadloadObjects(String service_id) throws RemoteException {
+             return null;
+         }
 
-    };
+
+     };
 RealmClientServiceManager rcsm;
 
 
