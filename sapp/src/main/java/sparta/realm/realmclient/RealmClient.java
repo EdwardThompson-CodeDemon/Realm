@@ -429,15 +429,20 @@ try {
 
         }
     }
-   public void download (String tx_transation_no,sync_service_description ssd){
+   public void download (String tx_transaction_no,sync_service_description ssd){
        try {
            realmClientInterfaceTX.on_info_updated("Downloading "+ssd.service_name);
        } catch (RemoteException e) {
            e.printStackTrace();
        }
        io_operations_counter++;
-       SendMessageJ(tx_transation_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size);
-dpm.addTransaction(dataProcess.transferTypeTx,tx_transation_no,dataProcess.serviceTypeIo,ssd,(tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
+       try {
+           String o=realmClientInterfaceTX.OnAboutToDownloadloadObjects(ssd.service_id);
+           SendMessageJ(tx_transaction_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size,o);
+           dpm.addTransaction(dataProcess.transferTypeTx,tx_transaction_no,dataProcess.serviceTypeIo,ssd,(tx_transaction_no==null?"R"+System.currentTimeMillis()+"S":tx_transaction_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transaction_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size,o}));
+       } catch (RemoteException e) {
+           e.printStackTrace();
+       }
 
     }
        public void uploadSingle (sync_service_description ssd){

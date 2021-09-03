@@ -9,29 +9,37 @@ import android.util.Log;
 
 import com.digitalpersona.uareu.Fmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Activities.SpartaAppCompactFingerPrintActivity;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.Services.SynchronizationManager;
+import sparta.realm.spartamodels.tike.ticket;
+import sparta.realm.spartamodels.timecap.member_data;
 import sparta.realm.spartautils.biometrics.DataMatcher;
 import sparta.realm.spartautils.matching_interface;
 
-public class MainActivity extends SpartaAppCompactFingerPrintActivity {
+public class MainActivity extends SpartaAppCompactActivity {
 DataMatcher dm=new DataMatcher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        SynchronizationManager sm=new SynchronizationManager();
-//        sm.InitialiseAutosync();
-//        sm.sync_now();
+        SynchronizationManager sm=new SynchronizationManager();
+        sm.InitialiseAutosync();
+        sm.sync_now();
         Log.e(logTag,"fp count :"+ Realm.databaseManager.get_record_count("member_data_table"));
-       int limit=250;
+        ArrayList<ticket> tickets=Realm.databaseManager.loadObjectArray(ticket.class,null,null,null,true,1000,10);
+        ArrayList<member_data> fpz=Realm.databaseManager.loadObjectArray(member_data.class, new String[]{"sid","data"},null,null,true,1000,10);
+
+        int limit=250;
+
        int offset=0;
         String limit_stt="LIMIT " + limit + " OFFSET " + offset;
         Cursor c = DatabaseManager.database.query("SELECT sid,data FROM member_data_table "+limit_stt);
@@ -95,20 +103,20 @@ Log.e(logTag,"Data load complete fpcount:"+i);
 
         }
     };
-    @Override
-    public void on_result_obtained(String capt_result) {
-        super.on_result_obtained(capt_result);
-        Log.e("FP matching test","fp:"+ capt_result);//f_main_map
-        Log.e("FP matching test","fp count:"+ f_main_map.size());//f_main_map
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for(LinkedHashMap<String, Fmd> dmmms:f_main_map.values()) {
-
-                    dm.load_match_uareu(Base64.decode(capt_result, 0), mint,dmmms);
-                }
-                }
-            }).start();
-
-    }
+//    @Override
+//    public void on_result_obtained(String capt_result) {
+//        super.on_result_obtained(capt_result);
+//        Log.e("FP matching test","fp:"+ capt_result);//f_main_map
+//        Log.e("FP matching test","fp count:"+ f_main_map.size());//f_main_map
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                for(LinkedHashMap<String, Fmd> dmmms:f_main_map.values()) {
+//
+//                    dm.load_match_uareu(Base64.decode(capt_result, 0), mint,dmmms);
+//                }
+//                }
+//            }).start();
+//
+//    }
 }

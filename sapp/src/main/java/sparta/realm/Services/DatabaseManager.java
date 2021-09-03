@@ -73,6 +73,7 @@ import sparta.realm.BuildConfig;
 
 
 import sparta.realm.R;
+import sparta.realm.Realm;
 import sparta.realm.spartamodels.db_class;
 import sparta.realm.spartamodels.dyna_data;
 import sparta.realm.spartamodels.dyna_data_obj;
@@ -1187,12 +1188,13 @@ I thot of using an interface ,dint work
         }
 
     }
+
     boolean version_exists(String sid)
     {
         return database.rawQuery("SELECT _id FROM app_versions_table WHERE sid='"+sid+"'",null).moveToFirst();
     }
 
-    //////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 
     public member load_employee(String sid)
@@ -1482,6 +1484,37 @@ try {
 
         return objs;
     }
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters,boolean order_asc,int limit,int offset)
+    {
+        ArrayList<RM> objs=new ArrayList<RM>();
+        String table_name=realm.getPackageTable(realm_model.getName());
+String qry="SELECT "+(columns==null?"*":concatString(",",columns))+" FROM "+table_name+(table_filters==null?"":" "+conccat_sql_filters(table_filters))+(order_filters==null?"":" ORDER BY "+concatString(",",order_filters)+" "+(order_asc?"ASC":"DESC"))+(limit<=0?"":" LIMIT "+limit+(offset<=0?"": " OFFSET "+offset));
+Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM)realm.getObjectFromCursor(c,realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+
+        return objs;
+    }
+
 
     /*
      *
@@ -2336,6 +2369,16 @@ try {
         return result;
 
     }
+  public  static  String concatString(String delimeter,String[] params)
+  {
+      String result="";
+      for(int i=0;i<params.length;i++)
+      {
+          result=result+(i==0?"":delimeter)+""+params[i]+"";
+      }
+      return result;
+
+  }
  public  static  String concatRealmClientString(String delimeter,String[] params)
     {
         String result="";
