@@ -149,6 +149,7 @@ main_client.Synchronize();
                     Log.e("Realm Client ","Starting ...");
                     main_client = new RealmClient(realmClientInterfaceTX);
                     main_client.InitializeClient(server_ip,port,devicecode,username,password);
+                    realmClientInterfaceTX.on_status_changed("0");
                     Log.e(log_tag,"Stopping Run");
 
                     main_client=null;

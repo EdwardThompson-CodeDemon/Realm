@@ -17,7 +17,8 @@ interface RealmClientCallbackInterface {
 
 //         bool OnRequestToSync();
           List<String> OnAboutToUploadObjects(String service_id,in List<String> objects);
-          String OnAboutToDownloadloadObjects(String service_id);
+          String OnAboutToDownloadObjects(String service_id);
+          String OnDownloadedObjects(String obj);
 //         JSONObject OnUploadingObject(sync_service_description ssd, JSONObject object) ;
 //          JSONObject OnUploadedObject(sync_service_description ssd,JSONObject object, JSONObject response) ;
 //          ANError OnUploadedObjectError(sync_service_description ssd,JSONObject object, ANError error);

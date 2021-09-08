@@ -186,8 +186,7 @@ try {
 
 
 //    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
-    JSONArray temp_ar = new JSONArray(data);
-    temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
+    JSONArray temp_ar = new JSONArray();
 
     double den = (double) temp_ar.length();
     // sdb.register_object_auto_ann(true,null,ssd);
@@ -195,6 +194,8 @@ try {
         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sync_status ='" + sync_status.syned.ordinal() + "'");
     }
     Log.e(ssd.service_name + " :: RX", "IS OK " + den);
+    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(data));
+    temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
     if (den >= 0) {
         synchronized (DatabaseManager.database) {
             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
@@ -437,7 +438,7 @@ try {
        }
        io_operations_counter++;
        try {
-           String o=realmClientInterfaceTX.OnAboutToDownloadloadObjects(ssd.service_id);
+           String o=realmClientInterfaceTX.OnAboutToDownloadObjects(ssd.service_id);
            SendMessageJ(tx_transaction_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size,o);
            dpm.addTransaction(dataProcess.transferTypeTx,tx_transaction_no,dataProcess.serviceTypeIo,ssd,(tx_transaction_no==null?"R"+System.currentTimeMillis()+"S":tx_transaction_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transaction_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size,o}));
        } catch (RemoteException e) {
