@@ -111,9 +111,12 @@ Log.e("Client IDL :",""+status);
          }
 
          @Override
-         public String OnDownloadedObjects(String obj) throws RemoteException {
+         public String OnDownloadedObjects(String service_id, String obj) throws RemoteException {
              return null;
          }
+
+
+
 
 
 

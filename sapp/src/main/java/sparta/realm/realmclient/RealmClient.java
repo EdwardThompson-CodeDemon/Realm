@@ -194,7 +194,7 @@ try {
         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sync_status ='" + sync_status.syned.ordinal() + "'");
     }
     Log.e(ssd.service_name + " :: RX", "IS OK " + den);
-    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(data));
+    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
     if (den >= 0) {
         synchronized (DatabaseManager.database) {
