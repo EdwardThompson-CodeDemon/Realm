@@ -16,7 +16,7 @@ import static com.realm.annotations.SyncDescription.service_type.Download;
 
  */
 @DynamicClass(table_name = "events")
-@SyncDescription(service_id="1",service_name = "Events",service_type = Download,download_link = svars.Center_download_link)
+//@SyncDescription(service_id="1",service_name = "Events",service_type = Download,download_link = svars.Center_download_link)
 public class event extends db_class_ implements Serializable {
 
 

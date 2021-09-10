@@ -2,6 +2,8 @@ package sparta.realm.realmclient;
 
 import android.content.ContentValues;
 import android.os.Build;
+import android.os.MemoryFile;
+import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -16,7 +18,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -82,6 +88,8 @@ rch.onAuthenticated(this,data_segments[2].equals("1"));
      break;
 }
 data=null;
+//        SendMessage("R1626087185529S422010");
+
         calc_progress();
     }
     public native int SendMessage(String data);
@@ -136,7 +144,7 @@ RealmClientComHandler rch=new RealmClientComHandler() {};
 
     }
 
-String logTag="Realm client Java";
+public static String logTag="Realm client Java";
   public   int io_operations_counter=0;
     public int io_operation_complete_counter=0;
 
@@ -186,16 +194,44 @@ try {
 
 
 //    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
-    JSONArray temp_ar = new JSONArray();
+    JSONArray temp_ar = new JSONArray(data);
+//    LinkedHashSet<E> hashSet = new LinkedHashSet<E>();
+    for (int i =0;i<temp_ar.length();i++) {
+        JSONObject jo = temp_ar.getJSONObject(i);
+        Iterator keys = jo.keys();
+        List<String> key_list = new ArrayList<>();
+        while (keys.hasNext()) {
+            key_list.add((String) keys.next());
 
-    double den = (double) temp_ar.length();
+        }
+
+
+        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
+        for(String k:realm.getFilePathFields(ssd.object_package,key_list)) {
+           jo.put(k,DatabaseManager.save_doc(jo.getString(k)));
+
+        }
+    }
+
+        double den = (double) temp_ar.length();
     // sdb.register_object_auto_ann(true,null,ssd);
     if (!ssd.use_download_filter) {
         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sync_status ='" + sync_status.syned.ordinal() + "'");
     }
-    Log.e(ssd.service_name + " :: RX", "IS OK " + den);
-    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
+//    MemoryFile memoryFile = new MemoryFile("rx"+System.currentTimeMillis(), 102400000);
+//    memoryFile.getOutputStream().write(data.getBytes());
+//    Method method = MemoryFile.class.getDeclaredMethod("getFileDescriptor");
+//    FileDescriptor des = (FileDescriptor) method.invoke(memoryFile);
+//    ParcelFileDescriptor p= ParcelFileDescriptor.dup(des);
+//
+//    ParcelFileDescriptor ssy=rc.realmClientInterfaceTX.OnDownloadedData(service_id,p);
+//    FileDescriptor descriptor = ssy.getFileDescriptor();
+//    FileInputStream fileInputStream = new FileInputStream(descriptor);
+
+//    temp_ar=new JSONArray(fileInputStream);
+//    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
+    Log.e(ssd.service_name + " :: RX", "IS OK " + den);
     if (den >= 0) {
         synchronized (DatabaseManager.database) {
             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);

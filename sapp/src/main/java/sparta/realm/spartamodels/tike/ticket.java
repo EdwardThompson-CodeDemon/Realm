@@ -17,8 +17,8 @@ import static com.realm.annotations.SyncDescription.service_type.Upload;
 
  */
 @DynamicClass(table_name = "tickets")
-@SyncDescription(service_id="2",service_name = "Tickets",service_type = Download,chunk_size = 50000)
-@SyncDescription(service_id="7",service_name = "Tickets",service_type = Upload)
+//@SyncDescription(service_id="2",service_name = "Tickets",service_type = Download,chunk_size = 50000)
+//@SyncDescription(service_id="7",service_name = "Tickets",service_type = Upload)
 public class ticket extends db_class_ implements Serializable {
 
 

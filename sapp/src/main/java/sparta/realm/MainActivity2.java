@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.MemoryFile;
+import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
@@ -37,9 +39,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -112,13 +122,57 @@ Log.e("Client IDL :",""+status);
 
          @Override
          public String OnDownloadedObjects(String service_id, String obj) throws RemoteException {
-             return null;
+             Log.e("PFD","On objects downloaded");
+             return obj;
          }
 
+         @Override
+         public ParcelFileDescriptor OnDownloadedData(String service_id, ParcelFileDescriptor obj) throws RemoteException {
+             Log.e("PFD","On data downloaded");
+             byte[] content=new byte[102400000];
+             FileDescriptor descriptor = obj.getFileDescriptor();
+             FileInputStream fileInputStream = new FileInputStream(descriptor);
+             try {
+                 fileInputStream.read(content);
+                 fileInputStream.close();
+                 obj.close();
+                 JSONArray arr=new JSONArray(content);
+                 for (int i =0;i<arr.length();i++){
+                     JSONObject jo=arr.getJSONObject(i);
+                     Iterator keys = jo.keys();
+                     List<String> key_list=new ArrayList<>();
+                     while(keys.hasNext()) {
+                         key_list.add ((String)keys.next());
+
+                     }
 
 
 
+                 }
+                 MemoryFile memoryFile = new MemoryFile("rx"+System.currentTimeMillis(), arr.toString().getBytes().length);
+                 memoryFile.getOutputStream().write(arr.toString().getBytes());
+                 Method method = MemoryFile.class.getDeclaredMethod("getFileDescriptor");
+                 FileDescriptor des = (FileDescriptor) method.invoke(memoryFile);
+                 ParcelFileDescriptor p= ParcelFileDescriptor.dup(des);
 
+
+//                 String ss=new String(content);
+//                 Arrays.fill(content, (byte)0);
+//                 content=null;
+//                 Runtime.getRuntime().gc();
+//                 GenomicDNASequence gdemo = new     GenomicDNASequence(demodna.toCharArray());
+                 Log.e("PFD","------");
+                 return  p;
+//                 return new String(content);
+             } catch (IOException e) {
+                 e.printStackTrace();
+             } catch (JSONException e) {
+                 e.printStackTrace();
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
+             return null;
+         }
 
 
      };
@@ -134,7 +188,7 @@ RealmClientServiceManager rcsm;
         Context rt=Realm.context;
 //        client=new RealmClient(svars.device_code(rt),"demo","demo123");
 //        startService(new Intent(this, App_updates.class));
-        rcsm=new RealmClientServiceManager(realmClientInterfaceRX,svars.device_code(act),"192.168.1.107",8888,"demo","demo123");
+        rcsm=new RealmClientServiceManager(realmClientInterfaceRX,svars.device_code(act),"192.168.1.107",8889,"demo","demo123");
 
 //        rcsm=new RealmClientServiceManager(realmClientInterfaceRX);
         // Example of a call to a native method
@@ -184,9 +238,9 @@ RealmClientServiceManager rcsm;
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-//                rcsm.Synchronize();
-                String s=null;
-                s.equalsIgnoreCase("f");
+                rcsm.Synchronize();
+//                String s=null;
+//                s.equalsIgnoreCase("f");
 
             }
         });
@@ -195,7 +249,7 @@ RealmClientServiceManager rcsm;
             @Override
             public void run() {
                 //cnt++;
-                generate_tickets();
+//                generate_tickets();
 //
             }
         },10000);

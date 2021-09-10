@@ -17,7 +17,7 @@ import static com.realm.annotations.SyncDescription.service_type.Upload;
 
  */
 @DynamicClass(table_name = "ticket_verifications")
-@SyncDescription(service_id="3",service_name = "Ticket verification",service_type = Upload,download_link = svars.Center_download_link)
+//@SyncDescription(service_id="3",service_name = "Ticket verification",service_type = Upload,download_link = svars.Center_download_link)
 public class ticket_verification extends db_class_ implements Serializable {
 
 
