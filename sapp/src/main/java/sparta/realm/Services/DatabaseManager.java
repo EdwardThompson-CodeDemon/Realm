@@ -71,7 +71,7 @@ import sparta.realm.Activities.splash;
 import sparta.realm.BuildConfig;
 
 
-
+import sparta.realm.DataManagement.Models.Query;
 import sparta.realm.R;
 import sparta.realm.Realm;
 import sparta.realm.spartamodels.db_class;
@@ -1513,6 +1513,11 @@ Cursor c = database.rawQuery(qry, null);
 
 
         return objs;
+    }
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query)
+    {
+        return loadObjectArray(realm_model,query.columns,query.table_filters,query.order_filters,query.order_asc,query.limit,query.offset);
+              
     }
 
 

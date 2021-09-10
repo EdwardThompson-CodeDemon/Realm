@@ -244,7 +244,7 @@ public class svars {
         public String file_path_app_downloads=app_folder_path + ".RAW_D_APKS/";
         public String file_path_app_uploads= app_folder_path+ ".RAW_U_APKS/";
 
-        public String file_path_employee_data = app_folder_path + ".RAW_EMPLOYEE_DATA/";
+        public String file_path_employee_data = app_folder_path + ".RAW_APP_DATA/";
         public String file_path_db_backup = app_folder_path+ ".DB_BACKUPS_RAW";
         public String file_path_log_backup = app_folder_path + ".LOG_BACKUPS_RAW";
         public String file_path_general_backup = app_folder_path + ".GN_BACKUPS";
