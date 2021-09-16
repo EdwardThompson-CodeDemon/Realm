@@ -1517,7 +1517,7 @@ Cursor c = database.rawQuery(qry, null);
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query)
     {
         return loadObjectArray(realm_model,query.columns,query.table_filters,query.order_filters,query.order_asc,query.limit,query.offset);
-              
+
     }
 
 

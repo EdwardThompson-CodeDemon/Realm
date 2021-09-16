@@ -196,22 +196,28 @@ try {
 //    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
     JSONArray temp_ar = new JSONArray(data);
 //    LinkedHashSet<E> hashSet = new LinkedHashSet<E>();
-    for (int i =0;i<temp_ar.length();i++) {
-        JSONObject jo = temp_ar.getJSONObject(i);
-        Iterator keys = jo.keys();
-        List<String> key_list = new ArrayList<>();
-        while (keys.hasNext()) {
-            key_list.add((String) keys.next());
+   if(ssd.storage_mode_check){
+        Log.e(RealmClient.logTag,"Started storage checking ...");
 
-        }
+       for (int i =0;i<temp_ar.length();i++) {
+           JSONObject jo = temp_ar.getJSONObject(i);
+           Iterator keys = jo.keys();
+           List<String> key_list = new ArrayList<>();
+           while (keys.hasNext()) {
+               key_list.add((String) keys.next());
+
+           }
 
 
-        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
-        for(String k:realm.getFilePathFields(ssd.object_package,key_list)) {
-           jo.put(k,DatabaseManager.save_doc(jo.getString(k)));
+//        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
+           for(String k:realm.getFilePathFields(ssd.object_package,key_list)) {
+               jo.put(k,DatabaseManager.save_doc(jo.getString(k)));
 
-        }
-    }
+           }
+       }
+       Log.e(RealmClient.logTag,"Done storage checking ...");
+
+   }
 
         double den = (double) temp_ar.length();
     // sdb.register_object_auto_ann(true,null,ssd);
