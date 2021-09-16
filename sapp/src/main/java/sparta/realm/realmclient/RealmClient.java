@@ -558,6 +558,31 @@ JSONArray arr=new JSONArray();
 
             arr.put(jo);
         }
+          if(ssd.storage_mode_check) {
+              Log.e(RealmClient.logTag, "Started storage checking ...");
+
+              for (int i = 0; i < pending_records.size(); i++) {
+                  JSONObject jo = pending_records.get(i);
+                  Iterator keys = jo.keys();
+                  List<String> key_list = new ArrayList<>();
+                  while (keys.hasNext()) {
+                      key_list.add((String) keys.next());
+
+                  }
+
+
+//        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
+                  for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
+                      try {
+                          jo.put(k, DatabaseManager.get_saved_doc_base64(jo.getString(k)));
+                      } catch (Exception e) {
+                          Log.e(RealmClient.logTag, "Base64 image error:" + e.getMessage());
+
+                      }
+
+                  }
+              }
+          }
         if(arr.length()>0){
             SendMessageJ(transaction_no,"4","1",ssd.service_id+"",arr.toString());
         }else{
