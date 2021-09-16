@@ -211,7 +211,12 @@ try {
 
 //        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
            for(String k:realm.getFilePathFields(ssd.object_package,key_list)) {
-               jo.put(k,DatabaseManager.save_doc(jo.getString(k)));
+               try {
+                   jo.put(k, DatabaseManager.save_doc(jo.getString(k)));
+               }catch (Exception e){
+                   Log.e(RealmClient.logTag,"Base64 image error:"+e.getMessage());
+
+               }
 
            }
        }
