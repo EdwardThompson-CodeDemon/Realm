@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,6 +47,7 @@ import sparta.realm.BuildConfig;
 
 import sparta.realm.R;
 import sparta.realm.Realm;
+import sparta.realm.realmclient.RealmClient;
 import sparta.realm.spartamodels.db_class;
 import sparta.realm.spartamodels.dyna_data_obj;
 import sparta.realm.spartamodels.dynamic_property;
@@ -1183,6 +1185,31 @@ if(maindata[0]==null){
                                 }
                                 Log.e(ssd.service_name + " :: RX", "IS OK " + den);
                                 if (den>=0){
+                                    if(ssd.storage_mode_check){
+                                        Log.e(RealmClient.logTag,"Started storage checking ...");
+
+                                        for (int i =0;i<temp_ar.length();i++) {
+                                            JSONObject jo = temp_ar.getJSONObject(i);
+                                            Iterator keys = jo.keys();
+                                            List<String> key_list = new ArrayList<>();
+                                            while (keys.hasNext()) {
+                                                key_list.add((String) keys.next());
+
+                                            }
+
+                                            for(String k:realm.getFilePathFields(ssd.object_package,key_list)) {
+                                                try {
+                                                    jo.put(k, DatabaseManager.save_doc(jo.getString(k)));
+                                                }catch (Exception e){
+                                                    Log.e(RealmClient.logTag,"Base64 image error:"+e.getMessage());
+
+                                                }
+
+                                            }
+                                        }
+                                        Log.e(RealmClient.logTag,"Done storage checking ...");
+
+                                    }
                                      synchronized (this) {
                                     String[][] ins = realm.getInsertStatementsFromJson(temp_ar,ssd.object_package);
                                     String sidz = ins[0][0];
