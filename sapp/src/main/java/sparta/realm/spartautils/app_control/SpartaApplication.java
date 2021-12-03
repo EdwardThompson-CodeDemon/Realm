@@ -39,8 +39,8 @@ public class SpartaApplication extends Application {
         );
         svars.set_current_device(this, svars.DEVICE.UAREU.ordinal());
 //        Realm.Initialize(this,new spartaDynamics(),"REALM",APPP,"ihdBXU3FcZAawN2qayK9PG3kGz1BocN0EjHOe6hn2LhCubiwJYP7XsbIxildd0hfE9Tio36fGMdwoH4kC0HJNjzs5GbdWchRPmn5O/omstCi37+w7VNFkOgWxDhQSiDn4Apb77g0FwoNvyhVgE7lBx9DxcSnqvniTyKidXlHCak=");
-        Realm.Initialize(this,new spartaDynamics(),"0.0.1", BuildConfig.APPLICATION_ID,UIPA_APP);
-//        Realm.Initialize(this,new spartaDynamics(),"0.0.1","megvii.testfacepass",UIPA_APP);
+//        Realm.Initialize(this,new spartaDynamics(),"0.0.1", BuildConfig.APPLICATION_ID,UIPA_APP);
+        Realm.Initialize(this,new spartaDynamics(),"0.0.1","megvii.testfacepass",UIPA_APP);
         DatabaseManager.database.execSQL("DELETE FROM tickets");
         DatabaseManager.database.execSQL("DELETE FROM ticket_verification_data");
         SharedPreferences.Editor saver =this.getSharedPreferences(sparta.realm.spartautils.svars.sharedprefsname, this.MODE_PRIVATE).edit();
