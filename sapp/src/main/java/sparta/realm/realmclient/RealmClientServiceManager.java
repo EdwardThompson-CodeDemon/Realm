@@ -177,15 +177,19 @@ public void downloadAll(){
     public static Intent convertImplicitIntentToExplicitIntent(Intent implicitIntent, Context context) {
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> resolveInfoList = pm.queryIntentServices(implicitIntent, 0);
-
-        if (resolveInfoList == null || resolveInfoList.size() != 1) {
-            return null;
-        }
-        ResolveInfo serviceInfo = resolveInfoList.get(0);
+for(ResolveInfo r:resolveInfoList){
+    if(r.serviceInfo.packageName.equalsIgnoreCase(svars.current_app_name(context))){
+        ResolveInfo serviceInfo = r;
         ComponentName component = new ComponentName(serviceInfo.serviceInfo.packageName, serviceInfo.serviceInfo.name);
         Intent explicitIntent = new Intent(implicitIntent);
         explicitIntent.setComponent(component);
         return explicitIntent;
+    }
+}
+//        if (resolveInfoList == null || resolveInfoList.size() != 1) {
+//        }
+        return null;
+
     }
 
 }

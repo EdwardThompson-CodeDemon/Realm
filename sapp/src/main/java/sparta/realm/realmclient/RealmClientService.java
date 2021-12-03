@@ -11,6 +11,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
+import sparta.realm.RC.RealmClientJava;
+import sparta.realm.RC.SocketClient;
 import sparta.realm.Realm;
 
 import sparta.realm.RealmClientCallbackInterface;
@@ -131,7 +133,7 @@ main_client.Synchronize();
         enqueueWork(context, RealmClient.class, JOB_ID, work);
     }
 
-    public static RealmClient main_client;
+    public static SocketClient main_client;
     Thread client_thread=null;
     public static final int upload=1;
     public static final int Download=2;
@@ -146,15 +148,26 @@ main_client.Synchronize();
 //                    @Override
 //                    public void run() {
                 while (true){
-                    Log.e("Realm Client ","Starting ...");
-                    main_client = new RealmClient(realmClientInterfaceTX);
-                    main_client.InitializeClient(server_ip,port,devicecode,username,password);
-                    realmClientInterfaceTX.on_status_changed("0");
-                    Log.e(log_tag,"Stopping Run");
+                    try{
 
-                    main_client=null;
+                        Log.e("Realm Client ","Starting ...");
+//                        main_client = new RealmClient(realmClientInterfaceTX);
+                        main_client = new RealmClientJava(realmClientInterfaceTX);
+                        main_client.InitializeSocket(server_ip,port,devicecode,username,password);
+                        main_client=null;
+                        Log.e(log_tag,"Stopped Running");
+                        realmClientInterfaceTX.on_status_changed("0");
+                        Log.e(log_tag,"Restarting Run");
+
+
 //                android.os.Process.killProcess(android.os.Process.myPid());
-                Log.e(log_tag,"Stopped Running");
+
+                    }catch (Throwable e){
+                        Log.e(log_tag,"Stopping failed");
+                        main_client=null;
+
+                    }
+
 
                 }
 

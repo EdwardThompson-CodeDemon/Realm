@@ -188,7 +188,7 @@ RealmClientServiceManager rcsm;
         Context rt=Realm.context;
 //        client=new RealmClient(svars.device_code(rt),"demo","demo123");
 //        startService(new Intent(this, App_updates.class));
-        rcsm=new RealmClientServiceManager(realmClientInterfaceRX,svars.device_code(act),"192.168.1.107",8889,"demo","demo123");
+        rcsm=new RealmClientServiceManager(realmClientInterfaceRX,svars.device_code(act),"192.168.0.105",8889,"demo","demo123");
 
 //        rcsm=new RealmClientServiceManager(realmClientInterfaceRX);
         // Example of a call to a native method

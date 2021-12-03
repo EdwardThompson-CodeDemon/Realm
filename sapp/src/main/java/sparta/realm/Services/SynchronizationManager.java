@@ -467,6 +467,7 @@ ssi.onSynchronizationBegun();
         try {
 List<sync_service_description> sync_services=realm.getSyncDescription();
 sync_sum_counter=sync_services.size();
+
             for(sync_service_description ssd_t:sync_services){
                 if(ssd_t==null){continue;}
                 switch (ssd_t.servic_type){
@@ -1905,16 +1906,29 @@ if(maindata[0]==null){
                 {
                     continue;
                 }
-                if(ssd.service_name.equalsIgnoreCase("Member images")||ssd.service_name.equalsIgnoreCase("Member FP Images")){
+                if(ssd.storage_mode_check) {
+                    Log.e(RealmClient.logTag, "Started storage checking ...");
+
+                    Iterator keys = obj.keys();
+                        List<String> key_list = new ArrayList<>();
+                        while (keys.hasNext()) {
+                            key_list.add((String) keys.next());
+
+                        }
 
 
-                    // ((member_data)obj).data.storage_mode=2;
+                        for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
+                            try {
+                                obj.put(k, DatabaseManager.get_saved_doc_base64(obj.getString(k)));
+                            } catch (Exception e) {
+                                Log.e(RealmClient.logTag, "Base64 conversion error:" + e.getMessage());
+
+                            }
+
+
+                    }
                 }
-                if(ssd.service_name.equalsIgnoreCase("Member")){
 
-
-
-                }
                 JSONObject upload_object = obj;
 //                JSONObject upload_object = sdb.load_JSON_from_object(obj);
                 Log.e(ssd.service_name+":: upload::"," "+upload_object.toString());
