@@ -1520,6 +1520,17 @@ Cursor c = database.rawQuery(qry, null);
 
     }
 
+  public <RM> RM loadObject(Class<RM> realm_model, Query query)
+    {
+//        Query q=new Query().setColumns("").setLimit(9).setLimit(0);
+        ArrayList<RM> res=loadObjectArray(realm_model,query.columns,query.table_filters,query.order_filters,query.order_asc,query.limit,query.offset);
+        if(res.size()>0){
+            Log.e(logTag,"Array size :"+res.size());
+        }
+        return res.size()>0?res.get(0):null;
+
+    }
+
 
     /*
      *
@@ -1927,8 +1938,9 @@ if(ssd.service_name.equalsIgnoreCase("JobAllInventory"))
         if(c.moveToFirst())
         {
             do{
-
-                return c.getString(c.getColumnIndex("data"));
+                String res=c.getString(c.getColumnIndex("data"));
+                c.close();
+                return res;
 
             }while (c.moveToNext());
         }
@@ -2300,7 +2312,9 @@ try {
         {
             do{
 
-                return c.getString(0);
+                String res=c.getString(0);
+                c.close();
+                return res;
 
             }while (c.moveToNext());
         }

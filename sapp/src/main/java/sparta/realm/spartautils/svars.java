@@ -1487,9 +1487,9 @@ public static int printer_type(Context act, int print_job_index) {
     public static String gett_time()
     {
         // SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try{
-            String datee=formatter.format(Calendar.getInstance().getTime());
+            String datee=sdf_user_friendly_time.format(Calendar.getInstance().getTime());
             //   Log.e("My date =>",""+datee);
             return datee;
         }catch (Exception ex){}

@@ -3,6 +3,7 @@ package sparta.realm;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,7 +38,13 @@ public class Realm {
             // arc.show();
         }
         if(app_config.APP_CONTROLL_MAIN_LINK!=null){
-            context.startService(new Intent(Realm.context, App_updates.class));
+//            context.startService(new Intent(Realm.context, App_updates.class));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                new Handler().postDelayed(() ->   context.startForegroundService(new Intent(  context, App_updates.class)),200);
+            }else{
+                context.startService(new Intent(  context, App_updates.class));
+
+            }
         }
         try{
             databaseManager=new DatabaseManager(Realm.context);
