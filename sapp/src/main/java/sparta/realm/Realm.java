@@ -1,9 +1,12 @@
 package sparta.realm;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,7 +43,21 @@ public class Realm {
         if(app_config.APP_CONTROLL_MAIN_LINK!=null){
 //            context.startService(new Intent(Realm.context, App_updates.class));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                new Handler().postDelayed(() ->   context.startForegroundService(new Intent(  context, App_updates.class)),200);
+                Intent serviceIntent = new Intent(cont, App_updates.class);
+
+                cont.startService(serviceIntent);
+                cont.bindService(serviceIntent, new ServiceConnection() {
+                        @Override
+                        public void onServiceConnected(ComponentName name, IBinder service) {
+                            //retrieve an instance of the service here from the IBinder returned
+                            //from the onBind method to communicate with
+                        }
+
+                        @Override
+                        public void onServiceDisconnected(ComponentName name) {
+                        }
+                    }, Context.BIND_AUTO_CREATE);
+//                    new Handler().postDelayed(() -> { },200);
             }else{
                 context.startService(new Intent(  context, App_updates.class));
 

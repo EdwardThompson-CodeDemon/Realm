@@ -8,6 +8,8 @@ public class SocketClient {
 
     public String SERVER_ADDR = "192.168.0.105";
     public int SERVER_PORT = 8889;
+//    public int SERVER_READTIMEOUT = 5000;
+    public int SERVER_READTIMEOUT = 60000;
     public String device_code, username,password;
 
    public RealmClientCallbackInterface realmClientInterfaceTX;
@@ -27,6 +29,9 @@ public class SocketClient {
    public int InitializeSocket(String server_ip,int port,String device_code,String username,String password){
        SERVER_ADDR=server_ip;
        SERVER_PORT=port;
+       this.device_code=device_code;
+       this.username=username;
+       this.password=password;
         return 0;
     }
  public void sendData(byte[] data){

@@ -20,7 +20,12 @@ public class RealmSocketProtocol implements SocketInterface{
         this.realmClientInterfaceTX=realmClientInterfaceTX;
     }
 
-    public void downloadAll (){
+    public void Authenticate (String device_code,String  username,String password){
+
+
+    }
+
+   public void downloadAll (){
 
 
     }

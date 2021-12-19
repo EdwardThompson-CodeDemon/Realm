@@ -241,18 +241,30 @@ public class svars {
         public boolean allow_employee_details_edition = false;
 
         public String app_folder_path= Environment.getExternalStorageDirectory().toString() + "/Realm/";
+        public String file_path_db_folder=app_folder_path + ".DB/";
+        public String file_path_db_traces=app_folder_path + ".Traces/";
+        public String file_path_logs=app_folder_path + ".Logs/";
         public String file_path_app_downloads=app_folder_path + ".RAW_D_APKS/";
         public String file_path_app_uploads= app_folder_path+ ".RAW_U_APKS/";
 
         public String file_path_employee_data = app_folder_path + ".RAW_APP_DATA/";
-        public String file_path_db_backup = app_folder_path+ ".DB_BACKUPS_RAW";
-        public String file_path_log_backup = app_folder_path + ".LOG_BACKUPS_RAW";
-        public String file_path_general_backup = app_folder_path + ".GN_BACKUPS";
+        public String file_path_db_backup = app_folder_path+ ".DB_BACKUPS_RAW/";
+        public String file_path_log_backup = app_folder_path + ".LOG_BACKUPS_RAW/";
+        public String file_path_general_backup = app_folder_path + ".GN_BACKUPS/";
+//        public String DB_NAME = "live.rdb";
+        public String DB_NAME = "android_toolbox.spartadb_v2";
+        public String DB_PASS = "XXXXXX";
+        public static String verbose_app_log = "log.s_crypt_0";
+//        public String DB_PASS = "000000";
         public String file_path_db(Context cntxt)
         {
-           return cntxt.getExternalFilesDir(null).getAbsolutePath()+"/"+svars.DB_NAME;
+           return cntxt.getExternalFilesDir(null).getAbsolutePath()+"/"+DB_NAME;
         }
-
+        public String file_path_db()
+        {
+            return Realm.context.getExternalFilesDir(null).getAbsolutePath()+"/"+DB_NAME;
+//            return file_path_db_folder+svars.DB_NAME;
+        }
         public enum PROFILE_MODE{
             GENERAL,
             SELF_SERVICE
@@ -287,41 +299,10 @@ public class svars {
         public  class MODULES {
             public  module Registration = new module("00", "Registration", true);
 
-            public module Verification = new module("00", "Verification", true);
-            public module Clock_in = new module("00", "Clock in", true);
-            public module Clock_out = new module("00", "Clock out", true);
-
-            public module Gate_verification = new module("00", "Gate verification", true);
-            public module Bus_verification = new module("00", "Bus verification", true);
-            public module Canteen_verification = new module("00", "Canteen verification", true);
-            public module Class_verification = new module("00", "Class verification", false);
-
-            public module Task_management = new module("00", "Task management", true);
-            public module HR = new module("00", "HR", true);
-            public module Leave_management = new module("00", "Leave management", false);
-            public module Communication = new module("00", "Communication", true);
-            public module Cash_request = new module("00", "Cash request", false);
-            public module Payment = new module("00", "Payment", false);
-
             public  ArrayList<module> load_modules() {
                 ArrayList<module> modules = new ArrayList<>();
 
                 modules.add(Registration);
-                modules.add(Verification);
-                modules.add(Clock_in);
-                modules.add(Clock_out);
-                modules.add(Gate_verification);
-                modules.add(Bus_verification);
-                modules.add(Canteen_verification);
-                modules.add(Class_verification);
-                modules.add(Task_management);
-                modules.add(HR);
-                modules.add(Communication);
-                modules.add(Cash_request);
-                modules.add(Communication);
-                modules.add(Payment);
-
-
                 return modules;
 
             }
@@ -1516,7 +1497,7 @@ public static int printer_type(Context act, int print_job_index) {
         }catch (Exception ex){}
         return null;
     }
-   public static String gett_date2()
+   public static String getCurrentDateOfMonth()
     {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         try{
@@ -1528,6 +1509,7 @@ public static int printer_type(Context act, int print_job_index) {
     }
     public static SimpleDateFormat sdf_user_friendly_date = new SimpleDateFormat("dd-MM-yyyy");//=null;
     public static SimpleDateFormat sdf_db_date = new SimpleDateFormat("yyyy-MM-dd");//=null;
+    public static SimpleDateFormat sdf_db_date_unseparated = new SimpleDateFormat("yyyyMMdd");//=null;
 
     public static SimpleDateFormat sdf_user_friendly_time = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//=null;
     public static SimpleDateFormat sdf_db_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//=null;

@@ -759,17 +759,20 @@ public class DatabaseManager {
 
 
         sdb_model dbm=new sdb_model();
-        dbm.db_name=svars.DB_NAME;
-        dbm.db_path=svars.current_app_config(act).file_path_db(act);
-        //   dbm.db_path=act.getExternalFilesDir(null).getAbsolutePath()+"/"+svars.DB_NAME;
-        dbm.db_password=svars.DB_PASS;
+        svars.SPARTA_APP appconfig=svars.current_app_config(act);
+        dbm.db_name=appconfig.DB_NAME;
+        dbm.db_path=appconfig.file_path_db();
+        dbm.db_password=appconfig.DB_PASS;
 
         SQLiteDatabase.loadLibs(act);
 
+        File par=new File(new File(dbm.db_path).getParent());
+        if(!par.exists()){
+            par.mkdirs();
+        }
+        Log.e(logTag,"DB Path:"+dbm.db_path);
 
-
-        //  SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), , null);
-        database = SQLiteDatabase.openOrCreateDatabase(dbm.db_path, dbm.db_password, null);
+        database = SQLiteDatabase.openOrCreateDatabase(new File(dbm.db_path), dbm.db_password, null);
 
         // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
 
@@ -1514,6 +1517,34 @@ Cursor c = database.rawQuery(qry, null);
 
         return objs;
     }
+   public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String rawquery)
+    {
+        ArrayList<RM> objs=new ArrayList<RM>();
+//        String table_name=realm.getPackageTable(realm_model.getName());
+String qry=rawquery;//"SELECT "+(columns==null?"*":concatString(",",columns))+" FROM "+table_name+(table_filters==null?"":" "+conccat_sql_filters(table_filters))+(order_filters==null?"":" ORDER BY "+concatString(",",order_filters)+" "+(order_asc?"ASC":"DESC"))+(limit<=0?"":" LIMIT "+limit+(offset<=0?"": " OFFSET "+offset));
+Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM)realm.getObjectFromCursor(c,realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+
+        return objs;
+    }
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query)
     {
         return loadObjectArray(realm_model,query.columns,query.table_filters,query.order_filters,query.order_asc,query.limit,query.offset);
@@ -1523,7 +1554,13 @@ Cursor c = database.rawQuery(qry, null);
   public <RM> RM loadObject(Class<RM> realm_model, Query query)
     {
 //        Query q=new Query().setColumns("").setLimit(9).setLimit(0);
-        ArrayList<RM> res=loadObjectArray(realm_model,query.columns,query.table_filters,query.order_filters,query.order_asc,query.limit,query.offset);
+        ArrayList<RM> res=loadObjectArray(realm_model,query.columns,query.table_filters,query.order_filters,query.order_asc,1,0);
+        return res.size()>0?res.get(0):null;
+
+    }
+ public <RM> RM loadObject(Class<RM> realm_model, String rawquery)
+    {
+        ArrayList<RM> res=loadObjectArray(realm_model,rawquery);
         if(res.size()>0){
             Log.e(logTag,"Array size :"+res.size());
         }
@@ -2597,13 +2634,14 @@ try {
         String prefix=svars.sparta_EA_calendar().getTime().toString()+"   :   "+gps.getLatitude()+","+gps.getLongitude()+"     =>";
 
         //   String prefix=svars.sparta_EA_calendar().getTime().toString()+"     =>";
-        String root = act.getExternalFilesDir(null).getAbsolutePath() + "/logs";
-        Log.e("LOG_TAG", "PATH: " + root);
+//        String root = act.getExternalFilesDir(null).getAbsolutePath() + "/logs";
+        String root = svars.current_app_config(act).file_path_logs;
+        Log.e(logTag, "PATH: " + root);
 
         File file = new File(root);
         file.mkdirs();
         try {
-            File gpxfile = new File(file, svars.gett_date()+""+svars.Log_file_name);
+            File gpxfile = new File(file, svars.getCurrentDateOfMonth()+""+svars.Log_file_name);
             FileWriter writer = new FileWriter(gpxfile,true);
             writer.append(svars.APP_OPERATION_MODE==svars.OPERATION_MODE.DEV?prefix+data+"\n": s_cryptor.encrypt(prefix+data+"\n"));
             writer.flush();
@@ -2621,13 +2659,37 @@ try {
         String prefix=svars.sparta_EA_calendar().getTime().toString()+"   :   "+gps.getLatitude()+","+gps.getLongitude()+"     =>";
 
         //  String prefix=svars.sparta_EA_calendar().getTime().toString()+"     =>";
-        String root = act.getExternalFilesDir(null).getAbsolutePath() + "/logs";
-        Log.e("LOG_TAG", "PATH: " + root);
+//        String root = act.getExternalFilesDir(null).getAbsolutePath() + "/logs";
+        String root = svars.current_app_config(Realm.context).file_path_logs;
+        Log.e(logTag, "Logging: " + root);
 
         File file = new File(root);
         file.mkdirs();
         try {
-            File gpxfile = new File(file, svars.string_file_name);
+            File gpxfile = new File(file, svars.current_app_config(Realm.context).verbose_app_log+svars.getCurrentDateOfMonth());
+            FileWriter writer = new FileWriter(gpxfile,true);
+            writer.append(svars.APP_OPERATION_MODE!=svars.OPERATION_MODE.DEV?prefix+data+"\n":prefix+data+"\n");
+            writer.flush();
+            writer.close();
+        }catch (Exception ex)
+        {
+
+        }
+
+    }
+
+
+ public static void log_String(String data)
+    {
+        gps =gps==null?new Gpsprobe_r(Realm.context):gps;
+        String prefix=svars.sparta_EA_calendar().getTime().toString()+"   :   "+gps.getLatitude()+","+gps.getLongitude()+"     =>";
+        String root = svars.current_app_config(Realm.context).file_path_logs;
+        Log.e(logTag, "PATH: " + root);
+
+        File file = new File(root);
+        file.mkdirs();
+        try {
+            File gpxfile = new File(file, svars.current_app_config(Realm.context).verbose_app_log+svars.getCurrentDateOfMonth());
             FileWriter writer = new FileWriter(gpxfile,true);
             writer.append(svars.APP_OPERATION_MODE!=svars.OPERATION_MODE.DEV?prefix+data+"\n":prefix+data+"\n");
             writer.flush();

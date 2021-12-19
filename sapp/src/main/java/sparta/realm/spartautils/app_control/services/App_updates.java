@@ -81,8 +81,7 @@ public class App_updates extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+       return null;
     }
 static sparta_app_version w_sav;
   private static final int PERIOD = 1000*60*30;//30 mins

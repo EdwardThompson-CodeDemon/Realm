@@ -1,6 +1,7 @@
 package sparta.realm.RC;
 
 import android.content.Context;
+import android.os.RemoteException;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -22,10 +23,9 @@ import sparta.realm.RealmClientCallbackInterface;
 public class RealmClientJava extends SocketClient {
 
 
-    public boolean mRun = false;
+    public boolean keepReading = false;
 
     private String serverMessage;
-
 
 
 
@@ -61,76 +61,79 @@ return 1;
     }
 
     public void stopClient() {
-        mRun = false;
+        keepReading = false;
     }
 
     public void run() {
 
-        mRun = true;
-
+        keepReading = true;
+        Socket socket;
+        Boolean ok_to_read=false;
         try {
             InetAddress serverAddr = InetAddress.getByName(SERVER_ADDR);
 
-            Log.e(log_tag, "Connecting... " );
+            Log.e(log_tag, "Connecting ..." );
+             socket = new Socket(serverAddr, SERVER_PORT);
+            Log.e(log_tag, "Connected");
+            socket.setSoTimeout(SERVER_READTIMEOUT);
+//            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            out_d = new DataOutputStream(socket.getOutputStream());
+            in_d = new DataInputStream(socket.getInputStream());
 
-            Boolean connected_to_server = false;
-            Socket socket = new Socket(serverAddr, SERVER_PORT);
-
-
-            try {
-
-                //send the message to the server
-                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                out_d = new DataOutputStream(socket.getOutputStream());
-                in_d = new DataInputStream(socket.getInputStream());
-
-                Log.e(log_tag, "Connected");
-                 authenticate();
-
-                while (mRun) {
-                    if (socket.isClosed()) {
-                        mRun = false;
-                        Log.e(log_tag, " Session Disconnected");
-                        continue;
-                    }
-//                    serverMessage = in.();
-                  int input_size=  in_d.readInt();
-                    Log.e(log_tag, " Input size "+input_size);
-                    byte[] message = new byte[input_size];
-                    in_d.readFully(message, 0, message.length); // read the message
-                    rsp.OnDataReceived(message);
-//                    serverMessage = new String(message);
-//                    Log.e(log_tag, " Input "+serverMessage);
-//                    serverMessage = null;
-
-                }
-
-                Log.e(log_tag, " Session closed by server");
-
-            } catch (Exception e) {
-
-
-                Log.e("TCP", "S: Error", e);
-                mRun = false;
-            } finally {
-                if (connected_to_server == false) {
-//                    communicationHandler.onConnectionToServer(connected_to_server);
-
-                }
-                socket.close();
-            }
-            if (connected_to_server == false) {
-//                communicationHandler.onConnectionToServer(connected_to_server);
-
-            }
+            Log.e(log_tag, "Authenticating ...");
+            authenticate();
+            rsp.Authenticate(device_code,username,password);
+ok_to_read=true;
 
         } catch (Exception e) {
 
-            mRun = false;
-            Log.e(log_tag, "Connection Error\nAborting connection", e);
+            Log.e(log_tag, "Server connection error",e);
+            return;
+        }
+
+
+            try {
+                while (keepReading) {
+                    if (socket.isClosed()) {
+                       Log.e(log_tag, "Server connection closed !");
+                        break;
+                    }
+                    realmClientInterfaceTX.on_status_changed("1");
+
+                  int input_size=  in_d.readInt();
+                    Log.e(log_tag, "RX len: "+input_size);
+                    byte[] message = new byte[input_size];
+                    in_d.readFully(message, 0, message.length); // read the message
+                    rsp.OnDataReceived(message);
+                }
+
+                Log.e(log_tag, "RX stopped !");
+
+            } catch (Exception e) {
+                Log.e(log_tag, "RX error:",e);
+            } finally {
+                try {
+                   socket.close();
+                   realmClientInterfaceTX.on_status_changed("0");
+               }catch (Exception e){}
+            }
+
+
+
+        if(keepReading == false){
+            Log.e(log_tag, "Connection aborted due to tx errors");
+
+        }else{
+            Log.e(log_tag, "Connection aborted due to rx errors");
 
         }
 
+        try {
+            realmClientInterfaceTX.on_status_changed("0");
+        } catch (RemoteException remoteException) {
+            remoteException.printStackTrace();
+        }
+        run();
     }
 
 
@@ -144,7 +147,8 @@ return 1;
 
     void authenticate() {
 
-sendMessage("581816800\u001E1\u001E0\u001Edemo\u001Edemo123");
+//sendMessage("581816800\u001E1\u001E0\u001Edemo\u001Edemo123");
+sendMessage(System.currentTimeMillis()+"\u001E1\u001E0\u001Edemo\u001Edemo123");
     }
 
     @Override
@@ -154,14 +158,18 @@ sendMessage("581816800\u001E1\u001E0\u001Edemo\u001Edemo123");
     }
 
     public void sendMessage(String message){
-        Log.e(log_tag,"TX : "+message);
+        Log.e(log_tag,"TX: "+message);
         byte[] len=ByteBuffer.allocate(4).putInt(message.length()).array();
-        Log.e(log_tag,"TX : "+message.length());
+        Log.e(log_tag,"TX len: "+message.length());
      try {
          out_d.write(len);
          out_d.write(message.getBytes());
      } catch (IOException e) {
          e.printStackTrace();
+         Log.e(log_tag,"TX exception: "+message.length());
+         keepReading =false;
+
+         run();
      }
 
     }

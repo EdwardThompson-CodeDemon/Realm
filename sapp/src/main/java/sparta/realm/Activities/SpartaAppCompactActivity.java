@@ -675,36 +675,33 @@ edt.post(new Runnable() {
 
       //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
     }
+    public static String logTag="SpartaAppCompactActivity";
     public static String save_app_image(Bitmap fpb)
     {
-        String img_name="TA_DAT"+ System.currentTimeMillis()+"JPG_IDC.JPG";
-        //  String path = Environment.getExternalStorageDirectory().toString();
-        OutputStream fOutputStream = null;
-        //  File file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/");
+        String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
+
         File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
         if (!file.exists()) {
-            Log.e("Creating data dir=>",""+ String.valueOf(file.mkdirs()));
+            Log.e(logTag,"Creating data dir: "+ (file.mkdirs()?"Successfully created":"Failed to create !"));
         }
-        //  file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/", img_name);
         file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
 
-        try {
-            fOutputStream = new FileOutputStream(file);
+        try (OutputStream fOutputStream = new FileOutputStream(file)){
+
 
             fpb.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
 
             fOutputStream.flush();
-            fOutputStream.close();
+//            fOutputStream.close();
 
             //  MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
+
             return "--------------";
         } catch (IOException e) {
             e.printStackTrace();
-//fpb.recycle();
-            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
+
             return "--------------";
         }
         return img_name;
@@ -912,7 +909,7 @@ case 5:
                     String icao_package_name = "sparta.icaochecker";
                     if (photo_camera_type == 1 || photo_camera_type == 2 && !isPackageInstalled(icao_package_name)) {
                         if (svars.default_photo_camera_type(act) == 1 || svars.default_photo_camera_type(act) == 2) {
-                            image_index = 3;
+                            image_index = 5;
                         } else {
                             image_index = svars.default_photo_camera_type(act);
                         }

@@ -35,8 +35,14 @@ public class RealmClientProtocol extends RealmSocketProtocol{
         ProcessInputReceived(new String(remote_data));
     }
 
+    @Override
+    public void Authenticate(String device_code, String username, String password) {
+        super.Authenticate(device_code, username, password);
+        SendMessageJ(null,"1",device_code,username,password);
 
-//    public native int InitializeClient(String server_ip,int port,String device_code,String username,String password);
+    }
+
+    //    public native int InitializeClient(String server_ip,int port,String device_code,String username,String password);
 
     public void ProcessInputReceived(String data){
 
@@ -82,7 +88,7 @@ rch.onAuthenticated(this,data_segments[2].equals("1"));
      break;
 }
 data=null;
-//        SendMessage("R1626087185529S422010");
+//        Log.e(rc.logTag,"Requested to download "+sr.service_name);
 
         calc_progress();
     }
@@ -139,15 +145,21 @@ public static String logTag="Realm client Java";
 
         default void onRequestToDownloadReceived(RealmClientProtocol rc, String tx_transaction_no, String service_id){
              sync_service_description sr= Realm.realm.getHashedSyncDescriptions().get(service_id);//should include service id to get one syncdesc
-            Log.e(rc.logTag,"Requested to download "+sr.service_name);
-            try {
-                rc.realmClientInterfaceTX.on_info_updated("Request to receive data");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+          if(sr==null){
+              Log.e(rc.logTag,"RX prompt on an unimplemented service "+service_id);
+
+          }
+            Log.e(rc.logTag,"RX prompt on "+sr.service_name);
+
             if(sr.service_id!=null&&!sr.service_id.equals("null")) {
-              rc.download(tx_transaction_no,sr);
-          } else {
+                try {
+                    rc.realmClientInterfaceTX.on_info_updated(sr.service_name +" data available");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                rc.download(tx_transaction_no,sr);
+
+            } else {
               Log.e(rc.logTag,"Service implementation not available locally");
           }
         }
@@ -180,7 +192,9 @@ try {
 
 
 //    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
+    Log.e(RealmClientProtocol.logTag,"Converting JSON");
     JSONArray temp_ar = new JSONArray(data);
+    data=null;
 //    LinkedHashSet<E> hashSet = new LinkedHashSet<E>();
    if(ssd.storage_mode_check){
         Log.e(RealmClientProtocol.logTag,"Started storage checking ...");
@@ -228,7 +242,7 @@ try {
 //    temp_ar=new JSONArray(fileInputStream);
 //    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
-    Log.e(ssd.service_name + " :: RX", "IS OK " + den);
+    Log.e(ssd.service_name + " :: RX", "Inserting ... " + den);
     if (den >= 0) {
         synchronized (DatabaseManager.database) {
             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
@@ -247,9 +261,12 @@ try {
                 DatabaseManager.database.execSQL(qryz[i]);
                 double num = (double) i + 1;
                 double per = (num / q_length) * 100.0;
-                //  ssi.on_secondary_progress_changed((int) per);
+                try {
+                    rc.realmClientInterfaceTX.on_secondary_progress_changed((int)per);
+                }catch (Exception e){}
+                    //  ssi.on_secondary_progress_changed((int) per);
 
-                //  ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(sdb.get_record_count(ssd.table_name, ssd.table_filters)));
+//                  ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(new DatabaseManager(Realm.context).get_record_count(ssd.table_name, ssd.table_filters)));
             }
 
             DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE data_status='false'");
@@ -276,11 +293,11 @@ try {
             }
         }
     }
-    Log.e(ssd.service_name + " :: RX", "INSERTED OK " + den);
+    Log.e(ssd.service_name + "RX", "Inserted " + den);
 
-    Log.e(ssd.service_name + " :: RX", " DONE ");
 }catch (Exception ex) {
-    Log.e(rc.logTag,"Data insert error "+ex);
+//    Log.e(rc.logTag,"Data insert error "+ex);
+    DatabaseManager.log_String("Data insert error "+ex);
 
 }
 }
