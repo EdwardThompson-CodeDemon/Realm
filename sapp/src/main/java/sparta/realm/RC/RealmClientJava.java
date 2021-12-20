@@ -64,7 +64,7 @@ return 1;
     public void stopClient() {
         keepReading = false;
     }
-
+//synchronized int dd=0;
     public void run() {
 
         keepReading = true;
@@ -79,8 +79,8 @@ return 1;
 //            socket.setSoTimeout(SERVER_READTIMEOUT);//should be for blocking socs
 //            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             out_d = new DataOutputStream(socket.getOutputStream());
-//            in_d = new DataInputStream(socket.getInputStream());
-            in_d = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            in_d = new DataInputStream(socket.getInputStream());
+//            in_d = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
             Log.e(log_tag, "Authenticating ...");
 //            authenticate();
