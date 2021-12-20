@@ -171,11 +171,11 @@ public static String logTag="Realm client Java";
             }
 
             if(authentication_status) {
-//                Log.e("Auth :","Authenticated  Synchronizing");
+                Log.e(logTag,"Authenticated  Synchronizing");
                 rc.Synchronize();
 
             }else{
-//                Log.e("Auth :","Authentication failed");
+                Log.e(logTag,"Authentication failed");
 
             }
 
@@ -457,6 +457,8 @@ try {
   public void Synchronize (){
       io_operations_counter=0;
       io_operation_complete_counter=0;
+                         Log.e(logTag,"Synchronizing ...");
+
       try {
           realmClientInterfaceTX.on_info_updated("Syncing ");
       } catch (RemoteException e) {
