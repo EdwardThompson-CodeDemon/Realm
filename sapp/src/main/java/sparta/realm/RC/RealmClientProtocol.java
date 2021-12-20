@@ -192,7 +192,7 @@ try {
 
 
 //    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
-    Log.e(RealmClientProtocol.logTag,"Converting JSON");
+    Log.e(RealmClientProtocol.logTag,"Converting "+ssd.service_name+" JSON");
     JSONArray temp_ar = new JSONArray(data);
     data=null;
 //    LinkedHashSet<E> hashSet = new LinkedHashSet<E>();
@@ -242,7 +242,7 @@ try {
 //    temp_ar=new JSONArray(fileInputStream);
 //    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
-    Log.e(ssd.service_name + " :: RX", "Inserting ... " + den);
+    Log.e(ssd.service_name + " :: RX", "Inserting " + den);
     if (den >= 0) {
         synchronized (DatabaseManager.database) {
             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
@@ -375,7 +375,8 @@ try {
      }
    void updateUploadedData(String service_id,String data){
 
-        sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
+       io_operation_complete_counter++;
+       sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
         if(ssd==null) {
 
         }else {
@@ -420,7 +421,6 @@ try {
 
         }
 
-        io_operation_complete_counter++;
     }
 
     public void downloadAll (){
@@ -481,12 +481,15 @@ try {
         }
     }
    public void download (String tx_transaction_no,sync_service_description ssd){
+
        try {
            realmClientInterfaceTX.on_info_updated("Downloading "+ssd.service_name);
        } catch (RemoteException e) {
            e.printStackTrace();
        }
        io_operations_counter++;
+       Log.e(logTag,"Downloading "+ssd.service_name+"  "+io_operations_counter+"/"+io_operation_complete_counter);
+//       calc_progress();
        try {
            String o=realmClientInterfaceTX.OnAboutToDownloadObjects(ssd.service_id);
            SendMessageJ(tx_transaction_no,"4","2",ssd.service_id+"",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size,o);
@@ -609,7 +612,7 @@ JSONArray arr=new JSONArray();
     }
 public void calc_progress(){
     percent_calculation pc = new percent_calculation(io_operations_counter + "", io_operation_complete_counter + "");
-//    Log.e(logTag,"Progress: "+io_operation_complete_counter+" / "+ io_operations_counter);
+    Log.e(logTag,"Progress: "+io_operation_complete_counter+" / "+ io_operations_counter);
     try {
         realmClientInterfaceTX.on_main_percentage_changed(Integer.parseInt(pc.per_balance));
         if(Integer.parseInt(pc.per_balance)==100){
