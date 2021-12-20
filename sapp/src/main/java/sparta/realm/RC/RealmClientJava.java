@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -78,7 +79,8 @@ return 1;
             socket.setSoTimeout(SERVER_READTIMEOUT);
 //            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             out_d = new DataOutputStream(socket.getOutputStream());
-            in_d = new DataInputStream(socket.getInputStream());
+//            in_d = new DataInputStream(socket.getInputStream());
+            in_d = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
             Log.e(log_tag, "Authenticating ...");
             authenticate();
@@ -133,7 +135,7 @@ ok_to_read=true;
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
         }
-        run();
+//        run();
     }
 
 
@@ -169,7 +171,7 @@ sendMessage(System.currentTimeMillis()+"\u001E1\u001E0\u001Edemo\u001Edemo123");
          Log.e(log_tag,"TX exception: "+message.length());
          keepReading =false;
 
-         run();
+//         run();
      }
 
     }
