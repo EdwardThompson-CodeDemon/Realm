@@ -4,12 +4,15 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.common.io.ByteStreams;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -33,9 +36,10 @@ public class RealmClientJava extends SocketClient {
     Context context;
 
     PrintWriter out;
-    BufferedReader in;
+    BufferedReader in_b;
     DataInputStream in_d;
     DataOutputStream out_d;
+    InputStream in;
 String log_tag="Realm Client :";
 
      public RealmClientJava(RealmClientCallbackInterface realmClientInterfaceTX) {
@@ -78,9 +82,10 @@ return 1;
             Log.e(log_tag, "Connected");
 //            socket.setSoTimeout(SERVER_READTIMEOUT);//should be for blocking socs
 //            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            in=socket.getInputStream();
             out_d = new DataOutputStream(socket.getOutputStream());
-            in_d = new DataInputStream(socket.getInputStream());
-//            in_d = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+//            in_d = new DataInputStream(in);
+            in_d = new DataInputStream(new BufferedInputStream(in));
 
             Log.e(log_tag, "Authenticating ...");
 //            authenticate();
@@ -103,9 +108,13 @@ ok_to_read=true;
                     realmClientInterfaceTX.on_status_changed("1");
 //                    while(socket.getInputStream().available() > 0);
                   int input_size=  in_d.readInt();
+
                     Log.e(log_tag, "RX len: "+input_size);
                     byte[] message = new byte[input_size];
-                    in_d.readFully(message, 0, message.length); // read the message
+//                    in_d.readFully(message, 0, message.length); // read the message
+                    ByteStreams.read(in,message,0,message.length);
+                    Log.e(log_tag, "RX OK. Processing ... ");
+
                     rsp.OnDataReceived(message);
                 }
 
