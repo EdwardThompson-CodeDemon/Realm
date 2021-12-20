@@ -111,8 +111,8 @@ ok_to_read=true;
 
                     Log.e(log_tag, "RX len: "+input_size);
                     byte[] message = new byte[input_size];
-//                    in_d.readFully(message, 0, message.length); // read the message
-                    ByteStreams.read(in,message,0,message.length);
+                    in_d.readFully(message, 0, message.length); // read the message
+//                    ByteStreams.readFully(in,message,0,message.length);
                     Log.e(log_tag, "RX OK. Processing ... ");
 
                     rsp.OnDataReceived(message);
