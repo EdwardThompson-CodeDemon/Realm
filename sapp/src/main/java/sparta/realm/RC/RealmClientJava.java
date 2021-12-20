@@ -101,7 +101,7 @@ ok_to_read=true;
                         break;
                     }
                     realmClientInterfaceTX.on_status_changed("1");
-                    while(socket.getInputStream().available() > 0);
+//                    while(socket.getInputStream().available() > 0);
                   int input_size=  in_d.readInt();
                     Log.e(log_tag, "RX len: "+input_size);
                     byte[] message = new byte[input_size];
