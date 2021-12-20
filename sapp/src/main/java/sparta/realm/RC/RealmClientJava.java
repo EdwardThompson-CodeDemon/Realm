@@ -83,7 +83,7 @@ return 1;
             in_d = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
             Log.e(log_tag, "Authenticating ...");
-            authenticate();
+//            authenticate();
             rsp.Authenticate(device_code,username,password);
 ok_to_read=true;
 
