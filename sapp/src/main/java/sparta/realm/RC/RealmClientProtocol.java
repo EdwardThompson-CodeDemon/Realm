@@ -243,7 +243,7 @@ try {
 //    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
     Log.e(ssd.service_name + " :: RX", "Inserting " + den);
-    if (den >= 0) {
+    if (den > 0) {
         synchronized (DatabaseManager.database) {
             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
             String sidz = ins[0][0];
@@ -276,21 +276,22 @@ try {
             DatabaseManager.database.execSQL("DELETE FROM CP_" + ssd.table_name + "");
             DatabaseManager.database.setTransactionSuccessful();
             DatabaseManager.database.endTransaction();
-            if(den>=ssd.chunk_size){
-                try {
-                    rc.realmClientInterfaceTX.on_info_updated("Downloaded "+ssd.service_name);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                rc.download(transaction_no,ssd);
-            }else {
-                try {
-                    rc.realmClientInterfaceTX.on_info_updated("Synchronized");
-                    rc.realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
+
+        }
+    }
+    if(den>=ssd.chunk_size){
+        try {
+            rc.realmClientInterfaceTX.on_info_updated("Downloaded "+ssd.service_name);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        rc.download(transaction_no,ssd);
+    }else {
+        try {
+            rc.realmClientInterfaceTX.on_info_updated("Synchronized");
+            rc.realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
     Log.e(ssd.service_name + "RX", "Inserted " + den);

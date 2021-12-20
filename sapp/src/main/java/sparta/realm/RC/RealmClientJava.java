@@ -76,7 +76,7 @@ return 1;
             Log.e(log_tag, "Connecting ..." );
              socket = new Socket(serverAddr, SERVER_PORT);
             Log.e(log_tag, "Connected");
-            socket.setSoTimeout(SERVER_READTIMEOUT);
+//            socket.setSoTimeout(SERVER_READTIMEOUT);//should be for blocking socs
 //            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             out_d = new DataOutputStream(socket.getOutputStream());
 //            in_d = new DataInputStream(socket.getInputStream());
