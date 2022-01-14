@@ -1488,6 +1488,11 @@ try {
         return objs;
     }
 
+    public <RM> int getRecordCount(Class<RM> realm_model,@Nullable String... params)
+    {
+        String table_name=realm.getPackageTable(realm_model.getName());
+        return Integer.parseInt(get_record_count(table_name,params));
+    }
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters,boolean order_asc,int limit,int offset)
     {
         ArrayList<RM> objs=new ArrayList<RM>();
@@ -1568,6 +1573,12 @@ Cursor c = database.rawQuery(qry, null);
 
     }
 
+    public <RM> boolean insertObject(RM realm_model){
+        String table_name=realm.getPackageTable(realm_model.getClass().getName());
+
+        return database.insert(table_name,null,(ContentValues) realm.getContentValuesFromObject(realm_model))>0;
+
+    }
 
     /*
      *
