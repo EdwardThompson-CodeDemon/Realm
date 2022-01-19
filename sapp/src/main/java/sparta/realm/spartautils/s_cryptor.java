@@ -5,7 +5,7 @@ import android.util.Base64;
 import java.util.ArrayList;
 
 /**
- * Created by Thompsons on 4/10/2017.
+ * Created by Thompson on 4/10/2017.
  */
 
 public class s_cryptor {

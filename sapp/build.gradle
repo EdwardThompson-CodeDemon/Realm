@@ -84,9 +84,9 @@ dependencies {
     implementation 'org.apache.commons:commons-io:1.3.2'
   //  annotationProcessor 'com.github.EdwardThompson-CodeDemon.systemRealm:AnnotationProcessor:0.0.11'
 // annotationProcessor 'com.github.EdwardThompson-CodeDemon.systemRealm:AnnotationProcessor:0.0.22'
-    annotationProcessor 'com.github.EdwardThompson-CodeDemon.SystemRealm:AnnotationProcessor:0.0.47'
+    annotationProcessor 'com.github.EdwardThompson-CodeDemon.SystemRealm:AnnotationProcessor:0.0.48'
     //    annotationProcessor 'com.github.EdwardThompson-CodeDemon.systemRealm:AnnotationProcessor:0.0.29'
-    implementation 'com.github.EdwardThompson-CodeDemon.SystemRealm:Annotations:0.0.47'
+    implementation 'com.github.EdwardThompson-CodeDemon.SystemRealm:Annotations:0.0.48'
 //    implementation 'com.github.EdwardThompson-CodeDemon.systemRealm:Annotations:0.0.22'
     //implementation project(path: ':AnnotationProcessor')
     implementation 'com.github.Chrisvin:RubberPicker:v1.5'
