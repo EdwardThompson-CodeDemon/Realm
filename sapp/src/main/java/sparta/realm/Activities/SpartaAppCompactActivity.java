@@ -896,7 +896,7 @@ case 5:
             try{
                 data.putExtra("FaceUrl", face_handler.extract_face(svars.current_app_config(Realm.context).file_path_employee_data+data_url));
 
-            }catch (Exception ex){}
+            }catch (Throwable ex){}
         }else {
             super.onActivityResult(requestCode, resultCode, data);
         }
