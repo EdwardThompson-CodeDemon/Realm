@@ -17,11 +17,8 @@ public class SpartaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        Realm.context = getApplicationContext();
-       // realm=realm==null?new spartaDynamics():realm;
 
         AppConfig APPP = new AppConfig("https://weightcapture.cs4africa.com/arqan", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","da","realm","/SystemAccounts/Authentication/Login/Submit",true);
-
         APPP.WORKING_PROFILE_MODE= AppConfig.PROFILE_MODE.GENERAL;
         AppConfig UIPA_APP = new AppConfig("http://ta.cs4africa.com:9090",
                 null,
