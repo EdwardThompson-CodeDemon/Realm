@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.app_control.SpartaApplicationErrorHandler;
 import sparta.realm.spartautils.app_control.services.App_updates;
 import sparta.realm.spartautils.svars;
+import sparta.realm.utils.AppConfig;
 
 public class Realm {
 
@@ -27,7 +27,7 @@ public class Realm {
     public static RealmDataClass realm;
     public static DatabaseManager databaseManager;
 
-    public static void Initialize(Context cont, RealmDataClass realm_, String version_code, String app_name, svars.SPARTA_APP app_config){
+    public static void Initialize(Context cont, RealmDataClass realm_, String version_code, String app_name, AppConfig app_config){
     context=cont;
     realm=realm_;
         svars.set_current_version(cont,version_code);
@@ -69,7 +69,7 @@ public class Realm {
         }catch (Exception ex){}
 
 }
-    public static void Initialize( Context cont,RealmDataClass realm_, String version_code, String app_name, svars.SPARTA_APP app_config,String FSDK_KEY){
+    public static void Initialize(Context cont, RealmDataClass realm_, String version_code, String app_name, AppConfig app_config, String FSDK_KEY){
         Initialize(cont,realm_, version_code,app_name,app_config);
 
         if(FSDK_KEY!=null){

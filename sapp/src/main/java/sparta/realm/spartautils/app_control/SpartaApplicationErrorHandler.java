@@ -7,6 +7,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileWriter;
 
+import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartautils.svars;
 
 
@@ -66,6 +67,7 @@ try{
 
 }catch (Exception ex){}
 
+            DatabaseManager.log_event(this.cntx,"Crash Report:\n"+report);
 
             defaultUEH.uncaughtException(t, e);
         }

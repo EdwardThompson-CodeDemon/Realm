@@ -100,7 +100,9 @@ data=null;
         void addTransaction(int transferType,String transaction_no,int serviceType,sync_service_description ssd,String data){
 
             sparta.realm.realmclient.dataProcess dp=new sparta.realm.realmclient.dataProcess(transferType,transaction_no,serviceType,ssd,data);
-            all_processes.add(dp);
+//            all_processes.add(dp);
+
+
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -240,7 +242,7 @@ try {
 //    FileInputStream fileInputStream = new FileInputStream(descriptor);
 
 //    temp_ar=new JSONArray(fileInputStream);
-//    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
+    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
     Log.e(ssd.service_name + " :: RX", "Inserting " + den);
     if (den > 0) {
@@ -281,7 +283,7 @@ try {
     }
     if(den>=ssd.chunk_size){
         try {
-            rc.realmClientInterfaceTX.on_info_updated("Downloaded "+ssd.service_name);
+            rc.realmClientInterfaceTX.on_info_updated("Downloaded "+ssd.service_name+". Re-downloading next batch");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -399,7 +401,7 @@ try {
                         sbqry.append(")");
                     }
                     sbqry.append(") UPDATE " + ssd.table_name + " SET " +
-                            "  sync_var = (SELECT sync_var FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
+//                            "  sync_var = (SELECT sync_var FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
                             "  sync_status = (SELECT sync_status FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)\n" +
                             "WHERE transaction_no IN (SELECT transaction_no FROM RealmClientResult)");
                     DatabaseManager.database.execSQL(sbqry.toString());

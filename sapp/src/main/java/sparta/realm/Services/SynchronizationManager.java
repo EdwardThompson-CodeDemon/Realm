@@ -55,6 +55,8 @@ import sparta.realm.spartamodels.member_data;
 
 
 import sparta.realm.spartautils.svars;
+import sparta.realm.utils.AppConfig;
+
 import com.realm.annotations.db_class_;
 import com.realm.annotations.sync_service_description;
 import com.realm.annotations.sync_status;
@@ -65,8 +67,6 @@ import static com.realm.annotations.SyncDescription.service_type.Download_Upload
 import static com.realm.annotations.SyncDescription.service_type.Upload;
 import static sparta.realm.Realm.realm;
 import static sparta.realm.spartautils.svars.current_app_config;
-import static sparta.realm.spartautils.svars.set_version_action_done;
-import static sparta.realm.spartautils.svars.shared_pref_boolean;
 
 
 public class SynchronizationManager {
@@ -175,7 +175,7 @@ public class SynchronizationManager {
         default void onSynchronizationCompleted(){};
     }
     static SynchronizationStatusHandler ssi;
-   static svars.SPARTA_APP app_config;
+   static AppConfig app_config;
     public SynchronizationManager(SynchronizationStatusHandler ssi) {
 
 

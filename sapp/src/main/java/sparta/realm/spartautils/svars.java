@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.Settings;
 
 import android.telephony.TelephonyManager;
@@ -42,8 +41,8 @@ import sparta.realm.Realm;
 import sparta.realm.spartamodels.member;
 
 
-import sparta.realm.spartautils.app_control.models.module;
 import sparta.realm.spartautils.bluetooth.bt_device_connector;
+import sparta.realm.utils.AppConfig;
 
 
 /**
@@ -53,13 +52,12 @@ import sparta.realm.spartautils.bluetooth.bt_device_connector;
 public class svars {
 
 
-
-    public static final String cash_payment_mode_id="1";
-    public static final String mpesa_payment_mode_id="2";
-    public static final  String cheque_payment_mode_id="3";
-    public static final boolean hide_product_quantity_available=false;
-    public static int decimal_extent=2;
-    public static boolean show_categories=true;
+    public static final String cash_payment_mode_id = "1";
+    public static final String mpesa_payment_mode_id = "2";
+    public static final String cheque_payment_mode_id = "3";
+    public static final boolean hide_product_quantity_available = false;
+    public static int decimal_extent = 2;
+    public static boolean show_categories = true;
 
 
     public static String device_code(Activity act) {
@@ -86,17 +84,16 @@ public class svars {
     public static String device_code(Context act) {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
-     if (null != tm) {
-         if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (null != tm) {
+            if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
 
+                return "0";
+            }
+            deviceUniqueIdentifier = tm.getDeviceId();
+        }
 
-             return "0";
-         }
-         deviceUniqueIdentifier = tm.getDeviceId();
-     }
-
-     deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
 //        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
         return deviceUniqueIdentifier;
 
@@ -105,7 +102,7 @@ public class svars {
     public static String transaction_code(Context act) {
 
 
-        return device_code(act).substring(device_code(act).length()-12)+gett_date();
+        return device_code(act).substring(device_code(act).length() - 12) + gett_date();
 
     }
 
@@ -166,183 +163,84 @@ public class svars {
 
         deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
 //        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
-        return deviceUniqueIdentifier+"_"+System.currentTimeMillis()+"_"+svars.user_id(act);
+        return deviceUniqueIdentifier + "_" + System.currentTimeMillis() + "_" + svars.user_id(act);
     }
- public static   String get_ip_forcefully(){
+
+    public static String get_ip_forcefully() {
         String ipAddress = "";
         try {
-            while(!ipAddress.startsWith("192.168.")){
-                overal :
-                for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            while (!ipAddress.startsWith("192.168.")) {
+                overal:
+                for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                     NetworkInterface intf = en.nextElement();
-                    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                         InetAddress inetAddress = enumIpAddr.nextElement();
                         if (!inetAddress.isLoopbackAddress()) {
                             ipAddress = inetAddress.getHostAddress().toString();
-                            if(ipAddress.startsWith("192.168.")) {
+                            if (ipAddress.startsWith("192.168.")) {
                                 Log.e("Seraching IP :", "OK :" + inetAddress.getHostAddress());
                                 Log.e("Seraching IP :", "OK :" + ipAddress);
                                 break overal;
                             }
-                        }else {
+                        } else {
 
-                            Log.e("Seraching IP :","Loopback"+inetAddress.getHostAddress());
+                            Log.e("Seraching IP :", "Loopback" + inetAddress.getHostAddress());
 
                         }
                     }
                 }
 
             }
-        } catch (SocketException ex) {}
+        } catch (SocketException ex) {
+        }
 
-        Log.e("Current IP :",""+ipAddress);
+        Log.e("Current IP :", "" + ipAddress);
         return ipAddress;
     }
-    public static   String get_ip(){
+
+    public static String get_ip() {
         String ipAddress = "";
         try {
 
 
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         ipAddress = inetAddress.getHostAddress().toString();
-                        if(ipAddress.startsWith("192.168.")) {
+                        if (ipAddress.startsWith("192.168.")) {
                             Log.e("Seraching IP :", "OK :" + inetAddress.getHostAddress());
                             Log.e("Seraching IP :", "OK :" + ipAddress);
 
 
                         }
-                    }else {
+                    } else {
 
-                        Log.e("Seraching IP :","Loopback"+inetAddress.getHostAddress());
+                        Log.e("Seraching IP :", "Loopback" + inetAddress.getHostAddress());
 
                     }
                 }
             }
 
 
+        } catch (SocketException ex) {
+        }
 
-        } catch (SocketException ex) {}
-
-        Log.e("Current IP :",""+ipAddress);
+        Log.e("Current IP :", "" + ipAddress);
         return ipAddress;
     }
-    public static class SPARTA_APP {
-        public String APP_MAINLINK = "",
-                APP_CONTROLL_MAIN_LINK = "",
-                ACCOUNT = "",
-                ACCOUNT_BRANCH = "",
-                AUTHENTICATION_URL = "";
-        public boolean SYNC_USE_CAPS=true;
-        public boolean print_receipt_on_registration = false;
-        public boolean allow_employee_details_edition = false;
-
-        public String app_folder_path= Environment.getExternalStorageDirectory().toString() + "/Realm/";
-        public String file_path_db_folder=app_folder_path + ".DB/";
-        public String file_path_db_traces=app_folder_path + ".Traces/";
-        public String file_path_logs=app_folder_path + ".Logs/";
-        public String file_path_app_downloads=app_folder_path + ".RAW_D_APKS/";
-        public String file_path_app_uploads= app_folder_path+ ".RAW_U_APKS/";
-
-        public String file_path_employee_data = app_folder_path + ".RAW_APP_DATA/";
-        public String file_path_db_backup = app_folder_path+ ".DB_BACKUPS_RAW/";
-        public String file_path_log_backup = app_folder_path + ".LOG_BACKUPS_RAW/";
-        public String file_path_general_backup = app_folder_path + ".GN_BACKUPS/";
-//        public String DB_NAME = "live.rdb";
-        public String DB_NAME = "android_toolbox.spartadb_v2";
-        public String DB_PASS = "XXXXXX";
-        public static String verbose_app_log = "log.s_crypt_0";
-//        public String DB_PASS = "000000";
-        public String file_path_db(Context cntxt)
-        {
-           return cntxt.getExternalFilesDir(null).getAbsolutePath()+"/"+DB_NAME;
-        }
-        public String file_path_db()
-        {
-            return Realm.context.getExternalFilesDir(null).getAbsolutePath()+"/"+DB_NAME;
-//            return file_path_db_folder+svars.DB_NAME;
-        }
-        public enum PROFILE_MODE{
-            GENERAL,
-            SELF_SERVICE
-
-        }
-        public PROFILE_MODE WORKING_PROFILE_MODE=PROFILE_MODE.GENERAL;
-        public SPARTA_APP(String APP_MAINLINK, String APP_CONTROLL_MAIN_LINK, String ACCOUNT, String ACCOUNT_BRANCH) {
-            this.APP_MAINLINK = APP_MAINLINK;
-            this.APP_CONTROLL_MAIN_LINK = APP_CONTROLL_MAIN_LINK;
-            this.ACCOUNT = ACCOUNT;
-            this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
-
-        }
-   public SPARTA_APP(String APP_MAINLINK, String APP_CONTROLL_MAIN_LINK, String ACCOUNT, String ACCOUNT_BRANCH,String AUTHENTICATION_URL,boolean result_caps) {
-            this.APP_MAINLINK = APP_MAINLINK;
-            this.APP_CONTROLL_MAIN_LINK = APP_CONTROLL_MAIN_LINK;
-            this.ACCOUNT = ACCOUNT;
-            this.ACCOUNT_BRANCH = ACCOUNT_BRANCH;
-       this.AUTHENTICATION_URL=AUTHENTICATION_URL;
-       SYNC_USE_CAPS=result_caps;
-
-        }
-        public void set_app_folder()
-        {
 
 
-        }
-        public  MODULES WORKING_MODULES=new MODULES();
-
-
-
-        public  class MODULES {
-            public  module Registration = new module("00", "Registration", true);
-
-            public  ArrayList<module> load_modules() {
-                ArrayList<module> modules = new ArrayList<>();
-
-                modules.add(Registration);
-                return modules;
-
-            }
-
-
-        }
-
-        public static class FEATURES {
-            public static boolean Biometrics = true;
-            public static boolean Employee_data_update = true;
-            public static boolean Geo_fencing = true;
-            public static boolean Backup = true;
-
-
-        }
+    static AppConfig DEMO() {
+        AppConfig APPP = new AppConfig("http://ta.cs4africa.com:9000", "", "SNEDAI", " realm");
+        //  AppConfig APPP = new AppConfig("http://ta.cs4africa.com:1000", "", "DEMO ACCOUNT", "Demo");
+        APPP.WORKING_PROFILE_MODE = AppConfig.PROFILE_MODE.GENERAL;
+        return APPP;
     }
 
 
-
-
-
-
-static SPARTA_APP DEMO()
-{
-   SPARTA_APP APPP = new SPARTA_APP("http://ta.cs4africa.com:9000", "","SNEDAI"," realm");
-    //  SPARTA_APP APPP = new SPARTA_APP("http://ta.cs4africa.com:1000", "", "DEMO ACCOUNT", "Demo");
-APPP.WORKING_PROFILE_MODE= SPARTA_APP.PROFILE_MODE.GENERAL;
-return APPP;
-}
-
-
-
-
-
-
-
-//    public static final SPARTA_APP WORKING_APP = current_app_config(Realm.context);
-
-
-    public static final  int members_request_limit = 1000;
+    public static final int members_request_limit = 1000;
     public static final int fingerprints_request_limit = 5000;
     public static final int images_request_limit = 1;
     public static final int excuse_request_limit = 5000;
@@ -363,14 +261,14 @@ return APPP;
         GENERAL
     }
 
-    public static int randomcheck_interval=1000*60*30;//5400000
-    public static int random_call_responce_time=30;
+    public static int randomcheck_interval = 1000 * 60 * 30;//5400000
+    public static int random_call_responce_time = 30;
 
-   public static int randomcheck_delay=1800000;//1,800,000
+    public static int randomcheck_delay = 1800000;//1,800,000
 
 
     public static OPERATION_MODE APP_OPERATION_MODE = OPERATION_MODE.LIVE;
-   // public static DEVICE CURRENT_DEVICE = DEVICE.UAREU;
+    // public static DEVICE CURRENT_DEVICE = DEVICE.UAREU;
 
 
     public static String DB_NAME = "android_toolbox.spartadb_v2";
@@ -380,43 +278,38 @@ return APPP;
     public static boolean consider_saturday_as_a_working_day_for_leave = false;
     public static String sharedprefsname = "realm_SPARTASHAREDPREFS";
 
-
-    //  public static String Mainlink =APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
-    public static final String Mainlink="";// =current_app_config(Realm.context).APP_MAINLINK;//APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://realmtogo.cs4africa.com":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://realmtogo.cs4africa.com:2000":"http://realmtogo.cs4africa.com:2000";
-//    public static String update_root_link=current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK;// APP_OPERATION_MODE== OPERATION_MODE.LIVE ?"http://ta.cs4africa.com/realm_APP/togo":APP_OPERATION_MODE== OPERATION_MODE.TRAINING?"http://ta.cs4africa.com/realm_APP/demo":"";
-
+    public static final String Mainlink = "";
     public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Members/Members/GetMemberFingerprints";
     public static final String Fingerprint_uploading_link = "/WeightCAPTURE/Members/HybridMembers/RegisterRecognition";
 
 
+    public static final String Collection_center_download_link = "/WeightCAPTURE/Inventory/CollectionCentre/GetUsersCentres";
+    public static final String Member_download_link = "/WeightCAPTURE/Members/Members/RebindGrid";
+    public static final String Member_upload_link = "/WeightCAPTURE/Members/HybridMembers/save";
+    public static final String Supply_account_download_link = "/WeightCAPTURE/Members/Members/GetMemberAccs";
+    public static final String Company_details_download_link = "/SystemAccounts/Configuration/Accounts/GetCompanyDetails";
+    public static final String Route_download_link = "/WeightCAPTURE/Inventory/InventoryItemsTypes/RebindGrid";
+    public static final String Route_inventory_assignment_download_link = "/WeightCAPTURE/Inventory/Inventories/GetMobileInventory";
+    public static final String Center_download_link = "/WeightCAPTURE/Inventory/InventoryItemsTypes/GetCenters";
+    public static final String Inventory_download_link = "/WeightCAPTURE/Inventory/Inventories/GetMobileInventory";
+    public static final String Plucker_cost_download_link = "/WeightCAPTURE/Inventory/pluckercost/RebindGrid";
+    public static final String User_download_link = "/WeightCAPTURE/Members/Members/GridGetUsersList";
+    public static final String Block_download_link = "/WeightCAPTURE/Member/PluckerGroups/RebindGrid";
+    public static final String Plucker_machine_assignment_download_link = "/WeightCAPTURE/Inventory/pluckerAssignment/RebindGrid";
+    public static final String Vehicle_download_link = "/WeightCAPTURE/Vehicle/VehicleRegistration/RebindGrid";
+    public static final String Cocoa_buyers_download_link = "/WeightCAPTURE/WeighBridgeDetails/PullCocoaBuyers";
+    public static final String Weighbridge_tag_download_link = "/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
+    public static final String Cocoa_collection_download_link = "/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
+    public static final String Lpo_upload_link = "/WeightCAPTURE/LPO/LPODetails/WestafricaAdd";
+    public static final String Weighbridge_dispatch_upload_link = "/WeightCAPTURE/WeighBridgeDetails/DispatchWeighBridgeCocoa";
+    public static final String Weighbridge_add_upload_link = "/WeightCAPTURE/WeighBridgeDetails/AddWeighbridgeCocoa";
+    public static final String Weighbridge_tag_upload_link = "/WeightCAPTURE/WeighBridgeDetails/UpdateWeighBridgeCocoaTag";
+    public static final String Receiving_session_upload_link = "/WeightCAPTURE/LPO/LPODetails/AddVehicleReceivingSession";
+    public static final String agent_totals_upload_link = "/WeightCAPTURE/WeighBridgeDetails/AddAgentsAccountsDetails";
+    public static final String Cocoa_dispatch_session_upload_link = "/WeightCAPTURE/LPO/LPODetails/UpdateDispatchCollectionSession";
+    public static final String Vehicle_dispatch_session_upload_link = "/WeightCAPTURE/LPO/LPODetails/AddVehicleSessionWeighbridgeDispatch";
 
-    public static final String Collection_center_download_link ="/WeightCAPTURE/Inventory/CollectionCentre/GetUsersCentres";
-    public static final String Member_download_link ="/WeightCAPTURE/Members/Members/RebindGrid";
-    public static final String Member_upload_link ="/WeightCAPTURE/Members/HybridMembers/save";
-    public static final String Supply_account_download_link ="/WeightCAPTURE/Members/Members/GetMemberAccs";
-    public static final String Company_details_download_link ="/SystemAccounts/Configuration/Accounts/GetCompanyDetails";
-    public static final String Route_download_link ="/WeightCAPTURE/Inventory/InventoryItemsTypes/RebindGrid";
-    public static final String Route_inventory_assignment_download_link ="/WeightCAPTURE/Inventory/Inventories/GetMobileInventory";
-    public static final String Center_download_link ="/WeightCAPTURE/Inventory/InventoryItemsTypes/GetCenters";
-    public static final String Inventory_download_link ="/WeightCAPTURE/Inventory/Inventories/GetMobileInventory";
-    public static final String Plucker_cost_download_link ="/WeightCAPTURE/Inventory/pluckercost/RebindGrid";
-    public static final String User_download_link ="/WeightCAPTURE/Members/Members/GridGetUsersList";
-    public static final String Block_download_link ="/WeightCAPTURE/Member/PluckerGroups/RebindGrid";
-    public static final String Plucker_machine_assignment_download_link ="/WeightCAPTURE/Inventory/pluckerAssignment/RebindGrid";
-    public static final String Vehicle_download_link ="/WeightCAPTURE/Vehicle/VehicleRegistration/RebindGrid";
-    public static final String Cocoa_buyers_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaBuyers";
-    public static final String Weighbridge_tag_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
-    public static final String Cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
-    public static final String Lpo_upload_link ="/WeightCAPTURE/LPO/LPODetails/WestafricaAdd";
-    public static final String Weighbridge_dispatch_upload_link ="/WeightCAPTURE/WeighBridgeDetails/DispatchWeighBridgeCocoa";
-    public static final String Weighbridge_add_upload_link ="/WeightCAPTURE/WeighBridgeDetails/AddWeighbridgeCocoa";
-    public static final String Weighbridge_tag_upload_link ="/WeightCAPTURE/WeighBridgeDetails/UpdateWeighBridgeCocoaTag";
-    public static final String Receiving_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/AddVehicleReceivingSession";
-    public static final String agent_totals_upload_link ="/WeightCAPTURE/WeighBridgeDetails/AddAgentsAccountsDetails";
-    public static final String Cocoa_dispatch_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/UpdateDispatchCollectionSession";
-    public static final String Vehicle_dispatch_session_upload_link ="/WeightCAPTURE/LPO/LPODetails/AddVehicleSessionWeighbridgeDispatch";
-
-    public static final String Farmer_advances_upload_link ="https://weightcapture.cs4africa.com/ivory_capagri/Loan/mainPesa/IvoryAdvances";
+    public static final String Farmer_advances_upload_link = "https://weightcapture.cs4africa.com/ivory_capagri/Loan/mainPesa/IvoryAdvances";
 
 
 //    public static final String Cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
@@ -436,82 +329,67 @@ return APPP;
     public static String agent_totals_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleReceivingSession";*/
 
 
+    public static String Global_data_download_link = Mainlink + "/MobiServices/GeneralData/GetGeneralData";
+    public static final String Global_data_download_link_ann = "/MobiServices/GeneralData/GetGeneralData";
 
+    public static String payment_code_download_link = Mainlink + "/MobiServices/GeneralData/GetPaymentCodes";
 
+    public static String Exception_codes_download_link = Mainlink + "/MobiServices/GeneralData/GetExceptionCodes/";
 
+    // public static String Member_download_link =Mainlink+"/WeightCAPTURE/Members/Members/RebindGrid";
+    public static final String Member_download_link_ann = "/WeightCAPTURE/Members/Members/RebindGrid";
+    // public static String Member_upload_link =Mainlink+"/MobiServices/SaveData/SaveData";
+    public static final String Member_upload_link_ann = "/MobiServices/SaveData/SaveData";
 
-
-
-
-
-
-
-
-
-    public static String Global_data_download_link =Mainlink+"/MobiServices/GeneralData/GetGeneralData";
-    public static final String Global_data_download_link_ann ="/MobiServices/GeneralData/GetGeneralData";
-
-    public static String payment_code_download_link =Mainlink+"/MobiServices/GeneralData/GetPaymentCodes";
-
-    public static String Exception_codes_download_link =Mainlink+"/MobiServices/GeneralData/GetExceptionCodes/";
-
- // public static String Member_download_link =Mainlink+"/WeightCAPTURE/Members/Members/RebindGrid";
-  public static final String Member_download_link_ann ="/WeightCAPTURE/Members/Members/RebindGrid";
-  // public static String Member_upload_link =Mainlink+"/MobiServices/SaveData/SaveData";
-   public static final String Member_upload_link_ann ="/MobiServices/SaveData/SaveData";
-
-  //  public static final String Image_downloading_link = Mainlink+"/Employee/BiometricDetails/GetFingerPrints";
-    public static final String Image_uploading_link = Mainlink+"/MobiServices/SaveData/SaveImages";
+    //  public static final String Image_downloading_link = Mainlink+"/Employee/BiometricDetails/GetFingerPrints";
+    public static final String Image_uploading_link = Mainlink + "/MobiServices/SaveData/SaveImages";
     public static final String Image_uploading_link_ann = "/MobiServices/SaveData/SaveImages";
 
-    public static String user_request_url =Mainlink+"/MobiServices/GeneralData/GetAllUsers/";//https://ciw.cs4africa.com/cmu/MobiServices/GeneralData/GetAllUsers
-    public static String login_url =Mainlink+"/SystemAccounts/Authentication/Login/Submit";///Authentication/Login/Submit
+    public static String user_request_url = Mainlink + "/MobiServices/GeneralData/GetAllUsers/";//https://ciw.cs4africa.com/cmu/MobiServices/GeneralData/GetAllUsers
+    public static String login_url = Mainlink + "/SystemAccounts/Authentication/Login/Submit";///Authentication/Login/Submit
 //    public static String update_link= update_root_link+"apks/";
 
 //    public static String update_check_link=current_app_config(Realm.context).APP_CONTROLL_MAIN_LINK;
 
-     public static String device_code_authorisation_url=Mainlink+"/SystemAccounts/Authentication/Login/CheckCode";
+    public static String device_code_authorisation_url = Mainlink + "/SystemAccounts/Authentication/Login/CheckCode";
 
 
     public static String user_registration_link = Mainlink + "/Authentication/Login/AddIndividualUser";
 
-  public static final String Fingerprint_uploading_link_ann = "/MobiServices/SaveData/SaveFingerPrints";
+    public static final String Fingerprint_uploading_link_ann = "/MobiServices/SaveData/SaveFingerPrints";
 
-    public static final String Fingerprint_image_uploading_link = Mainlink+"/MobiServices/SaveData/SaveFingerImages";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
+    public static final String Fingerprint_image_uploading_link = Mainlink + "/MobiServices/SaveData/SaveFingerImages";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
     public static final String Fingerprint_image_uploading_link_ann = "/MobiServices/SaveData/SaveFingerImages";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
- public static final String Fingerprint_excuses_uploading_link = Mainlink+"/MobiServices/SaveData/SaveFingerSkipReason";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
- public static final String Fingerprint_excuses_uploading_link_ann = "/MobiServices/SaveData/SaveFingerSkipReason";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
-
-
-
-
+    public static final String Fingerprint_excuses_uploading_link = Mainlink + "/MobiServices/SaveData/SaveFingerSkipReason";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
+    public static final String Fingerprint_excuses_uploading_link_ann = "/MobiServices/SaveData/SaveFingerSkipReason";//https://ciw.cs4africa.com/ccburkina/MobiServices/SaveData/SaveFingerImages
 
 
     //////////////////////LIVE VARS ////////////////////////////////
     public static member working_member = null;
-    public static void set_working_employee(Activity act, member working_member)
-    {
 
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+    public static void set_working_employee(Activity act, member working_member) {
+
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
         Gson gson = new Gson();
         String json = gson.toJson(working_member);
 
-        saver.putString("working_employee",json);
+        saver.putString("working_employee", json);
         saver.commit();
 
 
     }
 
-    public static member working_employee(Activity act)
-    {
-        member emp=null;
+    public static member working_employee(Activity act) {
+        member emp = null;
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString("working_employee", "");
         emp = gson.fromJson(json, member.class);
         return emp;
-    } public static AlertDialog update_dialog = null;
+    }
+
+    public static AlertDialog update_dialog = null;
 
     //////////////////////////       ///////////////////////////////////
 
@@ -534,27 +412,25 @@ return APPP;
     public static int max_log_file_size_mb = 20;
 
     public static class image_indexes {
-      public static final int
-                id_photo =1,
+        public static final int
+                id_photo = 1,
 
-        id_photo_back =2,
+        id_photo_back = 2,
 
-        profile_photo=4,
-              forulaire=3,
-                signature=5,
-                 combined_pic=6,
-                croped_face=7;
-
+        profile_photo = 4,
+                forulaire = 3,
+                signature = 5,
+                combined_pic = 6,
+                croped_face = 7;
 
 
     }
-public static class remember_indexes {
+
+    public static class remember_indexes {
         public static int
                 credentials = 1,
                 username = 2,
                 password = 3;
-
-
 
 
     }
@@ -579,7 +455,7 @@ public static class remember_indexes {
 
     }
 
-   public static void set_current_app_name(Context act, String current_app_name) {
+    public static void set_current_app_name(Context act, String current_app_name) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
@@ -595,40 +471,42 @@ public static class remember_indexes {
 
 
     }
- public static String current_app_name(Context act) {
+
+    public static String current_app_name(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         return prefs.getString("current_app_name", "R.E.A.L.M");
 
 
     }
-  public static void set_current_app_config(Context act, SPARTA_APP app_config) {
+
+    public static void set_current_app_config(Context act, AppConfig app_config) {
 
 
-      SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-      Gson gson = new Gson();
-      String json = gson.toJson(app_config);
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(app_config);
 
-      saver.putString("current_app_config",json);
-      saver.commit();
+        saver.putString("current_app_config", json);
+        saver.commit();
 
     }
 
-    public static SPARTA_APP current_app_config(Context act) {
+    public static AppConfig current_app_config(Context act) {
 
-        SPARTA_APP app=null;
+        AppConfig app = null;
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = prefs.getString("current_app_config", "");
-        app = gson.fromJson(json, SPARTA_APP.class);
+        app = gson.fromJson(json, AppConfig.class);
         return app;
 
 
     }
 
 
- public static void set_current_device(Context act, int current_device) {
+    public static void set_current_device(Context act, int current_device) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
@@ -639,10 +517,11 @@ public static class remember_indexes {
 
     public static int current_device() {
 
-       return Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE).getInt("current_device", DEVICE.GENERAL.ordinal());
+        return Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE).getInt("current_device", DEVICE.GENERAL.ordinal());
 
 
     }
+
     public static int default_sync_interval_mins = 20;
 
     public static int sync_interval_mins(Context act) {
@@ -677,35 +556,38 @@ public static class remember_indexes {
         //return prefs.getBoolean("device_authorised",false);
 
     }
- public static void set_module_active(Context act,String module_name, boolean module_active) {
+
+    public static void set_module_active(Context act, String module_name, boolean module_active) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putBoolean(module_name+":::module_active", module_active);
+        saver.putBoolean(module_name + ":::module_active", module_active);
         saver.commit();
 
     }
-    public static boolean module_active(Context act,String module_name) {
+
+    public static boolean module_active(Context act, String module_name) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean(module_name+":::module_active", true);
+        return prefs.getBoolean(module_name + ":::module_active", true);
         //return prefs.getBoolean("device_authorised",false);
 
     }
-    public static void set_module_use_face(Context act,String module_name, boolean module_active) {
+
+    public static void set_module_use_face(Context act, String module_name, boolean module_active) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putBoolean(module_name+":::use_face", module_active);
+        saver.putBoolean(module_name + ":::use_face", module_active);
         saver.commit();
 
     }
 
 
-   public static boolean module_use_face(Context act,String module_name) {
+    public static boolean module_use_face(Context act, String module_name) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean(module_name+":::use_face", false);
+        return prefs.getBoolean(module_name + ":::use_face", false);
         //return prefs.getBoolean("device_authorised",false);
 
     }
@@ -736,10 +618,10 @@ public static class remember_indexes {
     public static boolean version_action_done(Context act, version_action va) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        String pr_str=prefs.getString("v_a_" + va.name(), "");
-        Log.e("VERSION CHECK :",""+pr_str);
-        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(current_version(act));
-        Log.e("VERSION CHECK :",""+pr_str+" status "+ok);
+        String pr_str = prefs.getString("v_a_" + va.name(), "");
+        Log.e("VERSION CHECK :", "" + pr_str);
+        boolean ok = prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(current_version(act));
+        Log.e("VERSION CHECK :", "" + pr_str + " status " + ok);
         return ok;
 
     }
@@ -777,29 +659,27 @@ public static class remember_indexes {
     }
 
 
-
- public static void set_shared_pref_boolean(Context act, shared_prefs_booleans var,boolean data) {
+    public static void set_shared_pref_boolean(Context act, shared_prefs_booleans var, boolean data) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putBoolean("b"+var.ordinal(), data);
+        saver.putBoolean("b" + var.ordinal(), data);
         saver.commit();
 
     }
 
     public static boolean shared_pref_boolean(Context act, shared_prefs_booleans var) {
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("b"+var.ordinal(), false);
+        return prefs.getBoolean("b" + var.ordinal(), false);
 
     }
 
-  public   enum shared_prefs_booleans{
-         should_sync
+    public enum shared_prefs_booleans {
+        should_sync
 
     }
 
-    public static String all_records(Context act)
-    {
+    public static String all_records(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
 
@@ -808,51 +688,48 @@ public static class remember_indexes {
 
         return json;
     }
-    public static void add_used_code(Context act,String url)
-    {
-        JSONArray ja=new JSONArray();
+
+    public static void add_used_code(Context act, String url) {
+        JSONArray ja = new JSONArray();
         try {
-            ja=new JSONArray(all_records(act));
-            JSONObject jo=new JSONObject();
-            jo.put("url",url);
+            ja = new JSONArray(all_records(act));
+            JSONObject jo = new JSONObject();
+            jo.put("url", url);
             ja.put(jo);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
 
-
-        saver.putString("all_records",ja.toString());
+        saver.putString("all_records", ja.toString());
         saver.commit();
 
 
     }
 
-    public static boolean is_used(Context act,String url)
-    {
-        JSONArray ja=new JSONArray();
+    public static boolean is_used(Context act, String url) {
+        JSONArray ja = new JSONArray();
         try {
-            ja=new JSONArray(all_records(act));
-            for (int i=0;i<ja.length();i++)
-            {
+            ja = new JSONArray(all_records(act));
+            for (int i = 0; i < ja.length(); i++) {
                 try {
                     Log.e("Check ", "" + ja.getJSONObject(i).getString("url") + " Against " + url);
                     if (ja.getJSONObject(i).getString("url").equalsIgnoreCase(url)) {
                         return true;
                     }
-                }catch (Exception ex){}
+                } catch (Exception ex) {
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-
         return false;
     }
 
- public static void set_update_check_time(Context act, String update_check_time) {
+    public static void set_update_check_time(Context act, String update_check_time) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
@@ -905,7 +782,8 @@ public static class remember_indexes {
         saver.commit();
 
     }
- public static String previously_selected_reason_sid(Context act) {
+
+    public static String previously_selected_reason_sid(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         return prefs.getString("previously_selected_reason_sid", null);
@@ -1128,15 +1006,16 @@ public static class remember_indexes {
         saver.commit();
 
     }
-    public static void set_user_id(Context act,String user_id)
-    {
 
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+    public static void set_user_id(Context act, String user_id) {
 
-        saver.putString("user_id",user_id);
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+        saver.putString("user_id", user_id);
         saver.commit();
 
     }
+
     public static String user_id(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
@@ -1172,7 +1051,7 @@ public static class remember_indexes {
         saver.commit();
     }
 
- public static int receipt_period(Context act) {
+    public static int receipt_period(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         return prefs.getInt("recei_period", -1);
@@ -1187,13 +1066,12 @@ public static class remember_indexes {
     }
 
 
+    public static String gate_service_characteristic = "0000ffe1-0000-1000-8000-00805f9b34fb";
 
-
-    public static String gate_service_characteristic="0000ffe1-0000-1000-8000-00805f9b34fb";
     public static String bt_device_address(Context act, bt_device_connector.bt_device_type dev_type) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString(dev_type.name()+"sbt_address", null);
+        return prefs.getString(dev_type.name() + "sbt_address", null);
 
     }
 
@@ -1201,13 +1079,14 @@ public static class remember_indexes {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString(dev_type.name()+"sbt_address", macaddress);
+        saver.putString(dev_type.name() + "sbt_address", macaddress);
 
         saver.commit();
 
     }
-    public static boolean default_remember_password=false;
-    public static boolean default_remember_username=false;
+
+    public static boolean default_remember_password = false;
+    public static boolean default_remember_username = false;
 
 
     public static int default_photo_camera_type(Context act) {
@@ -1216,7 +1095,8 @@ public static class remember_indexes {
         return prefs.getInt("default_photo_camera_type", 2);
 
     }
- public static int default_printer_type(Context act) {
+
+    public static int default_printer_type(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         return prefs.getInt("default_printer_type", 1);
@@ -1232,7 +1112,8 @@ public static class remember_indexes {
         saver.commit();
 
     }
-  public static void set_default_photo_camera_type(Context act, int photo_camera_type) {
+
+    public static void set_default_photo_camera_type(Context act, int photo_camera_type) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
@@ -1241,51 +1122,53 @@ public static class remember_indexes {
         saver.commit();
 
     }
- public static boolean remember(Context act, int remember_index) {
+
+    public static boolean remember(Context act, int remember_index) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean(remember_index+"remember", true);
+        return prefs.getBoolean(remember_index + "remember", true);
 
     }
 
-    public static void set_remember(Context act,int remember_index, boolean remember) {
+    public static void set_remember(Context act, int remember_index, boolean remember) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putBoolean(remember_index+"remember", remember);
+        saver.putBoolean(remember_index + "remember", remember);
 
         saver.commit();
 
     }
 
- public static int photo_camera_type(Context act, int image_index) {
+    public static int photo_camera_type(Context act, int image_index) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getInt(image_index+"photo_camera_type", default_photo_camera_type(act));
+        return prefs.getInt(image_index + "photo_camera_type", default_photo_camera_type(act));
 
     }
 
-    public static void set_photo_camera_type(Context act,int image_index, int camera_type) {
+    public static void set_photo_camera_type(Context act, int image_index, int camera_type) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putInt(image_index+"photo_camera_type", camera_type);
+        saver.putInt(image_index + "photo_camera_type", camera_type);
 
         saver.commit();
 
     }
-public static int printer_type(Context act, int print_job_index) {
+
+    public static int printer_type(Context act, int print_job_index) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getInt(print_job_index+"printer_type", default_printer_type(act));
+        return prefs.getInt(print_job_index + "printer_type", default_printer_type(act));
 
     }
 
-    public static void set_printer_type(Context act,int print_job_index, int printer_type) {
+    public static void set_printer_type(Context act, int print_job_index, int printer_type) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putInt(print_job_index+"printer_type", printer_type);
+        saver.putInt(print_job_index + "printer_type", printer_type);
 
         saver.commit();
 
@@ -1386,55 +1269,58 @@ public static int printer_type(Context act, int print_job_index) {
         saver.commit();
 
     }
-    public static String device_id(Context act)
-    {
+
+    public static String device_id(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("device_id",null);
+        return prefs.getString("device_id", null);
 
     }
+
     public static void set_device_id(Context act, String device_id) {
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("device_id",device_id);
+        saver.putString("device_id", device_id);
         saver.commit();
     }
-  public static String device_name(Context act)
-    {
+
+    public static String device_name(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("device_name",null);
+        return prefs.getString("device_name", null);
 
     }
+
     public static void set_device_name(Context act, String device_name) {
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("device_name",device_name);
+        saver.putString("device_name", device_name);
         saver.commit();
     }
- public static String consula(Context act)
-    {
+
+    public static String consula(Context act) {
 
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("consula",null);
+        return prefs.getString("consula", null);
 
     }
+
     public static void set_consula(Context act, String consula) {
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("consula",consula);
+        saver.putString("consula", consula);
         saver.commit();
     }
-    public static int custom_data_index(Context act)
-    {
-        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+    public static int custom_data_index(Context act) {
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
 
-        saver.putInt("custom_data_index",prefs.getInt("custom_data_index",0)+1);
+        saver.putInt("custom_data_index", prefs.getInt("custom_data_index", 0) + 1);
         saver.commit();
         prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
 
-        return prefs.getInt("custom_data_index",0);
+        return prefs.getInt("custom_data_index", 0);
 
     }
 
@@ -1465,48 +1351,52 @@ public static int printer_type(Context act, int print_job_index) {
         return calendar;
     }
 
-    public static String gett_time()
-    {
+    public static String gett_time() {
         // SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        try{
-            String datee=sdf_user_friendly_time.format(Calendar.getInstance().getTime());
+        try {
+            String datee = sdf_user_friendly_time.format(Calendar.getInstance().getTime());
             //   Log.e("My date =>",""+datee);
             return datee;
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
         return null;
     }
-    public static String get_time_user()
-    {
+
+    public static String get_time_user() {
         // SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy  HH:mm");
-        try{
-            String datee=formatter.format(Calendar.getInstance().getTime());
+        try {
+            String datee = formatter.format(Calendar.getInstance().getTime());
             //   Log.e("My date =>",""+datee);
             return datee;
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
         return null;
     }
-    public static String gett_date()
-    {
+
+    public static String gett_date() {
         SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyyHHmmss");
-        try{
-            String datee=formatter.format(Calendar.getInstance().getTime());
+        try {
+            String datee = formatter.format(Calendar.getInstance().getTime());
             //   Log.e("My date =>",""+datee);
             return datee;
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
         return null;
     }
-   public static String getCurrentDateOfMonth()
-    {
+
+    public static String getCurrentDateOfMonth() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        try{
-            String datee=formatter.format(Calendar.getInstance().getTime());
+        try {
+            String datee = formatter.format(Calendar.getInstance().getTime());
             //   Log.e("My date =>",""+datee);
             return datee;
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
         return null;
     }
+
     public static SimpleDateFormat sdf_user_friendly_date = new SimpleDateFormat("dd-MM-yyyy");//=null;
     public static SimpleDateFormat sdf_db_date = new SimpleDateFormat("yyyy-MM-dd");//=null;
     public static SimpleDateFormat sdf_db_date_unseparated = new SimpleDateFormat("yyyyMMdd");//=null;
@@ -1514,66 +1404,65 @@ public static int printer_type(Context act, int print_job_index) {
     public static SimpleDateFormat sdf_user_friendly_time = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//=null;
     public static SimpleDateFormat sdf_db_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//=null;
 
-    public static String get_user_date_from_db_date(String db_date)
-    {
+    public static String get_user_date_from_db_date(String db_date) {
 
 
-        try{
+        try {
             Date time1 = sdf_db_date.parse(db_date);
 
             return sdf_user_friendly_date.format(time1);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return db_date;
         }
 
     }
-    public static String get_db_date_from_user_date(String db_date)
-    {
+
+    public static String get_db_date_from_user_date(String db_date) {
 
 
-        try{
+        try {
             Date time1 = sdf_user_friendly_date.parse(db_date);
 
             return sdf_db_date.format(time1);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return db_date;
         }
 
     }
-    public static String get_db_time_from_user_date(String db_date)
-    {
+
+    public static String get_db_time_from_user_date(String db_date) {
 
 
-        try{
+        try {
             Date time1 = sdf_user_friendly_date.parse(db_date);
 
             return sdf_db_time.format(time1);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return db_date;
         }
 
     }
-    public static String get_db_time_from_db_date(String db_date)
-    {
+
+    public static String get_db_time_from_db_date(String db_date) {
 
 
-        try{
+        try {
             Date time1 = sdf_db_date.parse(db_date);
 
             return sdf_db_time.format(time1);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return db_date;
         }
 
     }
-    public static String get_user_time_from_db_time(String db_time)
-    {
 
-        try{
+    public static String get_user_time_from_db_time(String db_time) {
+
+        try {
             Date time1 = sdf_db_time.parse(db_time);
 
             return sdf_user_friendly_time.format(time1);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return db_time;
         }
 
@@ -1613,7 +1502,8 @@ public static int printer_type(Context act, int print_job_index) {
 
 
     }
- public static boolean is_server_online(String server_address) {
+
+    public static boolean is_server_online(String server_address) {
         // try {
         InetAddress ipAddr = null; //You can replace it with your name
         try {
@@ -1645,41 +1535,15 @@ public static int printer_type(Context act, int print_job_index) {
             "    OEBqAUo1OECSAUxDOEBGAT4yN4AYAUpeN0BzAWE5NkAuAQFYNoCeASfSNQAOAPdlMgDsAMdkLwAM\n" +
             "    AQPTLwAEAQ1ALgAZAVUFLgDsAQnlLgDqANTlLADrAP1rLADoAOZdKwDqARPkKwDyAK9gKgDxAKFf\n" +
             "    KQDxALVeKAAlAUplKAAA";
- public static String fp_my_r_thumb_bt_device = "AwFcI40A//7AAoACgAKAAoACgAKAAoACgAKAAoACgAKAAoACgAKAAgAAAAAAAAAAAAAAAAAAAABo\n" +
-         "CeP+EBOcNjqUGJ5vFSWeTRaTvhEa2tZhJSj+HiZX3kGolT5YqxO+SrRUXhQ5lp45OxT+Z79pHlm+\n" +
-         "Ut8tnBi8JaOXvD2vVRwsOGt8RblqHEg8k5wdm8KdIKAYWiyt1fpBsin6LTSVejoPqxsnHlnYLLDr\n" +
-         "+GSx09JNCGWTUwtQ9kMMFrZOi1ERRhCn0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n" +
-         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMBXByOAP/+8B7ADsAGgAKAAoACgAKAAoACgAKA\n" +
-         "AoACgAKAAoAGwA4AAAAAAAAAAAAAAAAAAAAASRBYPluS094vHJg+GiCB/i2i195RpNV+aSdTvlqw\n" +
-         "1H47NKv+STeVPjFBVd5Fi+x/aLvTXzQgF9xOK1T8QbDV3FS2ahxXuZP8UgiWOjyqFdpRLqo6UQwW\n" +
-         "OFqMFTI6mFhyPK0r+FWMqnMVHAJ2H5gbNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n" +
-         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\n";
 
+    public static String fp_my_r_thumb_bt_device = "AwFcI40A//7AAoACgAKAAoACgAKAAoACgAKAAoACgAKAAoACgAKAAgAAAAAAAAAAAAAAAAAAAABo\n" +
+            "CeP+EBOcNjqUGJ5vFSWeTRaTvhEa2tZhJSj+HiZX3kGolT5YqxO+SrRUXhQ5lp45OxT+Z79pHlm+\n" +
+            "Ut8tnBi8JaOXvD2vVRwsOGt8RblqHEg8k5wdm8KdIKAYWiyt1fpBsin6LTSVejoPqxsnHlnYLLDr\n" +
+            "+GSx09JNCGWTUwtQ9kMMFrZOi1ERRhCn0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n" +
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMBXByOAP/+8B7ADsAGgAKAAoACgAKAAoACgAKA\n" +
+            "AoACgAKAAoAGwA4AAAAAAAAAAAAAAAAAAAAASRBYPluS094vHJg+GiCB/i2i195RpNV+aSdTvlqw\n" +
+            "1H47NKv+STeVPjFBVd5Fi+x/aLvTXzQgF9xOK1T8QbDV3FS2ahxXuZP8UgiWOjyqFdpRLqo6UQwW\n" +
+            "OFqMFTI6mFhyPK0r+FWMqnMVHAJ2H5gbNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n" +
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\n";
 
-//    public static String agence_name(Activity act)
-//    {
-//
-//        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-//        return prefs.getString("agence_name",null);
-//
-//    }
-//    public static void set_agence_name(Activity act, String agence_name) {
-//        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-//
-//        saver.putString("agence_name",agence_name);
-//        saver.commit();
-//    }
-//    public static String agence_id(Activity act)
-//    {
-//
-//        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-//        return prefs.getString("agence_id","0");
-//
-//    }
-//    public static void set_agence_id(Activity act, String agence_id) {
-//        SharedPreferences.Editor saver =act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-//
-//        saver.putString("agence_id",agence_id);
-//        saver.commit();
-//    }
 }

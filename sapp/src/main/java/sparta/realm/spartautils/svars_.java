@@ -258,14 +258,14 @@ public class svars_ {
 static SPARTA_APP DEMO()
 {
    SPARTA_APP APPP = new SPARTA_APP("http://ta.cs4africa.com:9000", "","SNEDAI"," realm");
-    //  SPARTA_APP APPP = new SPARTA_APP("http://ta.cs4africa.com:1000", "", "DEMO ACCOUNT", "Demo");
+    //  AppConfig APPP = new AppConfig("http://ta.cs4africa.com:1000", "", "DEMO ACCOUNT", "Demo");
 APPP.WORKING_PROFILE_MODE= SPARTA_APP.PROFILE_MODE.GENERAL;
 return APPP;
 }
 
 static SPARTA_APP BUKINA()
 {
- //   SPARTA_APP APPP = new SPARTA_APP("https://ciw.cs4africa.com/ccburkina", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","SNEDAI","realm");
+ //   AppConfig APPP = new AppConfig("https://ciw.cs4africa.com/ccburkina", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","SNEDAI","realm");
     SPARTA_APP APPP = new SPARTA_APP("https://id1.cs4africa.com/ccburkina", "http://ta.cs4africa.com:2222/api/AppStore/LoadApp","SNEDAI","realm");
 APPP.WORKING_PROFILE_MODE= SPARTA_APP.PROFILE_MODE.GENERAL;
 return APPP;
@@ -275,7 +275,7 @@ return APPP;
 
 
 
-//    public static SPARTA_APP current_app_config(Realm.context) = BUKINA();
+//    public static AppConfig current_app_config(Realm.context) = BUKINA();
 
 
     public static int members_request_limit = 1000;

@@ -1,5 +1,6 @@
 package sparta.realm.spartautils.bluetooth;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -23,6 +24,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresPermission;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -53,7 +56,7 @@ public class bt_device_connector {
     Set<BluetoothDevice> pairedDevices;
     ArrayList<BluetoothDevice> paired_devices=new ArrayList<>();
   ArrayList<BluetoothDevice> discovered_devices=new ArrayList<>();
-    Activity act;
+    Context act;
     View main;
     AlertDialog ald;
     GridView discovered_list;
@@ -68,14 +71,16 @@ fp_device,
     weighbridge_model,
     lb_access_point
 }
-    public bt_device_connector(final Activity act, bt_device_type device_type)
+
+    @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
+    public bt_device_connector(final Context act, bt_device_type device_type)
 {
     this.act=act;
     this.device_type=device_type;
     mBtAdapter = BluetoothAdapter.getDefaultAdapter();
     if (!mBtAdapter.isEnabled()) {
         Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        act.startActivityForResult(enableIntent, 2);
+        act.startActivity(enableIntent);
 
     }
     if(device_type== bt_device_type.lb_access_point){
@@ -149,7 +154,7 @@ fp_device,
             Thread thread_s=new Thread(new Runnable(){
 
                 public void run(){
-                    act.runOnUiThread(new Runnable() {
+                    connection_status.post(new Runnable() {
                         @Override
                         public void run() {
                             bt_search_anime = ObjectAnimator.ofFloat(bt_search,"alpha",0,1f,0);
@@ -218,8 +223,7 @@ fp_device,
                     if (pairedDevices.size() > 0) {
                         for (final BluetoothDevice device : pairedDevices) {
                             paired_devices.add(device);
-
-                            act.runOnUiThread(new Runnable(){
+                            current_device.post(new Runnable(){
 
                                 @Override
                                 public void run() {
@@ -301,7 +305,7 @@ fp_device,
 
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    act.runOnUiThread(new Runnable() {
+                    current_device.post(new Runnable() {
                         @Override
                         public void run() {
 

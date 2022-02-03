@@ -89,6 +89,8 @@ import sparta.realm.spartautils.app_control.models.sparta_app_version;
 import sparta.realm.spartautils.s_bitmap_handler;
 import sparta.realm.spartautils.s_cryptor;
 import sparta.realm.spartautils.svars;
+import sparta.realm.utils.AppConfig;
+
 import com.realm.annotations.DynamicProperty;
 import com.realm.annotations.RealmDataClass;
 import com.realm.annotations.sync_service_description;
@@ -759,7 +761,7 @@ public class DatabaseManager {
 
 
         sdb_model dbm=new sdb_model();
-        svars.SPARTA_APP appconfig=svars.current_app_config(act);
+        AppConfig appconfig=svars.current_app_config(act);
         dbm.db_name=appconfig.DB_NAME;
         dbm.db_path=appconfig.file_path_db();
         dbm.db_password=appconfig.DB_PASS;
