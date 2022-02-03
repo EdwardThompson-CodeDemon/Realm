@@ -242,7 +242,7 @@ try {
 //    FileInputStream fileInputStream = new FileInputStream(descriptor);
 
 //    temp_ar=new JSONArray(fileInputStream);
-    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,data));
+//    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,temp_ar.toString()));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
     Log.e(ssd.service_name + " :: RX", "Inserting " + den);
     if (den > 0) {
