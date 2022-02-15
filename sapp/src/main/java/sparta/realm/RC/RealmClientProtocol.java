@@ -227,21 +227,10 @@ try {
    }
 
         double den = (double) temp_ar.length();
-    // sdb.register_object_auto_ann(true,null,ssd);
-    if (!ssd.use_download_filter) {
+     if (!ssd.use_download_filter) {
         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sync_status ='" + sync_status.syned.ordinal() + "'");
     }
-//    MemoryFile memoryFile = new MemoryFile("rx"+System.currentTimeMillis(), 102400000);
-//    memoryFile.getOutputStream().write(data.getBytes());
-//    Method method = MemoryFile.class.getDeclaredMethod("getFileDescriptor");
-//    FileDescriptor des = (FileDescriptor) method.invoke(memoryFile);
-//    ParcelFileDescriptor p= ParcelFileDescriptor.dup(des);
-//
-//    ParcelFileDescriptor ssy=rc.realmClientInterfaceTX.OnDownloadedData(service_id,p);
-//    FileDescriptor descriptor = ssy.getFileDescriptor();
-//    FileInputStream fileInputStream = new FileInputStream(descriptor);
 
-//    temp_ar=new JSONArray(fileInputStream);
 //    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,temp_ar.toString()));
     temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
     Log.e(ssd.service_name + " :: RX", "Inserting " + den);
@@ -388,7 +377,7 @@ try {
                 if(arr.length()>0) {
                     Log.e(logTag, "Updating "+arr.length());
                     StringBuilder sbqry = new StringBuilder();
-                    sbqry.append("WITH RealmClientResult(transaction_no, sync_var, sync_status) AS (VALUES");
+                    sbqry.append("WITH RealmClientResult(transaction_no, sid, sync_status) AS (VALUES");
                     for (int i = 0; i < arr.length(); i++) {
                         sbqry.append((i != 0) ? "," : "");
                         JSONObject res = arr.getJSONObject(i);
@@ -401,7 +390,7 @@ try {
                         sbqry.append(")");
                     }
                     sbqry.append(") UPDATE " + ssd.table_name + " SET " +
-//                            "  sync_var = (SELECT sync_var FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
+                            "  sid = (SELECT sid FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
                             "  sync_status = (SELECT sync_status FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)\n" +
                             "WHERE transaction_no IN (SELECT transaction_no FROM RealmClientResult)");
                     DatabaseManager.database.execSQL(sbqry.toString());
