@@ -378,7 +378,7 @@ try {
                     Log.e(logTag, "Updating "+arr.length());
                     StringBuilder sbqry = new StringBuilder();
                     sbqry.append("WITH RealmClientResult(transaction_no, sid, sync_status) AS (VALUES");
-                    String[] transactions=new String[arr.length()];
+                    String[] sids=new String[arr.length()];
                     for (int i = 0; i < arr.length(); i++) {
                         sbqry.append((i != 0) ? "," : "");
                         JSONObject res = arr.getJSONObject(i);
@@ -389,13 +389,14 @@ try {
                         sbqry.append("',");
                         sbqry.append(sync_status.syned.ordinal());
                         sbqry.append(")");
-                        transactions[i]=res.getString("transaction_no");
+                        sids[i]=res.getString("id");
                     }
                     sbqry.append(") UPDATE " + ssd.table_name + " SET " +
                             "  sid = (SELECT sid FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
                             "  sync_status = (SELECT sync_status FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)\n" +
                             "WHERE transaction_no IN (SELECT transaction_no FROM RealmClientResult)");
 //                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status='"+sync_status.syned.ordinal()+"' AND transaction_no IN ("+DatabaseManager.conccat_sql_string(transactions)+")");
+                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid IN ("+DatabaseManager.conccat_sql_string(sids)+")");
                     DatabaseManager.database.execSQL(sbqry.toString());
                     Log.e(logTag, "Updated OK "+arr.length());
                 }
