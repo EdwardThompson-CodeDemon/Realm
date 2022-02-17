@@ -395,7 +395,7 @@ try {
                             "  sid = (SELECT sid FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)," +
                             "  sync_status = (SELECT sync_status FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)\n" +
                             "WHERE transaction_no IN (SELECT transaction_no FROM RealmClientResult)");
-                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status='"+sync_status.syned+"' AND transaction_no IN ("+DatabaseManager.conccat_sql_string(transactions)+")");
+                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status='"+sync_status.syned.ordinal()+"' AND transaction_no IN ("+DatabaseManager.conccat_sql_string(transactions)+")");
                     DatabaseManager.database.execSQL(sbqry.toString());
                     Log.e(logTag, "Updated OK "+arr.length());
                 }
