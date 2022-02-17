@@ -13,7 +13,7 @@ public class Query {
             return this;
         }
    public Query setOrderFilters(boolean order_asc,String... order_columns){
-            this.order_filters=order_filters;
+            this.order_filters=order_columns;
        this.order_asc=order_asc;
        return this;
         }
