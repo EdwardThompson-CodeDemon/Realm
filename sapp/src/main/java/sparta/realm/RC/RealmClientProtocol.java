@@ -417,6 +417,7 @@ try {
                     int update_result=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
                     Log.e(logTag, "Updated :" + update_result);
                     if(update_result<1){
+                        should_download_after=true;
                         DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid ='"+res.getString("id")+"'");
                         int update_result2=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
                         Log.e(logTag, "Updated :" + update_result);
