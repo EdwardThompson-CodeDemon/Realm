@@ -409,29 +409,33 @@ try {
             try {
                 JSONArray arr = new JSONArray(data);
                 for (int i = 0; i < arr.length(); i++) {
+                    JSONObject res = arr.getJSONObject(i);
                     try {
-                        JSONObject res = arr.getJSONObject(i);
                     ContentValues cv = new ContentValues();
                     cv.put("sid", res.getString("id"));
                     cv.put("sync_status", ""+sync_status.syned.ordinal());
                     int update_result=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
                     Log.e(logTag, "Updated :" + update_result);
-                    if(update_result<1){
-                        should_download_after=true;
-                        DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid ='"+res.getString("id")+"'");
-                        int update_result2=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
-                        Log.e(logTag, "Updated :" + update_result);
-                        if(update_result2<1){
-                            Log.e(logTag, "Error updating single :"+res.getString("id"));
-
-                        }
-
-                        }
-
-                }catch (Exception ex2){
+                    }catch (Exception ex2){
                         Log.e(logTag, "Error updating single :"+ex2.getMessage());
 
-                }
+                            should_download_after=true;
+                            DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid ='"+res.getString("id")+"'");
+                        ContentValues cv = new ContentValues();
+                        cv.put("sid", res.getString("id"));
+                        cv.put("sync_status", ""+sync_status.syned.ordinal());
+                        int update_result=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
+                            Log.e(logTag, "Updated :" + update_result);
+                            if(update_result<1){
+                                Log.e(logTag, "Nothing updating single :"+res.getString("id"));
+
+                            }
+
+
+                    }
+
+
+
                 }
             }catch (Exception ex2){
                 Log.e(logTag, "Error updating single :"+ex2.getMessage());
