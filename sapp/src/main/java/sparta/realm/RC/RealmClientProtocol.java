@@ -369,6 +369,7 @@ try {
 
        io_operation_complete_counter++;
        sync_service_description ssd= realm.getHashedSyncDescriptions().get(service_id);
+       boolean should_download_after=false;
         if(ssd==null) {
 
         }else {
@@ -396,7 +397,7 @@ try {
                             "  sync_status = (SELECT sync_status FROM RealmClientResult WHERE " + ssd.table_name + ".transaction_no = RealmClientResult.transaction_no)\n" +
                             "WHERE transaction_no IN (SELECT transaction_no FROM RealmClientResult)");
 //                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sync_status='"+sync_status.syned.ordinal()+"' AND transaction_no IN ("+DatabaseManager.conccat_sql_string(transactions)+")");
-                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid IN ("+DatabaseManager.conccat_sql_string(sids)+")");
+//                    DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid IN ("+DatabaseManager.conccat_sql_string(sids)+")");
                     DatabaseManager.database.execSQL(sbqry.toString());
                     Log.e(logTag, "Updated OK "+arr.length());
                 }
@@ -415,6 +416,16 @@ try {
                     cv.put("sync_status", ""+sync_status.syned.ordinal());
                     int update_result=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
                     Log.e(logTag, "Updated :" + update_result);
+                    if(update_result<1){
+                        DatabaseManager.database.execSQL("DELETE FROM "+ssd.table_name+" WHERE sid ='"+res.getString("id")+"'");
+                        int update_result2=DatabaseManager.database.update(ssd.table_name, cv, "transaction_no='" + res.getString("transaction_no") + "'", null);
+                        Log.e(logTag, "Updated :" + update_result);
+                        if(update_result2<1){
+                            Log.e(logTag, "Error updating single :"+res.getString("id"));
+
+                        }
+
+                        }
 
                 }catch (Exception ex2){
                         Log.e(logTag, "Error updating single :"+ex2.getMessage());
@@ -433,6 +444,9 @@ try {
             }
 
             upload(ssd);
+            if(should_download_after){
+                download(null,ssd);
+            }
 
         }
 
