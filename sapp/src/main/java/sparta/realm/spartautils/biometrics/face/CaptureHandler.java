@@ -246,7 +246,7 @@ public capturing_interface cpi=new capturing_interface() {
 		FSDK.FSDK_IMAGEMODE imagemode = new FSDK.FSDK_IMAGEMODE();
 		imagemode.mode = FSDK.FSDK_IMAGEMODE.FSDK_IMAGE_COLOR_24BIT;
 		FSDK.LoadImageFromBuffer(Image, mRGBData, mImageWidth, mImageHeight, mImageWidth*3, imagemode);
-	//	FSDK.MirrorImage(Image, false);
+		FSDK.MirrorImage(Image, false);
 		FSDK.HImage RotatedImage = new FSDK.HImage();
 	//	FSDK.HImage s_img = new FSDK.HImage();
 		FSDK.CreateEmptyImage(RotatedImage);
