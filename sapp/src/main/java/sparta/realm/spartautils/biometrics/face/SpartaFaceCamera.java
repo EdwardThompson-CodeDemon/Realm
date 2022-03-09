@@ -67,7 +67,7 @@ public class SpartaFaceCamera extends SpartaAppCompactActivity {
         mDraw.transaction_no = sid;
         mDraw.sDensity = sDensity;
         mDraw.captureMode = CaptureHandler.CaptureMode.Registration;
-
+mDraw.vm=new VerificationModel();
         mDraw.cpi = new CaptureHandler.capturing_interface() {
             @Override
             public void OnOkToCapture() {
