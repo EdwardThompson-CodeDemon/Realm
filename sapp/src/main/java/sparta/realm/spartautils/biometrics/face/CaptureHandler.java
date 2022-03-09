@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.luxand.FSDK;
+import com.realm.annotations.RealmModel;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -68,6 +69,7 @@ float sDensity=1.0f;
 		Verification
 	}
 	public CaptureMode captureMode= CaptureMode.Verification;
+	public VerificationModel vm;
 public capturing_interface cpi=new capturing_interface() {
 	@Override
 	public void OnOkToCapture() {
@@ -340,26 +342,27 @@ for(int z=0;z<Age_values.length;z++){
 				String names[] = new String[1];
 				FSDK.GetAllNames(mTracker, IDs[i], names, 1024);
 				if (names[0] != null && names[0].length() > 0) {
-					member discovered_member = Realm.databaseManager.load_employee(names[0]);
+//					member discovered_member = Realm.databaseManager.load_employee(names[0]);
+					VerificationMemberModel discovered_member =vm.loadMember(names[0]);
 					if(discovered_member ==null) {
 						FSDK.PurgeID(mTracker, IDs[i]);
 
 						cpi.OnOkToCapture();
 						cpi.OnOkToCapture(male?1:0,age);
-						canvas.drawText(IDs[0]+" xxxx", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
+						canvas.drawText(IDs[0]+" Record disabled", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
 						named=false;
 
 					}else {
 						if(vt== DataMatcher.verification_type.clock_in||vt== DataMatcher.verification_type.clock_out){
-							if(dm.can_clock(vt== DataMatcher.verification_type.clock_in, discovered_member.sid.value)){
-								main_matching_interface.on_match_found(discovered_member.sid.value,""+IDs[0],"00", vt.ordinal(),4);
+							if(vm.canClock(vt== DataMatcher.verification_type.clock_in, discovered_member.sid)){
+								main_matching_interface.on_match_found(discovered_member.sid,""+IDs[0],"00", vt.ordinal(),4);
 							}else {
 //								canvas.drawRect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2, mPaintGREENbox);
-								canvas.drawText(discovered_member.father_name+" "+(vt== DataMatcher.verification_type.clock_in?"Clocked in":"Clocked out"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintGREEN);
+								canvas.drawText(discovered_member.displayName+" "+(vt== DataMatcher.verification_type.clock_in?"Clocked in":"Clocked out"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintGREEN);
 
 							}
 						}else{
-							canvas.drawText(discovered_member.father_name+"", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
+							canvas.drawText(discovered_member.displayName+"", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
 
 						}
 
@@ -385,7 +388,8 @@ for(int z=0;z<Age_values.length;z++){
 					{
 						if(captureMode== CaptureMode.Verification){
 							if(!searching){
-								search_face(RotatedImage,active_false_id,canvas,(mFacePositions[i].x1+mFacePositions[i].x2)/2,mFacePositions[i].y2+shift, mPaintAccent);
+								searching=true;
+//								search_face(RotatedImage,active_false_id,canvas,(mFacePositions[i].x1+mFacePositions[i].x2)/2,mFacePositions[i].y2+shift, mPaintAccent);
 							}else {
 								canvas.drawText(IDs[0]+" :: searching ..", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintAccent);
 

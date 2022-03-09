@@ -498,6 +498,20 @@ try {
       } catch (RemoteException e) {
           e.printStackTrace();
       }
+
+      uploadAll();//Allways upload first
+      downloadAll();
+    }
+ public void Synchronize_(){
+      io_operations_counter=0;
+      io_operation_complete_counter=0;
+                         Log.e(logTag,"Synchronizing ...");
+
+      try {
+          realmClientInterfaceTX.on_info_updated("Syncing ");
+      } catch (RemoteException e) {
+          e.printStackTrace();
+      }
         for (Map.Entry<String, sync_service_description> e : Realm.realm.getHashedSyncDescriptions().entrySet()) {
            if( e.getValue().service_id!=null&&!e.getValue().service_id.equals("null"))
            {
