@@ -356,6 +356,7 @@ for(int z=0;z<Age_values.length;z++){
 						if(vt== DataMatcher.verification_type.clock_in||vt== DataMatcher.verification_type.clock_out){
 							if(vm.canClock(vt== DataMatcher.verification_type.clock_in, discovered_member.sid)){
 								main_matching_interface.on_match_found(discovered_member.sid,""+IDs[0],"00", vt.ordinal(),4);
+								canvas.drawText(discovered_member.displayName+"", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
 							}else {
 //								canvas.drawRect(mFacePositions[i].x1, mFacePositions[i].y1, mFacePositions[i].x2, mFacePositions[i].y2, mPaintGREENbox);
 								canvas.drawText(discovered_member.displayName+" "+(vt== DataMatcher.verification_type.clock_in?"Clocked in":"Clocked out"), (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintGREEN);
