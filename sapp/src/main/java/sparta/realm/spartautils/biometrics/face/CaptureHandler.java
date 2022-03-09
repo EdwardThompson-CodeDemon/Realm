@@ -69,7 +69,7 @@ float sDensity=1.0f;
 		Verification
 	}
 	public CaptureMode captureMode= CaptureMode.Verification;
-	public VerificationModel vm;
+	public VerificationModel vm=new VerificationModel();
 public capturing_interface cpi=new capturing_interface() {
 	@Override
 	public void OnOkToCapture() {
@@ -648,7 +648,7 @@ void save_face_to_tracker( long tracker_index, String transaction_no)
 	}
 	void draw_circle_success(Rect r,Canvas c){
 		Drawable d = getResources().getDrawable(R.drawable.bg_circle_detect_result_success, null);
-		d.setBounds(r.left-120, r.top-100,r. right+120, r.bottom+200);
+		d.setBounds(r.left-120, r.top+100,r. right+120, r.bottom+500);
 		d.draw(c);
 	}
 	void draw_horns(Rect r,Canvas c){
