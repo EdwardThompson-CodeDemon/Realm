@@ -364,7 +364,10 @@ for(int z=0;z<Age_values.length;z++){
 							}
 						}else{
 							canvas.drawText(discovered_member.displayName+"", (mFacePositions[i].x1+mFacePositions[i].x2)/2, mFacePositions[i].y2+shift, mPaintBlue);
+if (vt== DataMatcher.verification_type.verification){
+	main_matching_interface.on_match_found(discovered_member.sid,""+IDs[0],"00", vt.ordinal(),4);
 
+}
 						}
 
 						if(captureMode== CaptureMode.Registration&&transaction_no!=null) {

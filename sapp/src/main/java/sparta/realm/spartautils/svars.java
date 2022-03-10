@@ -1467,6 +1467,18 @@ public class svars {
         }
 
     }
+    public static String get_db_time_from_user_time(String db_date) {
+
+
+        try {
+            Date time1 = sdf_user_friendly_time.parse(db_date);
+
+            return sdf_db_time.format(time1);
+        } catch (Exception ex) {
+            return db_date;
+        }
+
+    }
 
     public static boolean gps_enabled(Context act) {
 
