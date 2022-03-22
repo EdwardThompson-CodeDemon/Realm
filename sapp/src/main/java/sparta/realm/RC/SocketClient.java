@@ -9,7 +9,7 @@ public class SocketClient {
     public String SERVER_ADDR = "192.168.0.105";
     public int SERVER_PORT = 8889;
 //    public int SERVER_READTIMEOUT = 5000;
-    public int SERVER_READTIMEOUT = 60000;
+    public int SERVER_READTIMEOUT = 10000;
     public String device_code, username,password;
 
    public RealmClientCallbackInterface realmClientInterfaceTX;
