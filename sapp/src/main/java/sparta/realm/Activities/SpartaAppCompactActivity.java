@@ -39,6 +39,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 
@@ -75,7 +76,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 public class SpartaAppCompactActivity extends AppCompatActivity {
 public Activity act;
-public sdbw sd;
+//public sdbw sd;
 public DatabaseManager dbm;
 public Drawable error_drawable;
 protected  Button next,previous,clear_all;
@@ -84,14 +85,15 @@ protected String select_item_index="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);act=this;
+        DatabaseManager.log_event(this, "AppNavigation:"+this.getClass().getName());
 
 
         try{
            dbm= Realm.databaseManager;
-           sd=new sdbw(Realm.context);
+//           sd=new sdbw(Realm.context);
         }catch (Exception ex){}
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         error_drawable= getResources().getDrawable(R.drawable.ic_error_24dp);
         error_drawable.setBounds(0, 0,40,40);
     }
@@ -140,9 +142,9 @@ protected String select_item_index="";
         }return false;
 
     }
-protected void set_text_error(EditText edt,String error)
+protected void set_text_error(EditText edt, String error)
 {
-    edt.setError(Html.fromHtml("<marquee direction='down' width='100%'height='100%'><font color='red' background-color='red'>"+error+"</font></marquee>"),error_drawable);
+    edt.setError(error);
     edt.setBackground(act.getResources().getDrawable( R.drawable.textback_error));
     edt.requestFocus();
 
@@ -166,7 +168,7 @@ protected boolean set_conditional_input_error(boolean valid, View edt, String er
     {
        try {
            if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
-               ((AppCompatEditText) edt).setError(Html.fromHtml("<marquee direction='down' width='100%'height='100%'><font color='red' background-color='red'>" + error + "</font></marquee>"), error_drawable);
+               ((AppCompatEditText) edt).setError(error);
 
            }
            edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));

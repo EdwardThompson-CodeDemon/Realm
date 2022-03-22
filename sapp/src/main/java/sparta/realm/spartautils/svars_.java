@@ -533,7 +533,7 @@ public static class remember_indexes {
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
         String pr_str=prefs.getString("v_a_" + va.name(), "");
         Log.e("VERSION CHECK :",""+pr_str);
-        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(svars.current_version(act));
+        boolean ok= prefs.getString("v_a_" + va.name(), "").equalsIgnoreCase(svars.current_version());
         Log.e("VERSION CHECK :",""+pr_str+" status "+ok);
         return ok;
 
@@ -543,7 +543,7 @@ public static class remember_indexes {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
-        saver.putString("v_a_" + va.name(), svars.current_version(act));
+        saver.putString("v_a_" + va.name(), svars.current_version());
         saver.commit();
 
     }

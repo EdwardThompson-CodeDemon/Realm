@@ -1154,11 +1154,11 @@ if(maindata[0]==null){
                             data=null;
                             //  ssi.on_main_percentage_changed(0);
 
-                            if (ssd.is_ok_position==null||(boolean)getJsonValue(ssd.is_ok_position,maindata[0] )) {
+                            if (ssd.is_ok_position==null||(boolean)sdb.getJsonValue(ssd.is_ok_position,maindata[0] )) {
 //  if (maindata[0].getBoolean(app_config.SYNC_USE_CAPS?"IsOkay":"isOkay")) {
 
 
-                                JSONArray temp_ar=(JSONArray)getJsonValue(ssd.download_array_position,maindata[0] );
+                                JSONArray temp_ar=(JSONArray)sdb.getJsonValue(ssd.download_array_position,maindata[0] );
 //                                Object json = new JSONTokener(maindata[0].opt(app_config.SYNC_USE_CAPS?"Result":"result").toString()).nextValue();
 //                                temp_ar = json instanceof JSONArray ? (JSONArray) json : ((JSONObject) json).getJSONArray(app_config.SYNC_USE_CAPS?"Result":"result");
                                 temp_ar=new JSONArray(temp_ar.toString().replace("'","''"));
@@ -2798,7 +2798,7 @@ if(maindata[0]==null){
                             JSONObject jj = maindata.getJSONArray("versions").getJSONObject(i);
 
                             if (jj.getString("status").equalsIgnoreCase("1")) {
-                                if (!svars.current_version(act).equalsIgnoreCase(jj.getString("version_name")) | BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))) {
+                                if (!svars.current_version().equalsIgnoreCase(jj.getString("version_name")) | BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))) {
 //                                            act.runOnUiThread(new Runnable() {
 //                                                @Override
 //                                                public void run() {

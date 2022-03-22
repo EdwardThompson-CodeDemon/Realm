@@ -725,7 +725,7 @@ public class backup_ {
             return;
         }
 
-        sparta_mail_probe smp = new sparta_mail_probe("Time and Attendance App data Backup", "Device =" + svars.device_code(act) + "\nUsername =" + svars.user_name(act) + "\nUser id=" + svars.user_id(act) + "\nM link=" + svars.current_app_config(act).ACCOUNT + "\nApp version " + svars.current_version(act));
+        sparta_mail_probe smp = new sparta_mail_probe("Time and Attendance App data Backup", "Device =" + svars.device_code(act) + "\nUsername =" + svars.user_name(act) + "\nUser id=" + svars.user_id(act) + "\nM link=" + svars.current_app_config(act).ACCOUNT + "\nApp version " + svars.current_version());
 
         try {
             File file = new File(file_path);

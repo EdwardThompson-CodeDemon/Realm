@@ -80,7 +80,7 @@ return 1;
             Log.e(log_tag, "Connecting ..." );
              socket = new Socket(serverAddr, SERVER_PORT);
             Log.e(log_tag, "Connected");
-//            socket.setSoTimeout(SERVER_READTIMEOUT);//should be for blocking socs
+            socket.setSoTimeout(SERVER_READTIMEOUT);//should be for blocking socs//but now i need to constantly reconnect
 //            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             in=socket.getInputStream();
             out_d = new DataOutputStream(socket.getOutputStream());

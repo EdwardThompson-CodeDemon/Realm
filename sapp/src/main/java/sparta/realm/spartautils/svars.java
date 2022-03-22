@@ -261,14 +261,11 @@ public class svars {
         GENERAL
     }
 
-    public static int randomcheck_interval = 1000 * 60 * 30;//5400000
-    public static int random_call_responce_time = 30;
 
-    public static int randomcheck_delay = 1800000;//1,800,000
 
 
     public static OPERATION_MODE APP_OPERATION_MODE = OPERATION_MODE.LIVE;
-    // public static DEVICE CURRENT_DEVICE = DEVICE.UAREU;
+
 
 
     public static String DB_NAME = "android_toolbox.spartadb_v2";
@@ -446,8 +443,8 @@ public class svars {
 
     }
 
-    public static void set_current_version(Context act, String current_version) {
-
+    public static void set_current_version( String current_version) {
+        Context act= Realm.context;
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
         saver.putString("current_version", current_version);
@@ -455,8 +452,9 @@ public class svars {
 
     }
 
-    public static void set_current_app_name(Context act, String current_app_name) {
+    public static void set_current_app_name(String current_app_name) {
 
+        Context act= Realm.context;
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
         saver.putString("current_app_name", current_app_name);
@@ -464,17 +462,19 @@ public class svars {
 
     }
 
-    public static String current_version(Context act) {
+    public static String current_version() {
+        Context context= Realm.context;
 
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(svars.sharedprefsname, context.MODE_PRIVATE);
         return prefs.getString("current_version", "R.E.A.L.M");
 
 
     }
 
-    public static String current_app_name(Context act) {
+    public static String current_app_name() {
+        Context context= Realm.context;
 
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(svars.sharedprefsname, context.MODE_PRIVATE);
         return prefs.getString("current_app_name", "R.E.A.L.M");
 
 

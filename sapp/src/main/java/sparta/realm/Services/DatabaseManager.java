@@ -35,7 +35,9 @@ import com.google.common.reflect.ClassPath;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1019,7 +1021,7 @@ I thot of using an interface ,dint work
         ArrayList<sparta_app_version> versions = new ArrayList<>();
 
 
-        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NULL AND version_name > '" + svars.current_version(act) + "' AND sid NOT IN (" + conccat_sql_string(downloading) + ")", null);
+        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NULL AND version_name > '" + svars.current_version() + "' AND sid NOT IN (" + conccat_sql_string(downloading) + ")", null);
 
         if (c.moveToFirst()) {
             do {
@@ -1054,7 +1056,7 @@ I thot of using an interface ,dint work
 
     public sparta_app_version load_latest_apk_to_install() {
 
-        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NOT NULL AND version_name > '" + svars.current_version(act) + "' ORDER BY sid DESC LIMIT 1", null);
+        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NOT NULL AND version_name > '" + svars.current_version() + "' ORDER BY sid DESC LIMIT 1", null);
 
         if (c.moveToFirst()) {
             do {
@@ -1397,6 +1399,8 @@ I thot of using an interface ,dint work
         return objs;
     }
 
+
+    ////////////////////////////////////////ANN///////////////////////////////////////////////////////////////////
     public <RM> int getRecordCount(Class<RM> realm_model, @Nullable String... params) {
         String table_name = realm.getPackageTable(realm_model.getName());
         return Integer.parseInt(get_record_count(table_name, params));
@@ -1484,6 +1488,36 @@ I thot of using an interface ,dint work
         return database.insert(table_name, null, (ContentValues) realm.getContentValuesFromObject(realm_model)) > 0;
 
     }
+
+    public  Object getJsonValue(String pos, JSONObject jo)
+    {
+        Object json=jo;
+        if(!pos.contains(":")){return null;}
+        if(!pos.contains(";")){pos+=";";}
+        for(String s:pos.split(";")){
+            if(s.length()>0) {
+                try {
+//            if(json instanceof JSONObject){
+                    if (s.split(":")[0].equalsIgnoreCase("JO")) {
+                        json = new JSONTokener(((JSONObject)json).opt(s.split(":")[1]).toString()).nextValue();
+
+                    } else if (s.split(":")[0].equalsIgnoreCase("JA")) {
+
+//                if (json instanceof JSONArray){
+
+                        json = ((JSONArray) json).get(Integer.parseInt(s.split(":")[1]));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return json;
+    }
+
+
 
     /*
      *

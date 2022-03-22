@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Thompsons on 9/18/2017.
@@ -82,6 +83,27 @@ public class sparta_loc_util {
                 .clickable(true)
                 .add(bounds.northeast,bounds.southwest);
         return polygon1;
+    }
+ public static LatLng getRandomPointInPolygon(ArrayList<LatLng> points) {
+        LatLngBounds.Builder b = new LatLngBounds.Builder();
+        for (LatLng p :points) {
+            b.include(p);
+        }
+        LatLngBounds bounds=b.build();
+        while(true)
+        {
+            Random r = new Random();
+            double randomLat = bounds.northeast.latitude + (bounds.southwest.latitude - bounds.northeast.latitude) * r.nextDouble();
+            double randomLon = bounds.southwest.longitude + (bounds.northeast.longitude - bounds.southwest.longitude) * r.nextDouble();
+            LatLng rpoint=new LatLng(randomLat,randomLon);
+            if(point_is_inside(rpoint,points))
+            {
+                return rpoint;
+            }
+
+        }
+
+
     }
 
     public static boolean point_is_inside(LatLng point, ArrayList<LatLng> points)

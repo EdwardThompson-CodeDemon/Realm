@@ -30,8 +30,8 @@ public class Realm {
     public static void Initialize(Context cont, RealmDataClass realm_, String version_code, String app_name, AppConfig app_config){
     context=cont;
     realm=realm_;
-        svars.set_current_version(cont,version_code);
-        svars.set_current_app_name(cont,app_name);
+        svars.set_current_version(version_code);
+        svars.set_current_app_name(app_name);
        svars.set_current_app_config(cont,app_config);
         Thread.setDefaultUncaughtExceptionHandler(new SpartaApplicationErrorHandler(Realm.context));
         String[] supportedABIS = Build.SUPPORTED_ABIS; // Return an ordered list of ABIs supported by this device.

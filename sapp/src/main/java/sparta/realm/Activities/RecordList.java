@@ -21,7 +21,7 @@ import java.util.List;
 import sparta.realm.R;
 import sparta.realm.spartaadapters.employees_adapter;
 import sparta.realm.spartamodels.member;
-
+import sparta.realm.Services.sdbw;
 
 
 
@@ -29,6 +29,7 @@ public class RecordList extends SpartaAppCompactActivity {
 
     ArrayList<member> members=new ArrayList<>();
     GridView records_grid;
+    sdbw sd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

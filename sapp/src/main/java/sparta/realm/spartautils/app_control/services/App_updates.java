@@ -483,7 +483,7 @@ boolean checking_for_updates=false;
 public static void show_dialog()
 {
 if(w_sav==null){
-    version_name.setText(svars.current_version(act));
+    version_name.setText(svars.current_version());
     change_log.setText("latest version");
 
 }else {
