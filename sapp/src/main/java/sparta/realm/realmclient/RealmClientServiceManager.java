@@ -178,7 +178,7 @@ public void downloadAll(){
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> resolveInfoList = pm.queryIntentServices(implicitIntent, 0);
 for(ResolveInfo r:resolveInfoList){
-    if(r.serviceInfo.packageName.equalsIgnoreCase(svars.current_app_name(context))){
+    if(r.serviceInfo.packageName.equalsIgnoreCase(svars.current_app_name())){
         ResolveInfo serviceInfo = r;
         ComponentName component = new ComponentName(serviceInfo.serviceInfo.packageName, serviceInfo.serviceInfo.name);
         Intent explicitIntent = new Intent(implicitIntent);

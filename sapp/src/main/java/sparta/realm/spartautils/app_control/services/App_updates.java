@@ -326,7 +326,7 @@ boolean checking_for_updates=false;
     void check_for_app_versions() {
         checking_for_updates=true;
         final JSONObject postData=new JSONObject();
-       String[] app_package_name =new String[]{svars.current_app_name(act)};
+       String[] app_package_name =new String[]{svars.current_app_name()};
         try{
             postData.put("RequestTime", Calendar.getInstance().getTime().toString());
             postData.put("RequestData", new JSONArray(app_package_name));
