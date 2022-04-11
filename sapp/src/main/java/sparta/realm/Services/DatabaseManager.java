@@ -2541,45 +2541,51 @@ I thot of using an interface ,dint work
 
 
     public static String save_doc(String base64_bytes) {
-        Bitmap bmp = s_bitmap_handler.getImage(Base64.decode(base64_bytes, 0));
-        if (1 == 1) {
-            return SpartaAppCompactActivity.save_app_image(bmp);
-        }
-        byte[] file_bytes = s_bitmap_handler.getBytes_JPG(bmp);
-
-        String img_name = "TA_DAT" + System.currentTimeMillis() + "JPG_IDC.JPG";
-        //  String path = Environment.getExternalStorageDirectory().toString();
-        OutputStream fOutputStream = null;
-        //  File file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/");
-        File file = new File(svars.current_app_config(act).file_path_employee_data);
-        if (!file.exists()) {
-            Log.e("Creating data dir=>", "" + String.valueOf(file.mkdirs()));
-        }
-        //  file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/", img_name);
-        file = new File(svars.current_app_config(act).file_path_employee_data, img_name);
-        Log.e("Creating file =>", "" + String.valueOf(file.getAbsolutePath()));
-
         try {
-            fOutputStream = new FileOutputStream(file);
-            fOutputStream.write(file_bytes);
+            Bitmap bmp = s_bitmap_handler.getImage(Base64.decode(base64_bytes, 0));
 
-            //fpb.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
+                return SpartaAppCompactActivity.save_app_image(bmp);
+            
+        }catch (Exception ex){
+            String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
 
-            fOutputStream.flush();
-            fOutputStream.close();
+            File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
+            if (!file.exists()) {
+                Log.e(logTag,"Creating data dir: "+ (file.mkdirs()?"Successfully created":"Failed to create !"));
+            }
+            file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
+            byte[] file_bytes = Base64.decode(base64_bytes, 0);
+            OutputStream fOutputStream = null;
 
-            //  MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
-            return error_return;
-        } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Creating file =>", "" + String.valueOf(file.getAbsolutePath()));
+            try {
+                fOutputStream = new FileOutputStream(file);
+                fOutputStream.write(file_bytes);
 
-            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
-            return error_return;
+                //fpb.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
+
+                fOutputStream.flush();
+                fOutputStream.close();
+
+                //  MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
+                return error_return;
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
+                return error_return;
+            }
+
         }
-        return img_name;
+
+
+
+
+
+        return base64_bytes;
     }
 
     public static String get_saved_doc_base64(String data_name) {
