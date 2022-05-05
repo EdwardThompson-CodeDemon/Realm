@@ -2545,7 +2545,7 @@ I thot of using an interface ,dint work
             Bitmap bmp = s_bitmap_handler.getImage(Base64.decode(base64_bytes, 0));
 
                 return SpartaAppCompactActivity.save_app_image(bmp);
-            
+
         }catch (Exception ex){
             String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
 
