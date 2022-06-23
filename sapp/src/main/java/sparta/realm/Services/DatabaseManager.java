@@ -2597,7 +2597,7 @@ I thot of using an interface ,dint work
             //java.nio.file.Files.readAllBytes(Path path);
             //);
             //  res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(file.getAbsolutePath())), 0);
-            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(file), 0);
+            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(file),Base64.NO_WRAP);
             return res;
         } catch (Exception ex) {
             Log.e("Data file retreival :", " " + ex.getMessage());
