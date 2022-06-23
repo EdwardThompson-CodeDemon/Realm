@@ -1,6 +1,7 @@
 package sparta.realm.utils.Mail;
 /**
  * Created by Edward Thompson on 19/01/2022.
+ * @deprecated Gmail no longer supports insecure login behaviour
  */
 public class GmailMailBuilder extends MailBuilder {
 

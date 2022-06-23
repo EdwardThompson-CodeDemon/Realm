@@ -19,40 +19,41 @@ import sparta.realm.RealmClientCallbackInterface;
 import sparta.realm.RealmClientInterface;
 import sparta.realm.spartautils.svars;
 
-public class RealmClientService extends JobIntentService{
+public class RealmClientService extends JobIntentService {
     public RealmClientService() {
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
-        Log.e("Realm Client ","onBind");
+        Log.e("Realm Client ", "onBind");
 
         return realmClientInterface;
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Log.e("Realm Client ","onReBind");
+        Log.e("Realm Client ", "onReBind");
         super.onRebind(intent);
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Log.e("Realm Client ","Started Handling");
+        Log.e("Realm Client ", "Started Handling");
 
     }
-    public RealmClientCallbackInterface realmClientInterfaceTX ;
-    public static String log_tag="Realm Client Service";
+
+    public RealmClientCallbackInterface realmClientInterfaceTX;
+    public static String log_tag = "Realm Client Service";
 
     RealmClientInterface.Stub realmClientInterface = new RealmClientInterface.Stub() {
 
 
         @Override
         public void registerCallback(RealmClientCallbackInterface cb) throws RemoteException {
-            realmClientInterfaceTX=cb;
+            realmClientInterfaceTX = cb;
             realmClientInterfaceTX.on_info_updated("Sync registered");
-            if(main_client!=null){
+            if (main_client != null) {
                 main_client.registerCallBack(realmClientInterfaceTX);
             }
         }
@@ -64,8 +65,8 @@ public class RealmClientService extends JobIntentService{
 
         @Override
         public int InitializeClient(String server_ip, int port, String device_code, String username, String password) throws RemoteException {
-          Log.e(log_tag,"Initializing client");
-            start_service(server_ip,port,device_code,username,password);
+            Log.e(log_tag, "Initializing client");
+            start_service(server_ip, port, device_code, username, password);
 
 
             return 0;
@@ -79,12 +80,12 @@ public class RealmClientService extends JobIntentService{
 
         @Override
         public void download(String service_id) throws RemoteException {
-main_client.download(null,Realm.realm.getHashedSyncDescriptions().get(service_id));
+            main_client.download(null, Realm.realm.getHashedSyncDescriptions().get(service_id));
         }
 
         @Override
         public void downloadAll() throws RemoteException {
-            Log.e(log_tag,"Downloading all interf");
+            Log.e(log_tag, "Downloading all interf");
             main_client.downloadAll();
 
         }
@@ -97,7 +98,7 @@ main_client.download(null,Realm.realm.getHashedSyncDescriptions().get(service_id
 
         @Override
         public void synchronize() throws RemoteException {
-main_client.Synchronize();
+            main_client.Synchronize();
         }
 
 
@@ -116,15 +117,12 @@ main_client.Synchronize();
         }
 
 
-
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
 
             unbindService(serviceConnection);
         }
     };
-
 
 
     public static final int JOB_ID = 1;
@@ -134,37 +132,37 @@ main_client.Synchronize();
     }
 
     public static SocketClient main_client;
-    Thread client_thread=null;
-    public static final int upload=1;
-    public static final int Download=2;
-    public static final int Synchronize=3;
-    public static final int uploadAll=4;
-    public static final int DownloadAll=5;
+    Thread client_thread = null;
+    public static final int upload = 1;
+    public static final int Download = 2;
+    public static final int Synchronize = 3;
+    public static final int uploadAll = 4;
+    public static final int DownloadAll = 5;
 
-    public void start_service(String server_ip,int port,String devicecode,String username,String password){
-        if(main_client==null) {
+    public void start_service(String server_ip, int port, String devicecode, String username, String password) {
+        if (main_client == null) {
             try {
 //                client_thread= new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
-                while (true){
-                    try{
+                while (true) {
+                    try {
 
-                        Log.e("Realm Client ","Starting ...");
+                        Log.e("Realm Client ", "Starting ...");
 //                        main_client = new RealmClient(realmClientInterfaceTX);
                         main_client = new RealmClientJava(realmClientInterfaceTX);
-                        main_client.InitializeSocket(server_ip,port,devicecode,username,password);
-                        main_client=null;
-                        Log.e(log_tag,"Stopped Running");
+                        main_client.InitializeSocket(server_ip, port, devicecode, username, password);
+                        main_client = null;
+                        Log.e(log_tag, "Stopped Running");
                         realmClientInterfaceTX.on_status_changed("0");
-                        Log.e(log_tag,"Restarting Run");
+                        Log.e(log_tag, "Restarting Run");
 
 
 //                android.os.Process.killProcess(android.os.Process.myPid());
 
-                    }catch (Throwable e){
-                        Log.e(log_tag,"Stopping failed");
-                        main_client=null;
+                    } catch (Throwable e) {
+                        Log.e(log_tag, "Stopping failed");
+                        main_client = null;
 
                     }
 
@@ -177,35 +175,34 @@ main_client.Synchronize();
 //                client_thread.start();
 
 
-
-
             } catch (Throwable e) {
                 Log.e("IO Exception ", "" + e.getMessage());
                 e.printStackTrace();
             }
-        }else {
+        } else {
 
 
-            Log.e("Realm Client ","Already Running");
+            Log.e("Realm Client ", "Already Running");
 
 
         }
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        if(intent != null && intent.getAction() != null) {
+        if (intent != null && intent.getAction() != null) {
             switch (intent.getIntExtra("action", 0)) {
                 case Synchronize:
                     main_client.Synchronize();
                     break;
                 case DownloadAll:
-                    Log.e("Realm Client ","Downloading all :");
+                    Log.e("Realm Client ", "Downloading all :");
                     main_client.downloadAll();
                     break;
                 case uploadAll:
-                    Log.e("Realm Client ","Uploading all :");
+                    Log.e("Realm Client ", "Uploading all :");
                     main_client.uploadAll();
                     break;
                 case upload:
@@ -227,7 +224,6 @@ main_client.Synchronize();
         }
         return START_STICKY;
     }
-
 
 
 }

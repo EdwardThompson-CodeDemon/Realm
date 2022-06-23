@@ -5,55 +5,60 @@ import com.realm.annotations.sync_service_description;
 import sparta.realm.RealmClientCallbackInterface;
 import sparta.realm.realmclient.RealmClient;
 
-public class RealmSocketProtocol implements SocketInterface{
+public class RealmSocketProtocol implements SocketInterface {
 
-    public String device_code, username,password;
+    public String device_code, username, password;
 
-   public RealmClientCallbackInterface realmClientInterfaceTX ;
+    public RealmClientCallbackInterface realmClientInterfaceTX;
 
 
-    public RealmSocketProtocol(RealmClientCallbackInterface realmClientInterfaceTX ){
-        this.realmClientInterfaceTX=realmClientInterfaceTX;
+    public RealmSocketProtocol(RealmClientCallbackInterface realmClientInterfaceTX) {
+        this.realmClientInterfaceTX = realmClientInterfaceTX;
     }
 
-    public void registerCallBack( RealmClientCallbackInterface realmClientInterfaceTX ){
-        this.realmClientInterfaceTX=realmClientInterfaceTX;
+    public void registerCallBack(RealmClientCallbackInterface realmClientInterfaceTX) {
+        this.realmClientInterfaceTX = realmClientInterfaceTX;
     }
 
-    public void Authenticate (String device_code,String  username,String password){
-
-
-    }
-
-   public void downloadAll (){
+    public void Authenticate(String device_code, String username, String password) {
 
 
     }
 
-    public void uploadAll (){
+    public void downloadAll() {
 
 
     }
 
-
-  public void Synchronize (){
+    public void uploadAll() {
 
 
     }
 
 
-  public void download (String tx_transaction_no, sync_service_description ssd){
+    public void Synchronize() {
 
 
     }
 
 
-  public void upload (sync_service_description ssd){
+    public void download(String tx_transaction_no, sync_service_description ssd) {
 
 
     }
 
- public void uploadArray (sync_service_description ssd){
+    public void request(String tx_transaction_no, sync_service_description ssd) {
+
+
+    }
+
+
+    public void upload(sync_service_description ssd) {
+
+
+    }
+
+    public void uploadArray(sync_service_description ssd) {
 
 
     }
@@ -63,7 +68,6 @@ public class RealmSocketProtocol implements SocketInterface{
     public void OnDataReceived(byte[] remote_data) {
 
     }
-
 
 
 }

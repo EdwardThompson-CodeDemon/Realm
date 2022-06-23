@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 
+import sparta.realm.spartautils.biometrics.fp.BTV2;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_bt;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_stf_usb_8_inch;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_wall_mounted;
@@ -15,7 +16,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     public fp_handler_wall_mounted fph_wall_mounted;
   public  fp_handler_stf_usb_8_inch fph_8_inch;
   //  fp_handler_biomini fph_biomini;
-  public  fp_handler_bt fph_bt;
+  public BTV2 fph_bt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,12 +118,22 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
         if(svars.use_bt_fp_device(act))
         {
             //SETUP BT COMMUNICATION
-            fph_bt=new fp_handler_bt(act);
+            fph_bt=new BTV2(act);
 
 
         }
 
         super.onResume();
+
+    }
+
+    @Override
+    public void onDeviceStarted() {
+
+    }
+
+    @Override
+    public void onDeviceClosed() {
 
     }
 

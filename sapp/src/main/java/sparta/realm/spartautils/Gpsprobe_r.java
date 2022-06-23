@@ -70,7 +70,7 @@ public class Gpsprobe_r extends Service implements LocationListener {
                 Log.e("Location =>"," PROVIDER ENABLED :");
                 this.canGetLocation = true;
                 // First get location from Network Provider
-               /* if (isNetworkEnabled) {
+                if (isNetworkEnabled) {
                     Log.e("Location =>"," NET ENABLED :");
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
@@ -85,7 +85,7 @@ public class Gpsprobe_r extends Service implements LocationListener {
                             longitude = location.getLongitude();
                         }
                     }
-                }*/
+                }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     Log.e("Location =>"," GPS ENABLED :");

@@ -91,5 +91,6 @@ dependencies {
 //    implementation 'com.github.EdwardThompson-CodeDemon.systemRealm:Annotations:0.0.22'
     //implementation project(path: ':AnnotationProcessor')
     implementation 'com.github.Chrisvin:RubberPicker:v1.5'
+    implementation 'com.gemalto.wsq:wsq-android:1.0'
 
 }

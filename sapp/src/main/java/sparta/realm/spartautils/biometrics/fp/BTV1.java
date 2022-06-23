@@ -4,6 +4,7 @@ package sparta.realm.spartautils.biometrics.fp;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,15 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,10 +29,10 @@ import sparta.realm.spartautils.bluetooth.bt_device_connector;
 
 
 /**
- * Created by Thompsons on 08-Feb-17.
+ * Created by Thompson on 26-May-22.
  */
 
-public class fp_handler_bt {
+public class BTV1 extends FingerprintManger{
 
         private static final String TAG = "BluetoothReader";
         private static final boolean D = true;
@@ -114,91 +108,61 @@ public class fp_handler_bt {
         public int mCardSize=0;
 
         public byte mBat[]=new byte[2];
+        public byte mUpImage[]=new byte[73728];//36864
         public int mUpImageSize=0;
-    public byte mUpImage[] = new byte[73728]; // image data
 
         //
         public byte mRefCoord[]=new byte[512];
         public byte mMatCoord[]=new byte[512];
 
         public byte mIsoData[]=new byte[378];
-Activity act;
-    Timer get_batt, get_print;
-    sfp_i interf;
-       public fp_handler_bt(final Activity act)
+
+        
+    
+
+       public BTV1(Activity activity)
        {
-           this.act=act;
-           get_batt = new Timer();
-           get_print = new Timer();
+           super(activity);
+           this.activity=activity;
 
-           mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-interf=(sfp_i) act;
-            if (mBluetoothAdapter == null) {
-               // Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-               // finish();
-                return;
-            }
-           if (!mBluetoothAdapter.isEnabled()) {
-               Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-             act.startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-               // Otherwise, setup the chat session
-           } else {
-               if (mChatService == null) {
-                   setupChat();
-               }
-               else {
-
-               }
-           }
-          /* Intent serverIntent = new Intent(act, DeviceListActivity.class);
-           act.startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);*/
 
 
        }
-public void start_auto()
-{
-    get_print.schedule(new TimerTask() {
-        @Override
-        public void run() {
-            capture();
 
+
+    @Override
+    public void start() {
+        super.start();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter == null) {
+            // Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            // finish();
+            return;
         }
-    },100,5000);
-
-}
-    private int imgSize;
-    public static final int IMG200 = 200;
-    public static final int IMG288 = 288;
-    public static final int IMG360 = 360;
-
-public void capture()
-{
-    act.runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                if (mChatService != null & mChatService.getState() == BluetoothReaderService.STATE_CONNECTED) {
-                    imgSize = 288;
-                    mUpImageSize = 0;
-
-                    SendCommand(CMD_GETIMAGE,null,0);
-//                    SendCommand(CMD_CAPTUREHOST, null, 0);
-                }
-            }catch (Exception ex){
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            activity.startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            // Otherwise, setup the chat session
+        } else {
+            if (mChatService == null) {
+                setupChat();
+            }
+            else {
 
             }
         }
-    });
-}
+
+    }
 
 
-public void stop_auto()
-{
-    get_print.cancel();
-    get_batt.cancel();
+    @Override
+    public void capture() {
+        super.capture();
 
-}
-
+//        capturetemplate();
+        SendCommand(CMD_GETIMAGE,null,0);
+    }
 
     public void enrol()
     {
@@ -281,22 +245,21 @@ public void stop_auto()
     }
 
 
-public void close()
-{
-    mChatService.stop();
-    mChatService=null;
-}
+
     public void setupChat() {
             Log.d(TAG, "setupChat()");
 
- mChatService = new BluetoothReaderService(act, mHandler);	// Initialize the BluetoothChatService to perform bluetooth connections
+ mChatService = new BluetoothReaderService(activity, mHandler);	// Initialize the BluetoothChatService to perform bluetooth connections
             mOutStringBuffer = new StringBuffer("");
-            if(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device)==null)
+            if(new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device)==null)
             {
-                new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
+                new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
+
+
+
                     @Override
                     public void on_device_paired_and_selected(BluetoothDevice device) {
-                        mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
+                        mChatService.connect(new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
 
                     }
 
@@ -311,8 +274,8 @@ public void close()
                     }
                 });
             }else{
-                mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
-             //   new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device);
+                mChatService.connect(new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
+             //   new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device);
             }
        // Initialize the buffer for outgoing messages
         }
@@ -320,7 +283,7 @@ public void close()
 
 
         private void AddStatusList(String text) {
-//            mConversationArrayAdapter.add(text);
+            mConversationArrayAdapter.add(text);
         }
 
         private void AddStatusListHex(byte[] data,int size) {
@@ -328,7 +291,7 @@ public void close()
             for(int i=0;i<size;i++) {
                 text=text+","+ Integer.toHexString(data[i]&0xFF).toUpperCase();
             }
-      //      mConversationArrayAdapter.add(text);
+            mConversationArrayAdapter.add(text);
         }
 
         private void memcpy(byte[] dstbuf,int dstoffset,byte[] srcbuf,int srcoffset,int size) {
@@ -550,126 +513,22 @@ public void close()
             byte[] bmpData = toBmpByte(width, height, imageData);
             return bmpData;
         }
-    public int mUpImageCount = 0;
 
         private void ReceiveCommand(byte[] databuf,int datasize) {
             if(mDeviceCmd==CMD_GETIMAGE) {
+                memcpy(mUpImage,mUpImageSize,databuf,0,datasize);
+                mUpImageSize=mUpImageSize+datasize;
+                if(mUpImageSize>=15200){
+                    byte[] bmpdata=getFingerprintImage(mUpImage,152,200);
+                    Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0,bmpdata.length);
+                    //fingerprintImage.setImageBitmap(image);
+                    interf.on_result_obtained(imageToIso(image));
+                    interf.on_result_image_obtained(image);
+                    interf.on_result_wsq_obtained(imageToWsq(image));
+                    mUpImageSize=0;
+                    mIsWork=false;
 
-
-                if (imgSize == IMG200) {   //image size with 152*200
-                    memcpy(mUpImage, mUpImageSize, databuf, 0, datasize);
-                    mUpImageSize = mUpImageSize + datasize;
-                    if (mUpImageSize >= 15200) {
-                        File file = new File("/sdcard/test.raw");
-                        try {
-                            file.createNewFile();
-                            FileOutputStream out = new FileOutputStream(file);
-                            out.write(mUpImage);
-                            out.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        byte[] imageData = checkHaveTis(mUpImage);
-                        byte[] bmpdata = getFingerprintImage(imageData, 152, 200, 0/*18*/);
-//                        textSize.setText("152 * 200");
-                        Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                        interf.on_result_image_obtained(image);
-                        Log.d(TAG, "bmpdata.length:" + bmpdata.length);
-                        fingerprintImage.setImageBitmap(image);
-                        mUpImageSize = 0;
-                        mUpImageCount = mUpImageCount + 1;
-                        mIsWork = false;
-                        AddStatusList("Display Image");
-                    }
                 }
-                else if (imgSize == IMG288) {   //image size with 256*288
-                    memcpy(mUpImage, mUpImageSize, databuf, 0, datasize);
-                    mUpImageSize = mUpImageSize + datasize;
-                    if (mUpImageSize >= 36864) {
-                        File file = new File("/sdcard/test.raw");
-                        try {
-                            file.createNewFile();
-                            FileOutputStream out = new FileOutputStream(file);
-                            out.write(mUpImage);
-                            out.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        byte[] imageData = checkHaveTis(mUpImage);
-                        byte[] bmpdata = getFingerprintImage(imageData, 256, 288, 0/*18*/);
-//                        textSize.setText("256 * 288");
-                        Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                        interf.on_result_image_obtained(image);
-
-//                        byte[] inpdata = new byte[73728];
-//                        int inpsize = 73728;
-//                        System.arraycopy(bmpdata, 1078, inpdata, 0, inpsize);
-//                        SaveWsqFile(inpdata, inpsize, "fingerprint.wsq");
-//
-//                        Log.d(TAG, "bmpdata.length:" + bmpdata.length);
-//                        fingerprintImage.setImageBitmap(image);
-                        mUpImageSize = 0;
-                        mUpImageCount = mUpImageCount + 1;
-                        mIsWork = false;
-                        AddStatusList("Display Image");
-                    }
-                }
-                else if (imgSize == IMG360) {   //image size with 256*360
-                    memcpy(mUpImage, mUpImageSize, databuf, 0, datasize);
-                    mUpImageSize = mUpImageSize + datasize;
-                    //AddStatusList("Image Len="+Integer.toString(mUpImageSize)+"--"+Integer.toString(mUpImageCount));
-                    if (mUpImageSize >= 46080) {
-                        File file = new File("/sdcard/test.raw");
-                        try {
-                            file.createNewFile();
-                            FileOutputStream out = new FileOutputStream(file);
-                            out.write(mUpImage);
-                            out.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        byte[] imageData = checkHaveTis(mUpImage);
-                        byte[] bmpdata = getFingerprintImage(imageData, 256, 360, 0/*18*/);
-//                        textSize.setText("256 * 360");
-                        Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                        interf.on_result_image_obtained(image);
-
-//                        byte[] inpdata = new byte[92160];
-//                        int inpsize = 92160;
-//                        System.arraycopy(bmpdata, 1078, inpdata, 0, inpsize);
-//                        SaveWsqFile(inpdata, inpsize, "fingerprint.wsq");
-//
-//                        Log.d(TAG, "bmpdata.length:" + bmpdata.length);
-//                        fingerprintImage.setImageBitmap(image);
-                        mUpImageSize = 0;
-                        mUpImageCount = mUpImageCount + 1;
-                        mIsWork = false;
-                        AddStatusList("Display Image");
-
-                    }
-
-           /*     File f = new File("/sdcard/fingerprint.png");
-                if (f.exists()) {
-                    f.delete();
-                }
-                try {
-                    FileOutputStream out = new FileOutputStream(f);
-                    image.compress(Bitmap.CompressFormat.PNG, 90, out);
-                    out.flush();
-                    out.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                byte[] inpdata=new byte[73728];
-                int inpsize=73728;
-                System.arraycopy(bmpdata,1078, inpdata, 0, inpsize);
-                SaveWsqFile(inpdata,inpsize,"fingerprint.wsq");*/
-                }
-
-
             }else{
                 memcpy(mCmdData,mCmdSize,databuf,0,datasize);
                 mCmdSize=mCmdSize+datasize;
@@ -757,18 +616,6 @@ public void close()
    		    					*/
                                     AddStatusList("Len="+ String.valueOf(mMatSize));
                                     AddStatusListHex(mMatData,mMatSize);
-                                    try {
-                                        byte[] model1 = new byte[512];
-                                        System.arraycopy(mMatData, 0, model1, 0, 512);
-                                        mMatData = model1;
-                                    }catch (Exception ex){}
-                                    interf.on_result_obtained(Base64.encodeToString(mMatData,0));
-                                    act.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            getdata();
-                                        }
-                                    });
                                     AddStatusList("Capture Succeed");
                                 }
                                 else
@@ -871,12 +718,6 @@ public void close()
 //                                    AddStatusList("Get Data Succeed");
                                   //  AddStatusListHex(mMatData,mMatSize);
                                     interf.on_result_obtained(Base64.encodeToString(mMatData,0));
-                                    act.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            getdata();
-                                        }
-                                    });   //getdata();
                                 }
                                 else
                                     AddStatusList("Get Data Fail");
@@ -887,85 +728,7 @@ public void close()
                 }
             }
         }
-        Timer fp_timer=new Timer();
-       Boolean STREAMING=true;
-    public byte mUpImage2[] = new byte[73728]; // image data
-//    public void SaveWsqFile(byte[] rawdata, int rawsize, String filename) {
-//        byte[] outdata = new byte[rawsize];
-//        int[] outsize = new int[1];
-//
-//        if (rawsize == (256*288)) {
-//            wsq.getInstance().RawToWsq(rawdata, rawsize, 256, 288, outdata, outsize, 2.833755f);
-//        } else if (rawsize == 92160) {
-//            wsq.getInstance().RawToWsq(rawdata, rawsize, 256, 360, outdata, outsize, 2.833755f);
-//        }
-//
-//        try {
-//            File fs = new File("/sdcard/" + filename);
-//            if (fs.exists()) {
-//                fs.delete();
-//            }
-//            new File("/sdcard/" + filename);
-//            RandomAccessFile randomFile = new RandomAccessFile("/sdcard/" + filename, "rw");
-//            long fileLength = randomFile.length();
-//            randomFile.seek(fileLength);
-//            randomFile.write(outdata, 0, outsize[0]);
-//            randomFile.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
-    private byte[] checkHaveTis(byte[] mUpImage) {
-        //有提示
-        if ((mUpImage[0] == 'F') && (mUpImage[1] == 'T')) {
-            if (mUpImage[7] == 2) {
-                AddStatusList("Place your finger");
-            } else if (mUpImage[7] == 3) {
-                AddStatusList("Place your finger");
-            } else if (mUpImage[7] == 20) {
-                AddStatusList("Timed out");
-            }
-            memcpy(mUpImage2, 0, mUpImage, 20, mUpImageSize - 20);
-        } else {
-            memcpy(mUpImage2, 0, mUpImage, 0, mUpImageSize);
-        }
-        return mUpImage2;
-    }
-    public byte[] getFingerprintImage(byte[] data, int width, int height, int offset) {
-        if (data == null) {
-            return null;
-        }
-        byte[] imageData = new byte[width * height];
-        for (int i = 0; i < (width * height / 2); i++) {
-            imageData[i * 2] = (byte) (data[i + offset] & 0xf0);
-            imageData[i * 2 + 1] = (byte) (data[i + offset] << 4 & 0xf0);
-        }
-        byte[] bmpData = toBmpByte(width, height, imageData);
-        return bmpData;
-    }
-void stream_data()
-{
-    if(STREAMING){
-        return;
-    }
-    STREAMING=true;
-    fp_timer=new Timer();
-
-    fp_timer.schedule(new TimerTask() {
-        @Override
-        public void run() {
-act.runOnUiThread(new Runnable() {
-    @Override
-    public void run() {
-        getdata();
-    }
-});
-        }
-    },0,10000);
-
-
-}
         // The Handler that gets information back from the BluetoothChatService
         private final Handler mHandler = new Handler() {
             @Override
@@ -976,10 +739,8 @@ act.runOnUiThread(new Runnable() {
                         switch (msg.arg1) {
                             case BluetoothReaderService.STATE_CONNECTED:
                               //  mTitle.setText("Connected to ");
-                                interf.on_device_status_changed("connected ");
-                                Toast.makeText(act,"Connected to => "+mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity,"Connected to => "+mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                                 //getimage();
-                             //   stream_data();
                                 getdata();
                                // mTitle.append(mConnectedDeviceName);
 //                                mConversationArrayAdapter.clear();
@@ -1009,33 +770,12 @@ act.runOnUiThread(new Runnable() {
                     case MESSAGE_DEVICE_NAME:
                         // save the connected device's name
                         mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                        Toast.makeText(act, "Connected to "
+                        Toast.makeText(activity, "Connected to "
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                         break;
                     case MESSAGE_TOAST:
-                        Toast.makeText(act, msg.getData().getString(TOAST),
+                        Toast.makeText(activity, msg.getData().getString(TOAST),
                                 Toast.LENGTH_SHORT).show();
-                        if(msg.getData().getString(TOAST).equalsIgnoreCase("Unable to connect device"))
-                        {
-                            new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
-                                @Override
-                                public void on_device_paired_and_selected(BluetoothDevice device) {
-                                    mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
-
-                                }
-
-                                @Override
-                                public void on_device_slected(BluetoothDevice device) {
-
-                                }
-
-                                @Override
-                                public void on_device_paired(BluetoothDevice device) {
-
-                                }
-                            });
-
-                        }
                         break;
                 }
             }
@@ -1047,8 +787,8 @@ act.runOnUiThread(new Runnable() {
         }
 
        void startsettings() {
-          /* Intent serverIntent = new Intent(act, DeviceListActivity.class);
-           act.startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+          /* Intent serverIntent = new Intent(activity, DeviceListActivity.class);
+           activity.startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 */
        }
 
