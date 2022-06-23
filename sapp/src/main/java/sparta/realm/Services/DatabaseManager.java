@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInstaller;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -2596,8 +2597,8 @@ I thot of using an interface ,dint work
             File file = new File(svars.current_app_config(act).file_path_employee_data, data_name);
             //java.nio.file.Files.readAllBytes(Path path);
             //);
-            //  res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(file.getAbsolutePath())), 0);
-            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(file),Base64.NO_WRAP);
+              res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(file.getAbsolutePath())), 0);
+//            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(file),Base64.NO_WRAP);
             return res;
         } catch (Exception ex) {
             Log.e("Data file retreival :", " " + ex.getMessage());
