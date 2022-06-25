@@ -658,9 +658,11 @@ public class RealmClientProtocol extends RealmSocketProtocol {
 
 
 //        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
-                for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
+                List<String> filePathFields = realm.getFilePathFields(ssd.object_package, key_list);
+                for (String k : filePathFields) {
                     try {
-                        jo.put(k, DatabaseManager.get_saved_doc_base64(jo.getString(k)));
+                        String base64 = DatabaseManager.get_saved_doc_base64(jo.getString(k));
+                        jo.put(k, base64);
                     } catch (Exception e) {
                         Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
 

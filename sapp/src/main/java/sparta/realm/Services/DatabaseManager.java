@@ -2592,13 +2592,8 @@ I thot of using an interface ,dint work
     public static String get_saved_doc_base64(String data_name) {
         String res = "";
         try {
-            String path = Environment.getExternalStorageDirectory().toString();
-
-            File file = new File(svars.current_app_config(act).file_path_employee_data, data_name);
-            //java.nio.file.Files.readAllBytes(Path path);
-            //);
-              res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(file.getAbsolutePath())), 0);
-//            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(file),Base64.NO_WRAP);
+//            res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(new File(svars.current_app_config(act).file_path_employee_data, data_name).getAbsolutePath())), 0);
+            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(new File(svars.current_app_config(act).file_path_employee_data, data_name)),0);
             return res;
         } catch (Exception ex) {
             Log.e("Data file retreival :", " " + ex.getMessage());
