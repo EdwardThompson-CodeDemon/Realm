@@ -663,6 +663,7 @@ public class RealmClientProtocol extends RealmSocketProtocol {
                     try {
                         String base64 = DatabaseManager.get_saved_doc_base64(jo.getString(k));
                         jo.put(k, base64);
+                        jo=new JSONObject(jo.toString().replace("\n","").replace("\\",""));
                     } catch (Exception e) {
                         Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
 
