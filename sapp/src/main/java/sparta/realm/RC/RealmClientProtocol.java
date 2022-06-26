@@ -7,6 +7,9 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.realm.annotations.SyncDescription;
 import com.realm.annotations.sync_service_description;
 import com.realm.annotations.sync_status;
@@ -633,6 +636,7 @@ public class RealmClientProtocol extends RealmSocketProtocol {
 
         ArrayList<JSONObject> pending_records = Realm.databaseManager.load_dynamic_json_records_ann(ssd, pending_records_filter);
         JSONArray arr = new JSONArray();
+        JsonArray jar=new JsonArray();
 
         for (JSONObject jo : pending_records) {
 
@@ -644,6 +648,7 @@ public class RealmClientProtocol extends RealmSocketProtocol {
             io_operations_counter++;
 
             arr.put(jo);
+
         }
         if (ssd.storage_mode_check) {
             Log.e(RealmClientProtocol.logTag, "Started storage checking ...");
@@ -663,14 +668,16 @@ public class RealmClientProtocol extends RealmSocketProtocol {
                 for (String k : filePathFields) {
                     try {
                         String base64 = DatabaseManager.get_saved_doc_base64(jo.getString(k));
+                        jo.remove(k);
                         jo.put(k, base64);
-                      String job=  new JSONStringer()
-                                .object()
-                                .key(k)
-                                .value(base64)
-                                .endObject().toString();
-                        jo=new JSONObject(job);
-//                        jo=new JSONObject(jo.toString().replace("\\n","").replace("\\",""));
+//                      String job=  new JSONStringer()
+//                                .object()
+//                                .key(k)
+//                                .value(base64)
+//                                .endObject().toString();
+//                        jo=new JSONObject(job);
+                        jo=new JSONObject(jo.toString().replace("\\n","").replace("\\",""));
+//                        jar.add(new JsonParser().parse((jo.toString())).getAsJsonObject());
                     } catch (Exception e) {
                         Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
 
