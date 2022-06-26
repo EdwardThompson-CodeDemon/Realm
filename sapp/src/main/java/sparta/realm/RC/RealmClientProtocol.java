@@ -14,6 +14,7 @@ import com.realm.annotations.sync_status;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -663,7 +664,13 @@ public class RealmClientProtocol extends RealmSocketProtocol {
                     try {
                         String base64 = DatabaseManager.get_saved_doc_base64(jo.getString(k));
                         jo.put(k, base64);
-                        jo=new JSONObject(jo.toString().replace("\n","").replace("\\",""));
+                      String job=  new JSONStringer()
+                                .object()
+                                .key(k)
+                                .value(base64)
+                                .endObject().toString();
+                        jo=new JSONObject(job);
+//                        jo=new JSONObject(jo.toString().replace("\\n","").replace("\\",""));
                     } catch (Exception e) {
                         Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
 
