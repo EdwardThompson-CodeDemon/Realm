@@ -2543,6 +2543,7 @@ I thot of using an interface ,dint work
 
     public static String save_doc(String base64_bytes) {
         try {
+            base64_bytes=base64_bytes.replace("\\n","").replace("\\","");
             Bitmap bmp = s_bitmap_handler.getImage(Base64.decode(base64_bytes, 0));
 
                 return SpartaAppCompactActivity.save_app_image(bmp);

@@ -676,7 +676,7 @@ public class RealmClientProtocol extends RealmSocketProtocol {
 //                                .value(base64)
 //                                .endObject().toString();
 //                        jo=new JSONObject(job);
-                        jo=new JSONObject(jo.toString().replace("\\n","").replace("\\",""));
+//                        jo=new JSONObject(jo.toString().replace("\\n","").replace("\\",""));
 //                        jar.add(new JsonParser().parse((jo.toString())).getAsJsonObject());
                     } catch (Exception e) {
                         Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
