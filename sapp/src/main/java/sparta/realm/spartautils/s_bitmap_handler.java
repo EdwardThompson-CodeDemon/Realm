@@ -25,6 +25,11 @@ public class s_bitmap_handler {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
+ public static byte[] getBytes(Bitmap bitmap,Bitmap.CompressFormat format) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(format, 100, stream);
+        return stream.toByteArray();
+    }
 public static byte[] getBytes_JPG(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);

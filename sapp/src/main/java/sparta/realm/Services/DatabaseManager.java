@@ -2566,6 +2566,7 @@ I thot of using an interface ,dint work
 
                 return error_return;
             }
+            return img_name;
 //            return SpartaAppCompactActivity.save_app_image(bmp);
 
         }catch (Exception ex){
