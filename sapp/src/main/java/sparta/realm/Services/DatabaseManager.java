@@ -2544,9 +2544,48 @@ I thot of using an interface ,dint work
     public static String save_doc(String base64_bytes) {
         try {
             base64_bytes=base64_bytes.replace("\\n","").replace("\\","");
+//            Bitmap bmp = s_bitmap_handler.getImage();
+            String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
+
+            File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
+            if (!file.exists()) {
+                Log.e(logTag,"Creating data dir: "+ (file.mkdirs()?"Successfully created":"Failed to create !"));
+            }
+            file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
+
+            try (OutputStream fOutputStream = new FileOutputStream(file)){
+
+
+                fOutputStream.write(Base64.decode(base64_bytes, 0));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+
+                return error_return;
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                return error_return;
+            }
+//            return SpartaAppCompactActivity.save_app_image(bmp);
+
+        }catch (Exception ex){
+
+
+
+        }
+
+
+
+
+
+        return base64_bytes;
+    }
+    public static String save_doc_(String base64_bytes) {
+        try {
+            base64_bytes=base64_bytes.replace("\\n","").replace("\\","");
             Bitmap bmp = s_bitmap_handler.getImage(Base64.decode(base64_bytes, 0));
 
-                return SpartaAppCompactActivity.save_app_image(bmp);
+            return SpartaAppCompactActivity.save_app_image(bmp);
 
         }catch (Exception ex){
             String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";

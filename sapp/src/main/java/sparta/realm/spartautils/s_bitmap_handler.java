@@ -16,18 +16,18 @@ import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Realm;
 
 /**
- * Created by Thompsons on 16-Feb-17.
+ * Created by Thompson on 16-Feb-17.
  */
 
 public class s_bitmap_handler {
     public static byte[] getBytes(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
 public static byte[] getBytes_JPG(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         return stream.toByteArray();
     }
 
