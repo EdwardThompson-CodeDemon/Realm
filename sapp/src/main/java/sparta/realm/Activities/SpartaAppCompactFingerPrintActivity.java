@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import sparta.realm.spartautils.biometrics.fp.BTV2;
+import sparta.realm.spartautils.biometrics.fp.FingerprintManger;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_bt;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_stf_usb_8_inch;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_wall_mounted;
