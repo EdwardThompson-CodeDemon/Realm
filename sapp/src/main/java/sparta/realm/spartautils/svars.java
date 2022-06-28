@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -141,7 +142,10 @@ public class svars {
             return 1;
         }
     }
+    public static String getTransactionNo() {
+        return System.currentTimeMillis()+"::"+new Random().nextDouble()+"::"+new Random().nextDouble();
 
+    }
     public static String device_specific_transaction_no(Context act) {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);

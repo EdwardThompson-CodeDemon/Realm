@@ -23,10 +23,18 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
 
     }
+    FingerprintManger fingerprintManger;
+    void startFPModule(FingerprintManger fingerprintManger)
+    {
+        this.fingerprintManger=fingerprintManger;
+        fingerprintManger.start();
 
+
+    }
     @Override
     protected void onPause() {
         super.onPause();
+        fingerprintManger.stop();
         if (svars.current_device()== svars.DEVICE.UAREU.ordinal())
         {
             try{   fph_8_inch.close();}catch (Exception ex){}
@@ -50,6 +58,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     @Override
     protected void onStart() {
         super.onStart();
+
         if(svars.current_device()== svars.DEVICE.BIO_MINI.ordinal())
         {
             try {
@@ -82,6 +91,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
     @Override
     protected void onResume() {
+        fingerprintManger.start();
         if (svars.current_device()== svars.DEVICE.UAREU.ordinal())
         {
             fph_8_inch=new fp_handler_stf_usb_8_inch(act);

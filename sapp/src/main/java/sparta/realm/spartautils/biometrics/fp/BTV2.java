@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -17,13 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +33,7 @@ import sparta.realm.spartautils.bluetooth.bt_device_connector;
  * Created by Thompsons on 08-Feb-17.
  */
 
-public class BTV2  extends FingerprintManger {
+public class BTV2 extends FingerprintManger {
 
     private static final String TAG = "BluetoothReader";
     private static final boolean D = true;
@@ -120,27 +117,30 @@ public class BTV2  extends FingerprintManger {
     public byte mMatCoord[] = new byte[512];
 
     public byte mIsoData[] = new byte[378];
-    Activity act;
+
+
     Timer get_batt, get_print;
     sfp_i interf;
 
     public BTV2(final Activity activity)
-        {
-            super(activity);
-            this.activity=activity;
-start();
+    {
+        super(activity);
+        this.activity=activity;
 
 
-        }
+        start();
 
-        @Override
-        public void start() {
-            super.start();
-            get_batt = new Timer();
+
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        get_batt = new Timer();
         get_print = new Timer();
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        interf = (sfp_i) act;
+        interf = (sfp_i) activity;
         if (mBluetoothAdapter == null) {
             // Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             // finish();
@@ -148,7 +148,7 @@ start();
         }
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            act.startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            activity.startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
         } else {
             if (mChatService == null) {
@@ -180,7 +180,7 @@ start();
     public static final int IMG360 = 360;
 
     public void capture() {
-        act.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -292,13 +292,13 @@ start();
     public void setupChat() {
         Log.d(TAG, "setupChat()");
 
-        mChatService = new BluetoothReaderService(act, mHandler);    // Initialize the BluetoothChatService to perform bluetooth connections
+        mChatService = new BluetoothReaderService(activity, mHandler);    // Initialize the BluetoothChatService to perform bluetooth connections
         mOutStringBuffer = new StringBuffer("");
-        if (new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device) == null) {
-            new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
+        if (new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device) == null) {
+            new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
                 @Override
                 public void on_device_paired_and_selected(BluetoothDevice device) {
-                    mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
+                    mChatService.connect(new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
 
                 }
 
@@ -313,7 +313,7 @@ start();
                 }
             });
         } else {
-            mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
+            mChatService.connect(new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
             //   new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device);
         }
         // Initialize the buffer for outgoing messages
@@ -765,8 +765,8 @@ start();
                                     mMatData = model1;
                                 } catch (Exception ex) {
                                 }
-                                interf.on_result_obtained(Base64.encodeToString(mMatData, 0));
-                                act.runOnUiThread(new Runnable() {
+//                                interf.on_result_obtained(Base64.encodeToString(mMatData, 0));
+                                activity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         getdata();
@@ -867,8 +867,8 @@ start();
 //                                    AddStatusList("Len="+String.valueOf(mMatSize));
 //                                    AddStatusList("Get Data Succeed");
                                 //  AddStatusListHex(mMatData,mMatSize);
-                                interf.on_result_obtained(Base64.encodeToString(mMatData, 0));
-                                act.runOnUiThread(new Runnable() {
+//                                interf.on_result_obtained(Base64.encodeToString(mMatData, 0));
+                                activity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         getdata();
@@ -929,7 +929,7 @@ start();
         fp_timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                act.runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         getdata();
@@ -952,7 +952,7 @@ start();
                         case BluetoothReaderService.STATE_CONNECTED:
                             //  mTitle.setText("Connected to ");
                             interf.on_device_status_changed("connected ");
-                            Toast.makeText(act, "Connected to => " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Connected to => " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                             //getimage();
                             //   stream_data();
                             getdata();
@@ -984,17 +984,17 @@ start();
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(act, "Connected to "
+                    Toast.makeText(activity, "Connected to "
                             + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     break;
                 case MESSAGE_TOAST:
-                    Toast.makeText(act, msg.getData().getString(TOAST),
+                    Toast.makeText(activity, msg.getData().getString(TOAST),
                             Toast.LENGTH_SHORT).show();
                     if (msg.getData().getString(TOAST).equalsIgnoreCase("Unable to connect device")) {
-                        new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
+                        new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).show(new bt_device_connector.device_selection_handler() {
                             @Override
                             public void on_device_paired_and_selected(BluetoothDevice device) {
-                                mChatService.connect(new bt_device_connector(act, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
+                                mChatService.connect(new bt_device_connector(activity, bt_device_connector.bt_device_type.fp_device).set_device(bt_device_connector.bt_device_type.fp_device));
 
                             }
 
