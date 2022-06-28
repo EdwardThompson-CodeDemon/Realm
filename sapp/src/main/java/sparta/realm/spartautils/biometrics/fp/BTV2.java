@@ -128,7 +128,7 @@ public class BTV2  extends FingerprintManger {
         {
             super(activity);
             this.activity=activity;
-
+start();
 
 
         }
@@ -601,14 +601,18 @@ public class BTV2  extends FingerprintManger {
                     byte[] bmpdata = getFingerprintImage(imageData, 256, 288, 0/*18*/);
 //                        textSize.setText("256 * 288");
                     Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
+//                    interf.on_result_image_obtained(image);
+
+                    interf.on_result_obtained(imageToIso(image));
                     interf.on_result_image_obtained(image);
-
-                    byte[] inpdata = new byte[73728];
-                    int inpsize = 73728;
-                    System.arraycopy(bmpdata, 1078, inpdata, 0, inpsize);
-//                        SaveWsqFile(inpdata, inpsize, "fingerprint.wsq");
-
-                    Log.d(TAG, "bmpdata.length:" + bmpdata.length);
+                    interf.on_result_wsq_obtained(imageToWsq(image));
+//
+//                    byte[] inpdata = new byte[73728];
+//                    int inpsize = 73728;
+//                    System.arraycopy(bmpdata, 1078, inpdata, 0, inpsize);
+////                        SaveWsqFile(inpdata, inpsize, "fingerprint.wsq");
+//
+//                    Log.d(TAG, "bmpdata.length:" + bmpdata.length);
 //                        fingerprintImage.setImageBitmap(image);
                     mUpImageSize = 0;
                     mUpImageCount = mUpImageCount + 1;
