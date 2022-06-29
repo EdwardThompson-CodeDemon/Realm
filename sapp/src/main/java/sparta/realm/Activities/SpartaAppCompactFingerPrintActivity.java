@@ -24,7 +24,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
 
     }
-    FingerprintManger fingerprintManger=new FingerprintManger(act);
+    public  FingerprintManger fingerprintManger=new FingerprintManger(act);
    public  void startFPModule(FingerprintManger fingerprintManger)
     {
         this.fingerprintManger=fingerprintManger;
