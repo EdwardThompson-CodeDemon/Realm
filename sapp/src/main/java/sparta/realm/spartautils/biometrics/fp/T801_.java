@@ -13,17 +13,13 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.HZFINGER.HAPI;
 import com.HZFINGER.HostUsb;
 import com.HZFINGER.LAPI;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class T801 extends FingerprintManger{
+public class T801_ extends FingerprintManger{
 
     private LAPI m_cLAPI = null;
     private HostUsb mHostUSb = null;
@@ -105,7 +101,7 @@ public class T801 extends FingerprintManger{
         return false;
     }
 
-    public T801(Activity activity) {
+    public T801_(Activity activity) {
         super(activity);
         m_cLAPI = new LAPI(activity);
         m_cHAPI = new HAPI(activity,m_fpsdkHandle);
@@ -115,7 +111,13 @@ public class T801 extends FingerprintManger{
 
         mScreenReceiver = new ScreenBroadcastReceiver();
         registerListener();
-
+        Runnable r = new Runnable() {
+            public void run() {
+                OPEN_DEVICE();
+            }
+        };
+        Thread s = new Thread(r);
+        s.start();
 
     }
     private void registerListener() {
@@ -192,39 +194,7 @@ public class T801 extends FingerprintManger{
     @Override
     public void start() {
         super.start();
-
-        Runnable r = new Runnable() {
-            public void run() {
-                OPEN_DEVICE();
-            }
-        };
-        Thread s = new Thread(r);
-        s.start();
-
-
-
-        
-    }
-
-    @Override
-    public void capture() {
-        super.capture();
-        if (bContinue) {
-            bContinue = false;
-            //btnGetImage.setText("GetImage");
-            m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0,"Canceled"));
-            return;
-        }
-
-
-        bContinue = true;
-        Runnable r = new Runnable() {
-            public void run() {
-                GET_IMAGE ();
-            }
-        };
-        Thread s = new Thread(r);
-        s.start();
+        startVideo();
     }
 
     void startVideo()
@@ -245,15 +215,14 @@ public class T801 extends FingerprintManger{
         Thread s = new Thread(r);
         s.start();
     }
-    protected void GET_IMAGE() {
+    protected void ON_VIDEO() {
 
-//        m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_ID_ENABLED, R.id.btnGetImage, 1));
-        //String msg;
+//        m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_ID_ENABLED, R.id.btnOnVideo, 1));
         m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0,"Put your finger"));
-        m_fEvent.obtainMessage(MESSAGE_SHOW_IMAGE, LAPI.WIDTH, LAPI.HEIGHT, null).sendToTarget();
-        int secLevel = 3;
-        if (secLevel < 1) secLevel = 1; if (secLevel > 5) secLevel = 5;//max is 5
+        int secLevel = Integer.parseInt("3");
+        if (secLevel < 1) secLevel = 1; if (secLevel > 5) secLevel = 5;
         while (bContinue) {
+            int startTime = (int)System.currentTimeMillis();
             int ret = m_cLAPI.GetImage(m_hDevice, m_image);
             if (ret == LAPI.NOTCALIBRATED) {
                 m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, "not Calibrated !").sendToTarget();
@@ -264,70 +233,15 @@ public class T801 extends FingerprintManger{
                 break;
             }
             ret = m_cLAPI.IsPressFingerEx(m_hDevice, m_image, false, LAPI.LIVECHECK_THESHOLD[secLevel - 1]);
-            if (ret >= LAPI.DEF_FINGER_SCORE) {
-                m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, "GetImage() = OK").sendToTarget();
-                m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_IMAGE, LAPI.WIDTH, LAPI.HEIGHT,m_image));
-                break;
-            }
-            else if (ret == LAPI.FAKEFINGER) {
+            m_fEvent.obtainMessage(MESSAGE_SHOW_IMAGE, LAPI.WIDTH, LAPI.HEIGHT, m_image).sendToTarget();
+            if (ret == LAPI.FAKEFINGER) {
                 m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, "warning : Fake Finger !").sendToTarget();
                 SLEEP(500);
+                continue;
                 //break;
             }
-        }
-        bContinue = false;
-//        m_appHandle.obtainMessage(MESSAGE_ID_SETTEXT, R.id.btnGetImage, R.string.TEXT_GET_IMAGE).sendToTarget();
-//        if (DEBUG) {
-//            Date date = new Date();
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-//            String filename = dateFormat.format(date) + ".bmp";
-//            SaveAsBmpFile(m_image, LAPI.WIDTH, LAPI.HEIGHT, filename);
-//
-//            filename = dateFormat.format(date) + ".png";
-//            SaveAsPngFile(m_image, LAPI.WIDTH, LAPI.HEIGHT, filename);
-//
-//            long wsqSize = m_cLAPI.CompressToWSQImage (m_hDevice, m_image, bfwsq);
-//            if (wsqSize > 0) {
-//                filename = dateFormat.format(date) + ".wsq";
-//                SaveAsFile(filename, bfwsq, (int)wsqSize);
-//            }
-//        }
-
-
-    }
-
-
-    protected void ON_VIDEO() {
-
-//        m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_ID_ENABLED, R.id.btnOnVideo, 1));
-        m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0,"Put your finger"));
-        int secLevel = Integer.parseInt("3");
-        if (secLevel < 1) secLevel = 1; if (secLevel > 5) secLevel = 5;
-        while (bContinue) {
-            try {
-                int startTime = (int) System.currentTimeMillis();
-                int ret = m_cLAPI.GetImage(m_hDevice, m_image);
-                if (ret == LAPI.NOTCALIBRATED) {
-                    m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, "not Calibrated !").sendToTarget();
-                    break;
-                } else if (ret != LAPI.TRUE) {
-                    m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, "Can't get image !").sendToTarget();
-                    break;
-                }
-                ret = m_cLAPI.IsPressFingerEx(m_hDevice, m_image, false, LAPI.LIVECHECK_THESHOLD[secLevel - 1]);
-
-                if (ret > 50) {
-                    m_fEvent.obtainMessage(MESSAGE_SHOW_IMAGE, LAPI.WIDTH, LAPI.HEIGHT, m_image).sendToTarget();
-                    if (ret == LAPI.FAKEFINGER) {
-                        m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, "warning : Fake Finger !").sendToTarget();
-                        SLEEP(500);
-                        continue;
-                        //break;
-                    }
-                    String msg = String.format("GetImage(%d) = OK : %dms", ret, (int) (System.currentTimeMillis() - startTime));
-                    m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, msg));
-                }
-            }catch (Throwable ex){bContinue=false;}
+            String msg = String.format("GetImage(%d) = OK : %dms", ret, (int)(System.currentTimeMillis() - startTime));
+            m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0,msg));
         }
         bContinue = false;
 //        m_appHandle.obtainMessage(MESSAGE_ID_SETTEXT, R.id.btnOnVideo, R.string.TEXT_VIDEO).sendToTarget();
@@ -371,6 +285,7 @@ public class T801 extends FingerprintManger{
         }
     };
     private void ShowFingerBitmap(byte[] image, int width, int height) {
+        if(m_cLAPI.GetImageQuality(m_hDevice,m_image)<50){return;}
         if (width==0) return;
         if (height==0) return;
         for (int i = 0; i < width * height; i++ ) {
@@ -384,15 +299,12 @@ public class T801 extends FingerprintManger{
                 else RGBbits[i] = Color.rgb(255, 255, 255);
             }
         }
-        Bitmap bmp = Bitmap.createBitmap(RGBbits, width, height, Bitmap.Config.RGB_565);
-        if(m_cLAPI.GetImageQuality(m_hDevice,m_image)>50){
-            interf.on_result_image_obtained(bmp);
-            interf.on_result_obtained(imageToIso(bmp));
-            interf.on_result_image_obtained(bmp);
-            interf.on_result_wsq_obtained(imageToWsq(bmp));
-            SLEEP(500);
-        }
 
+            Bitmap bmp = Bitmap.createBitmap(RGBbits, width, height, Bitmap.Config.RGB_565);
+//        interf.on_result_image_obtained(bmp);
+        interf.on_result_obtained(imageToIso(bmp));
+        interf.on_result_image_obtained(bmp);
+        interf.on_result_wsq_obtained(imageToWsq(bmp));
 //        viewFinger.setImageBitmap(bmp);
     }
 
@@ -449,24 +361,12 @@ public class T801 extends FingerprintManger{
     public void stop() {
         super.stop();
 
+        m_cHAPI.DoCancel();
         bContinue = false;
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                m_cHAPI.DoCancel();
-                CLOSE_DEVICE();
-            }
-        },1000);
-
-
-
+        CLOSE_DEVICE();
     }
-boolean device_open=false;
+
     protected void OPEN_DEVICE() {
-        if(device_open){
-            return;
-        }
-        device_open=true;
         String msg = "OPEN ...";
         m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, msg));
         UsbDevice dev = mHostUSb.hasDeviceOpen();
@@ -478,14 +378,9 @@ boolean device_open=false;
         else m_hDevice = m_cLAPI.OpenDeviceEx(LAPI.SPI_MODE);
         if (m_hDevice == 0) {
             msg = "Can't open device !";
-            Log.e("Opening device","Cant open device");
-
 //            EnableAllButtons(true, false);
             //CLOSE_DEVICE();
         } else {
-            Log.e("Opening device","Device  open");
-
-            startVideo();
             if (LAPI.bInitNetManager) msg = "OpenDevice() = OK";
             else {
                 msg = "OpenDevice() = OK, unable to check live-scan";
@@ -498,10 +393,7 @@ boolean device_open=false;
     }
 
     protected void CLOSE_DEVICE() {
-        if(!device_open){
-            return;
-        }
-        device_open=false;
+
             String msg;
             try {
 
@@ -511,15 +403,12 @@ boolean device_open=false;
                     m_cLAPI.CloseDeviceEx(m_hDevice);
                 }
                 msg = "CloseDevice() = OK";
-                Log.e("Opening device","Device  closed");
 
                 m_hDevice = 0;
                 m_cHAPI.m_hDev = 0;
 
                 m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, msg));
             } catch (Exception E) {
-                Log.e("Opening device","Error closing device");
-
                 msg = "error:" + E.getMessage();
                 m_fEvent.sendMessage(m_fEvent.obtainMessage(MESSAGE_SHOW_TEXT, 0, 0, msg));
                 E.printStackTrace();
