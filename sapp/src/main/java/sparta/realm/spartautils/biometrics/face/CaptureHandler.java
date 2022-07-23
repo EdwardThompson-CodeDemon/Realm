@@ -79,7 +79,7 @@ public class CaptureHandler extends View {
     public CaptureMode captureMode = CaptureMode.Verification;
     public VerificationModel vm = new VerificationModel();
     public boolean replaceFromTrackerOnRegistration = false;//replace or ignoor
-    public boolean replaceOnRegistration = false;//replace or ignoor
+    public boolean replaceOnRegistration = true;//replace or ignoor
     public capturing_interface cpi = new capturing_interface() {
         @Override
         public void OnOkToCapture() {

@@ -24,7 +24,7 @@ import sparta.realm.spartautils.svars;
 
 public class SpartaFaceCamera extends SpartaAppCompactActivity {
     private Preview mPreview;
-    private CaptureHandler mDraw;
+    public CaptureHandler mDraw;
     private final String database = "MemoryR080.dat";
     public static float sDensity = 1.0f;
     private boolean mIsFailed = false;
@@ -67,7 +67,10 @@ public class SpartaFaceCamera extends SpartaAppCompactActivity {
         mDraw.transaction_no = sid;
         mDraw.sDensity = sDensity;
         mDraw.captureMode = CaptureHandler.CaptureMode.Registration;
-mDraw.vm=new VerificationModel();
+        mDraw.replaceFromTrackerOnRegistration= getIntent().getBooleanExtra("replaceFromTrackerOnRegistration", false);
+        mDraw.replaceOnRegistration= getIntent().getBooleanExtra("replaceOnRegistration", false);
+
+        mDraw.vm=new VerificationModel();
         mDraw.cpi = new CaptureHandler.capturing_interface() {
             @Override
             public void OnOkToCapture() {
