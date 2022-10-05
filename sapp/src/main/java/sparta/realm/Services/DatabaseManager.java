@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -1435,6 +1436,28 @@ I thot of using an interface ,dint work
         return objs;
     }
 
+
+    public static HashMap<Integer, Integer> pagerEventMap = new HashMap<>();
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
+        }
+        c.close();
+
+
+        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
+//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
+    }
+
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String rawquery) {
         ArrayList<RM> objs = new ArrayList<RM>();
 //        String table_name=realm.getPackageTable(realm_model.getName());
@@ -1467,6 +1490,11 @@ I thot of using an interface ,dint work
 
     }
 
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, Query query) {
+        return loadObjectArray(realm_model, pagerEventId, searchIndex, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
+
+    }
+
     public <RM> RM loadObject(Class<RM> realm_model, Query query) {
 //        Query q=new Query().setColumns("").setLimit(9).setLimit(0);
         ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
@@ -1490,17 +1518,20 @@ I thot of using an interface ,dint work
 
     }
 
-    public  Object getJsonValue(String pos, JSONObject jo)
-    {
-        Object json=jo;
-        if(!pos.contains(":")){return null;}
-        if(!pos.contains(";")){pos+=";";}
-        for(String s:pos.split(";")){
-            if(s.length()>0) {
+    public Object getJsonValue(String pos, JSONObject jo) {
+        Object json = jo;
+        if (!pos.contains(":")) {
+            return null;
+        }
+        if (!pos.contains(";")) {
+            pos += ";";
+        }
+        for (String s : pos.split(";")) {
+            if (s.length() > 0) {
                 try {
 //            if(json instanceof JSONObject){
                     if (s.split(":")[0].equalsIgnoreCase("JO")) {
-                        json = new JSONTokener(((JSONObject)json).opt(s.split(":")[1]).toString()).nextValue();
+                        json = new JSONTokener(((JSONObject) json).opt(s.split(":")[1]).toString()).nextValue();
 
                     } else if (s.split(":")[0].equalsIgnoreCase("JA")) {
 
@@ -1517,7 +1548,6 @@ I thot of using an interface ,dint work
         }
         return json;
     }
-
 
 
     /*
@@ -2466,9 +2496,10 @@ I thot of using an interface ,dint work
         return saveAppFileFromBytes(outdata);
 
     }
- public static String saveAppFileFromBytes(byte[] file_bytes) {
+
+    public static String saveAppFileFromBytes(byte[] file_bytes) {
         try {
-            return saveAppFileBytes(file_bytes,true);
+            return saveAppFileBytes(file_bytes, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2478,7 +2509,7 @@ I thot of using an interface ,dint work
     public static String saveFileBytes(byte[] file_bytes, boolean encrypt, String full_folder_path) throws Exception {
 
         return encrypt ? saveFileBytes(encryptBytes(appEncryptionKey(""), file_bytes), full_folder_path) :
-                saveFileBytes(file_bytes,full_folder_path);
+                saveFileBytes(file_bytes, full_folder_path);
     }
 
     public static String saveAppFileBytes(byte[] file_bytes, boolean encrypt) throws Exception {
@@ -2515,7 +2546,7 @@ I thot of using an interface ,dint work
     public static String retrieveAppFileBase64(String file_name) {
 
         try {
-            return retrieveAppFileBase64(file_name,true);
+            return retrieveAppFileBase64(file_name, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2543,17 +2574,17 @@ I thot of using an interface ,dint work
 
     public static String save_doc(String base64_bytes) {
         try {
-            base64_bytes=base64_bytes.replace("\\n","").replace("\\","");
+            base64_bytes = base64_bytes.replace("\\n", "").replace("\\", "");
 //            Bitmap bmp = s_bitmap_handler.getImage();
-            String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
+            String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.JPG";
 
             File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
             if (!file.exists()) {
-                Log.e(logTag,"Creating data dir: "+ (file.mkdirs()?"Successfully created":"Failed to create !"));
+                Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
             }
             file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
 
-            try (OutputStream fOutputStream = new FileOutputStream(file)){
+            try (OutputStream fOutputStream = new FileOutputStream(file)) {
 
 
                 fOutputStream.write(Base64.decode(base64_bytes, 0));
@@ -2569,31 +2600,28 @@ I thot of using an interface ,dint work
             return img_name;
 //            return SpartaAppCompactActivity.save_app_image(bmp);
 
-        }catch (Exception ex){
-
+        } catch (Exception ex) {
 
 
         }
 
 
-
-
-
         return base64_bytes;
     }
+
     public static String save_doc_(String base64_bytes) {
         try {
-            base64_bytes=base64_bytes.replace("\\n","").replace("\\","");
+            base64_bytes = base64_bytes.replace("\\n", "").replace("\\", "");
             Bitmap bmp = s_bitmap_handler.getImage(Base64.decode(base64_bytes, 0));
 
             return SpartaAppCompactActivity.save_app_image(bmp);
 
-        }catch (Exception ex){
-            String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
+        } catch (Exception ex) {
+            String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.JPG";
 
             File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
             if (!file.exists()) {
-                Log.e(logTag,"Creating data dir: "+ (file.mkdirs()?"Successfully created":"Failed to create !"));
+                Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
             }
             file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
             byte[] file_bytes = Base64.decode(base64_bytes, 0);
@@ -2624,9 +2652,6 @@ I thot of using an interface ,dint work
         }
 
 
-
-
-
         return base64_bytes;
     }
 
@@ -2634,7 +2659,7 @@ I thot of using an interface ,dint work
         String res = "";
         try {
 //            res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(new File(svars.current_app_config(act).file_path_employee_data, data_name).getAbsolutePath())), 0);
-            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(new File(svars.current_app_config(act).file_path_employee_data, data_name)),0);
+            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(new File(svars.current_app_config(act).file_path_employee_data, data_name)), 0);
             return res;
         } catch (Exception ex) {
             Log.e("Data file retreival :", " " + ex.getMessage());
