@@ -47,7 +47,6 @@ import sparta.realm.BuildConfig;
 
 import sparta.realm.R;
 import sparta.realm.Realm;
-import sparta.realm.realmclient.RealmClient;
 import sparta.realm.spartamodels.db_class;
 import sparta.realm.spartamodels.dyna_data_obj;
 import sparta.realm.spartamodels.dynamic_property;
@@ -1187,7 +1186,7 @@ if(maindata[0]==null){
                                 Log.e(ssd.service_name + " :: RX", "IS OK " + den);
                                 if (den>=0){
                                     if(ssd.storage_mode_check){
-                                        Log.e(RealmClient.logTag,"Started storage checking ...");
+                                        Log.e(logTag,"Started storage checking ...");
 
                                         for (int i =0;i<temp_ar.length();i++) {
                                             JSONObject jo = temp_ar.getJSONObject(i);
@@ -1202,13 +1201,13 @@ if(maindata[0]==null){
                                                 try {
                                                     jo.put(k, DatabaseManager.save_doc(jo.getString(k)));
                                                 }catch (Exception e){
-                                                    Log.e(RealmClient.logTag,"Base64 image error:"+e.getMessage());
+                                                    Log.e(logTag,"Base64 image error:"+e.getMessage());
 
                                                 }
 
                                             }
                                         }
-                                        Log.e(RealmClient.logTag,"Done storage checking ...");
+                                        Log.e(logTag,"Done storage checking ...");
 
                                     }
                                      synchronized (this) {
@@ -1907,7 +1906,7 @@ if(maindata[0]==null){
                     continue;
                 }
                 if(ssd.storage_mode_check) {
-                    Log.e(RealmClient.logTag, "Started storage checking ...");
+                    Log.e(logTag, "Started storage checking ...");
 
                     Iterator keys = obj.keys();
                         List<String> key_list = new ArrayList<>();
@@ -1921,7 +1920,7 @@ if(maindata[0]==null){
                             try {
                                 obj.put(k, DatabaseManager.get_saved_doc_base64(obj.getString(k)));
                             } catch (Exception e) {
-                                Log.e(RealmClient.logTag, "Base64 conversion error:" + e.getMessage());
+                                Log.e(logTag, "Base64 conversion error:" + e.getMessage());
 
                             }
 
@@ -1983,7 +1982,7 @@ if(maindata[0]==null){
 
                                                 cv.put("sync_status", sync_status.syned.ordinal());
                                                 cv.put("sid", response.getJSONObject(app_config.SYNC_USE_CAPS?"Result":"result").getString("id"));
-                                                sdb.database.rawExecSQL("DELETE FROM "+table_name+" WHERE sid='"+cv.get("sid")+"'");
+                                                sdb.database.rawExecSQL("DELETE FROM "+table_name+" WHERE sid='"+cv.get("sid")+"' AND _id<>"+finalLid);
                                                 sdb.database.update(table_name, cv, "_id=" + finalLid, null);
 
 
