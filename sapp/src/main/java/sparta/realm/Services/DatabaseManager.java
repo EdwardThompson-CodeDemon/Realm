@@ -1496,7 +1496,6 @@ I thot of using an interface ,dint work
     }
 
     public <RM> RM loadObject(Class<RM> realm_model, Query query) {
-//        Query q=new Query().setColumns("").setLimit(9).setLimit(0);
         ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
         return res.size() > 0 ? res.get(0) : null;
 
