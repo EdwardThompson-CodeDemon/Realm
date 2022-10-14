@@ -711,13 +711,13 @@ public class CaptureHandler extends View {
 
     void draw_circle_success(Rect r, Canvas c) {
         Drawable d = getResources().getDrawable(R.drawable.bg_circle_detect_result_success, null);
-        d.setBounds(r.left - 120, r.top - 100, r.right + 120, r.bottom + 200);
+        d.setBounds(r.left - 120, r.top - 100, r.right + 120, r.bottom + 400);
         d.draw(c);
     }
   void draw_circle_unknown(Rect r, Canvas c) {
         Drawable d = getResources().getDrawable(R.drawable.bg_circle_detect_result_unknown, null);
 //        d.setBounds(r.left - 120, r.top + 100, r.right + 120, r.bottom + 500);
-      d.setBounds(r.left - 120, r.top - 100, r.right + 120, r.bottom + 200);
+      d.setBounds(r.left - 120, r.top - 100, r.right + 120, r.bottom + 400);
       d.draw(c);
     }
 
