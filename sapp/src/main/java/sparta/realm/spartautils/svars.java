@@ -62,50 +62,53 @@ public class svars {
 
 
     public static String device_code(Activity act) {
-        String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
-        if (null != tm) {
-            if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        String deviceUniqueIdentifier = "";
+        try {
+            TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
+            if (null != tm) {
+                if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(act,
-                        new String[]{Manifest.permission.READ_PHONE_STATE},
-                        1);
-                return "0";
+                    ActivityCompat.requestPermissions(act, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+                    deviceUniqueIdentifier = "0";
+                }
+                deviceUniqueIdentifier = tm.getDeviceId();
             }
-            deviceUniqueIdentifier = tm.getDeviceId();
+        } catch (Exception ex) {
         }
 
-        deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
-//        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
+        try{
+            deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }catch (Exception EX){}
         return deviceUniqueIdentifier;
 
     }
 
 
     public static String device_code(Context act) {
-        String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
-        if (null != tm) {
-            if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        String deviceUniqueIdentifier = "";
+        try {
+            TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
+            if (null != tm) {
+                if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
-
-                return "0";
+                    ActivityCompat.requestPermissions(act,new String[]{Manifest.permission.READ_PHONE_STATE},1);
+                    deviceUniqueIdentifier= "0";
+                }
+                deviceUniqueIdentifier = tm.getDeviceId();
             }
-            deviceUniqueIdentifier = tm.getDeviceId();
+        } catch (Exception ex) {
         }
 
-        deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
+     try{
+         deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
+     }catch (Exception EX){}
 //        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
         return deviceUniqueIdentifier;
 
     }
 
-    public static String transaction_code(Context act) {
 
 
-        return device_code(act).substring(device_code(act).length() - 12) + gett_date();
-
-    }
 
     public static int getCpuCores() {
         if (Build.VERSION.SDK_INT >= 17) {
@@ -142,32 +145,14 @@ public class svars {
             return 1;
         }
     }
+
     public static String getTransactionNo() {
-        return System.currentTimeMillis()+"::"+new Random().nextDouble()+"::"+new Random().nextDouble();
+        return System.currentTimeMillis() + "::" + new Random().nextDouble() + "::" + new Random().nextDouble();
 
     }
+
     public static String device_specific_transaction_no(Context act) {
-        String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) act.getSystemService(Context.TELEPHONY_SERVICE);
-        if (null != tm) {
-
-
-            if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                //  return TODO;
-            }
-            deviceUniqueIdentifier = tm.getDeviceId();
-        }
-
-        deviceUniqueIdentifier = deviceUniqueIdentifier + "|" + Settings.Secure.getString(act.getContentResolver(), Settings.Secure.ANDROID_ID);
-//        Log.e("Dev code =>", "" + deviceUniqueIdentifier);
-        return deviceUniqueIdentifier + "_" + System.currentTimeMillis() + "_" + svars.user_id(act);
+        return device_code(act) + "_" + System.currentTimeMillis() + "_" + svars.user_id(act);
     }
 
     public static String get_ip_forcefully() {
@@ -266,10 +251,7 @@ public class svars {
     }
 
 
-
-
     public static OPERATION_MODE APP_OPERATION_MODE = OPERATION_MODE.LIVE;
-
 
 
     public static String DB_NAME = "android_toolbox.spartadb_v2";
@@ -447,8 +429,8 @@ public class svars {
 
     }
 
-    public static void set_current_version( String current_version) {
-        Context act= Realm.context;
+    public static void set_current_version(String current_version) {
+        Context act = Realm.context;
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
         saver.putString("current_version", current_version);
@@ -458,7 +440,7 @@ public class svars {
 
     public static void set_current_app_name(String current_app_name) {
 
-        Context act= Realm.context;
+        Context act = Realm.context;
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
         saver.putString("current_app_name", current_app_name);
@@ -467,7 +449,7 @@ public class svars {
     }
 
     public static String current_version() {
-        Context context= Realm.context;
+        Context context = Realm.context;
 
         SharedPreferences prefs = context.getSharedPreferences(svars.sharedprefsname, context.MODE_PRIVATE);
         return prefs.getString("current_version", "R.E.A.L.M");
@@ -476,7 +458,7 @@ public class svars {
     }
 
     public static String current_app_name() {
-        Context context= Realm.context;
+        Context context = Realm.context;
 
         SharedPreferences prefs = context.getSharedPreferences(svars.sharedprefsname, context.MODE_PRIVATE);
         return prefs.getString("current_app_name", "R.E.A.L.M");
@@ -1471,6 +1453,7 @@ public class svars {
         }
 
     }
+
     public static String get_db_time_from_user_time(String db_date) {
 
 
