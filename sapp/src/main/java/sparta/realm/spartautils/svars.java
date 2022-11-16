@@ -91,7 +91,7 @@ public class svars {
             if (null != tm) {
                 if (ActivityCompat.checkSelfPermission(act, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(act,new String[]{Manifest.permission.READ_PHONE_STATE},1);
+                  //  ActivityCompat.requestPermissions(act,new String[]{Manifest.permission.READ_PHONE_STATE},1);
                     deviceUniqueIdentifier= "0";
                 }
                 deviceUniqueIdentifier = tm.getDeviceId();
