@@ -5,24 +5,26 @@ import android.graphics.drawable.Drawable;
 public class module {
 
 
-    public String code,name;
-    public boolean active=false;
+    public String code, name;
+    public boolean active = false;
     public Drawable icon;
 
-    public module()
-    {
+    public module() {
 
     }
 
-        public module(String code, String name, boolean active)
-    {
-
-       this.name=name;
-        this.code=code;
- this.active=active;
+    public module(String code, String name, boolean active) {
+        this.name = name;
+        this.code = code;
+        this.active = active;
 
 
-
+    }
+ public module(Drawable icon,String code, String name, boolean active) {
+        this.icon = icon;
+        this.name = name;
+        this.code = code;
+        this.active = active;
 
 
     }

@@ -177,6 +177,11 @@ public class SynchronizationManager {
 
         ;
 
+        default void on_api_error(sync_service_description ssd, String error) {
+        }
+
+        ;
+
         void on_status_changed(String status);
 
         void on_info_updated(String status);
@@ -1092,7 +1097,7 @@ public class SynchronizationManager {
                                     error_data += current;
                                 }
                                 Log.e(ssd.service_name + " :: TX", "error => " + error_data);
-
+                                ssi.on_api_error(ssd,error_data);
                             }
 //                            maindata[0] = new JSONObject(data);
                             maindata[0] = Main_handler.OnDownloadedObject(ssd, filter_object[0], new JSONObject(data));
@@ -1256,6 +1261,7 @@ public class SynchronizationManager {
 
                         } catch (Exception e) {
                             Log.e(ssd.service_name + ":: TX", " error => " + e.getMessage());
+                            ssi.on_api_error(ssd,e.getMessage());
                             e.printStackTrace();
                         } finally {
                             if (httpURLConnection != null) {
@@ -1912,6 +1918,7 @@ public class SynchronizationManager {
                                                 }
 
                                             } else {
+                                                ssi.on_api_error(ssd,response.toString());
                                                 ContentValues cv = new ContentValues();
                                                 cv.put("data_status", "e");
 
@@ -1923,6 +1930,7 @@ public class SynchronizationManager {
                                                 sdb.log_String(act, ssd.service_name + ":: upload::error::" + error);
                                             }
                                         } catch (Exception ex) {
+                                            ssi.on_api_error(ssd,response.toString());
                                             ssi.on_status_changed("Update failed ...  =>" + finalLid);
                                             ssi.on_status_code_changed(666);
                                             String error = " " + upload_object.toString() + "\n" + ex.getMessage();
@@ -1934,6 +1942,7 @@ public class SynchronizationManager {
                                     @Override
                                     public void onError(ANError anError) {
                                         Log.e("Response error=>", ssd.service_name + ":: upload =>" + anError.getErrorBody());
+                                        ssi.on_api_error(ssd,anError.getErrorBody());
                                         sdb.log_String(act, ssd.service_name + ":: upload::error::" + anError.getErrorBody());
                                         anError = Main_handler.OnUploadedObjectError(ssd, upload_object, anError);
                                         if (anError == null) {
