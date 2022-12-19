@@ -399,10 +399,7 @@ Log.e("Compression error =>"," "+ex.getMessage());
 
 
     }
-    public void capture_fingerprint()
-    {
 
-    }
 
     protected void CheckDevice()
     {

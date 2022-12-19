@@ -56,6 +56,8 @@
         <activity android:name=".spartautils.biometrics.face.SpartaFaceCamera"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".spartautils.NFC.NfcProbe" />
+        <activity android:name=".spartautils.qrcode.SmallCaptureActivity" />
+        <activity android:name=".Activities.RealmFaceAndFpVerificationActivity" />
 
         <service
             android:name=".spartautils.app_control.services.App_updates"

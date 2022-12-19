@@ -15,8 +15,7 @@ import sparta.realm.spartautils.svars;
 
 public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivity implements sfp_i {
     public fp_handler_wall_mounted fph_wall_mounted;
-  public  fp_handler_stf_usb_8_inch fph_8_inch;
-  //  fp_handler_biomini fph_biomini;
+ // public  fp_handler_stf_usb_8_inch fph_8_inch;
   public BTV2 fph_bt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
         fingerprintManger.stop();
         if (svars.current_device()== svars.DEVICE.UAREU.ordinal())
         {
-            try{   fph_8_inch.close();}catch (Exception ex){}
+          //  try{   fph_8_inch.close();}catch (Exception ex){}
         }else if(svars.current_device()== svars.DEVICE.WALL_MOUNTED.ordinal())
         {
             try{    fph_wall_mounted.close();}catch (Exception ex){}
@@ -95,7 +94,7 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
         fingerprintManger.start();
         if (svars.current_device()== svars.DEVICE.UAREU.ordinal())
         {
-            fph_8_inch=new fp_handler_stf_usb_8_inch(act);
+         //   fph_8_inch=new fp_handler_stf_usb_8_inch(act);
         }else if(svars.current_device()== svars.DEVICE.WALL_MOUNTED.ordinal())
         {
             fph_wall_mounted=new fp_handler_wall_mounted(act);
@@ -147,7 +146,9 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     public void onDeviceClosed() {
 
     }
+    public void onMatchFound(String sid, String data_index, String match_time, int v_type, int verrification_mode) {
 
+    }
     @Override
     public void on_result_obtained(String capt_result) {
 

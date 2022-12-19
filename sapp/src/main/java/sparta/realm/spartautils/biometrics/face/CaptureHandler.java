@@ -367,7 +367,7 @@ public class CaptureHandler extends View {
                                 canvas.drawText(" Your previous record is being removed", (mFacePositions[i].x1 + mFacePositions[i].x2) / 2, mFacePositions[i].y2 + shift, mPaintBlue);
                             } else {
 
-//                                cpi.OnNotOkToCapture();
+                                cpi.OnNotOkToCapture();
 //                                cpi.OnOkToCapture(male ? 1 : 0, age);
 //							      canvas.drawText(IDs[0] + " Person exists", (mFacePositions[i].x1 + mFacePositions[i].x2) / 2, mFacePositions[i].y2 + shift, mPaintBlue);
                                 canvas.drawText("Person exists", (mFacePositions[i].x1 + mFacePositions[i].x2) / 2, mFacePositions[i].y2 + shift, mPaintBlue);
@@ -633,7 +633,7 @@ public class CaptureHandler extends View {
 
     void save_face(FSDK.HImage frame, long tracker_index, String transaction_no, int gender, float age) {
 
-        save_face_to_tracker(tracker_index, transaction_no);
+//        save_face_to_tracker(tracker_index, transaction_no);
         String img_name = "";
         img_name = "TA_DAT" + System.currentTimeMillis() + "FB_SCH.JPG";
         FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).file_path_employee_data + img_name);

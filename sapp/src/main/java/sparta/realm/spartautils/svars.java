@@ -60,7 +60,38 @@ public class svars {
     public static int decimal_extent = 2;
     public static boolean show_categories = true;
 
+    public static void setWorkingObject( Object working_object, String id) {
+        Context act=Realm.context;
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(working_object);
 
+        saver.putString("wo::" + id + working_object.getClass().getName(), json);
+        saver.commit();
+
+
+    }
+
+    public static <t> t workingObject(Class<t> s, String id) {
+        Context act=Realm.context;
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString("wo::" + id + s.getName(), "");
+        if (!json.equals("")) {
+            return gson.fromJson(json, s);
+        } else {
+            return null;
+        }
+//        try {
+
+//            return emp==null?t.newInstance():emp ;
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+    }
     public static String device_code(Activity act) {
         String deviceUniqueIdentifier = "";
         try {
@@ -294,22 +325,6 @@ public class svars {
 
     public static final String Farmer_advances_upload_link = "https://weightcapture.cs4africa.com/ivory_capagri/Loan/mainPesa/IvoryAdvances";
 
-
-//    public static final String Cocoa_collection_download_link ="/WeightCAPTURE/LPO/LPODetails/GetCocoaFieldCollections";
-//    public static final String Fingerprint_downloading_link = "/WeightCAPTURE/Members/Members/GetMemberFingerprints";
-//    public static final String Weighbridge_tag_download_link ="/WeightCAPTURE/WeighBridgeDetails/PullCocoaWeighbridgeTags";
-
-
-    //   public static String WeightCAPTURE = "WeightCAPTURE/";
-  /*  public static String Center_download_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleSessionWeighbridgeDispatch";
-    public static String Update_dispatch_link = surl + WeightCAPTURE + "LPO/LPODetails/UpdateDispatchCollectionSession";
-    public static String fetch_fingerprints_link = surl + WeightCAPTURE + "Members/Members/GetMemberFingerprints";
-    public static String pull_collections_link = surl + WeightCAPTURE + "LPO/LPODetails/GetCocoaFieldCollections";
-    public static String pull_weighbridge_collections_link = surl + WeightCAPTURE + "WeighBridgeDetails/PullCocoaWeighbridgeTags";
-    public static String send_weights_update_link = surl + WeightCAPTURE + "WeighBridgeDetails/UpdateWeighBridgeCocoaTag";
-    public static String send_capagri_link = "https://weightcapture.cs4africa.com/ivory_capagri/Loan/mainPesa/IvoryAdvances";
-    public static String receiving_session_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleReceivingSession";
-    public static String agent_totals_link = surl + WeightCAPTURE + "LPO/LPODetails/AddVehicleReceivingSession";*/
 
 
     public static String Global_data_download_link = Mainlink + "/MobiServices/GeneralData/GetGeneralData";
@@ -736,134 +751,8 @@ public class svars {
     public static int matching_acuracy = 50;//%
     public static int matching_error_margin = 200;//%
 
-    public static boolean allow_employee_edition(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("allow_employee_edition", current_app_config(Realm.context).allow_employee_details_edition);
-
-    }
-
-    public static void set_allow_employee_edition(Context act, boolean allow_employee_edition) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putBoolean("allow_employee_edition", allow_employee_edition);
-        saver.commit();
-
-    }
 
 
-    public static String previously_selected_activity_sid(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("previously_selected_activity_sid", null);
-
-    }
-
-    public static void set_previously_selected_activity_sid(Context act, String previously_selected_activity_sid) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putString("previously_selected_activity_sid", previously_selected_activity_sid);
-        saver.commit();
-
-    }
-
-    public static String previously_selected_reason_sid(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("previously_selected_reason_sid", null);
-
-    }
-
-    public static void set_previously_selected_reason_sid(Context act, String previously_selected_activity_sid) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putString("previously_selected_reason_sid", previously_selected_activity_sid);
-        saver.commit();
-
-    }
-
-    public static String previously_selected_activity_area_sid(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("previously_selected_activity_area_sid", null);
-
-    }
-
-    public static void set_previously_selected_activity_area_sid(Context act, String previously_selected_activity_area_sid) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putString("previously_selected_activity_area_sid", previously_selected_activity_area_sid);
-        saver.commit();
-
-    }
-
-    public static boolean auto_verify_on_match_found(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("auto_verify_on_match_found", true);
-
-    }
-
-    public static void set_auto_verify_on_match_found(Context act, boolean auto_verify_on_match_found) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putBoolean("auto_verify_on_match_found", auto_verify_on_match_found);
-        saver.commit();
-
-    }
-
-    public static boolean save_verification_area_on_verrification_mode_verify(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("save_verification_area_on_verrification_mode_verify", true);
-
-    }
-
-    public static void set_save_verification_area_on_verrification_mode_verify(Context act, boolean save_verification_area_on_verrification_mode_verify) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putBoolean("save_verification_area_on_verrification_mode_verify", save_verification_area_on_verrification_mode_verify);
-        saver.commit();
-
-    }
-
-    public static boolean save_verification_activity_on_verrification_mode_verify(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("save_verification_activity_on_verrification_mode_verify", true);
-
-    }
-
-    public static void set_save_verification_activity_on_verrification_mode_verify(Context act, boolean save_verification_activity_on_verrification_mode_verify) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putBoolean("save_verification_activity_on_verrification_mode_verify", save_verification_activity_on_verrification_mode_verify);
-        saver.commit();
-
-    }
-
-    public static boolean use_bt_room_access_device(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getBoolean("use_bt_room_access_device", false);
-
-    }
-
-    public static void set_use_bt_room_access_device(Context act, boolean use_bt_room_access_device) {
-
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putBoolean("use_bt_room_access_device", use_bt_room_access_device);
-        saver.commit();
-
-    }
 
     public static boolean use_bt_fp_device(Context act) {
 
@@ -1034,20 +923,6 @@ public class svars {
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
 
         saver.putString("site_name", site_name);
-        saver.commit();
-    }
-
-    public static int receipt_period(Context act) {
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getInt("recei_period", -1);
-
-    }
-
-    public static void set_receipt_period(Context act, int receipt_period) {
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putInt("recei_period", receipt_period);
         saver.commit();
     }
 
@@ -1284,21 +1159,8 @@ public class svars {
         saver.commit();
     }
 
-    public static String consula(Context act) {
 
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        return prefs.getString("consula", null);
-
-    }
-
-    public static void set_consula(Context act, String consula) {
-        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-        saver.putString("consula", consula);
-        saver.commit();
-    }
-
-    public static int custom_data_index(Context act) {
+    public static int incrementData(Context act) {
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
         SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
 
