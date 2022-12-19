@@ -323,8 +323,8 @@ public void triger_sync()
             public void onProgressChanged(RubberSeekBar rubberSeekBar, int i, boolean b) {
                 ((TextView)aldv.findViewById(R.id.time_span)).setText(timesp(i*60));
                 svars.set_sync_interval_mins(act,i);
-                sb.syncregisterdtimer.cancel();
-                sb.syncregisterdtimer=null;
+                sb.synchronizationTimer.cancel();
+                sb.synchronizationTimer =null;
                 sb.InitialiseAutosync();
 
             }
