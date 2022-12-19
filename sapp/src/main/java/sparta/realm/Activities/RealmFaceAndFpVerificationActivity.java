@@ -37,7 +37,7 @@ public class RealmFaceAndFpVerificationActivity extends SpartaAppCompactFingerPr
 
     boolean face_initialized = false;
 
-    void initFaceRecognition(int cameraIndex, int cameraRotation, Preview preview, CaptureHandler captureHandler, String databaseName, DataMatcher.verification_type verificationType, VerificationModel verificationModel) {
+    public void initFaceRecognition(int cameraIndex, int cameraRotation, Preview preview, CaptureHandler captureHandler, String databaseName, DataMatcher.verification_type verificationType, VerificationModel verificationModel) {
         this.mPreview = preview;
         this.mDraw = captureHandler;
         this.databaseName = databaseName;
