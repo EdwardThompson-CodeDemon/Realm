@@ -47,7 +47,7 @@ public class FingerprintManger {
     }
 
 
-    public String imageToIso(Bitmap bmp) {
+    public static String imageToIso(Bitmap bmp) {
         byte[] wsq = new WSQEncoder(bmp).encode();
         Log.e("Converted wsq1", "" + wsq.length);
         CompressionImpl cmp = new CompressionImpl();
@@ -74,7 +74,7 @@ public class FingerprintManger {
     }
 
 
-    public byte[] imageToWsq(Bitmap bmp) {
+    public static byte[] imageToWsq(Bitmap bmp) {
 
         try {
 
@@ -91,7 +91,7 @@ public class FingerprintManger {
     }
 
 
-    public String wsqToIso(byte[] wsq) {
+    public static String wsqToIso(byte[] wsq) {
         CompressionImpl cmp = new CompressionImpl();
         try {
             cmp.Start();

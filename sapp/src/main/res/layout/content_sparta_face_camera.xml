@@ -10,17 +10,18 @@
     <sparta.realm.spartautils.biometrics.face.Preview
         android:id="@+id/face_graphics_preview"
         android:layout_width="match_parent"
+        android:layout_centerInParent="true"
 
         android:background="@null"
-        android:visibility="gone"
-        android:layout_height="match_parent"/>
+        android:visibility="visible"
+        android:layout_height="wrap_content"/>
     <sparta.realm.spartautils.biometrics.face.CaptureHandler
         android:layout_width="match_parent"
         android:background="@null"
-
-         android:visibility="gone"
+android:layout_centerInParent="true"
+         android:visibility="visible"
         android:id="@+id/face_graphics_overlay"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 <LinearLayout
     android:layout_width="wrap_content"
     android:orientation="vertical"

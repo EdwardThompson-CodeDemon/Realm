@@ -268,15 +268,8 @@ public class CaptureHandler extends View {
         //int ImageHeight = mImageHeight;
         if (rotated) {
             ImageWidth = mImageHeight;
-            //ImageHeight = mImageWidth;
-            //FSDK.CopyImage(Image, s_img);
-            if (svars.current_device() == svars.DEVICE.WALL_MOUNTED.ordinal()) {
-                FSDK.RotateImage90(Image, -1, RotatedImage);
-                //FSDK.MirrorImage(RotatedImage, false);
-            } else {
-                FSDK.RotateImage90(Image, -1, RotatedImage);
-
-            }
+            FSDK.RotateImage90(Image, -1, RotatedImage);
+            FSDK.MirrorImage(RotatedImage, false);
         } else {
             FSDK.CopyImage(Image, RotatedImage);
         }

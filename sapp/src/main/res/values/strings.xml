@@ -577,5 +577,8 @@
     <string name="receipt_withdraw_date">Receipt withdraw date</string>
 
 
+    <string name="ACTION_USB_PERMISSION">com.famoco.morphodemo.USB_PERMISSION</string>
+
+
 </resources>
 
