@@ -2842,7 +2842,7 @@ I thot of using an interface ,dint work
                 progres_layout.setVisibility(View.GONE);
 
                 update_date.setText("Update check date : " + svars.version_check_time(act));
-                version.setText("Current Version : " + BuildConfig.VERSION_NAME);
+                version.setText("Current Version : " + svars.current_version());
 
                 version_list.setAdapter(new apk_versions_adapter(act, finalVersions));
                 version_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -2906,11 +2906,11 @@ I thot of using an interface ,dint work
                                             JSONObject jj = maindata[0].getJSONArray("versions").getJSONObject(i);
                                             finalVersions.add(new apk_version(jj.getString("id"), jj.getString("version_name"), jj.getString("version_code"), jj.getString("date"), jj.getString("path"), jj.getString("status")));
                                             if (jj.getString("status").equalsIgnoreCase("1")) {
-                                                if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(jj.getString("version_name")) | BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))) {
+                                                if (!svars.current_version().equalsIgnoreCase(jj.getString("version_name"))/* | BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))*/) {
                                                     act.runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            version.setText("Current Version : " + BuildConfig.VERSION_NAME + " Out of date");
+                                                            version.setText("Current Version : " + svars.current_version() + " Out of date");
                                                             version.setTextColor(Color.RED);
                                                             version_list.setAdapter(new apk_versions_adapter(act, finalVersions));
                                                             // Toast.makeText(act, "App out of date", Toast.LENGTH_LONG).show();
@@ -2920,7 +2920,7 @@ I thot of using an interface ,dint work
                                                     act.runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            version.setText("Current Version : " + BuildConfig.VERSION_NAME + " Latest");
+                                                            version.setText("Current Version : " + svars.current_version()+ " Latest");
                                                             version.setTextColor(Color.GREEN);
                                                             // Toast.makeText(act, "App out of date", Toast.LENGTH_LONG).show();
                                                             version_list.setAdapter(new apk_versions_adapter(act, finalVersions));

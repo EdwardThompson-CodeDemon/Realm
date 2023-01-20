@@ -1072,7 +1072,7 @@ public class SynchronizationManager {
                             JSONObject jj = maindata.getJSONArray("versions").getJSONObject(i);
 
                             if (jj.getString("status").equalsIgnoreCase("1")) {
-                                if (!svars.current_version().equalsIgnoreCase(jj.getString("version_name")) | BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))) {
+                                if (!svars.current_version().equalsIgnoreCase(jj.getString("version_name")) /*| BuildConfig.VERSION_CODE != Integer.parseInt(jj.getString("version_code"))*/) {
 //                                            act.runOnUiThread(new Runnable() {
 //                                                @Override
 //                                                public void run() {
