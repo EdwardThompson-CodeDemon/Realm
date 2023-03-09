@@ -6,7 +6,7 @@ public class Query {
     public String[] columns, tableFilters, order_filters, queryParameters;
     public boolean order_asc;
     public int limit, offset;
-    public LinkedHashMap<String, Boolean> orderFilters;
+    public LinkedHashMap<String, Boolean> orderFilters=new LinkedHashMap<>();
 
     public Query setColumns(String... columns) {
         this.columns = columns;

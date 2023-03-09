@@ -55,7 +55,7 @@ public class modules_adapter extends BaseAdapter {
         module_name.setText(fiel.name);
         module_icon.setImageDrawable(fiel.icon);
 //        module_icon.setColorFilter(Color.GRAY);
-        
+
 
 
 
