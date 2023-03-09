@@ -166,7 +166,7 @@ long[] filesSizesFromRawString(String input)
     while(index != -1){
         index = input.indexOf(filePlaceHolderPrefix, index);
         if (index != -1) {
-            indexes.add(index);
+//            indexes.add(index);
             index++;
         }
     }
@@ -186,14 +186,13 @@ long[] filesSizesFromRawString(String input)
 
     void authenticate() {
 
-//sendMessage(System.currentTimeMillis()+"\u001E1\u001E0\u001Edemo\u001Edemo123");
     }
 
 
  @Override
     public void sendData(String data,ArrayList<File> files) {
         super.sendData(data);
-        sendMessage(data);
+//        sendMessage(data);
     }
 
     public void sendMessage(String message,int total_files_size,ArrayList<File> files){
