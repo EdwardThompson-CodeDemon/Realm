@@ -451,9 +451,10 @@ public class SynchronizationManager {
                                 }
                                 Log.e(ssd.service_name + " :: RX", "IS OK " + den);
                                 if (den >= 0) {
+                                    boolean storage_fields_converted_ok=true;
                                     if (ssd.storage_mode_check) {
                                         Log.e(ssd.service_name, "Started storage checking ...");
-
+a:
                                         for (int i = 0; i < temp_ar.length(); i++) {
                                             JSONObject jo = temp_ar.getJSONObject(i);
                                             Iterator keys = jo.keys();
@@ -465,10 +466,16 @@ public class SynchronizationManager {
 
                                             for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
                                                 try {
-                                                    jo.put(k, DatabaseManager.save_doc(jo.getString(k)));
+                                                    String saved_file_name= DatabaseManager.save_doc(jo.getString(k));
+                                                    if(saved_file_name==null){
+                                                        storage_fields_converted_ok=false;
+                                                        break a;
+                                                    }
+                                                    jo.put(k,saved_file_name);
                                                 } catch (Exception e) {
                                                     Log.e(logTag, "Base64 image error:" + e.getMessage());
-
+                                                    storage_fields_converted_ok=false;
+                                                    break a;
                                                 }
 
                                             }
@@ -476,35 +483,37 @@ public class SynchronizationManager {
                                         Log.e(ssd.service_name, "Done storage checking ...");
 
                                     }
-                                    synchronized (this) {
-                                        String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
-                                        String sidz = ins[0][0];
-                                        String sidz_inactive = ins[0][1];
-                                        String[] qryz = ins[1];
-                                        int q_length = qryz.length;
-                                        temp_ar = null;
-                                        //  while(dbh.database.inTransaction()){Log.e("Waiting .. ","In transaction ");}
-                                        ssi.on_status_changed("Synchronizing " + ssd.service_name);
+                                    if(storage_fields_converted_ok) {
+                                        synchronized (this) {
+                                            String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
+                                            String sidz = ins[0][0];
+                                            String sidz_inactive = ins[0][1];
+                                            String[] qryz = ins[1];
+                                            int q_length = qryz.length;
+                                            temp_ar = null;
+                                            //  while(dbh.database.inTransaction()){Log.e("Waiting .. ","In transaction ");}
+                                            ssi.on_status_changed("Synchronizing " + ssd.service_name);
 
-                                        DatabaseManager.database.beginTransaction();
-                                        DatabaseManager.database.execSQL("INSERT INTO CP_" + ssd.table_name + " SELECT * FROM " + ssd.table_name + " WHERE sid in " + sidz + " AND sync_status=" + sync_status.pending.ordinal() + "");
+                                            DatabaseManager.database.beginTransaction();
+                                            DatabaseManager.database.execSQL("INSERT INTO CP_" + ssd.table_name + " SELECT * FROM " + ssd.table_name + " WHERE sid in " + sidz + " AND sync_status=" + sync_status.pending.ordinal() + "");
 
-                                        for (int i = 0; i < q_length; i++) {
-                                            DatabaseManager.database.execSQL(qryz[i]);
-                                            double num = (double) i + 1;
-                                            double per = (num / q_length) * 100.0;
-                                            ssi.on_secondary_progress_changed((int) per);
-                                            //ssi.on_info_updated("Members :"+num+"/"+den+"    Total local members :"+sdb.employee_count());
-                                            ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(sdb.get_record_count(ssd.table_name, ssd.table_filters)));
-                                        }
+                                            for (int i = 0; i < q_length; i++) {
+                                                DatabaseManager.database.execSQL(qryz[i]);
+                                                double num = (double) i + 1;
+                                                double per = (num / q_length) * 100.0;
+                                                ssi.on_secondary_progress_changed((int) per);
+                                                //ssi.on_info_updated("Members :"+num+"/"+den+"    Total local members :"+sdb.employee_count());
+                                                ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(sdb.get_record_count(ssd.table_name, ssd.table_filters)));
+                                            }
 
-                                        DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE data_status='false'");
+                                            DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE data_status='false'");
 //                                         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sid IN("+sidz_inactive+")AND sync_status<>" + sync_status.pending.ordinal());
 //                                         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sid IN("+DatabaseManager.conccat_sql_string(sidz_inactive)+")AND sync_status<>" + sync_status.pending.ordinal());
-                                        DatabaseManager.database.execSQL("REPLACE INTO " + ssd.table_name + " SELECT * FROM CP_" + ssd.table_name + "");
-                                        DatabaseManager.database.execSQL("DELETE FROM CP_" + ssd.table_name + "");
-                                        DatabaseManager.database.setTransactionSuccessful();
-                                        DatabaseManager.database.endTransaction();
+                                            DatabaseManager.database.execSQL("REPLACE INTO " + ssd.table_name + " SELECT * FROM CP_" + ssd.table_name + "");
+                                            DatabaseManager.database.execSQL("DELETE FROM CP_" + ssd.table_name + "");
+                                            DatabaseManager.database.setTransactionSuccessful();
+                                            DatabaseManager.database.endTransaction();
+                                        }
                                     }
                                 }
 

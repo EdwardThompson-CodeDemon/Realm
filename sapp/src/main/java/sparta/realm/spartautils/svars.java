@@ -377,15 +377,6 @@ public class svars {
 
     }
 
-    public static member working_employee(Activity act) {
-        member emp = null;
-
-        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = prefs.getString("working_employee", "");
-        emp = gson.fromJson(json, member.class);
-        return emp;
-    }
 
     public static AlertDialog update_dialog = null;
 

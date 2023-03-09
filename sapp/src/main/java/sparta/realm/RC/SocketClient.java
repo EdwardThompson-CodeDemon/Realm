@@ -2,6 +2,9 @@ package sparta.realm.RC;
 
 import com.realm.annotations.sync_service_description;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import sparta.realm.RealmClientCallbackInterface;
 
 public class SocketClient {
@@ -13,7 +16,7 @@ public class SocketClient {
     public String device_code, username, password;
 
     public RealmClientCallbackInterface realmClientInterfaceTX;
-    public RealmSocketProtocol rsp;
+    public SocketProtocol rsp;
 
     public SocketClient(RealmClientCallbackInterface realmClientInterfaceTX) {
         this.realmClientInterfaceTX = realmClientInterfaceTX;
@@ -28,7 +31,9 @@ public class SocketClient {
     public void sendData(String data) {
 
     }
+    public void sendData(String data, ArrayList<File> files) {
 
+    }
     public int InitializeSocket(String server_ip, int port, String device_code, String username, String password) {
         SERVER_ADDR = server_ip;
         SERVER_PORT = port;

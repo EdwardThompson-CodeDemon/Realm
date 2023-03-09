@@ -29,7 +29,7 @@ import sparta.realm.spartamodels.percent_calculation;
 
 import static sparta.realm.Realm.realm;
 
-public class RealmClientProtocol extends SocketProtocol {
+public class RealmClientProtocolV2 extends SocketProtocol {
     @Override
     public void OnDataReceived(byte[] remote_data) {
         super.OnDataReceived(remote_data);
@@ -127,7 +127,7 @@ public class RealmClientProtocol extends SocketProtocol {
     public RealmClientCallbackInterface realmClientInterfaceTX;
     SocketClient sc;
 
-    public RealmClientProtocol(SocketClient sc, RealmClientCallbackInterface realmClientInterfaceTX) {
+    public RealmClientProtocolV2(SocketClient sc, RealmClientCallbackInterface realmClientInterfaceTX) {
         super(realmClientInterfaceTX);
         this.realmClientInterfaceTX = realmClientInterfaceTX;
         this.sc = sc;
@@ -148,7 +148,7 @@ public class RealmClientProtocol extends SocketProtocol {
 
     interface RealmClientComHandler {
 
-        default void onRequestToDownloadReceived(RealmClientProtocol rc, String tx_transaction_no, String service_id) {
+        default void onRequestToDownloadReceived(RealmClientProtocolV2 rc, String tx_transaction_no, String service_id) {
             sync_service_description sr = Realm.realm.getHashedSyncDescriptions().get(service_id);//should include service id to get one syncdesc
             if (sr == null) {
                 Log.e(rc.logTag, "RX prompt on an unimplemented service " + service_id);
@@ -169,7 +169,7 @@ public class RealmClientProtocol extends SocketProtocol {
             }
         }
 
-        default void onAuthenticated(RealmClientProtocol rc, boolean authentication_status) {
+        default void onAuthenticated(RealmClientProtocolV2 rc, boolean authentication_status) {
             try {
                 rc.realmClientInterfaceTX.on_info_updated(authentication_status ? "Authenticated" : "Authentication failed");
             } catch (RemoteException e) {
@@ -187,7 +187,7 @@ public class RealmClientProtocol extends SocketProtocol {
 
         }
 
-        default void onDataDownloaded(RealmClientProtocol rc, String transaction_no, String service_id, String data) {
+        default void onDataDownloaded(RealmClientProtocolV2 rc, String transaction_no, String service_id, String data) {
 //            Log.e(rc.logTag,"Data been downloaded "+data);
 
             sync_service_description ssd = realm.getHashedSyncDescriptions().get(service_id);
@@ -198,12 +198,12 @@ public class RealmClientProtocol extends SocketProtocol {
 
 
 //    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
-                    Log.e(RealmClientProtocol.logTag, "Converting " + ssd.service_name + " JSON");
+                    Log.e(RealmClientProtocolV2.logTag, "Converting " + ssd.service_name + " JSON");
                     JSONArray temp_ar = new JSONArray(data);
                     data = null;
 //    LinkedHashSet<E> hashSet = new LinkedHashSet<E>();
                     if (ssd.storage_mode_check) {
-                        Log.e(RealmClientProtocol.logTag, "Started storage checking ...");
+                        Log.e(RealmClientProtocolV2.logTag, "Started storage checking ...");
 
                         for (int i = 0; i < temp_ar.length(); i++) {
                             JSONObject jo = temp_ar.getJSONObject(i);
@@ -220,13 +220,13 @@ public class RealmClientProtocol extends SocketProtocol {
                                 try {
                                     jo.put(k, DatabaseManager.save_doc(jo.getString(k)));
                                 } catch (Exception e) {
-                                    Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
+                                    Log.e(RealmClientProtocolV2.logTag, "Base64 image error:" + e.getMessage());
 
                                 }
 
                             }
                         }
-                        Log.e(RealmClientProtocol.logTag, "Done storage checking ...");
+                        Log.e(RealmClientProtocolV2.logTag, "Done storage checking ...");
 
                     }
 
@@ -302,7 +302,7 @@ public class RealmClientProtocol extends SocketProtocol {
             rc.io_operation_complete_counter++;
         }
 
-        default void _onDataUploaded(RealmClientProtocol rc, String service_id, String data) {
+        default void _onDataUploaded(RealmClientProtocolV2 rc, String service_id, String data) {
 
             sync_service_description ssd = realm.getHashedSyncDescriptions().get(service_id);
             if (ssd == null) {
@@ -333,7 +333,7 @@ public class RealmClientProtocol extends SocketProtocol {
             rc.io_operation_complete_counter++;
         }
 
-        default void onDataUploaded(RealmClientProtocol rc, String service_id, String data) {
+        default void onDataUploaded(RealmClientProtocolV2 rc, String service_id, String data) {
             rc.updateUploadedData(service_id, data);
 
         }
@@ -648,7 +648,7 @@ public class RealmClientProtocol extends SocketProtocol {
 
         }
         if (ssd.storage_mode_check) {
-            Log.e(RealmClientProtocol.logTag, "Started storage checking ...");
+            Log.e(RealmClientProtocolV2.logTag, "Started storage checking ...");
 
             for (int i = 0; i < pending_records.size(); i++) {
                 JSONObject jo = pending_records.get(i);
@@ -676,7 +676,7 @@ public class RealmClientProtocol extends SocketProtocol {
 //                        jo=new JSONObject(jo.toString().replace("\\n","").replace("\\",""));
 //                        jar.add(new JsonParser().parse((jo.toString())).getAsJsonObject());
                     } catch (Exception e) {
-                        Log.e(RealmClientProtocol.logTag, "Base64 image error:" + e.getMessage());
+                        Log.e(RealmClientProtocolV2.logTag, "Base64 image error:" + e.getMessage());
 
                     }
 

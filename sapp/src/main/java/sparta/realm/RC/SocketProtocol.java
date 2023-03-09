@@ -5,14 +5,14 @@ import com.realm.annotations.sync_service_description;
 import sparta.realm.RealmClientCallbackInterface;
 import sparta.realm.realmclient.RealmClient;
 
-public class RealmSocketProtocol implements SocketInterface {
+public class SocketProtocol implements SocketInterface {
 
     public String device_code, username, password;
 
     public RealmClientCallbackInterface realmClientInterfaceTX;
 
 
-    public RealmSocketProtocol(RealmClientCallbackInterface realmClientInterfaceTX) {
+    public SocketProtocol(RealmClientCallbackInterface realmClientInterfaceTX) {
         this.realmClientInterfaceTX = realmClientInterfaceTX;
     }
 

@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -167,6 +168,7 @@ sendMessage(System.currentTimeMillis()+"\u001E1\u001E0\u001Edemo\u001Edemo123");
         super.sendData(data);
         sendMessage(data);
     }
+
 
     public void sendMessage(String message){
         Log.e(log_tag,"TX: "+message);

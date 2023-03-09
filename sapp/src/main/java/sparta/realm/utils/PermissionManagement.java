@@ -124,6 +124,10 @@ public class PermissionManagement {
             listPermissionsNeeded.remove(Manifest.permission.REQUEST_INSTALL_PACKAGES);
 
         }
+ if (listPermissionsNeeded.contains("com.mediatek.permission.CTA_ENABLE_BT")) {
+            listPermissionsNeeded.remove("com.mediatek.permission.CTA_ENABLE_BT");
+
+        }
 
         if (listPermissionsNeeded.isEmpty() || (listPermissionsNeeded.size() == 1 & listPermissionsNeeded.get(0).equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION))) {
 

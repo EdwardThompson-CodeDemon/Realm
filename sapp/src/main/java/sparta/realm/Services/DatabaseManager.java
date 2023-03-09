@@ -10,11 +10,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInstaller;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
@@ -57,7 +55,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -68,6 +65,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -78,7 +76,6 @@ import androidx.appcompat.app.AlertDialog;
 import dalvik.system.DexFile;
 import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Activities.splash;
-import sparta.realm.BuildConfig;
 
 
 import sparta.realm.DataManagement.Models.Query;
@@ -106,10 +103,7 @@ import com.realm.annotations.RealmDataClass;
 import com.realm.annotations.sync_service_description;
 import com.realm.annotations.sync_status;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -1408,6 +1402,10 @@ I thot of using an interface ,dint work
         return Integer.parseInt(get_record_count(table_name, params));
     }
 
+    public <RM> int getRecordCount(Class<RM> realm_model, Query query) {
+        return loadObjectArray(realm_model, query.setColumns("rowid")).size();
+    }
+
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
         ArrayList<RM> objs = new ArrayList<RM>();
         String table_name = realm.getPackageTable(realm_model.getName());
@@ -1436,14 +1434,63 @@ I thot of using an interface ,dint work
         return objs;
     }
 
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
 
     public static HashMap<Integer, Integer> pagerEventMap = new HashMap<>();
 
+    @Deprecated
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
         ArrayList<RM> objs = new ArrayList<RM>();
         String table_name = realm.getPackageTable(realm_model.getName());
         String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
         Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
+        }
+        c.close();
+
+
+        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
+//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
+    }
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+//        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, queryParameters);
 
 
         if (c.moveToFirst()) {
@@ -1486,17 +1533,19 @@ I thot of using an interface ,dint work
     }
 
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query) {
-        return loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
+//        return loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
+        return loadObjectArray(realm_model, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
 
     }
 
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, Query query) {
-        return loadObjectArray(realm_model, pagerEventId, searchIndex, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
+        return loadObjectArray(realm_model, pagerEventId, searchIndex, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
 
     }
 
     public <RM> RM loadObject(Class<RM> realm_model, Query query) {
-        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
+//        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
+        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.tableFilters, orderStatements(query.orderFilters), 1, 0, query.queryParameters);
         return res.size() > 0 ? res.get(0) : null;
 
     }
@@ -1516,6 +1565,9 @@ I thot of using an interface ,dint work
         return database.insert(table_name, null, (ContentValues) realm.getContentValuesFromObject(realm_model)) > 0;
 
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Object getJsonValue(String pos, JSONObject jo) {
         Object json = jo;
@@ -2328,6 +2380,17 @@ I thot of using an interface ,dint work
 
     }
 
+    public static String[] orderStatements(LinkedHashMap<String, Boolean> statements) {
+        String[] result = new String[statements.size()];
+        int i = 0;
+        for (Map.Entry<String, Boolean> entry : statements.entrySet()) {
+            result[i] = entry.getKey() + " " + (entry.getValue() ? "ASC" : "DESC");
+            i++;
+        }
+        return result;
+
+    }
+
     public static String concatRealmClientString(String delimeter, String[] params) {
         String result = "";
         for (int i = 0; i < params.length; i++) {
@@ -2590,11 +2653,11 @@ I thot of using an interface ,dint work
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
 
-                return error_return;
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
 
-                return error_return;
+                return null;
             }
             return img_name;
 //            return SpartaAppCompactActivity.save_app_image(bmp);
@@ -2605,7 +2668,7 @@ I thot of using an interface ,dint work
         }
 
 
-        return base64_bytes;
+        return null;
     }
 
     public static String save_doc_(String base64_bytes) {
@@ -2920,7 +2983,7 @@ I thot of using an interface ,dint work
                                                     act.runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            version.setText("Current Version : " + svars.current_version()+ " Latest");
+                                                            version.setText("Current Version : " + svars.current_version() + " Latest");
                                                             version.setTextColor(Color.GREEN);
                                                             // Toast.makeText(act, "App out of date", Toast.LENGTH_LONG).show();
                                                             version_list.setAdapter(new apk_versions_adapter(act, finalVersions));
