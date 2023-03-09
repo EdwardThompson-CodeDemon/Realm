@@ -1,6 +1,7 @@
 package sparta.realm.spartautils.app_control.adapters;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +50,12 @@ public class modules_adapter extends BaseAdapter {
         convertView= LayoutInflater.from(act).inflate(R.layout.item_module,null,false);
         TextView module_name=(TextView)convertView.findViewById(R.id.module_name);
         ImageView module_icon=(ImageView)convertView.findViewById(R.id.module_icon);
-  TextView status=(TextView)convertView.findViewById(R.id.status);
+//  TextView status=(TextView)convertView.findViewById(R.id.status);
 
         module_name.setText(fiel.name);
-      //  module_icon.setImageDrawable(fiel.icon);
-        status.setText(String.valueOf(fiel.active));
+        module_icon.setImageDrawable(fiel.icon);
+//        module_icon.setColorFilter(Color.GRAY);
+        
 
 
 
