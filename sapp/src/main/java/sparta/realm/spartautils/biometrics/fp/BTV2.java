@@ -163,6 +163,13 @@ public class BTV2 extends FingerprintManger {
 
     }
 
+    @Override
+    public void stop() {
+        super.stop();
+        close();
+        stop_auto();
+    }
+
     public void start_auto() {
         get_print.schedule(new TimerTask() {
             @Override
@@ -200,8 +207,10 @@ public class BTV2 extends FingerprintManger {
 
 
     public void stop_auto() {
-        get_print.cancel();
-        get_batt.cancel();
+       try {
+           get_print.cancel();
+           get_batt.cancel();
+       }catch (Exception ex){}
 
     }
 
