@@ -16,6 +16,9 @@ public class FingerprintManger {
 
     public Activity activity;
     public sfp_i interf;
+    public boolean captureTemplate=true;
+    public boolean captureImage=true;
+    public boolean captureWsq=true;
 
     public FingerprintManger(Activity activity) {
         this.activity = activity;

@@ -596,9 +596,15 @@ public void close()
                         byte[] bmpdata = getFingerprintImage(imageData, 152, 200, 0/*18*/);
 //                        textSize.setText("152 * 200");
                         Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                        interf.on_result_obtained(imageToIso(image));
-                        interf.on_result_image_obtained(image);
-                        interf.on_result_wsq_obtained(imageToWsq(image));
+                        if (captureTemplate) {
+                            interf.on_result_obtained(imageToIso(image));
+                        }
+                        if (captureImage) {
+                            interf.on_result_image_obtained(image);
+                        }
+                        if (captureWsq) {
+                            interf.on_result_wsq_obtained(imageToWsq(image));
+                        }
                         Log.d(TAG, "bmpdata.length:" + bmpdata.length);
                         fingerprintImage.setImageBitmap(image);
                         mUpImageSize = 0;
@@ -624,9 +630,15 @@ public void close()
                         byte[] bmpdata = getFingerprintImage(imageData, 256, 288, 0/*18*/);
 //                        textSize.setText("256 * 288");
                         Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                        interf.on_result_obtained(imageToIso(image));
-                        interf.on_result_image_obtained(image);
-                        interf.on_result_wsq_obtained(imageToWsq(image));
+                        if (captureTemplate) {
+                            interf.on_result_obtained(imageToIso(image));
+                        }
+                        if (captureImage) {
+                            interf.on_result_image_obtained(image);
+                        }
+                        if (captureWsq) {
+                            interf.on_result_wsq_obtained(imageToWsq(image));
+                        }
 
                         byte[] inpdata = new byte[73728];
                         int inpsize = 73728;
@@ -659,9 +671,15 @@ public void close()
                         byte[] bmpdata = getFingerprintImage(imageData, 256, 360, 0/*18*/);
 //                        textSize.setText("256 * 360");
                         Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                        interf.on_result_obtained(imageToIso(image));
-                        interf.on_result_image_obtained(image);
-                        interf.on_result_wsq_obtained(imageToWsq(image));
+                        if (captureTemplate) {
+                            interf.on_result_obtained(imageToIso(image));
+                        }
+                        if (captureImage) {
+                            interf.on_result_image_obtained(image);
+                        }
+                        if (captureWsq) {
+                            interf.on_result_wsq_obtained(imageToWsq(image));
+                        }
                         byte[] inpdata = new byte[92160];
                         int inpsize = 92160;
                         System.arraycopy(bmpdata, 1078, inpdata, 0, inpsize);

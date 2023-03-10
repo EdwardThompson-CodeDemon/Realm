@@ -386,10 +386,20 @@ public class T801 extends FingerprintManger{
         }
         Bitmap bmp = Bitmap.createBitmap(RGBbits, width, height, Bitmap.Config.RGB_565);
         if(m_cLAPI.GetImageQuality(m_hDevice,m_image)>50){
-            interf.on_result_image_obtained(bmp);
-            interf.on_result_obtained(imageToIso(bmp));
-            interf.on_result_image_obtained(bmp);
-            interf.on_result_wsq_obtained(imageToWsq(bmp));
+//            interf.on_result_image_obtained(bmp);
+//            interf.on_result_obtained(imageToIso(bmp));
+//            interf.on_result_image_obtained(bmp);
+//            interf.on_result_wsq_obtained(imageToWsq(bmp));
+
+            if (captureTemplate) {
+                interf.on_result_obtained(imageToIso(bmp));
+            }
+            if (captureImage) {
+                interf.on_result_image_obtained(bmp);
+            }
+            if (captureWsq) {
+                interf.on_result_wsq_obtained(imageToWsq(bmp));
+            }
             SLEEP(500);
         }
 

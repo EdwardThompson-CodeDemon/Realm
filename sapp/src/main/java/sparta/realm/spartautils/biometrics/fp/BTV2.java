@@ -122,10 +122,9 @@ public class BTV2 extends FingerprintManger {
     Timer get_batt, get_print;
     sfp_i interf;
 
-    public BTV2(final Activity activity)
-    {
+    public BTV2(final Activity activity) {
         super(activity);
-        this.activity=activity;
+        this.activity = activity;
 
 
         start();
@@ -207,10 +206,11 @@ public class BTV2 extends FingerprintManger {
 
 
     public void stop_auto() {
-       try {
-           get_print.cancel();
-           get_batt.cancel();
-       }catch (Exception ex){}
+        try {
+            get_print.cancel();
+            get_batt.cancel();
+        } catch (Exception ex) {
+        }
 
     }
 
@@ -585,7 +585,10 @@ public class BTV2 extends FingerprintManger {
                     byte[] bmpdata = getFingerprintImage(imageData, 152, 200, 0/*18*/);
 //                        textSize.setText("152 * 200");
                     Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                    interf.on_result_image_obtained(image);
+                    if (captureImage) {
+                        interf.on_result_image_obtained(image);
+                    }
+
                     Log.d(TAG, "bmpdata.length:" + bmpdata.length);
                     fingerprintImage.setImageBitmap(image);
                     mUpImageSize = 0;
@@ -610,11 +613,17 @@ public class BTV2 extends FingerprintManger {
                     byte[] bmpdata = getFingerprintImage(imageData, 256, 288, 0/*18*/);
 //                        textSize.setText("256 * 288");
                     Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-//                    interf.on_result_image_obtained(image);
+//
 
-                    interf.on_result_obtained(imageToIso(image));
-                    interf.on_result_image_obtained(image);
-                    interf.on_result_wsq_obtained(imageToWsq(image));
+                    if (captureTemplate) {
+                        interf.on_result_obtained(imageToIso(image));
+                    }
+                    if (captureImage) {
+                        interf.on_result_image_obtained(image);
+                    }
+                    if (captureWsq) {
+                        interf.on_result_wsq_obtained(imageToWsq(image));
+                    }
 //
 //                    byte[] inpdata = new byte[73728];
 //                    int inpsize = 73728;
@@ -646,7 +655,11 @@ public class BTV2 extends FingerprintManger {
                     byte[] bmpdata = getFingerprintImage(imageData, 256, 360, 0/*18*/);
 //                        textSize.setText("256 * 360");
                     Bitmap image = BitmapFactory.decodeByteArray(bmpdata, 0, bmpdata.length);
-                    interf.on_result_image_obtained(image);
+
+                    if (captureImage) {
+                        interf.on_result_image_obtained(image);
+                    }
+
 
                     byte[] inpdata = new byte[92160];
                     int inpsize = 92160;

@@ -133,8 +133,16 @@ public class FP08_UAREU extends FingerprintManger {
                     cap_result = m_reader.Capture(main_fid_format, Reader.ImageProcessing.IMG_PROC_DEFAULT, m_DPI, -1);
                     Log.e(logTag, "Capture quality: " + cap_result.quality.toString());
                     if (cap_result == null || cap_result.image == null) continue;
-                    compressImage(cap_result.image);
-                    interf.on_result_obtained(Base64.encodeToString(m_engine.CreateFmd(cap_result.image, main_fmd_format).getData(), 0));
+                    if (captureTemplate) {
+                        interf.on_result_obtained(Base64.encodeToString(m_engine.CreateFmd(cap_result.image, main_fmd_format).getData(), 0));
+                    }
+
+                    if (captureWsq) {
+                        compressImage(cap_result.image);
+                    }
+
+
+
                 } catch (Exception e) {
                     if (!m_reset) {
                         Log.e(logTag, "Capture error: " + e.toString());
@@ -151,7 +159,8 @@ public class FP08_UAREU extends FingerprintManger {
                 try {
                     m_enginError = "";
                     m_bitmap = Globals.GetBitmapFromRaw(cap_result.image.getViews()[0].getImageData(), cap_result.image.getViews()[0].getWidth(), cap_result.image.getViews()[0].getHeight());
-                    interf.on_result_image_obtained(m_bitmap);
+                    if (captureImage) {   interf.on_result_image_obtained(m_bitmap); }
+
 
                 } catch (Throwable e) {
                     m_enginError = e.toString();
