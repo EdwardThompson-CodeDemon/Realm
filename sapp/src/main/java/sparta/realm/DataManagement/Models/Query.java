@@ -4,11 +4,16 @@ import java.util.LinkedHashMap;
 
 public class Query {
     public String[] columns, tableFilters, order_filters, queryParameters;
+    public String customQuery;
     public boolean order_asc;
     public int limit, offset;
     public LinkedHashMap<String, Boolean> orderFilters=new LinkedHashMap<>();
 
-    public Query setColumns(String... columns) {
+    public Query setCustomQuery(String customQuery) {
+        this.customQuery = customQuery;
+        return this;
+    }
+  public Query setColumns(String... columns) {
         this.columns = columns;
         return this;
     }

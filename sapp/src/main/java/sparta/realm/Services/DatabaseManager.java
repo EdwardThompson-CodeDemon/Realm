@@ -27,9 +27,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.reflect.ClassPath;
+import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.RealmDataClass;
+import com.realm.annotations.sync_service_description;
+import com.realm.annotations.sync_status;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -69,15 +75,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import dalvik.system.DexFile;
 import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Activities.splash;
-
-
 import sparta.realm.DataManagement.Models.Query;
 import sparta.realm.R;
 import sparta.realm.Realm;
@@ -86,7 +92,6 @@ import sparta.realm.spartamodels.dyna_data;
 import sparta.realm.spartamodels.dyna_data_obj;
 import sparta.realm.spartamodels.dynamic_property;
 import sparta.realm.spartamodels.member;
-
 import sparta.realm.spartamodels.sdb_model;
 import sparta.realm.spartautils.Gpsprobe_r;
 import sparta.realm.spartautils.app_control.SpartaApplication;
@@ -98,17 +103,6 @@ import sparta.realm.spartautils.s_cryptor;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.AppConfig;
 
-import com.realm.annotations.DynamicProperty;
-import com.realm.annotations.RealmDataClass;
-import com.realm.annotations.sync_service_description;
-import com.realm.annotations.sync_status;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import static sparta.realm.Realm.realm;
 
 
@@ -117,14 +111,17 @@ import static sparta.realm.Realm.realm;
  */
 
 public class DatabaseManager {
-    static Context act;
-
-
+    private static final String PACKAGE_INSTALLED_ACTION =
+            "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
     public static sdb_model main_db = null;
     public static SQLiteDatabase database = null;
     //   public static sdbw sd;
     public static boolean loaded_db = false;
     public static String logTag = "DatabaseManager";
+    public static HashMap<Integer, Integer> pagerEventMap = new HashMap<>();
+    public static String error_return = "!!!";
+    public static Gpsprobe_r gps;
+    static Context act;
 
     public DatabaseManager(Context act) {
         this.act = act;
@@ -158,11 +155,9 @@ public class DatabaseManager {
 
 
     }
-
-    public SQLiteDatabase getDatabase() {
-        return database;
-    }
-
+/*
+I thot of using an interface ,dint work
+ */
 
     /**
      * Sets up database by creating and adding missing tables and missing columns and indeces in their respective tables
@@ -583,731 +578,6 @@ public class DatabaseManager {
 
     }
 
-    /**
-     * Sets up database by creating and adding missing tables and missing columns and indeces in their respective tables
-     *
-     * @deprecated This method is no longer used,its slow compaired to {@link this#setup_db_ann()} which is twice as fast with annotation.
-     * <p> Use {@link this#setup_db_ann()} instead.
-     */
-    @Deprecated()
-    void setup_db() throws IOException {
-        sdb_model dbm = new sdb_model();
-        dbm.db_name = svars.DB_NAME;
-        dbm.db_path = svars.current_app_config(act).file_path_db(act);
-        //   dbm.db_path=act.getExternalFilesDir(null).getAbsolutePath()+"/"+svars.DB_NAME;
-        dbm.db_password = svars.DB_PASS;
-
-        SQLiteDatabase.loadLibs(act);
-
-
-        //  SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), , null);
-        database = SQLiteDatabase.openOrCreateDatabase(dbm.db_path, dbm.db_password, null);
-        // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
-
-        svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
-
-        dynamic_property dpex = new dynamic_property(null, null, null);
-        Class<?> cex = dpex.getClass();
-        String dpex_path = cex.getName();
-
-        String package_path = dpex_path.substring(0, dpex_path.lastIndexOf('.'));
-
-        String codepath = act.getPackageCodePath();
-
-        DexFile df = new DexFile(codepath);
-        Stopwatch sw = new Stopwatch();
-        sw.start();
-        // List<String> resultList = Lists.newArrayList(Collections.list(df.entries())).stream().filter(s -> s.startsWith(package_path)).collect(Collectors.toList());
-//        for (String iter :resultList) {
-//            String s = iter;
-//            Log.e("Classes reflected 3 =>", "" + s);
-//
-//        }
-//        Log.e("Classes reflected 3 in :", "" + sw.elapsed(TimeUnit.MICROSECONDS));
-
-
-        sdb_model.sdb_table.column id = new sdb_model.sdb_table.column(false, "id", "INTEGER");
-        id.extra_params = "PRIMARY KEY AUTOINCREMENT";
-        sdb_model.sdb_table.column reg_time = new sdb_model.sdb_table.column(false, "reg_time", "DATETIME", "(datetime('now','localtime'))");
-        sdb_model.sdb_table.column sync_status = new sdb_model.sdb_table.column(false, "sync_status");
-        sdb_model.sdb_table.column transaction_no = new sdb_model.sdb_table.column(false, "transaction_no");
-        sdb_model.sdb_table.column sid = new sdb_model.sdb_table.column(true, "sid");
-        sdb_model.sdb_table.column sync_var = new sdb_model.sdb_table.column(true, "sync_var");
-        sdb_model.sdb_table.column data_status = new sdb_model.sdb_table.column(true, "data_status");
-        sdb_model.sdb_table.column user_id = new sdb_model.sdb_table.column(false, "user_id");
-        sdb_model.sdb_table.column data_usage_frequency = new sdb_model.sdb_table.column(true, "data_usage_frequency");
-        sdb_model.sdb_table.column lat = new sdb_model.sdb_table.column(false, "lat");
-        sdb_model.sdb_table.column lon = new sdb_model.sdb_table.column(false, "lon");
-
-        ArrayList<sdb_model.sdb_table.column> common_columns = new ArrayList();
-        common_columns.add(id);
-        common_columns.add(user_id);
-        common_columns.add(reg_time);
-        common_columns.add(data_status);
-        common_columns.add(transaction_no);
-        common_columns.add(sync_status);
-        common_columns.add(sid);
-        common_columns.add(sync_var);
-        common_columns.add(data_usage_frequency);
-
-
-        for (Enumeration<String> iter = df.entries(); iter.hasMoreElements(); ) {
-            String s = iter.nextElement();
-            if (s.startsWith(package_path)) {
-                try {
-                    Class<?> clazz = Class.forName(s);
-
-
-                    db_class db_tb_temp = new db_class("");
-                    if (db_tb_temp.getClass().isAssignableFrom(clazz) && !db_tb_temp.getClass().getName().equalsIgnoreCase(clazz.getName())) {
-                        Log.e("Classes reflected =>", "DB :" + s);
-                        sdb_model.sdb_table db_tb = table_from_dyna_property_class(clazz);
-                        if (db_tb == null) {
-                            continue;
-                        }
-                        db_tb.columns.addAll(common_columns);
-                        //   dbm.tables.add(db_tb);
-                        try {
-                            Cursor cursor1 = database.rawQuery("SELECT * FROM " + db_tb.table_name, null);
-                            cursor1.moveToFirst();
-                            if (!cursor1.isAfterLast()) {
-                                do {
-                                    cursor1.getString(0);
-                                } while (cursor1.moveToNext());
-                            }
-                            cursor1.close();
-                        } catch (Exception e) {
-                            database.execSQL(db_tb.create_statement());
-                            String crt_stt = db_tb.create_indexes_statement();
-                            if (crt_stt.length() > 1 & crt_stt.contains(";")) {
-
-                                for (String st : crt_stt.split(";")) {
-                                    try {
-                                        Log.e("DB :", "Index statement creating =>" + st);
-                                        database.execSQL(st);
-                                        Log.e("DB :", "Index statement created =>" + st);
-                                    } catch (Exception ex1) {
-                                    }
-
-                                }
-
-
-                            }
-                            continue;
-                        }
-
-                        for (sdb_model.sdb_table.column col : db_tb.columns) {
-                            try {
-                                Cursor cursor1 = database.rawQuery("SELECT count(" + col.column_name + ") FROM " + db_tb.table_name, null);
-                                cursor1.moveToFirst();
-                                if (!cursor1.isAfterLast()) {
-                                    do {
-                                        cursor1.getString(0);
-                                    } while (cursor1.moveToNext());
-                                }
-                                cursor1.close();
-                            } catch (Exception e) {
-                                database.execSQL("ALTER TABLE " + db_tb.table_name + " ADD COLUMN " + col.column_name + " " + col.data_type + " " + col.default_value);
-                            }
-                        }
-                    }
-
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                // Object date = clazz.newInstance();
-            }
-
-        }
-
-        Log.e("Classes reflected :", "raw :" + sw.elapsed(TimeUnit.MICROSECONDS));
-
-        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
-        Log.e("DB", "Finished DB Verification");
-        main_db = null;
-        loaded_db = true;
-
-    }
-
-    /**
-     * Sets up database by creating and adding missing tables and missing columns and indices in their respective tables from mappery of annotated data which is pre-reflected at pre build
-     */
-    void setup_db_ann() {
-
-
-        sdb_model dbm = new sdb_model();
-        AppConfig appconfig = svars.current_app_config(act);
-        dbm.db_name = appconfig.DB_NAME;
-        dbm.db_path = appconfig.file_path_db();
-        dbm.db_password = appconfig.DB_PASS;
-
-        SQLiteDatabase.loadLibs(act);
-
-        File par = new File(new File(dbm.db_path).getParent());
-        if (!par.exists()) {
-            par.mkdirs();
-        }
-        Log.e(logTag, "DB Path:" + dbm.db_path);
-
-        database = SQLiteDatabase.openOrCreateDatabase(new File(dbm.db_path), dbm.db_password, null);
-
-        // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
-
-        svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
-
-
-        Stopwatch sw = new Stopwatch();
-        sw.start();
-
-
-        for (String s : realm.getDynamicClassPaths()) {
-
-
-            Log.e("Classes reflected =>", "Ann :" + s);
-
-            String table_name = realm.getPackageTable(s);
-            try {
-                Cursor cursor1 = database.rawQuery("SELECT * FROM " + table_name, null);
-//                cursor1.moveToFirst();
-//                if (!cursor1.isAfterLast()) {
-//                    do {
-//                        cursor1.getString(0);
-//                    } while (cursor1.moveToNext());
-//                }
-                cursor1.close();
-            } catch (Exception e) {
-                database.execSQL(realm.getTableCreateSttment(table_name, false));
-                database.execSQL(realm.getTableCreateSttment(table_name, true));
-                String crt_stt = realm.getTableCreateIndexSttment(table_name);
-                if (crt_stt.length() > 1 & crt_stt.contains(";")) {
-
-                    for (String st : crt_stt.split(";")) {
-                        try {
-                            Log.e("DB :", "Index statement creating =>" + st);
-                            database.execSQL(st);
-                            Log.e("DB :", "Index statement created =>" + st);
-                        } catch (Exception ex1) {
-                        }
-
-                    }
-
-
-                }
-                continue;
-            }
-
-            for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
-                try {
-                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM " + table_name, null);
-//                    cursor1.moveToFirst();
-//                    if (!cursor1.isAfterLast()) {
-//                        do {
-//                            cursor1.getString(0);
-//                        } while (cursor1.moveToNext());
-//                    }
-                    cursor1.close();
-                } catch (Exception e) {
-                    database.execSQL("ALTER TABLE " + table_name + " ADD COLUMN " + col.getKey());
-//                                database.execSQL("ALTER TABLE "+db_tb.table_name+" ADD COLUMN " + col.getKey() + " "+col.data_type+" "+col.default_value);
-                }
-            }
-
-
-            for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
-                try {
-                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM CP_" + table_name, null);
-//                    cursor1.moveToFirst();
-//                    if (!cursor1.isAfterLast()) {
-//                        do {
-//                            cursor1.getString(0);
-//                        } while (cursor1.moveToNext());
-//                    }
-                    cursor1.close();
-                } catch (Exception e) {
-                    database.execSQL("ALTER TABLE CP_" + table_name + " ADD COLUMN " + col.getKey());
-//                                database.execSQL("ALTER TABLE "+db_tb.table_name+" ADD COLUMN " + col.getKey() + " "+col.data_type+" "+col.default_value);
-                }
-            }
-
-
-        }
-
-        Log.e("Classes reflected :", "Ann :" + sw.elapsed(TimeUnit.MICROSECONDS));
-
-        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
-        Log.e("DB", "Finished DB Verification");
-        main_db = null;
-        loaded_db = true;
-
-    }
-/*
-I thot of using an interface ,dint work
- */
-
-
-    sdb_model.sdb_table table_from_dyna_property_class(Class<?> main_class) {
-
-        Object main_obj = null;
-        sdb_model.sdb_table tabl = null;//new sdb_model.sdb_table();
-        try {
-            main_obj = main_class.newInstance();
-        } catch (IllegalAccessException e) {
-            return null;
-
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Field ff = main_class.getField("table_name");
-            ff.setAccessible(true);
-            try {
-                String table_name_ = (String) ff.get(main_class.newInstance());
-                Log.e("TABLE CLASS ", "TABLE :" + table_name_);
-
-                tabl = new sdb_model.sdb_table(table_name_);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception ex) {
-            // e.printStackTrace();
-        }
-        if (tabl == null || tabl.table_name == null || tabl.table_name.length() < 1) {
-            return null;
-        }
-//Field[] fields =concatenate(main_class.getSuperclass().getFields(),main_class.getDeclaredFields());
-        for (Field field : main_class.getDeclaredFields()) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    Log.e("DP CLASS ", "" + field.getName());
-                    Class<?> clazz = field.get(main_obj).getClass();
-                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
-                    Field dyna_index_field = clazz.getDeclaredField("index");
-                    dyna_column_name_field.setAccessible(true);
-//                  sdb_model.sdb_table.column col=new sdb_model.sdb_table.column(true,(String) dyna_column_name_field.get(field.get(main_obj)));
-
-                    tabl.columns.add(new sdb_model.sdb_table.column((boolean) dyna_index_field.get(field.get(main_obj)), (String) dyna_column_name_field.get(field.get(main_obj))));
-
-
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
-                }
-            } else {
-//                try {
-//                    Log.e("CLASS ", field.getName()+ " - " + field.getType());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-            }
-        }
-        return tabl;
-    }
-
-    sdb_model.sdb_table table_from_dyna_property_class_ann(Class<?> main_class) {
-
-        Object main_obj = null;
-        sdb_model.sdb_table tabl = null;//new sdb_model.sdb_table();
-        try {
-            main_obj = main_class.newInstance();
-        } catch (IllegalAccessException e) {
-            return null;
-
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Field ff = main_class.getField("table_name");
-            ff.setAccessible(true);
-            try {
-                String table_name_ = (String) ff.get(main_class.newInstance());
-                Log.e("TABLE CLASS ", "TABLE :" + table_name_);
-
-                tabl = new sdb_model.sdb_table(table_name_);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
-        } catch (Exception ex) {
-            // e.printStackTrace();
-        }
-        if (tabl == null || tabl.table_name == null || tabl.table_name.length() < 1) {
-            return null;
-        }
-//Field[] fields =concatenate(main_class.getSuperclass().getFields(),main_class.getDeclaredFields());
-        for (Field field : main_class.getDeclaredFields()) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    Log.e("DP CLASS ", "" + field.getName());
-                    Class<?> clazz = field.get(main_obj).getClass();
-                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
-                    Field dyna_index_field = clazz.getDeclaredField("index");
-                    dyna_column_name_field.setAccessible(true);
-//                  sdb_model.sdb_table.column col=new sdb_model.sdb_table.column(true,(String) dyna_column_name_field.get(field.get(main_obj)));
-
-                    tabl.columns.add(new sdb_model.sdb_table.column((boolean) dyna_index_field.get(field.get(main_obj)), (String) dyna_column_name_field.get(field.get(main_obj))));
-
-
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
-                }
-            } else {
-//                try {
-//                    Log.e("CLASS ", field.getName()+ " - " + field.getType());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-            }
-        }
-        return tabl;
-    }
-
-
-/////////////////////////////////////////////UPDATE //////////////////////////
-
-    public long update_check_period() {
-        //Date date = svars.sparta_EA_calendar().getTime();
-        Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-        String dttt = format1.format(date);
-
-
-        if (svars.update_check_time(act) == null) {
-            return svars.regsyncinterval_mins;
-        }
-        Date time1 = null;
-        try {
-            try {
-                time1 = new SimpleDateFormat("HH:mm:ss").parse(format1.format(date));
-            } catch (Exception ex) {
-                Log.e("Time Error =>", ex.getMessage());
-            }
-            Calendar calendar1 = Calendar.getInstance();
-            calendar1.setTime(time1);
-            Date time2 = null;
-            try {
-                Log.e("DATE 2 =>", " t " + date.getTime() + " Time=>" + svars.update_check_time(act).split(" ")[1]);
-                time2 = new SimpleDateFormat("HH:mm:ss").parse(svars.update_check_time(act).split(" ")[1]);
-            } catch (Exception ex) {
-                Log.e("Time Error =>", ex.getMessage());
-            }
-            Calendar calendar2 = Calendar.getInstance();
-            calendar2.setTime(time2);
-            long diffference = Calendar.getInstance().getTimeInMillis() - calendar2.getTimeInMillis();
-            // return (int)Math.round((double)diffference/60000);
-            int diff_1 = (int) ((diffference / (1000 * 60)) % 60);
-            return diff_1 + (((int) ((diffference / (1000 * 60 * 60)) % 24)) * 60);
-        } catch (Exception ex) {
-            return svars.regsyncinterval_mins;
-        }
-
-
-    }
-
-    public ArrayList<sparta_app_version> load_undownloaded_apks(String[] downloading) {
-
-
-        ArrayList<sparta_app_version> versions = new ArrayList<>();
-
-
-        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NULL AND version_name > '" + svars.current_version() + "' AND sid NOT IN (" + conccat_sql_string(downloading) + ")", null);
-
-        if (c.moveToFirst()) {
-            do {
-
-                sparta_app_version sap = new sparta_app_version();
-
-                sap.version_id = c.getString(c.getColumnIndex("sid"));
-                sap.version_name = c.getString(c.getColumnIndex("version_name"));
-                sap.release_notes = c.getString(c.getColumnIndex("release_notes"));
-                sap.release_name = c.getString(c.getColumnIndex("release_name"));
-                sap.release_date = c.getString(c.getColumnIndex("creation_time"));
-                sap.download_link = c.getString(c.getColumnIndex("download_link"));
-                sap.local_path = c.getString(c.getColumnIndex("local_path"));
-
-
-              /*cv.put("sid",json_sav.getString("Version_id"));
-                cv.put("version_name",json_sav.getString("Version_name"));
-                cv.put("release_notes",json_sav.getString("Release_notes"));
-                cv.put("release_name",json_sav.getString("Release_name"));
-                cv.put("creation_time",json_sav.getString("creation_time"));
-                cv.put("file",json_sav.getString("Landing_page_url"));
-                */
-
-
-                versions.add(sap);
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return versions;
-    }
-
-    public sparta_app_version load_latest_apk_to_install() {
-
-        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NOT NULL AND version_name > '" + svars.current_version() + "' ORDER BY sid DESC LIMIT 1", null);
-
-        if (c.moveToFirst()) {
-            do {
-
-                sparta_app_version sap = new sparta_app_version();
-
-                sap.version_id = c.getString(c.getColumnIndex("sid"));
-                sap.version_name = c.getString(c.getColumnIndex("version_name"));
-                sap.release_notes = c.getString(c.getColumnIndex("release_notes"));
-                sap.release_name = c.getString(c.getColumnIndex("release_name"));
-                sap.release_date = c.getString(c.getColumnIndex("creation_time"));
-                sap.download_link = c.getString(c.getColumnIndex("download_link"));
-                sap.local_path = c.getString(c.getColumnIndex("local_path"));
-
-
-              /*  cv.put("sid",json_sav.getString("Version_id"));
-                cv.put("version_name",json_sav.getString("Version_name"));
-                cv.put("release_notes",json_sav.getString("Release_notes"));
-                cv.put("release_name",json_sav.getString("Release_name"));
-                cv.put("creation_time",json_sav.getString("creation_time"));
-                cv.put("file",json_sav.getString("Landing_page_url"));
-                */
-
-
-                return sap;
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return null;
-    }
-
-    public void save_versions(JSONObject json_sav) {
-        try {
-
-            if (!version_exists(json_sav.getString("Version_id"))) {
-                ContentValues cv = new ContentValues();
-
-                cv.put("sid", json_sav.getString("Version_id"));
-                cv.put("version_name", json_sav.getString("Version_name"));
-                cv.put("release_notes", json_sav.getString("Release_notes"));
-                cv.put("release_name", json_sav.getString("Release_name"));
-                cv.put("creation_time", json_sav.getString("creation_time"));
-                cv.put("download_link", json_sav.getString("Landing_page_url"));
-//cv.put("sid",appcateg_j.getString("icon"));
-
-
-                Log.e("Apk version ", "About to insert ");
-
-                //;
-                Log.e("Apk version ", "Inserted " + database.insert("app_versions_table", null, cv));
-
-            } else {
-
-                Log.e("Apk version ", "App exists ");
-
-            }
-        } catch (Exception exx) {
-            Log.e("Version insert error :", " " + exx.getMessage());
-        }
-
-    }
-
-    public void update_downloaded_versions(String sid, String file_path) {
-        try {
-
-
-            ContentValues cv = new ContentValues();
-
-            cv.put("data_status", "d");
-            cv.put("local_path", file_path);
-
-
-            Log.e("Apk version ", "About to update ");
-
-            //;
-            Log.e("Apk version ", "Inserted " + database.update("app_versions_table", cv, "sid='" + sid + "'", null));
-
-
-        } catch (Exception exx) {
-            Log.e("Version update error :", " " + exx.getMessage());
-        }
-
-    }
-
-    boolean version_exists(String sid) {
-        return database.rawQuery("SELECT _id FROM app_versions_table WHERE sid='" + sid + "'", null).moveToFirst();
-    }
-
-//////////////////////////////////////////////////////////////////////////////
-
-
-    public member load_employee(String sid) {
-
-
-        try {
-
-            Cursor c = database.rawQuery("SELECT * FROM member_info_table WHERE sid='" + sid + "'", null);
-
-            if (c.moveToFirst()) {
-                do {
-                    member emp = (member) load_object_from_Cursor(c, new member());
-                    c.close();
-                    return emp;
-                } while (c.moveToNext());
-            }
-
-            c.close();
-        } catch (Exception ex) {
-
-        }
-        return null;
-    }
-
-
-///////////////////////////////USER///////////////////////////////////////////
-
-    public String validate_credentials(String username, String pass) {
-        String name = null;
-        Cursor c = database.rawQuery("SELECT * FROM user_table WHERE username=\"" + username + "\" AND password=\"" + pass + "\"", null);
-
-        if (c.moveToFirst()) {
-            do {
-
-                name = c.getString(c.getColumnIndex("user_fullname"));
-                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-                saver.putString("user_name", c.getString(c.getColumnIndex("user_fullname")));
-                saver.putString("username", c.getString(c.getColumnIndex("username")));
-                saver.putString("pass", c.getString(c.getColumnIndex("password")));
-                saver.putString("user_id", c.getString(c.getColumnIndex("sid")));
-
-                saver.commit();
-                return name == null ? username : name;
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return name;
-    }
-
-
-    public void save_user(String username, String password, String user_id, String user_name, String user_type_id) {
-
-        /*
-          {"$id":"1","Result":{"$id":"2","IsOkay":true,"Message":"login successfull","Result":{"$id":"3","user_id":18,"username":"00076","password":null,"full_name":"KOUASSI","account_id":1,"user_type_id":3,"status":1}},"ModuleName":"Login Module"}
-
-         */
-        ContentValues cv = new ContentValues();
-
-        try {
-
-            try {
-
-                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-
-                saver.putString("user_name", user_name);
-                saver.putString("username", username);
-                saver.putString("pass", password);
-                saver.putString("user_id", user_id);
-                saver.putString("user_type", user_type_id);
-
-
-                saver.commit();
-            } catch (Exception ex) {
-
-            }
-            // cv.put("account_id",jo.getString("account_id"));
-            cv.put("sid", user_id);
-            cv.put("username", username);
-            cv.put("password", password);
-
-
-            //   database.execSQL("DELETE FROM user_table WHERE sid='"+user_id+"'");
-            database.execSQL("DELETE FROM user_table");
-            database.insert("user_table", null, cv);
-            //   validate_credentials(username,password);
-
-        } catch (Exception e) {
-            Log.e("User saving error =>", "" + e.getMessage());
-
-            e.printStackTrace();
-        }
-
-    }
-
-
-    public void register_user(String users_name, String username, String password, String user_id, String activity_status) {
-
-        /*
-          {"$id":"1","Result":{"$id":"2","IsOkay":true,"Message":"login successfull","Result":{"$id":"3","user_id":18,"username":"00076","password":null,"full_name":"KOUASSI","account_id":1,"user_type_id":3,"status":1}},"ModuleName":"Login Module"}
-
-         */
-        Log.e("Password  :", "" + password);
-        ContentValues cv = new ContentValues();
-
-        try {
-
-
-            // cv.put("account_id",jo.getString("account_id"));
-            cv.put("sid", user_id);
-            cv.put("username", username);
-            cv.put("user_fullname", users_name);
-            cv.put("password", password);
-            cv.put("data_status", activity_status);
-
-
-            // database.execSQL("DELETE FROM user_table");
-            Log.e("User saving ", "" + database.insert("user_table", null, cv));
-
-
-        } catch (Exception e) {
-            Log.e("User saving error =>", "" + e.getMessage());
-
-            e.printStackTrace();
-        }
-
-    }
-
-    public void logout_user() {
-        ContentValues cv = new ContentValues();
-
-        try {
-
-            try {
-
-                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
-                saver.putString("user_name", "");
-                saver.putString("user_type", "");
-                saver.putString("username", "");
-                saver.putString("pass", "");
-                saver.putString("user_id", "");
-                saver.putString("zone", "");
-
-
-                saver.commit();
-            } catch (Exception ex) {
-
-            }
-
-
-            database.execSQL("DELETE FROM user_table");
-
-        } catch (Exception e) {
-            Log.e("User logout error =>", "" + e.getMessage());
-
-            e.printStackTrace();
-        }
-
-    }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     public static Object deepClone(Object object) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -1321,1046 +591,8 @@ I thot of using an interface ,dint work
         }
     }
 
-    public ArrayList<Object> load_dynamic_records(Object obj, String[] table_filters) {
-        ArrayList<Object> objs = new ArrayList<>();
 
-        Cursor c = database.rawQuery("SELECT * FROM " + ((db_class) obj).table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)), null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                objs.add(load_object_from_Cursor(c, obj));
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-    public ArrayList<Object> load_dynamic_records(Object obj, int limit, String[] table_filters) {
-        ArrayList<Object> objs = new ArrayList<>();
-
-        Cursor c = database.rawQuery("SELECT * FROM " + ((db_class) obj).table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + limit, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                objs.add(load_object_from_Cursor(c, obj));
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-    public ArrayList<Object> load_dynamic_records(sync_service_description ssd, String[] table_filters) {
-        ArrayList<Object> objs = new ArrayList<>();
-
-        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-                    objs.add(load_object_from_Cursor(c, Class.forName(ssd.object_package).newInstance()));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-
-    ////////////////////////////////////////ANN///////////////////////////////////////////////////////////////////
-    public <RM> int getRecordCount(Class<RM> realm_model, @Nullable String... params) {
-        String table_name = realm.getPackageTable(realm_model.getName());
-        return Integer.parseInt(get_record_count(table_name, params));
-    }
-
-    public <RM> int getRecordCount(Class<RM> realm_model, Query query) {
-        return loadObjectArray(realm_model, query.setColumns("rowid")).size();
-    }
-
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
-        ArrayList<RM> objs = new ArrayList<RM>();
-        String table_name = realm.getPackageTable(realm_model.getName());
-        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
-        Cursor c = database.rawQuery(qry, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-
-                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
-        ArrayList<RM> objs = new ArrayList<RM>();
-        String table_name = realm.getPackageTable(realm_model.getName());
-        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null||order_filters.length<1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
-        Cursor c = database.rawQuery(qry, queryParameters);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-
-                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-
-    public static HashMap<Integer, Integer> pagerEventMap = new HashMap<>();
-
-    @Deprecated
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
-        ArrayList<RM> objs = new ArrayList<RM>();
-        String table_name = realm.getPackageTable(realm_model.getName());
-        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
-        Cursor c = database.rawQuery(qry, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
-            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
-        }
-        c.close();
-
-
-        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
-//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
-    }
-
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
-        ArrayList<RM> objs = new ArrayList<RM>();
-        String table_name = realm.getPackageTable(realm_model.getName());
-//        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
-        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
-        Cursor c = database.rawQuery(qry, queryParameters);
-
-
-        if (c.moveToFirst()) {
-            do {
-                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
-            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
-        }
-        c.close();
-
-
-        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
-//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
-    }
-
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String rawquery) {
-        ArrayList<RM> objs = new ArrayList<RM>();
-//        String table_name=realm.getPackageTable(realm_model.getName());
-        String qry = rawquery;//"SELECT "+(columns==null?"*":concatString(",",columns))+" FROM "+table_name+(table_filters==null?"":" "+conccat_sql_filters(table_filters))+(order_filters==null?"":" ORDER BY "+concatString(",",order_filters)+" "+(order_asc?"ASC":"DESC"))+(limit<=0?"":" LIMIT "+limit+(offset<=0?"": " OFFSET "+offset));
-        Cursor c = database.rawQuery(qry, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-
-                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query) {
-//        return loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
-        return loadObjectArray(realm_model, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
-
-    }
-
-    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, Query query) {
-        return loadObjectArray(realm_model, pagerEventId, searchIndex, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
-
-    }
-
-    public <RM> RM loadObject(Class<RM> realm_model, Query query) {
-//        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
-        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.tableFilters, orderStatements(query.orderFilters), 1, 0, query.queryParameters);
-        return res.size() > 0 ? res.get(0) : null;
-
-    }
-
-    public <RM> RM loadObject(Class<RM> realm_model, String rawquery) {
-        ArrayList<RM> res = loadObjectArray(realm_model, rawquery);
-        if (res.size() > 0) {
-            Log.e(logTag, "Array size :" + res.size());
-        }
-        return res.size() > 0 ? res.get(0) : null;
-
-    }
-
-    public <RM> boolean insertObject(RM realm_model) {
-        String table_name = realm.getPackageTable(realm_model.getClass().getName());
-
-        return database.insert(table_name, null, (ContentValues) realm.getContentValuesFromObject(realm_model)) > 0;
-
-    }
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public Object getJsonValue(String pos, JSONObject jo) {
-        Object json = jo;
-        if (!pos.contains(":")) {
-            return null;
-        }
-        if (!pos.contains(";")) {
-            pos += ";";
-        }
-        for (String s : pos.split(";")) {
-            if (s.length() > 0) {
-                try {
-//            if(json instanceof JSONObject){
-                    if (s.split(":")[0].equalsIgnoreCase("JO")) {
-                        json = new JSONTokener(((JSONObject) json).opt(s.split(":")[1]).toString()).nextValue();
-
-                    } else if (s.split(":")[0].equalsIgnoreCase("JA")) {
-
-//                if (json instanceof JSONArray){
-
-                        json = ((JSONArray) json).get(Integer.parseInt(s.split(":")[1]));
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        return json;
-    }
-
-
-    /*
-     *
-     * Loads obects from cursor
-     *
-     *
-     */
-    public ArrayList<Object> load_dynamic_records_ann(sync_service_description ssd, String[] table_filters) {
-        ArrayList<Object> objs = new ArrayList<>();
-
-        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-
-                    objs.add(realm.getObjectFromCursor(c, ssd.object_package));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-
-    public ArrayList<JSONObject> load_dynamic_json_records_ann(sync_service_description ssd, String[] table_filters) {
-        ArrayList<JSONObject> objs = new ArrayList<>();
-
-        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-
-                    objs.add(realm.getJsonFromCursor(c, ssd.object_package));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-    public JSONArray loadJsonArray_Ann(sync_service_description ssd, String[] table_filters) {
-        JSONArray objs = new JSONArray();
-
-        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
-
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                try {
-
-                    objs.put(realm.getJsonFromCursor(c, ssd.object_package));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
-
-
-            } while (c.moveToNext());
-        }
-        c.close();
-
-
-        return objs;
-    }
-
-
-    public void register_object(Boolean first_record, JSONObject j_obj, Object primary_obj, String service_name) {
-
-        if (first_record != null && first_record) {
-            database.beginTransaction();
-            Log.e(service_name + "::Insertion =>", "transaction begun");
-
-            return;
-        } else if (first_record != null && first_record == false) {
-            Log.e(service_name + "::Insertion =>", "transaction complete");
-
-            database.setTransactionSuccessful();
-            database.endTransaction();
-            return;
-        }
-        try {
-            try {
-                String qry = "DELETE FROM " + ((db_class) primary_obj).table_name + " WHERE (sid='" + j_obj.getString(((db_class) primary_obj).sid.json_name) + "' OR sid=" + j_obj.getString(((db_class) primary_obj).sid.json_name) + ") AND sync_status='i'";
-//Log.e("Query :",""+qry);
-//Log.e("JO :",""+jempl);
-                database.execSQL(qry);
-            } catch (Exception ex) {
-
-                Log.e("DELETING ERROR =>", "" + ex.getMessage());
-            }
-            String is_active_key = ((db_class) primary_obj).data_status.json_name;
-            if ((j_obj.has(is_active_key) && j_obj.getBoolean(((db_class) primary_obj).data_status.json_name)) || !j_obj.has(is_active_key)) {
-
-                ContentValues cv = load_object_cv_from_JSON(j_obj, primary_obj);
-
-                Log.e(service_name + ":: Insert result =>", " " + database.insert(((db_class) primary_obj).table_name, null, cv));
-
-            } else {
-            }
-
-
-        } catch (Exception ex) {
-            Log.e("insert error", "" + ex.getMessage());
-        }
-
-
-    }
-
-    public void register_object_auto_ann(Boolean first_record, JSONObject j_obj, sync_service_description ssd) {
-
-        if (first_record != null && first_record) {
-            database.beginTransaction();
-            Log.e(ssd.service_name + "::Insertion =>", "transaction begun");
-
-            return;
-        } else if (first_record != null && first_record == false) {
-            Log.e(ssd.service_name + "::Insertion =>", "transaction complete");
-
-            database.setTransactionSuccessful();
-            database.endTransaction();
-            return;
-        }
-        try {
-            try {
-                if (ssd.use_download_filter) {
-                    database.execSQL(realm.getDeleteRecordSttment(ssd.table_name, j_obj.getString("id")));
-                }
-
-            } catch (Exception ex) {
-
-                Log.e("DELETING ERROR =>", "" + ex.getMessage());
-            }
-            if (realm.jsonHasActiveKey(j_obj)) {
-
-                ContentValues cv = (ContentValues) realm.getContentValuesFromJson(j_obj, ssd.table_name);
-                cv.put("sync_status", sync_status.syned.ordinal());
-
-                Log.e(ssd.service_name + ":: Insert result =>", " " + database.insert(ssd.table_name, null, cv));
-                if (ssd.service_name.equalsIgnoreCase("JobAllInventory")) {
-                    Log.e("Timming error :", ssd.service_name + "::" + cv.toString());
-                }
-            }
-
-
-        } catch (Exception ex) {
-            Log.e("insert error", "" + ex.getMessage());
-        }
-
-
-    }
-
-    public ArrayList<dyna_data> load_dyna_data_annot(dyna_data_obj.operatio_data_type op_dyna_type, String parent) {
-        String dyna_type = op_dyna_type.ordinal() + "";
-        ArrayList<dyna_data> objs = new ArrayList<>();
-
-        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
-        Cursor c;
-        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
-            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
-
-        } else {
-
-            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
-
-        }
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                //  dyna_data obj=new dyna_data(c.getString(c.getColumnIndex("id")),c.getString(c.getColumnIndex("sid")),"",c.getString(c.getColumnIndex("data_type")),c.getString(c.getColumnIndex("data")),"",c.getString(c.getColumnIndex("id")));
-                dyna_data obj = (dyna_data) load_object_from_Cursor_annot(c, new dyna_data());
-
-
-                objs.add(obj);
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return objs;
-    }
-
-    public ArrayList<dyna_data_obj> load_dyna_data_from_parent_of_parent(String dyna_type, String parent_type, String parent_parent) {
-        ArrayList<dyna_data_obj> objs = new ArrayList<>();
-
-
-        Cursor c;
-
-        c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "' AND parent IN (SELECT sid FROM dyna_data_table WHERE data_type='" + parent_type + "' AND parent ='" + parent_parent + "')", null);
-
-        if (c.moveToFirst()) {
-            do {
-//public dyna_data_obj(String lid,String sid, String name, String data_type, String data, String parent)
-
-//                dyna_data_obj obj=new dyna_data_obj(c.getInt(c.getColumnIndex("id"))+"",c.getString(c.getColumnIndex("sid")),c.getString(c.getColumnIndex("data")),c.getString(c.getColumnIndex("data_type")),c.getString(c.getColumnIndex("data")),c.getString(c.getColumnIndex("parent")),c.getString(c.getColumnIndex("data_code")));
-//
-//              try{obj.code=c.getString(c.getColumnIndex("data_code"));}catch (Exception ex){}
-//              try{obj.data_2=c.getString(c.getColumnIndex("data_2"));}catch (Exception ex){}
-                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
-
-                objs.add(obj);
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return objs;
-    }
-
-
-    public void register_dynadata(Boolean first_record, JSONObject dyna_obj, String dyna_type, String parent) {
-
-        if (first_record != null && first_record) {
-            database.beginTransaction();
-            Log.e("Dynadata Starting =>", "transaction begun");
-
-
-        }
-
-        try {
-
-
-            ContentValues cv = new ContentValues();
-
-
-            cv.put("sid", dyna_obj.getString("Id"));
-            cv.put("data_type", dyna_type);
-            cv.put("data", dyna_obj.getString("Name"));
-            try {
-                cv.put("code", dyna_obj.getString("Code").equalsIgnoreCase("null") ? null : dyna_obj.getString("Code"));
-            } catch (Exception ex) {
-            }
-
-            try {
-                cv.put("parent", dyna_obj.getString("MotherId"));
-            } catch (Exception ex) {
-
-            }
-            try {
-                cv.put("parent", dyna_obj.getString("CommuneId"));
-            } catch (Exception ex) {
-
-            }
-            // cv.put("data_code",dyna_obj.getString("Code"));
-
-
-            database.insert("dyna_data_table", null, cv);
-            Log.d("Dynadata inserted =>", "" + dyna_obj.toString());
-
-
-        } catch (Exception ex) {
-            Log.e("Dynadata insert error", "" + ex.getMessage());
-        }
-        if (first_record != null && first_record == false) {
-            Log.e("Dynadata ENDING =>", "transaction complete");
-
-            database.setTransactionSuccessful();
-            database.endTransaction();
-
-        }
-    }
-
-
-    public ArrayList<dyna_data_obj> load_dyna_data(String dyna_type, String parent) {
-        ArrayList<dyna_data_obj> objs = new ArrayList<>();
-
-        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
-        Cursor c;
-        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
-            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
-
-        } else {
-            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
-
-        }
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
-
-
-                objs.add(obj);
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return objs;
-    }
-
-    public ArrayList<dyna_data_obj> load_dyna_data(dyna_data_obj.operatio_data_type op_dyna_type, String parent) {
-        String dyna_type = op_dyna_type.ordinal() + "";
-        ArrayList<dyna_data_obj> objs = new ArrayList<>();
-
-        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
-        Cursor c;
-        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
-            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
-
-        } else {
-            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
-
-        }
-
-        if (c.moveToFirst()) {
-            do {
-
-
-                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
-
-
-                objs.add(obj);
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return objs;
-    }
-
-    public interface data_loading_interface {
-        void onDataLoaded(ArrayList x);
-
-        void onDataLoading(int percent, ArrayList x);
-
-    }
-
-
-    public String load_dynadata_name(String sid, String data_type) {
-        Cursor c = database.rawQuery("SELECT data FROM dyna_data_table WHERE data_type='" + data_type + "' AND sid='" + sid + "'", null);
-
-        if (c.moveToFirst()) {
-            do {
-                String res = c.getString(c.getColumnIndex("data"));
-                c.close();
-                return res;
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return act.getString(R.string.unavailable_field);
-    }
-
-    public String load_dyna_data_name(String sid, dyna_data_obj.operatio_data_type ot) {
-        try {
-            Cursor c = database.rawQuery("SELECT data FROM dyna_data_table WHERE data_type='" + ot.ordinal() + "' AND sid='" + sid + "'", null);
-
-
-            if (c.moveToFirst()) {
-                do {
-
-                    return c.getString(c.getColumnIndex("data"));
-
-                } while (c.moveToNext());
-            }
-            c.close();
-        } catch (Exception ex) {
-        }
-        return act.getString(R.string.unavailable_field);
-    }
-
-
-    public JSONObject load_JSON_from_object(Object obj) {
-
-
-        //employee mem=new employee();
-        JSONObject jo = new JSONObject();
-
-        Field[] fieldz = concatenate(obj.getClass().getDeclaredFields(), obj.getClass().getSuperclass().getDeclaredFields());
-        for (Field field : fieldz) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    //  Log.e("DB Field ", "" + field.getName());
-                    Class<?> clazz = field.get(obj).getClass();
-                    Field dyna_value_field = clazz.getDeclaredField("value");
-                    Field dyna_json_name_field = clazz.getDeclaredField("json_name");
-                    Field dyna_storage_mode_field = clazz.getDeclaredField("storage_mode");
-
-                    dyna_json_name_field.setAccessible(true);
-                    dyna_value_field.setAccessible(true);
-                    dyna_storage_mode_field.setAccessible(true);
-
-                    String j_key = (String) dyna_json_name_field.get(field.get(obj));
-
-                    if (j_key != null) {
-                        int storage_mode = (int) dyna_storage_mode_field.get(field.get(obj));
-                        if (storage_mode == 2) {
-                            String data = get_saved_doc_base64((String) dyna_value_field.get(field.get(obj)));
-                            if (data == error_return) {
-                                Log.e("DATA ERROR =>", "  :: " + data);
-
-                                //   cv.put("data_status","e");
-                                jo.put(j_key, data);
-                            } else {
-                                jo.put(j_key, data);
-
-                            }
-
-                        } else {
-                            jo.put(j_key, (String) dyna_value_field.get(field.get(obj)));
-                        }
-                    }
-
-
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "load_JSON_from_object :: " + ex.getMessage());
-                }
-            } else {
-                try {
-                    //   Log.e("CLASS ", field.getName()+ " - " + field.getType());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return jo;
-
-    }
-
-
-    public member load_member_from_JSON(JSONObject j) {
-
-
-        member mem = new member();
-
-
-        Field[] fieldz = concatenate(mem.getClass().getDeclaredFields(), mem.getClass().getSuperclass().getDeclaredFields());
-        for (Field field : fieldz) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    //  Log.e("DB Field ", "" + field.getName());
-                    Class<?> clazz = field.get(mem).getClass();
-                    Field dyna_value_field = clazz.getDeclaredField("value");
-                    Field dyna_json_name_field = clazz.getDeclaredField("json_name");
-                    dyna_json_name_field.setAccessible(true);
-                    dyna_value_field.setAccessible(true);
-                    String j_key = (String) dyna_json_name_field.get(field.get(mem));
-                    if (j.has(j_key)) {
-                        dyna_value_field.set(field.get(mem), j.getString(j_key));
-                    }
-                    //     dynamic_property dp=(dynamic_property) field.getClass();
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
-                }
-            } else {
-                try {
-                    //   Log.e("CLASS ", field.getName()+ " - " + field.getType());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return mem;
-
-    }
-
-
-    public Object load_object_from_Cursor(Cursor c, Object mem) {
-
-        Field[] fieldz = concatenate(mem.getClass().getDeclaredFields(), mem.getClass().getSuperclass().getDeclaredFields());
-        for (Field field : fieldz) {
-
-            // for (Field field : mem.getClass().getDeclaredFields()) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    //  Log.e("DB Field ", "" + field.getName());
-                    Class<?> clazz = field.get(mem).getClass();
-                    Field dyna_value_field = clazz.getDeclaredField("value");
-                    Field dyna_db_name_field = clazz.getDeclaredField("column_name");
-                    dyna_db_name_field.setAccessible(true);
-                    dyna_value_field.setAccessible(true);
-                    String c_key = (String) dyna_db_name_field.get(field.get(mem));
-                    if (c_key != null && c_key.length() > 1 && c.getColumnIndex(c_key) != -1) {
-                        dyna_value_field.set(field.get(mem), c.getString(c.getColumnIndex(c_key)));
-                    }
-
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "load_object_from_Cursor " + ex.getMessage());
-                }
-            } else {
-                try {
-                    //   Log.e("CLASS ", field.getName()+ " - " + field.getType());9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        try {
-            return deepClone(mem);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return mem;
-        }
-
-    }
-
-    public Object load_object_from_Cursor_annot(Cursor c, Object mem) {
-
-        Field[] fieldz = concatenate(mem.getClass().getDeclaredFields(), mem.getClass().getSuperclass().getDeclaredFields());
-        for (Field field : fieldz) {
-            field.setAccessible(true); // if you want to modify private fields
-            DynamicProperty v = field.getAnnotation(DynamicProperty.class);
-            if (v == null || v.column_name() == null || (v.column_name().length() < 1) || (c.getColumnIndex(v.column_name()) == -1)) {
-                continue;
-            }
-            try {
-                field.set(mem, c.getString(c.getColumnIndex(v.column_name())));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                Log.e("REFLECTION ERROR =>", "load_object_from_Cursor " + e.getMessage());
-            }
-
-            //  Log.e("SANOT",""+field.getAnnotation(DynamicProperty.class).db_column_name());
-
-
-        }
-        return mem;
-
-    }
-
-    public ContentValues load_object_cv_from_JSON(JSONObject j, Object obj) {
-
-        ContentValues cv = new ContentValues();
-
-
-        Field[] fieldz = concatenate(obj.getClass().getDeclaredFields(), obj.getClass().getSuperclass().getDeclaredFields());
-        for (Field field : fieldz) {
-
-            // for (Field field : obj.getClass().getDeclaredFields()) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    // Log.e("DB Field ", "" + field.getName());
-                    Class<?> clazz = field.get(obj).getClass();
-                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
-                    Field dyna_json_name_field = clazz.getDeclaredField("json_name");
-                    Field dyna_storage_mode_field = clazz.getDeclaredField("storage_mode");
-                    dyna_json_name_field.setAccessible(true);
-                    dyna_column_name_field.setAccessible(true);
-                    dyna_storage_mode_field.setAccessible(true);
-                    String j_key = (String) dyna_json_name_field.get(field.get(obj));
-                    if (j.has(j_key)) {
-                        int storage_mode = (int) dyna_storage_mode_field.get(field.get(obj));
-                        if (storage_mode == 2) {
-                            String data = save_doc(j.getString(j_key));
-                            if (data == error_return) {
-
-                                cv.put("data_status", "e");
-                                cv.put((String) dyna_column_name_field.get(field.get(obj)), data);
-                            } else {
-                                cv.put((String) dyna_column_name_field.get(field.get(obj)), data);
-
-                            }
-
-                        } else {
-                            cv.put((String) dyna_column_name_field.get(field.get(obj)), j.getString(j_key));
-                        }
-                    }
-
-
-                    field = null;
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
-                }
-            } else {
-
-
-            }
-        }
-        cv.put("sync_status", "i");
-        return cv;
-
-    }
-
-    public ContentValues load_cv_from_object(Object obj) {
-
-        ContentValues cv = new ContentValues();
-
-
-        Field[] fieldz = concatenate(obj.getClass().getDeclaredFields(), obj.getClass().getSuperclass().getDeclaredFields());
-        for (Field field : fieldz) {
-
-            // for (Field field : obj.getClass().getDeclaredFields()) {
-            field.setAccessible(true); // if you want to modify private fields
-            if (field.getType() == dynamic_property.class) {
-                try {
-
-                    // Log.e("DB Field ", "" + field.getName());
-                    Class<?> clazz = field.get(obj).getClass();
-                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
-                    Field dyna_value_field = clazz.getDeclaredField("value");
-
-
-                    dyna_column_name_field.setAccessible(true);
-                    dyna_value_field.setAccessible(true);
-                    String cv_key = (String) dyna_column_name_field.get(field.get(obj));
-                    String cv_value = (String) dyna_value_field.get(field.get(obj));
-                    if (cv_key != null && cv_key.length() > 0 && cv_value != null && cv_value.length() > 0) {
-
-                        cv.put(cv_key, cv_value);
-                    }
-
-
-                } catch (Exception ex) {
-                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
-                }
-            } else {
-
-
-            }
-        }
-        cv.put("sync_status", "p");
-        return cv;
-
-    }
-
-
-    public String greatest_sync_var(String table_name, @Nullable String... filters) {
-        try {
-            String[] flts = new String[filters.length + 1];
-            flts[0] = "sync_var NOT NULL";
-            for (int i = 0; i < filters.length; i++) {
-                flts[i + 1] = filters[i];
-            }
-            String qry = "SELECT CAST(sync_var AS INTEGER) FROM " + table_name + (filters == null ? "" : " " + conccat_sql_filters(flts)) + " ORDER BY CAST(sync_var AS INTEGER) DESC LIMIT 1";
-            Cursor c = database.rawQuery(qry, null);
-
-            if (c.moveToFirst()) {
-                do {
-
-                    String res = c.getString(0);
-                    c.close();
-                    return res;
-                } while (c.moveToNext());
-            }
-            c.close();
-            return "0";
-        } catch (Exception e) {
-            Log.e("DatabaseManager", "" + e.getMessage());
-            return null;
-        }
-    }
-
-    public String get_record_count(String table_name, @Nullable String... filters) {
-
-        String qry = "SELECT COUNT(*) FROM " + table_name + (filters == null ? "" : " " + conccat_sql_filters(filters));
-        //  Log.e("QRY :",""+qry);
-        Cursor c = database.rawQuery(qry, null);
-
-        if (c.moveToFirst()) {
-            do {
-                String res = c.getString(0);
-                c.close();
-                return res;
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return "0";
-    }
-
-
-    public String record_count(String table_name) {
-
-
-        Cursor c = database.rawQuery("SELECT COUNT(*) FROM " + table_name, null);
-
-        if (c.moveToFirst()) {
-            do {
-
-                String res = c.getString(0);
-                c.close();
-                return res;
-
-            } while (c.moveToNext());
-        }
-        c.close();
-        return "0";
-    }
-
-    public long sync_period() {
-        //Date date = svars.sparta_EA_calendar().getTime();
-        Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
-        String dttt = format1.format(date);
-
-
-        if (svars.sync_time(act) == null) {
-            return svars.sync_interval_mins(act);
-        }
-        Date time1 = null;
-        try {
-            try {
-                time1 = new SimpleDateFormat("HH:mm:ss").parse(format1.format(date));
-            } catch (Exception ex) {
-                Log.e("Time Error =>", ex.getMessage());
-            }
-            Calendar calendar1 = Calendar.getInstance();
-            calendar1.setTime(time1);
-            Date time2 = null;
-            try {
-                Log.e("DATE 2 =>", " t " + date.getTime() + " Time=>" + svars.sync_time(act).split(" ")[1]);
-                time2 = new SimpleDateFormat("HH:mm:ss").parse(svars.sync_time(act).split(" ")[1]);
-            } catch (Exception ex) {
-                Log.e("Time Error =>", ex.getMessage());
-            }
-            Calendar calendar2 = Calendar.getInstance();
-            calendar2.setTime(time2);
-            long diffference = Calendar.getInstance().getTimeInMillis() - calendar2.getTimeInMillis();
-            // return (int)Math.round((double)diffference/60000);
-            int diff_1 = (int) ((diffference / (1000 * 60)) % 60);
-            return diff_1 + (((int) ((diffference / (1000 * 60 * 60)) % 24)) * 60);
-        } catch (Exception ex) {
-            return svars.sync_interval_mins(act);
-        }
-
-
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public String conccat_sql_filters(String[] str_to_join) {
-        String result = "";
-        for (int i = 0; i < str_to_join.length; i++) {
-            result = result + (i == 0 ? "WHERE " : " AND ") + str_to_join[i];
-        }
-        return result;
-
-    }
-
+/////////////////////////////////////////////UPDATE //////////////////////////
 
     public static String conccat_sql_string(String[] str_to_join) {
         String result = "";
@@ -2400,19 +632,6 @@ I thot of using an interface ,dint work
 
     }
 
-
-    public String conccat_sql_string(String[] str_to_join, ArrayList<String> str_to_join2) {
-        String result = "";
-        for (int i = 0; i < str_to_join.length; i++) {
-            result = result + (i == 0 ? "" : ",") + "'" + str_to_join[i] + "'";
-        }
-        for (int i = 0; i < str_to_join2.size(); i++) {
-            result = result + (result.length() < 0 ? "" : ",") + "'" + str_to_join2.get(i) + "'";
-        }
-        return result;
-
-    }
-
     public static String conccat_sql_string(ArrayList<String> str_to_join2) {
         String result = "";
 
@@ -2436,8 +655,7 @@ I thot of using an interface ,dint work
         return c;
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
     public static byte[] get_file_data(String data_name) {
 
@@ -2459,45 +677,8 @@ I thot of using an interface ,dint work
         return null;
     }
 
-    public String save_doc_us(String base64_bytes) {
-        byte[] file_bytes = Base64.decode(base64_bytes, 0);
 
-        String img_name = "TA_DAT" + System.currentTimeMillis() + "JPG_IDC.JPG";
-        //  String path = Environment.getExternalStorageDirectory().toString();
-        OutputStream fOutputStream = null;
-        //  File file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/");
-        File file = new File(svars.current_app_config(act).file_path_employee_data);
-        if (!file.exists()) {
-            Log.e("Creating data dir=>", "" + String.valueOf(file.mkdirs()));
-        }
-        //  file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/", img_name);
-        file = new File(svars.current_app_config(act).file_path_employee_data, img_name);
-
-        try {
-            fOutputStream = new FileOutputStream(file);
-            fOutputStream.write(file_bytes);
-
-            //fpb.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
-
-            fOutputStream.flush();
-            fOutputStream.close();
-
-            //  MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
-            return "--------------";
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
-            return "--------------";
-        }
-        return img_name;
-    }
-
-    public static String error_return = "!!!";
-
+///////////////////////////////USER///////////////////////////////////////////
 
     public static byte[] appEncryptionKey(String password) {
 //         password = "password";
@@ -2558,6 +739,9 @@ I thot of using an interface ,dint work
         return saveAppFileFromBytes(outdata);
 
     }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static String saveAppFileFromBytes(byte[] file_bytes) {
         try {
@@ -2632,7 +816,6 @@ I thot of using an interface ,dint work
         }
         return null;
     }
-
 
     public static String save_doc(String base64_bytes) {
         try {
@@ -2732,10 +915,6 @@ I thot of using an interface ,dint work
         return res;
     }
 
-
-    public static Gpsprobe_r gps;
-
-
     public static void log_event(Context act, String data) {
 
         gps = gps == null ? new Gpsprobe_r(act) : gps;
@@ -2783,7 +962,6 @@ I thot of using an interface ,dint work
 
     }
 
-
     public static void log_String(String data) {
         gps = gps == null ? new Gpsprobe_r(Realm.context) : gps;
         String prefix = svars.sparta_EA_calendar().getTime().toString() + "   :   " + gps.getLatitude() + "," + gps.getLongitude() + "     =>";
@@ -2803,7 +981,6 @@ I thot of using an interface ,dint work
         }
 
     }
-
 
     private static void addApkToInstallSession(Context context, Uri uri, PackageInstaller.Session session) {
         Log.i("TAG", "addApkToInstallSession " + uri);
@@ -2832,23 +1009,6 @@ I thot of using an interface ,dint work
             Log.i("TAG", "addApkToInstallSession failed2 " + e.toString());
         }
     }
-
-    private void addApkToInstallSession(String assetName, PackageInstaller.Session session)
-            throws IOException {
-        // It's recommended to pass the file size to openWrite(). Otherwise installation may fail
-        // if the disk is almost full.
-        try (OutputStream packageInSession = session.openWrite("package", 0, -1);
-             InputStream is = act.getAssets().open(assetName)) {
-            byte[] buffer = new byte[16384];
-            int n;
-            while ((n = is.read(buffer)) >= 0) {
-                packageInSession.write(buffer, 0, n);
-            }
-        }
-    }
-
-    private static final String PACKAGE_INSTALLED_ACTION =
-            "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
 
     public static void install(Uri uri) {
         PackageInstaller.Session session = null;
@@ -3165,6 +1325,1869 @@ I thot of using an interface ,dint work
 
         }
 
+
+    }
+
+    public SQLiteDatabase getDatabase() {
+        return database;
+    }
+
+    /**
+     * Sets up database by creating and adding missing tables and missing columns and indeces in their respective tables
+     *
+     * @deprecated This method is no longer used,its slow compaired to {@link this#setup_db_ann()} which is twice as fast with annotation.
+     * <p> Use {@link this#setup_db_ann()} instead.
+     */
+    @Deprecated()
+    void setup_db() throws IOException {
+        sdb_model dbm = new sdb_model();
+        dbm.db_name = svars.DB_NAME;
+        dbm.db_path = svars.current_app_config(act).file_path_db(act);
+        //   dbm.db_path=act.getExternalFilesDir(null).getAbsolutePath()+"/"+svars.DB_NAME;
+        dbm.db_password = svars.DB_PASS;
+
+        SQLiteDatabase.loadLibs(act);
+
+
+        //  SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), , null);
+        database = SQLiteDatabase.openOrCreateDatabase(dbm.db_path, dbm.db_password, null);
+        // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
+
+        svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
+
+        dynamic_property dpex = new dynamic_property(null, null, null);
+        Class<?> cex = dpex.getClass();
+        String dpex_path = cex.getName();
+
+        String package_path = dpex_path.substring(0, dpex_path.lastIndexOf('.'));
+
+        String codepath = act.getPackageCodePath();
+
+        DexFile df = new DexFile(codepath);
+        Stopwatch sw = new Stopwatch();
+        sw.start();
+        // List<String> resultList = Lists.newArrayList(Collections.list(df.entries())).stream().filter(s -> s.startsWith(package_path)).collect(Collectors.toList());
+//        for (String iter :resultList) {
+//            String s = iter;
+//            Log.e("Classes reflected 3 =>", "" + s);
+//
+//        }
+//        Log.e("Classes reflected 3 in :", "" + sw.elapsed(TimeUnit.MICROSECONDS));
+
+
+        sdb_model.sdb_table.column id = new sdb_model.sdb_table.column(false, "id", "INTEGER");
+        id.extra_params = "PRIMARY KEY AUTOINCREMENT";
+        sdb_model.sdb_table.column reg_time = new sdb_model.sdb_table.column(false, "reg_time", "DATETIME", "(datetime('now','localtime'))");
+        sdb_model.sdb_table.column sync_status = new sdb_model.sdb_table.column(false, "sync_status");
+        sdb_model.sdb_table.column transaction_no = new sdb_model.sdb_table.column(false, "transaction_no");
+        sdb_model.sdb_table.column sid = new sdb_model.sdb_table.column(true, "sid");
+        sdb_model.sdb_table.column sync_var = new sdb_model.sdb_table.column(true, "sync_var");
+        sdb_model.sdb_table.column data_status = new sdb_model.sdb_table.column(true, "data_status");
+        sdb_model.sdb_table.column user_id = new sdb_model.sdb_table.column(false, "user_id");
+        sdb_model.sdb_table.column data_usage_frequency = new sdb_model.sdb_table.column(true, "data_usage_frequency");
+        sdb_model.sdb_table.column lat = new sdb_model.sdb_table.column(false, "lat");
+        sdb_model.sdb_table.column lon = new sdb_model.sdb_table.column(false, "lon");
+
+        ArrayList<sdb_model.sdb_table.column> common_columns = new ArrayList();
+        common_columns.add(id);
+        common_columns.add(user_id);
+        common_columns.add(reg_time);
+        common_columns.add(data_status);
+        common_columns.add(transaction_no);
+        common_columns.add(sync_status);
+        common_columns.add(sid);
+        common_columns.add(sync_var);
+        common_columns.add(data_usage_frequency);
+
+
+        for (Enumeration<String> iter = df.entries(); iter.hasMoreElements(); ) {
+            String s = iter.nextElement();
+            if (s.startsWith(package_path)) {
+                try {
+                    Class<?> clazz = Class.forName(s);
+
+
+                    db_class db_tb_temp = new db_class("");
+                    if (db_tb_temp.getClass().isAssignableFrom(clazz) && !db_tb_temp.getClass().getName().equalsIgnoreCase(clazz.getName())) {
+                        Log.e("Classes reflected =>", "DB :" + s);
+                        sdb_model.sdb_table db_tb = table_from_dyna_property_class(clazz);
+                        if (db_tb == null) {
+                            continue;
+                        }
+                        db_tb.columns.addAll(common_columns);
+                        //   dbm.tables.add(db_tb);
+                        try {
+                            Cursor cursor1 = database.rawQuery("SELECT * FROM " + db_tb.table_name, null);
+                            cursor1.moveToFirst();
+                            if (!cursor1.isAfterLast()) {
+                                do {
+                                    cursor1.getString(0);
+                                } while (cursor1.moveToNext());
+                            }
+                            cursor1.close();
+                        } catch (Exception e) {
+                            database.execSQL(db_tb.create_statement());
+                            String crt_stt = db_tb.create_indexes_statement();
+                            if (crt_stt.length() > 1 & crt_stt.contains(";")) {
+
+                                for (String st : crt_stt.split(";")) {
+                                    try {
+                                        Log.e("DB :", "Index statement creating =>" + st);
+                                        database.execSQL(st);
+                                        Log.e("DB :", "Index statement created =>" + st);
+                                    } catch (Exception ex1) {
+                                    }
+
+                                }
+
+
+                            }
+                            continue;
+                        }
+
+                        for (sdb_model.sdb_table.column col : db_tb.columns) {
+                            try {
+                                Cursor cursor1 = database.rawQuery("SELECT count(" + col.column_name + ") FROM " + db_tb.table_name, null);
+                                cursor1.moveToFirst();
+                                if (!cursor1.isAfterLast()) {
+                                    do {
+                                        cursor1.getString(0);
+                                    } while (cursor1.moveToNext());
+                                }
+                                cursor1.close();
+                            } catch (Exception e) {
+                                database.execSQL("ALTER TABLE " + db_tb.table_name + " ADD COLUMN " + col.column_name + " " + col.data_type + " " + col.default_value);
+                            }
+                        }
+                    }
+
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // Object date = clazz.newInstance();
+            }
+
+        }
+
+        Log.e("Classes reflected :", "raw :" + sw.elapsed(TimeUnit.MICROSECONDS));
+
+        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
+        Log.e("DB", "Finished DB Verification");
+        main_db = null;
+        loaded_db = true;
+
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Sets up database by creating and adding missing tables and missing columns and indices in their respective tables from mappery of annotated data which is pre-reflected at pre build
+     */
+    void setup_db_ann() {
+
+
+        sdb_model dbm = new sdb_model();
+        AppConfig appconfig = svars.current_app_config(act);
+        dbm.db_name = appconfig.DB_NAME;
+        dbm.db_path = appconfig.file_path_db();
+        dbm.db_password = appconfig.DB_PASS;
+
+        SQLiteDatabase.loadLibs(act);
+
+        File par = new File(new File(dbm.db_path).getParent());
+        if (!par.exists()) {
+            par.mkdirs();
+        }
+        Log.e(logTag, "DB Path:" + dbm.db_path);
+
+        database = SQLiteDatabase.openOrCreateDatabase(new File(dbm.db_path), dbm.db_password, null);
+
+        // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
+
+        svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
+
+
+        Stopwatch sw = new Stopwatch();
+        sw.start();
+
+
+        for (String s : realm.getDynamicClassPaths()) {
+
+
+            Log.e("Classes reflected =>", "Ann :" + s);
+
+            String table_name = realm.getPackageTable(s);
+            try {
+                Cursor cursor1 = database.rawQuery("SELECT * FROM " + table_name, null);
+//                cursor1.moveToFirst();
+//                if (!cursor1.isAfterLast()) {
+//                    do {
+//                        cursor1.getString(0);
+//                    } while (cursor1.moveToNext());
+//                }
+                cursor1.close();
+            } catch (Exception e) {
+                database.execSQL(realm.getTableCreateSttment(table_name, false));
+                database.execSQL(realm.getTableCreateSttment(table_name, true));
+                String crt_stt = realm.getTableCreateIndexSttment(table_name);
+                if (crt_stt.length() > 1 & crt_stt.contains(";")) {
+
+                    for (String st : crt_stt.split(";")) {
+                        try {
+                            Log.e("DB :", "Index statement creating =>" + st);
+                            database.execSQL(st);
+                            Log.e("DB :", "Index statement created =>" + st);
+                        } catch (Exception ex1) {
+                        }
+
+                    }
+
+
+                }
+                continue;
+            }
+
+            for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
+                try {
+                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM " + table_name, null);
+//                    cursor1.moveToFirst();
+//                    if (!cursor1.isAfterLast()) {
+//                        do {
+//                            cursor1.getString(0);
+//                        } while (cursor1.moveToNext());
+//                    }
+                    cursor1.close();
+                } catch (Exception e) {
+                    database.execSQL("ALTER TABLE " + table_name + " ADD COLUMN " + col.getKey());
+//                                database.execSQL("ALTER TABLE "+db_tb.table_name+" ADD COLUMN " + col.getKey() + " "+col.data_type+" "+col.default_value);
+                }
+            }
+
+
+            for (Map.Entry<String, String> col : realm.getTableColumns(table_name).entrySet()) {
+                try {
+                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.getKey() + ") FROM CP_" + table_name, null);
+//                    cursor1.moveToFirst();
+//                    if (!cursor1.isAfterLast()) {
+//                        do {
+//                            cursor1.getString(0);
+//                        } while (cursor1.moveToNext());
+//                    }
+                    cursor1.close();
+                } catch (Exception e) {
+                    database.execSQL("ALTER TABLE CP_" + table_name + " ADD COLUMN " + col.getKey());
+//                                database.execSQL("ALTER TABLE "+db_tb.table_name+" ADD COLUMN " + col.getKey() + " "+col.data_type+" "+col.default_value);
+                }
+            }
+
+
+        }
+
+        Log.e("Classes reflected :", "Ann :" + sw.elapsed(TimeUnit.MICROSECONDS));
+
+        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
+        Log.e("DB", "Finished DB Verification");
+        main_db = null;
+        loaded_db = true;
+
+    }
+
+    sdb_model.sdb_table table_from_dyna_property_class(Class<?> main_class) {
+
+        Object main_obj = null;
+        sdb_model.sdb_table tabl = null;//new sdb_model.sdb_table();
+        try {
+            main_obj = main_class.newInstance();
+        } catch (IllegalAccessException e) {
+            return null;
+
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field ff = main_class.getField("table_name");
+            ff.setAccessible(true);
+            try {
+                String table_name_ = (String) ff.get(main_class.newInstance());
+                Log.e("TABLE CLASS ", "TABLE :" + table_name_);
+
+                tabl = new sdb_model.sdb_table(table_name_);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            // e.printStackTrace();
+        }
+        if (tabl == null || tabl.table_name == null || tabl.table_name.length() < 1) {
+            return null;
+        }
+//Field[] fields =concatenate(main_class.getSuperclass().getFields(),main_class.getDeclaredFields());
+        for (Field field : main_class.getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    Log.e("DP CLASS ", "" + field.getName());
+                    Class<?> clazz = field.get(main_obj).getClass();
+                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
+                    Field dyna_index_field = clazz.getDeclaredField("index");
+                    dyna_column_name_field.setAccessible(true);
+//                  sdb_model.sdb_table.column col=new sdb_model.sdb_table.column(true,(String) dyna_column_name_field.get(field.get(main_obj)));
+
+                    tabl.columns.add(new sdb_model.sdb_table.column((boolean) dyna_index_field.get(field.get(main_obj)), (String) dyna_column_name_field.get(field.get(main_obj))));
+
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+//                try {
+//                    Log.e("CLASS ", field.getName()+ " - " + field.getType());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+        return tabl;
+    }
+
+    sdb_model.sdb_table table_from_dyna_property_class_ann(Class<?> main_class) {
+
+        Object main_obj = null;
+        sdb_model.sdb_table tabl = null;//new sdb_model.sdb_table();
+        try {
+            main_obj = main_class.newInstance();
+        } catch (IllegalAccessException e) {
+            return null;
+
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field ff = main_class.getField("table_name");
+            ff.setAccessible(true);
+            try {
+                String table_name_ = (String) ff.get(main_class.newInstance());
+                Log.e("TABLE CLASS ", "TABLE :" + table_name_);
+
+                tabl = new sdb_model.sdb_table(table_name_);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            // e.printStackTrace();
+        }
+        if (tabl == null || tabl.table_name == null || tabl.table_name.length() < 1) {
+            return null;
+        }
+//Field[] fields =concatenate(main_class.getSuperclass().getFields(),main_class.getDeclaredFields());
+        for (Field field : main_class.getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    Log.e("DP CLASS ", "" + field.getName());
+                    Class<?> clazz = field.get(main_obj).getClass();
+                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
+                    Field dyna_index_field = clazz.getDeclaredField("index");
+                    dyna_column_name_field.setAccessible(true);
+//                  sdb_model.sdb_table.column col=new sdb_model.sdb_table.column(true,(String) dyna_column_name_field.get(field.get(main_obj)));
+
+                    tabl.columns.add(new sdb_model.sdb_table.column((boolean) dyna_index_field.get(field.get(main_obj)), (String) dyna_column_name_field.get(field.get(main_obj))));
+
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+//                try {
+//                    Log.e("CLASS ", field.getName()+ " - " + field.getType());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+        return tabl;
+    }
+
+    public long update_check_period() {
+        //Date date = svars.sparta_EA_calendar().getTime();
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+        String dttt = format1.format(date);
+
+
+        if (svars.update_check_time(act) == null) {
+            return svars.regsyncinterval_mins;
+        }
+        Date time1 = null;
+        try {
+            try {
+                time1 = new SimpleDateFormat("HH:mm:ss").parse(format1.format(date));
+            } catch (Exception ex) {
+                Log.e("Time Error =>", ex.getMessage());
+            }
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time1);
+            Date time2 = null;
+            try {
+                Log.e("DATE 2 =>", " t " + date.getTime() + " Time=>" + svars.update_check_time(act).split(" ")[1]);
+                time2 = new SimpleDateFormat("HH:mm:ss").parse(svars.update_check_time(act).split(" ")[1]);
+            } catch (Exception ex) {
+                Log.e("Time Error =>", ex.getMessage());
+            }
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(time2);
+            long diffference = Calendar.getInstance().getTimeInMillis() - calendar2.getTimeInMillis();
+            // return (int)Math.round((double)diffference/60000);
+            int diff_1 = (int) ((diffference / (1000 * 60)) % 60);
+            return diff_1 + (((int) ((diffference / (1000 * 60 * 60)) % 24)) * 60);
+        } catch (Exception ex) {
+            return svars.regsyncinterval_mins;
+        }
+
+
+    }
+
+    public ArrayList<sparta_app_version> load_undownloaded_apks(String[] downloading) {
+
+
+        ArrayList<sparta_app_version> versions = new ArrayList<>();
+
+
+        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NULL AND version_name > '" + svars.current_version() + "' AND sid NOT IN (" + conccat_sql_string(downloading) + ")", null);
+
+        if (c.moveToFirst()) {
+            do {
+
+                sparta_app_version sap = new sparta_app_version();
+
+                sap.version_id = c.getString(c.getColumnIndex("sid"));
+                sap.version_name = c.getString(c.getColumnIndex("version_name"));
+                sap.release_notes = c.getString(c.getColumnIndex("release_notes"));
+                sap.release_name = c.getString(c.getColumnIndex("release_name"));
+                sap.release_date = c.getString(c.getColumnIndex("creation_time"));
+                sap.download_link = c.getString(c.getColumnIndex("download_link"));
+                sap.local_path = c.getString(c.getColumnIndex("local_path"));
+
+
+              /*cv.put("sid",json_sav.getString("Version_id"));
+                cv.put("version_name",json_sav.getString("Version_name"));
+                cv.put("release_notes",json_sav.getString("Release_notes"));
+                cv.put("release_name",json_sav.getString("Release_name"));
+                cv.put("creation_time",json_sav.getString("creation_time"));
+                cv.put("file",json_sav.getString("Landing_page_url"));
+                */
+
+
+                versions.add(sap);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return versions;
+    }
+
+    public sparta_app_version load_latest_apk_to_install() {
+
+        Cursor c = database.rawQuery("SELECT * FROM app_versions_table WHERE data_status IS NOT NULL AND version_name > '" + svars.current_version() + "' ORDER BY sid DESC LIMIT 1", null);
+
+        if (c.moveToFirst()) {
+            do {
+
+                sparta_app_version sap = new sparta_app_version();
+
+                sap.version_id = c.getString(c.getColumnIndex("sid"));
+                sap.version_name = c.getString(c.getColumnIndex("version_name"));
+                sap.release_notes = c.getString(c.getColumnIndex("release_notes"));
+                sap.release_name = c.getString(c.getColumnIndex("release_name"));
+                sap.release_date = c.getString(c.getColumnIndex("creation_time"));
+                sap.download_link = c.getString(c.getColumnIndex("download_link"));
+                sap.local_path = c.getString(c.getColumnIndex("local_path"));
+
+
+              /*  cv.put("sid",json_sav.getString("Version_id"));
+                cv.put("version_name",json_sav.getString("Version_name"));
+                cv.put("release_notes",json_sav.getString("Release_notes"));
+                cv.put("release_name",json_sav.getString("Release_name"));
+                cv.put("creation_time",json_sav.getString("creation_time"));
+                cv.put("file",json_sav.getString("Landing_page_url"));
+                */
+
+
+                return sap;
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return null;
+    }
+
+    public void save_versions(JSONObject json_sav) {
+        try {
+
+            if (!version_exists(json_sav.getString("Version_id"))) {
+                ContentValues cv = new ContentValues();
+
+                cv.put("sid", json_sav.getString("Version_id"));
+                cv.put("version_name", json_sav.getString("Version_name"));
+                cv.put("release_notes", json_sav.getString("Release_notes"));
+                cv.put("release_name", json_sav.getString("Release_name"));
+                cv.put("creation_time", json_sav.getString("creation_time"));
+                cv.put("download_link", json_sav.getString("Landing_page_url"));
+//cv.put("sid",appcateg_j.getString("icon"));
+
+
+                Log.e("Apk version ", "About to insert ");
+
+                //;
+                Log.e("Apk version ", "Inserted " + database.insert("app_versions_table", null, cv));
+
+            } else {
+
+                Log.e("Apk version ", "App exists ");
+
+            }
+        } catch (Exception exx) {
+            Log.e("Version insert error :", " " + exx.getMessage());
+        }
+
+    }
+
+    public void update_downloaded_versions(String sid, String file_path) {
+        try {
+
+
+            ContentValues cv = new ContentValues();
+
+            cv.put("data_status", "d");
+            cv.put("local_path", file_path);
+
+
+            Log.e("Apk version ", "About to update ");
+
+            //;
+            Log.e("Apk version ", "Inserted " + database.update("app_versions_table", cv, "sid='" + sid + "'", null));
+
+
+        } catch (Exception exx) {
+            Log.e("Version update error :", " " + exx.getMessage());
+        }
+
+    }
+
+    boolean version_exists(String sid) {
+        return database.rawQuery("SELECT _id FROM app_versions_table WHERE sid='" + sid + "'", null).moveToFirst();
+    }
+
+    public member load_employee(String sid) {
+
+
+        try {
+
+            Cursor c = database.rawQuery("SELECT * FROM member_info_table WHERE sid='" + sid + "'", null);
+
+            if (c.moveToFirst()) {
+                do {
+                    member emp = (member) load_object_from_Cursor(c, new member());
+                    c.close();
+                    return emp;
+                } while (c.moveToNext());
+            }
+
+            c.close();
+        } catch (Exception ex) {
+
+        }
+        return null;
+    }
+
+    public String validate_credentials(String username, String pass) {
+        String name = null;
+        Cursor c = database.rawQuery("SELECT * FROM user_table WHERE username=\"" + username + "\" AND password=\"" + pass + "\"", null);
+
+        if (c.moveToFirst()) {
+            do {
+
+                name = c.getString(c.getColumnIndex("user_fullname"));
+                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+                saver.putString("user_name", c.getString(c.getColumnIndex("user_fullname")));
+                saver.putString("username", c.getString(c.getColumnIndex("username")));
+                saver.putString("pass", c.getString(c.getColumnIndex("password")));
+                saver.putString("user_id", c.getString(c.getColumnIndex("sid")));
+
+                saver.commit();
+                return name == null ? username : name;
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return name;
+    }
+
+    public void save_user(String username, String password, String user_id, String user_name, String user_type_id) {
+
+        /*
+          {"$id":"1","Result":{"$id":"2","IsOkay":true,"Message":"login successfull","Result":{"$id":"3","user_id":18,"username":"00076","password":null,"full_name":"KOUASSI","account_id":1,"user_type_id":3,"status":1}},"ModuleName":"Login Module"}
+
+         */
+        ContentValues cv = new ContentValues();
+
+        try {
+
+            try {
+
+                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+                saver.putString("user_name", user_name);
+                saver.putString("username", username);
+                saver.putString("pass", password);
+                saver.putString("user_id", user_id);
+                saver.putString("user_type", user_type_id);
+
+
+                saver.commit();
+            } catch (Exception ex) {
+
+            }
+            // cv.put("account_id",jo.getString("account_id"));
+            cv.put("sid", user_id);
+            cv.put("username", username);
+            cv.put("password", password);
+
+
+            //   database.execSQL("DELETE FROM user_table WHERE sid='"+user_id+"'");
+            database.execSQL("DELETE FROM user_table");
+            database.insert("user_table", null, cv);
+            //   validate_credentials(username,password);
+
+        } catch (Exception e) {
+            Log.e("User saving error =>", "" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public void register_user(String users_name, String username, String password, String user_id, String activity_status) {
+
+        /*
+          {"$id":"1","Result":{"$id":"2","IsOkay":true,"Message":"login successfull","Result":{"$id":"3","user_id":18,"username":"00076","password":null,"full_name":"KOUASSI","account_id":1,"user_type_id":3,"status":1}},"ModuleName":"Login Module"}
+
+         */
+        Log.e("Password  :", "" + password);
+        ContentValues cv = new ContentValues();
+
+        try {
+
+
+            // cv.put("account_id",jo.getString("account_id"));
+            cv.put("sid", user_id);
+            cv.put("username", username);
+            cv.put("user_fullname", users_name);
+            cv.put("password", password);
+            cv.put("data_status", activity_status);
+
+
+            // database.execSQL("DELETE FROM user_table");
+            Log.e("User saving ", "" + database.insert("user_table", null, cv));
+
+
+        } catch (Exception e) {
+            Log.e("User saving error =>", "" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public void logout_user() {
+        ContentValues cv = new ContentValues();
+
+        try {
+
+            try {
+
+                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+                saver.putString("user_name", "");
+                saver.putString("user_type", "");
+                saver.putString("username", "");
+                saver.putString("pass", "");
+                saver.putString("user_id", "");
+                saver.putString("zone", "");
+
+
+                saver.commit();
+            } catch (Exception ex) {
+
+            }
+
+
+            database.execSQL("DELETE FROM user_table");
+
+        } catch (Exception e) {
+            Log.e("User logout error =>", "" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<Object> load_dynamic_records(Object obj, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ((db_class) obj).table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)), null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                objs.add(load_object_from_Cursor(c, obj));
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public ArrayList<Object> load_dynamic_records(Object obj, int limit, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ((db_class) obj).table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + limit, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                objs.add(load_object_from_Cursor(c, obj));
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public ArrayList<Object> load_dynamic_records(sync_service_description ssd, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+                    objs.add(load_object_from_Cursor(c, Class.forName(ssd.object_package).newInstance()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    ////////////////////////////////////////ANN///////////////////////////////////////////////////////////////////
+
+
+    /**
+     * @deprecated As of release 1.0.187, replaced by {@link #loadObjectArray(Class, String, String[], String[], String[], int, int, String[])} ()}
+     * <p> Use {@link #loadObjectArray(Class, String, String[], String[], String[], int, int, String[])} instead.
+     */
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+
+    /**
+     * @deprecated As of release 1.0.187, replaced by {@link #loadObjectArray(Class, String, String[], String[], String[], int, int, String[])} ()}
+     * <p> Use {@link #loadObjectArray(Class, String, String[], String[], String[], int, int, String[])} instead.
+     */
+    @Deprecated
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null || order_filters.length < 1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    @Deprecated
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
+        }
+        c.close();
+
+
+        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
+//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
+    }
+
+    /**
+     * @deprecated As of release 1.0.187, replaced by {@link #loadObjectArray(Class, int, int, String, String[], String[], String[], int, int, String[])} ()}
+     * <p> Use {@link #loadObjectArray(Class, int, int, String, String[], String[], String[], int, int, String[])} instead.
+     */
+    @Deprecated
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+//        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters) + " " + (order_asc ? "ASC" : "DESC")) + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
+        }
+        c.close();
+
+
+        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
+//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public <RM> int getRecordCount(Class<RM> realm_model, @Nullable String... params) {
+        String table_name = realm.getPackageTable(realm_model.getName());
+        return Integer.parseInt(get_record_count(table_name, params));
+    }
+
+    public <RM> int getRecordCount(Class<RM> realm_model, Query query) {
+        return loadObjectArray(realm_model, query.setColumns("rowid")).size();
+    }
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+//        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null||order_filters.length<1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + (customQuery == null ? table_name : "( " + customQuery + ")") + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null || order_filters.length < 1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + (customQuery == null ? table_name : "( " + customQuery + ")") + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null || order_filters.length < 1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+                objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
+        }
+        c.close();
+
+
+        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
+//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
+    }
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String rawquery) {
+        ArrayList<RM> objs = new ArrayList<RM>();
+//        String table_name=realm.getPackageTable(realm_model.getName());
+        String qry = rawquery;//"SELECT "+(columns==null?"*":concatString(",",columns))+" FROM "+table_name+(table_filters==null?"":" "+conccat_sql_filters(table_filters))+(order_filters==null?"":" ORDER BY "+concatString(",",order_filters)+" "+(order_asc?"ASC":"DESC"))+(limit<=0?"":" LIMIT "+limit+(offset<=0?"": " OFFSET "+offset));
+        Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query) {
+//        return loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
+        return loadObjectArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
+
+    }
+
+    public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, Query query) {
+        return loadObjectArray(realm_model, pagerEventId, searchIndex, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
+
+    }
+
+    public <RM> RM loadObject(Class<RM> realm_model, Query query) {
+//        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
+        ArrayList<RM> res = loadObjectArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), 1, 0, query.queryParameters);
+        return res.size() > 0 ? res.get(0) : null;
+
+    }
+
+    public <RM> RM loadObject(Class<RM> realm_model, String rawquery) {
+        ArrayList<RM> res = loadObjectArray(realm_model, rawquery);
+        if (res.size() > 0) {
+            Log.e(logTag, "Array size :" + res.size());
+        }
+        return res.size() > 0 ? res.get(0) : null;
+
+    }
+
+    public <RM> boolean insertObject(RM realm_model) {
+        String table_name = realm.getPackageTable(realm_model.getClass().getName());
+
+        return database.insert(table_name, null, (ContentValues) realm.getContentValuesFromObject(realm_model)) > 0;
+
+    }
+
+    public Object getJsonValue(String pos, JSONObject jo) {
+        Object json = jo;
+        if (!pos.contains(":")) {
+            return null;
+        }
+        if (!pos.contains(";")) {
+            pos += ";";
+        }
+        for (String s : pos.split(";")) {
+            if (s.length() > 0) {
+                try {
+//            if(json instanceof JSONObject){
+                    if (s.split(":")[0].equalsIgnoreCase("JO")) {
+                        json = new JSONTokener(((JSONObject) json).opt(s.split(":")[1]).toString()).nextValue();
+
+                    } else if (s.split(":")[0].equalsIgnoreCase("JA")) {
+
+//                if (json instanceof JSONArray){
+
+                        json = ((JSONArray) json).get(Integer.parseInt(s.split(":")[1]));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return json;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /*
+     *
+     * Loads objects from cursor
+     *
+     *
+     */
+    public ArrayList<Object> load_dynamic_records_ann(sync_service_description ssd, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
+        
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add(realm.getObjectFromCursor(c, ssd.object_package));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public ArrayList<JSONObject> load_dynamic_json_records_ann(sync_service_description ssd, String[] table_filters) {
+        ArrayList<JSONObject> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add(realm.getJsonFromCursor(c, ssd.object_package));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public JSONArray loadJsonArray_Ann(sync_service_description ssd, String[] table_filters) {
+        JSONArray objs = new JSONArray();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.put(realm.getJsonFromCursor(c, ssd.object_package));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public void register_object(Boolean first_record, JSONObject j_obj, Object primary_obj, String service_name) {
+
+        if (first_record != null && first_record) {
+            database.beginTransaction();
+            Log.e(service_name + "::Insertion =>", "transaction begun");
+
+            return;
+        } else if (first_record != null && first_record == false) {
+            Log.e(service_name + "::Insertion =>", "transaction complete");
+
+            database.setTransactionSuccessful();
+            database.endTransaction();
+            return;
+        }
+        try {
+            try {
+                String qry = "DELETE FROM " + ((db_class) primary_obj).table_name + " WHERE (sid='" + j_obj.getString(((db_class) primary_obj).sid.json_name) + "' OR sid=" + j_obj.getString(((db_class) primary_obj).sid.json_name) + ") AND sync_status='i'";
+//Log.e("Query :",""+qry);
+//Log.e("JO :",""+jempl);
+                database.execSQL(qry);
+            } catch (Exception ex) {
+
+                Log.e("DELETING ERROR =>", "" + ex.getMessage());
+            }
+            String is_active_key = ((db_class) primary_obj).data_status.json_name;
+            if ((j_obj.has(is_active_key) && j_obj.getBoolean(((db_class) primary_obj).data_status.json_name)) || !j_obj.has(is_active_key)) {
+
+                ContentValues cv = load_object_cv_from_JSON(j_obj, primary_obj);
+
+                Log.e(service_name + ":: Insert result =>", " " + database.insert(((db_class) primary_obj).table_name, null, cv));
+
+            } else {
+            }
+
+
+        } catch (Exception ex) {
+            Log.e("insert error", "" + ex.getMessage());
+        }
+
+
+    }
+
+    public void register_object_auto_ann(Boolean first_record, JSONObject j_obj, sync_service_description ssd) {
+
+        if (first_record != null && first_record) {
+            database.beginTransaction();
+            Log.e(ssd.service_name + "::Insertion =>", "transaction begun");
+
+            return;
+        } else if (first_record != null && first_record == false) {
+            Log.e(ssd.service_name + "::Insertion =>", "transaction complete");
+
+            database.setTransactionSuccessful();
+            database.endTransaction();
+            return;
+        }
+        try {
+            try {
+                if (ssd.use_download_filter) {
+                    database.execSQL(realm.getDeleteRecordSttment(ssd.table_name, j_obj.getString("id")));
+                }
+
+            } catch (Exception ex) {
+
+                Log.e("DELETING ERROR =>", "" + ex.getMessage());
+            }
+            if (realm.jsonHasActiveKey(j_obj)) {
+
+                ContentValues cv = (ContentValues) realm.getContentValuesFromJson(j_obj, ssd.table_name);
+                cv.put("sync_status", sync_status.syned.ordinal());
+
+                Log.e(ssd.service_name + ":: Insert result =>", " " + database.insert(ssd.table_name, null, cv));
+                if (ssd.service_name.equalsIgnoreCase("JobAllInventory")) {
+                    Log.e("Timming error :", ssd.service_name + "::" + cv.toString());
+                }
+            }
+
+
+        } catch (Exception ex) {
+            Log.e("insert error", "" + ex.getMessage());
+        }
+
+
+    }
+
+    public ArrayList<dyna_data> load_dyna_data_annot(dyna_data_obj.operatio_data_type op_dyna_type, String parent) {
+        String dyna_type = op_dyna_type.ordinal() + "";
+        ArrayList<dyna_data> objs = new ArrayList<>();
+
+        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
+        Cursor c;
+        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
+
+        } else {
+
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
+
+        }
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                //  dyna_data obj=new dyna_data(c.getString(c.getColumnIndex("id")),c.getString(c.getColumnIndex("sid")),"",c.getString(c.getColumnIndex("data_type")),c.getString(c.getColumnIndex("data")),"",c.getString(c.getColumnIndex("id")));
+                dyna_data obj = (dyna_data) load_object_from_Cursor_annot(c, new dyna_data());
+
+
+                objs.add(obj);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return objs;
+    }
+
+    public ArrayList<dyna_data_obj> load_dyna_data_from_parent_of_parent(String dyna_type, String parent_type, String parent_parent) {
+        ArrayList<dyna_data_obj> objs = new ArrayList<>();
+
+
+        Cursor c;
+
+        c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "' AND parent IN (SELECT sid FROM dyna_data_table WHERE data_type='" + parent_type + "' AND parent ='" + parent_parent + "')", null);
+
+        if (c.moveToFirst()) {
+            do {
+//public dyna_data_obj(String lid,String sid, String name, String data_type, String data, String parent)
+
+//                dyna_data_obj obj=new dyna_data_obj(c.getInt(c.getColumnIndex("id"))+"",c.getString(c.getColumnIndex("sid")),c.getString(c.getColumnIndex("data")),c.getString(c.getColumnIndex("data_type")),c.getString(c.getColumnIndex("data")),c.getString(c.getColumnIndex("parent")),c.getString(c.getColumnIndex("data_code")));
+//
+//              try{obj.code=c.getString(c.getColumnIndex("data_code"));}catch (Exception ex){}
+//              try{obj.data_2=c.getString(c.getColumnIndex("data_2"));}catch (Exception ex){}
+                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
+
+                objs.add(obj);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return objs;
+    }
+
+    public void register_dynadata(Boolean first_record, JSONObject dyna_obj, String dyna_type, String parent) {
+
+        if (first_record != null && first_record) {
+            database.beginTransaction();
+            Log.e("Dynadata Starting =>", "transaction begun");
+
+
+        }
+
+        try {
+
+
+            ContentValues cv = new ContentValues();
+
+
+            cv.put("sid", dyna_obj.getString("Id"));
+            cv.put("data_type", dyna_type);
+            cv.put("data", dyna_obj.getString("Name"));
+            try {
+                cv.put("code", dyna_obj.getString("Code").equalsIgnoreCase("null") ? null : dyna_obj.getString("Code"));
+            } catch (Exception ex) {
+            }
+
+            try {
+                cv.put("parent", dyna_obj.getString("MotherId"));
+            } catch (Exception ex) {
+
+            }
+            try {
+                cv.put("parent", dyna_obj.getString("CommuneId"));
+            } catch (Exception ex) {
+
+            }
+            // cv.put("data_code",dyna_obj.getString("Code"));
+
+
+            database.insert("dyna_data_table", null, cv);
+            Log.d("Dynadata inserted =>", "" + dyna_obj.toString());
+
+
+        } catch (Exception ex) {
+            Log.e("Dynadata insert error", "" + ex.getMessage());
+        }
+        if (first_record != null && first_record == false) {
+            Log.e("Dynadata ENDING =>", "transaction complete");
+
+            database.setTransactionSuccessful();
+            database.endTransaction();
+
+        }
+    }
+
+    public ArrayList<dyna_data_obj> load_dyna_data(String dyna_type, String parent) {
+        ArrayList<dyna_data_obj> objs = new ArrayList<>();
+
+        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
+        Cursor c;
+        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
+
+        } else {
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
+
+        }
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
+
+
+                objs.add(obj);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return objs;
+    }
+
+    public ArrayList<dyna_data_obj> load_dyna_data(dyna_data_obj.operatio_data_type op_dyna_type, String parent) {
+        String dyna_type = op_dyna_type.ordinal() + "";
+        ArrayList<dyna_data_obj> objs = new ArrayList<>();
+
+        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
+        Cursor c;
+        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
+
+        } else {
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
+
+        }
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
+
+
+                objs.add(obj);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return objs;
+    }
+
+    public String load_dynadata_name(String sid, String data_type) {
+        Cursor c = database.rawQuery("SELECT data FROM dyna_data_table WHERE data_type='" + data_type + "' AND sid='" + sid + "'", null);
+
+        if (c.moveToFirst()) {
+            do {
+                String res = c.getString(c.getColumnIndex("data"));
+                c.close();
+                return res;
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return act.getString(R.string.unavailable_field);
+    }
+
+    public String load_dyna_data_name(String sid, dyna_data_obj.operatio_data_type ot) {
+        try {
+            Cursor c = database.rawQuery("SELECT data FROM dyna_data_table WHERE data_type='" + ot.ordinal() + "' AND sid='" + sid + "'", null);
+
+
+            if (c.moveToFirst()) {
+                do {
+
+                    return c.getString(c.getColumnIndex("data"));
+
+                } while (c.moveToNext());
+            }
+            c.close();
+        } catch (Exception ex) {
+        }
+        return act.getString(R.string.unavailable_field);
+    }
+
+    public JSONObject load_JSON_from_object(Object obj) {
+
+
+        //employee mem=new employee();
+        JSONObject jo = new JSONObject();
+
+        Field[] fieldz = concatenate(obj.getClass().getDeclaredFields(), obj.getClass().getSuperclass().getDeclaredFields());
+        for (Field field : fieldz) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    //  Log.e("DB Field ", "" + field.getName());
+                    Class<?> clazz = field.get(obj).getClass();
+                    Field dyna_value_field = clazz.getDeclaredField("value");
+                    Field dyna_json_name_field = clazz.getDeclaredField("json_name");
+                    Field dyna_storage_mode_field = clazz.getDeclaredField("storage_mode");
+
+                    dyna_json_name_field.setAccessible(true);
+                    dyna_value_field.setAccessible(true);
+                    dyna_storage_mode_field.setAccessible(true);
+
+                    String j_key = (String) dyna_json_name_field.get(field.get(obj));
+
+                    if (j_key != null) {
+                        int storage_mode = (int) dyna_storage_mode_field.get(field.get(obj));
+                        if (storage_mode == 2) {
+                            String data = get_saved_doc_base64((String) dyna_value_field.get(field.get(obj)));
+                            if (data == error_return) {
+                                Log.e("DATA ERROR =>", "  :: " + data);
+
+                                //   cv.put("data_status","e");
+                                jo.put(j_key, data);
+                            } else {
+                                jo.put(j_key, data);
+
+                            }
+
+                        } else {
+                            jo.put(j_key, (String) dyna_value_field.get(field.get(obj)));
+                        }
+                    }
+
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "load_JSON_from_object :: " + ex.getMessage());
+                }
+            } else {
+                try {
+                    //   Log.e("CLASS ", field.getName()+ " - " + field.getType());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return jo;
+
+    }
+
+    public member load_member_from_JSON(JSONObject j) {
+
+
+        member mem = new member();
+
+
+        Field[] fieldz = concatenate(mem.getClass().getDeclaredFields(), mem.getClass().getSuperclass().getDeclaredFields());
+        for (Field field : fieldz) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    //  Log.e("DB Field ", "" + field.getName());
+                    Class<?> clazz = field.get(mem).getClass();
+                    Field dyna_value_field = clazz.getDeclaredField("value");
+                    Field dyna_json_name_field = clazz.getDeclaredField("json_name");
+                    dyna_json_name_field.setAccessible(true);
+                    dyna_value_field.setAccessible(true);
+                    String j_key = (String) dyna_json_name_field.get(field.get(mem));
+                    if (j.has(j_key)) {
+                        dyna_value_field.set(field.get(mem), j.getString(j_key));
+                    }
+                    //     dynamic_property dp=(dynamic_property) field.getClass();
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+                try {
+                    //   Log.e("CLASS ", field.getName()+ " - " + field.getType());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return mem;
+
+    }
+
+    public Object load_object_from_Cursor(Cursor c, Object mem) {
+
+        Field[] fieldz = concatenate(mem.getClass().getDeclaredFields(), mem.getClass().getSuperclass().getDeclaredFields());
+        for (Field field : fieldz) {
+
+            // for (Field field : mem.getClass().getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    //  Log.e("DB Field ", "" + field.getName());
+                    Class<?> clazz = field.get(mem).getClass();
+                    Field dyna_value_field = clazz.getDeclaredField("value");
+                    Field dyna_db_name_field = clazz.getDeclaredField("column_name");
+                    dyna_db_name_field.setAccessible(true);
+                    dyna_value_field.setAccessible(true);
+                    String c_key = (String) dyna_db_name_field.get(field.get(mem));
+                    if (c_key != null && c_key.length() > 1 && c.getColumnIndex(c_key) != -1) {
+                        dyna_value_field.set(field.get(mem), c.getString(c.getColumnIndex(c_key)));
+                    }
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "load_object_from_Cursor " + ex.getMessage());
+                }
+            } else {
+                try {
+                    //   Log.e("CLASS ", field.getName()+ " - " + field.getType());9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            return deepClone(mem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return mem;
+        }
+
+    }
+
+    public Object load_object_from_Cursor_annot(Cursor c, Object mem) {
+
+        Field[] fieldz = concatenate(mem.getClass().getDeclaredFields(), mem.getClass().getSuperclass().getDeclaredFields());
+        for (Field field : fieldz) {
+            field.setAccessible(true); // if you want to modify private fields
+            DynamicProperty v = field.getAnnotation(DynamicProperty.class);
+            if (v == null || v.column_name() == null || (v.column_name().length() < 1) || (c.getColumnIndex(v.column_name()) == -1)) {
+                continue;
+            }
+            try {
+                field.set(mem, c.getString(c.getColumnIndex(v.column_name())));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                Log.e("REFLECTION ERROR =>", "load_object_from_Cursor " + e.getMessage());
+            }
+
+            //  Log.e("SANOT",""+field.getAnnotation(DynamicProperty.class).db_column_name());
+
+
+        }
+        return mem;
+
+    }
+
+    public ContentValues load_object_cv_from_JSON(JSONObject j, Object obj) {
+
+        ContentValues cv = new ContentValues();
+
+
+        Field[] fieldz = concatenate(obj.getClass().getDeclaredFields(), obj.getClass().getSuperclass().getDeclaredFields());
+        for (Field field : fieldz) {
+
+            // for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    // Log.e("DB Field ", "" + field.getName());
+                    Class<?> clazz = field.get(obj).getClass();
+                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
+                    Field dyna_json_name_field = clazz.getDeclaredField("json_name");
+                    Field dyna_storage_mode_field = clazz.getDeclaredField("storage_mode");
+                    dyna_json_name_field.setAccessible(true);
+                    dyna_column_name_field.setAccessible(true);
+                    dyna_storage_mode_field.setAccessible(true);
+                    String j_key = (String) dyna_json_name_field.get(field.get(obj));
+                    if (j.has(j_key)) {
+                        int storage_mode = (int) dyna_storage_mode_field.get(field.get(obj));
+                        if (storage_mode == 2) {
+                            String data = save_doc(j.getString(j_key));
+                            if (data == error_return) {
+
+                                cv.put("data_status", "e");
+                                cv.put((String) dyna_column_name_field.get(field.get(obj)), data);
+                            } else {
+                                cv.put((String) dyna_column_name_field.get(field.get(obj)), data);
+
+                            }
+
+                        } else {
+                            cv.put((String) dyna_column_name_field.get(field.get(obj)), j.getString(j_key));
+                        }
+                    }
+
+
+                    field = null;
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+
+
+            }
+        }
+        cv.put("sync_status", "i");
+        return cv;
+
+    }
+
+    public ContentValues load_cv_from_object(Object obj) {
+
+        ContentValues cv = new ContentValues();
+
+
+        Field[] fieldz = concatenate(obj.getClass().getDeclaredFields(), obj.getClass().getSuperclass().getDeclaredFields());
+        for (Field field : fieldz) {
+
+            // for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    // Log.e("DB Field ", "" + field.getName());
+                    Class<?> clazz = field.get(obj).getClass();
+                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
+                    Field dyna_value_field = clazz.getDeclaredField("value");
+
+
+                    dyna_column_name_field.setAccessible(true);
+                    dyna_value_field.setAccessible(true);
+                    String cv_key = (String) dyna_column_name_field.get(field.get(obj));
+                    String cv_value = (String) dyna_value_field.get(field.get(obj));
+                    if (cv_key != null && cv_key.length() > 0 && cv_value != null && cv_value.length() > 0) {
+
+                        cv.put(cv_key, cv_value);
+                    }
+
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+
+
+            }
+        }
+        cv.put("sync_status", "p");
+        return cv;
+
+    }
+
+    public String greatest_sync_var(String table_name, @Nullable String... filters) {
+        try {
+            String[] flts = new String[filters.length + 1];
+            flts[0] = "sync_var NOT NULL";
+            for (int i = 0; i < filters.length; i++) {
+                flts[i + 1] = filters[i];
+            }
+            String qry = "SELECT CAST(sync_var AS INTEGER) FROM " + table_name + (filters == null ? "" : " " + conccat_sql_filters(flts)) + " ORDER BY CAST(sync_var AS INTEGER) DESC LIMIT 1";
+            Cursor c = database.rawQuery(qry, null);
+
+            if (c.moveToFirst()) {
+                do {
+
+                    String res = c.getString(0);
+                    c.close();
+                    return res;
+                } while (c.moveToNext());
+            }
+            c.close();
+            return "0";
+        } catch (Exception e) {
+            Log.e("DatabaseManager", "" + e.getMessage());
+            return null;
+        }
+    }
+
+    public String get_record_count(String table_name, @Nullable String... filters) {
+
+        String qry = "SELECT COUNT(*) FROM " + table_name + (filters == null ? "" : " " + conccat_sql_filters(filters));
+        //  Log.e("QRY :",""+qry);
+        Cursor c = database.rawQuery(qry, null);
+
+        if (c.moveToFirst()) {
+            do {
+                String res = c.getString(0);
+                c.close();
+                return res;
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return "0";
+    }
+
+    public String record_count(String table_name) {
+
+
+        Cursor c = database.rawQuery("SELECT COUNT(*) FROM " + table_name, null);
+
+        if (c.moveToFirst()) {
+            do {
+
+                String res = c.getString(0);
+                c.close();
+                return res;
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return "0";
+    }
+
+    public long sync_period() {
+        //Date date = svars.sparta_EA_calendar().getTime();
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+        String dttt = format1.format(date);
+
+
+        if (svars.sync_time(act) == null) {
+            return svars.sync_interval_mins(act);
+        }
+        Date time1 = null;
+        try {
+            try {
+                time1 = new SimpleDateFormat("HH:mm:ss").parse(format1.format(date));
+            } catch (Exception ex) {
+                Log.e("Time Error =>", ex.getMessage());
+            }
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time1);
+            Date time2 = null;
+            try {
+                Log.e("DATE 2 =>", " t " + date.getTime() + " Time=>" + svars.sync_time(act).split(" ")[1]);
+                time2 = new SimpleDateFormat("HH:mm:ss").parse(svars.sync_time(act).split(" ")[1]);
+            } catch (Exception ex) {
+                Log.e("Time Error =>", ex.getMessage());
+            }
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(time2);
+            long diffference = Calendar.getInstance().getTimeInMillis() - calendar2.getTimeInMillis();
+            // return (int)Math.round((double)diffference/60000);
+            int diff_1 = (int) ((diffference / (1000 * 60)) % 60);
+            return diff_1 + (((int) ((diffference / (1000 * 60 * 60)) % 24)) * 60);
+        } catch (Exception ex) {
+            return svars.sync_interval_mins(act);
+        }
+
+
+    }
+
+    public String conccat_sql_filters(String[] str_to_join) {
+        String result = "";
+        for (int i = 0; i < str_to_join.length; i++) {
+            result = result + (i == 0 ? "WHERE " : " AND ") + str_to_join[i];
+        }
+        return result;
+
+    }
+
+    public String conccat_sql_string(String[] str_to_join, ArrayList<String> str_to_join2) {
+        String result = "";
+        for (int i = 0; i < str_to_join.length; i++) {
+            result = result + (i == 0 ? "" : ",") + "'" + str_to_join[i] + "'";
+        }
+        for (int i = 0; i < str_to_join2.size(); i++) {
+            result = result + (result.length() < 0 ? "" : ",") + "'" + str_to_join2.get(i) + "'";
+        }
+        return result;
+
+    }
+
+    public String save_doc_us(String base64_bytes) {
+        byte[] file_bytes = Base64.decode(base64_bytes, 0);
+
+        String img_name = "TA_DAT" + System.currentTimeMillis() + "JPG_IDC.JPG";
+        //  String path = Environment.getExternalStorageDirectory().toString();
+        OutputStream fOutputStream = null;
+        //  File file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/");
+        File file = new File(svars.current_app_config(act).file_path_employee_data);
+        if (!file.exists()) {
+            Log.e("Creating data dir=>", "" + String.valueOf(file.mkdirs()));
+        }
+        //  file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/", img_name);
+        file = new File(svars.current_app_config(act).file_path_employee_data, img_name);
+
+        try {
+            fOutputStream = new FileOutputStream(file);
+            fOutputStream.write(file_bytes);
+
+            //fpb.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
+
+            fOutputStream.flush();
+            fOutputStream.close();
+
+            //  MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
+            return "--------------";
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            //   Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
+            return "--------------";
+        }
+        return img_name;
+    }
+
+    private void addApkToInstallSession(String assetName, PackageInstaller.Session session)
+            throws IOException {
+        // It's recommended to pass the file size to openWrite(). Otherwise installation may fail
+        // if the disk is almost full.
+        try (OutputStream packageInSession = session.openWrite("package", 0, -1);
+             InputStream is = act.getAssets().open(assetName)) {
+            byte[] buffer = new byte[16384];
+            int n;
+            while ((n = is.read(buffer)) >= 0) {
+                packageInSession.write(buffer, 0, n);
+            }
+        }
+    }
+
+    public interface data_loading_interface {
+        void onDataLoaded(ArrayList x);
+
+        void onDataLoading(int percent, ArrayList x);
 
     }
 
