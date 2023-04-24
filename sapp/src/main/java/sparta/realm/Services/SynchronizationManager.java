@@ -607,7 +607,8 @@ a:
         }
         pending_records_filter[pending_records_filter.length - 1] = "sync_status='" + sync_status.pending.ordinal() + "'";
         // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
-        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.load_dynamic_json_records_ann(ssd, pending_records_filter));
+//        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.load_dynamic_json_records_ann(ssd, pending_records_filter));
+        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.loadJ_dynamic_json_records_ann(ssd, pending_records_filter));
         final int[] upload_counter = {0};
         final int upload_length = pending_records.size();
         String table_name = ssd.table_name;
@@ -736,7 +737,7 @@ a:
                                                 ssi.on_status_code_changed(666);
                                                 String error = " " + upload_object.toString() + "\n" + response.toString();
                                                 Log.e(ssd.service_name + ":: upload::error::", error);
-                                                sdb.log_String(act, ssd.service_name + ":: upload::error::" + error);
+                                                sdb.log_String(act, ssd.service_name + ":: upload::error::" + error+"::Upload object::"+upload_object);
                                             }
                                         } catch (Exception ex) {
                                             ssi.on_api_error(ssd, response.toString());
@@ -744,7 +745,7 @@ a:
                                             ssi.on_status_code_changed(666);
                                             String error = " " + upload_object.toString() + "\n" + ex.getMessage();
                                             Log.e(ssd.service_name + ":: upload::error::", error);
-                                            sdb.log_String(act, ssd.service_name + ":: upload::error::" + error);
+                                            sdb.log_String(act, ssd.service_name + ":: upload::error::" + error+"::Upload object::"+upload_object);
                                         }
                                     }
 
@@ -752,7 +753,7 @@ a:
                                     public void onError(ANError anError) {
                                         Log.e(ssd.service_name + ":: upload error:", ":" + anError.getErrorBody());
                                         ssi.on_api_error(ssd, anError.getErrorBody());
-                                        sdb.log_String(act, ssd.service_name + ":: upload::error::" + anError.getErrorBody());
+                                        sdb.log_String(act, ssd.service_name + ":: upload::error::" + anError.getErrorBody()+"::Upload object::"+upload_object);
                                         anError = Main_handler.OnUploadedObjectError(ssd, upload_object, anError);
                                         if (anError == null) {
                                             update_counter(ssd, pending_records_filter);

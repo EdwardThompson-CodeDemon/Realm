@@ -20,7 +20,11 @@ public class AppConfig {
 
         public String app_folder_path = Environment.getExternalStorageDirectory().toString() + "/Realm/";
         public String file_path_db_folder = app_folder_path + ".DB/";
-        public String file_path_db_traces = app_folder_path + ".Traces/";
+    /**
+     * @deprecated naming convention
+     */
+    public String file_path_db_traces = app_folder_path + ".CrashReports/";
+        public String crashReportsFolder = app_folder_path + ".CrashReports/";
         public String file_path_logs = app_folder_path + ".Logs/";
         public String file_path_app_downloads = app_folder_path + ".RAW_D_APKS/";
         public String file_path_app_uploads = app_folder_path + ".RAW_U_APKS/";
@@ -40,8 +44,8 @@ public class AppConfig {
         }
 
         public String file_path_db() {
-            return Realm.context.getExternalFilesDir(null).getAbsolutePath() + "/" + DB_NAME;
-//            return file_path_db_folder+svars.DB_NAME;
+//            return Realm.context.getExternalFilesDir(null).getAbsolutePath() + "/" + DB_NAME;
+            return file_path_db_folder+DB_NAME;
         }
 
         public enum PROFILE_MODE {

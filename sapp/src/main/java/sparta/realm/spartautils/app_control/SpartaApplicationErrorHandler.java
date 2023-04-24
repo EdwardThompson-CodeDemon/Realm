@@ -1,7 +1,6 @@
 package sparta.realm.spartautils.app_control;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
@@ -13,17 +12,19 @@ import sparta.realm.spartautils.svars;
 
 public class SpartaApplicationErrorHandler implements Thread.UncaughtExceptionHandler {
         private Thread.UncaughtExceptionHandler defaultUEH;
-        private Context cntx = null;
+        private Context context = null;
 String logTag="SpartaApplicationErrorHandler";
-        public SpartaApplicationErrorHandler(Context cntx) {
+        public SpartaApplicationErrorHandler(Context context) {
             this.defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-            this.cntx = cntx;
+            this.context = context;
         }
 
         public void uncaughtException(Thread t, Throwable e) {
             StackTraceElement[] arr = e.getStackTrace();
             String report = e.toString()+"\n\n";
-            report += "--------- Occured at "+svars.gett_time()+" ---------\n";
+            report += "--------- Occurred at "+svars.gett_time()+" ---------\n";
+            report += "Error:  "+e.getMessage()+" ---------\n";
+            report += "Localized:  "+e.getLocalizedMessage()+" ---------\n";
             report += "--------- Stack trace ---------\n\n";
             for (int i=0; i<arr.length; i++) {
                 report += "    "+arr[i].toString()+"\n";
@@ -48,7 +49,7 @@ String logTag="SpartaApplicationErrorHandler";
             report += "-------------------------------\n\n";
 try{
 //    String root = cntx.getExternalFilesDir(null).getAbsolutePath() + "/traces/"+ svars.getCurrentDateOfMonth();
-    String root = svars.current_app_config(cntx).file_path_db_traces;
+    String root = svars.current_app_config(context).crashReportFolder;
     Log.e(logTag, "PATH: " + root);
 
 
@@ -67,7 +68,7 @@ try{
 
 }catch (Exception ex){}
 
-            DatabaseManager.log_event(this.cntx,"Crash Report:\n"+report);
+            DatabaseManager.log_event(this.context,"Crash Report:\n"+report);
 
             defaultUEH.uncaughtException(t, e);
         }

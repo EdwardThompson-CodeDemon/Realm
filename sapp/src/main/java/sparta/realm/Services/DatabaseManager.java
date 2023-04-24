@@ -2238,6 +2238,7 @@ I thot of using an interface ,dint work
     public <RM> int getRecordCount(Class<RM> realm_model, Query query) {
         return loadObjectArray(realm_model, query.setColumns("rowid")).size();
     }
+
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
         ArrayList<RM> objs = new ArrayList<RM>();
         String table_name = realm.getPackageTable(realm_model.getName());
@@ -2267,6 +2268,35 @@ I thot of using an interface ,dint work
         return objs;
     }
 
+    public ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<JSONObject> objs = new ArrayList<JSONObject>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+//        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null||order_filters.length<1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + (customQuery == null ? table_name : "( " + customQuery + ")") + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null || order_filters.length < 1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add(realm.getJsonFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, int pagerEventId, int searchIndex, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
         ArrayList<RM> objs = new ArrayList<RM>();
         String table_name = realm.getPackageTable(realm_model.getName());
@@ -2278,6 +2308,31 @@ I thot of using an interface ,dint work
         if (c.moveToFirst()) {
             do {
                 objs.add((RM) realm.getObjectFromCursor(c, realm_model.getName()));
+            } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
+        }
+        c.close();
+
+
+        return pagerEventMap.get(pagerEventId) == searchIndex ? objs : null;
+//        return currentActiveIndex(pagerEventId)==searchIndex?objs:null;
+    }
+
+    public ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, int pagerEventId, int searchIndex, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        ArrayList<JSONObject> objs = new ArrayList<>();
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + (customQuery == null ? table_name : "( " + customQuery + ")") + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null || order_filters.length < 1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+
+        Cursor c = database.rawQuery(qry, queryParameters);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+                try {
+                    objs.add(realm.getJsonFromCursor(c, realm_model.getName()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             } while (c.moveToNext() && pagerEventMap.get(pagerEventId) == searchIndex);
         }
         c.close();
@@ -2314,9 +2369,41 @@ I thot of using an interface ,dint work
         return objs;
     }
 
+    public ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, String rawquery) {
+        ArrayList<JSONObject> objs = new ArrayList<JSONObject>();
+//        String table_name=realm.getPackageTable(realm_model.getName());
+        String qry = rawquery;//"SELECT "+(columns==null?"*":concatString(",",columns))+" FROM "+table_name+(table_filters==null?"":" "+conccat_sql_filters(table_filters))+(order_filters==null?"":" ORDER BY "+concatString(",",order_filters)+" "+(order_asc?"ASC":"DESC"))+(limit<=0?"":" LIMIT "+limit+(offset<=0?"": " OFFSET "+offset));
+        Cursor c = database.rawQuery(qry, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+
+                    objs.add(realm.getJsonFromCursor(c, realm_model.getName()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, Query query) {
 //        return loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, query.limit, query.offset);
         return loadObjectArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
+
+    }
+
+    public ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, Query query) {
+        return loadJSONArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
 
     }
 
@@ -2324,10 +2411,20 @@ I thot of using an interface ,dint work
         return loadObjectArray(realm_model, pagerEventId, searchIndex, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
 
     }
+ public  ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, int pagerEventId, int searchIndex, Query query) {
+        return loadJSONArray(realm_model, pagerEventId, searchIndex, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
+
+    }
 
     public <RM> RM loadObject(Class<RM> realm_model, Query query) {
 //        ArrayList<RM> res = loadObjectArray(realm_model, query.columns, query.table_filters, query.order_filters, query.order_asc, 1, 0);
         ArrayList<RM> res = loadObjectArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), 1, 0, query.queryParameters);
+        return res.size() > 0 ? res.get(0) : null;
+
+    }
+
+ public JSONObject loadJSONObject(Class<?> realm_model, Query query) {
+        ArrayList<JSONObject> res = loadJSONArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), 1, 0, query.queryParameters);
         return res.size() > 0 ? res.get(0) : null;
 
     }
@@ -2392,7 +2489,7 @@ I thot of using an interface ,dint work
         ArrayList<Object> objs = new ArrayList<>();
 
         Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
-        
+
         if (c.moveToFirst()) {
             do {
 
