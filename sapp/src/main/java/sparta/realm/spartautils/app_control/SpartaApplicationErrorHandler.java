@@ -49,7 +49,7 @@ String logTag="SpartaApplicationErrorHandler";
             report += "-------------------------------\n\n";
 try{
 //    String root = cntx.getExternalFilesDir(null).getAbsolutePath() + "/traces/"+ svars.getCurrentDateOfMonth();
-    String root = svars.current_app_config(context).crashReportFolder;
+    String root = svars.current_app_config(context).crashReportsFolder;
     Log.e(logTag, "PATH: " + root);
 
 

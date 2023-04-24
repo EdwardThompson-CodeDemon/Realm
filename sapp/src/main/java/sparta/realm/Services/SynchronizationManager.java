@@ -608,7 +608,7 @@ a:
         pending_records_filter[pending_records_filter.length - 1] = "sync_status='" + sync_status.pending.ordinal() + "'";
         // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
 //        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.load_dynamic_json_records_ann(ssd, pending_records_filter));
-        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.loadJ_dynamic_json_records_ann(ssd, pending_records_filter));
+        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.load_dynamic_json_records_ann(ssd, pending_records_filter));
         final int[] upload_counter = {0};
         final int upload_length = pending_records.size();
         String table_name = ssd.table_name;
