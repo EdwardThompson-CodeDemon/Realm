@@ -753,7 +753,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                         if(file.exists()){
                             jo.remove(k);
                             String  fileExtension=fieName.contains(".")?fieName.split("[.]")[fieName.split("[.]").length-1]:"rd";
-                            jo.put(k,openEncoding+objectCount+"|"+ file.length()+"|"+ fileExtension+closeEncoding);
+                            jo.put(k,openEncoding+""+objectCount+"|"+ file.length()+"|"+ fileExtension+""+closeEncoding);
                             files.add(file);
                             objectSizeCount+=file.length();
                             objectCount++;
