@@ -251,12 +251,17 @@ public class SynchronizationManager {
     static int sync_complete_counter = 0;
     static int sync_success_counter = 0;
 
-    void launch_services() {
+    public static void resetSyncCounters() {
 
-        ssi.onSynchronizationBegun();
         sync_sum_counter = 0;
         sync_success_counter = 0;
         sync_complete_counter = 0;
+    }
+
+    void launch_services() {
+
+        ssi.onSynchronizationBegun();
+        resetSyncCounters();
         try {
             setupSyncActionAnn();
         } catch (Exception e) {
@@ -277,7 +282,7 @@ public class SynchronizationManager {
      * Sets up synchronization based on  data from mappery of annotated data which is pre-reflected at pre build
      * No runtime reflection
      */
-    void setupSyncActionAnn() {
+    void setupSyncActionAnn_() {
         Stopwatch sw = new Stopwatch();
         sw.start();
         try {
@@ -291,7 +296,6 @@ public class SynchronizationManager {
                 switch (ssd_t.servic_type) {
                     case Download:
                         download_(ssd_t);
-
                         break;
                     case Upload:
                         upload_(ssd_t);
@@ -322,6 +326,47 @@ public class SynchronizationManager {
 
         sw.stop();
         Log.e("Reflection ann 2:", "" + sw.elapsed(TimeUnit.MILLISECONDS));
+    }
+
+    /**
+     * Sets up synchronization based on  data from mappery of annotated data which is pre-reflected at pre build
+     * No runtime reflection
+     */
+    void setupSyncActionAnn() {
+        Stopwatch sw = new Stopwatch();
+        sw.start();
+        try {
+            List<sync_service_description> sync_services = realm.getSyncDescription();
+            List<sync_service_description> download_sync_services = new ArrayList<>();
+            sync_sum_counter = sync_services.size();
+
+            for (sync_service_description ssd_t : sync_services) {
+                if (ssd_t == null) {
+                    continue;
+                }
+                switch (ssd_t.servic_type) {
+                    case Download:
+                        download_sync_services.add(ssd_t);
+                        break;
+                    case Upload:
+                        upload_(ssd_t);
+
+                        break;
+                    case Download_Upload:
+                        upload_(ssd_t);
+                        download_sync_services.add(ssd_t);
+                        break;
+                }
+            }
+            for (sync_service_description ssd_t : download_sync_services) {
+                download_(ssd_t);
+            }
+        } catch (Exception ex) {
+            Log.e(logTag, "" + ex.getMessage());
+        }
+
+        sw.stop();
+        Log.e(logTag, "Ann reflection time:" + sw.elapsed(TimeUnit.MILLISECONDS) + " mills");
     }
 
 
@@ -451,10 +496,10 @@ public class SynchronizationManager {
                                 }
                                 Log.e(ssd.service_name + " :: RX", "IS OK " + den);
                                 if (den >= 0) {
-                                    boolean storage_fields_converted_ok=true;
+                                    boolean storage_fields_converted_ok = true;
                                     if (ssd.storage_mode_check) {
                                         Log.e(ssd.service_name, "Started storage checking ...");
-a:
+                                        a:
                                         for (int i = 0; i < temp_ar.length(); i++) {
                                             JSONObject jo = temp_ar.getJSONObject(i);
                                             Iterator keys = jo.keys();
@@ -466,15 +511,15 @@ a:
 
                                             for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
                                                 try {
-                                                    String saved_file_name= DatabaseManager.save_doc(jo.getString(k));
-                                                    if(saved_file_name==null){
-                                                        storage_fields_converted_ok=false;
+                                                    String saved_file_name = DatabaseManager.save_doc(jo.getString(k));
+                                                    if (saved_file_name == null) {
+                                                        storage_fields_converted_ok = false;
                                                         break a;
                                                     }
-                                                    jo.put(k,saved_file_name);
+                                                    jo.put(k, saved_file_name);
                                                 } catch (Exception e) {
                                                     Log.e(logTag, "Base64 image error:" + e.getMessage());
-                                                    storage_fields_converted_ok=false;
+                                                    storage_fields_converted_ok = false;
                                                     break a;
                                                 }
 
@@ -483,7 +528,7 @@ a:
                                         Log.e(ssd.service_name, "Done storage checking ...");
 
                                     }
-                                    if(storage_fields_converted_ok) {
+                                    if (storage_fields_converted_ok) {
                                         synchronized (this) {
                                             String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
                                             String sidz = ins[0][0];
@@ -737,7 +782,7 @@ a:
                                                 ssi.on_status_code_changed(666);
                                                 String error = " " + upload_object.toString() + "\n" + response.toString();
                                                 Log.e(ssd.service_name + ":: upload::error::", error);
-                                                sdb.log_String(act, ssd.service_name + ":: upload::error::" + error+"::Upload object::"+upload_object);
+                                                sdb.log_String(act, ssd.service_name + ":: upload::error::" + error + "::Upload object::" + upload_object);
                                             }
                                         } catch (Exception ex) {
                                             ssi.on_api_error(ssd, response.toString());
@@ -745,7 +790,7 @@ a:
                                             ssi.on_status_code_changed(666);
                                             String error = " " + upload_object.toString() + "\n" + ex.getMessage();
                                             Log.e(ssd.service_name + ":: upload::error::", error);
-                                            sdb.log_String(act, ssd.service_name + ":: upload::error::" + error+"::Upload object::"+upload_object);
+                                            sdb.log_String(act, ssd.service_name + ":: upload::error::" + error + "::Upload object::" + upload_object);
                                         }
                                     }
 
@@ -753,7 +798,7 @@ a:
                                     public void onError(ANError anError) {
                                         Log.e(ssd.service_name + ":: upload error:", ":" + anError.getErrorBody());
                                         ssi.on_api_error(ssd, anError.getErrorBody());
-                                        sdb.log_String(act, ssd.service_name + ":: upload::error::" + anError.getErrorBody()+"::Upload object::"+upload_object);
+                                        sdb.log_String(act, ssd.service_name + ":: upload::error::" + anError.getErrorBody() + "::Upload object::" + upload_object);
                                         anError = Main_handler.OnUploadedObjectError(ssd, upload_object, anError);
                                         if (anError == null) {
                                             update_counter(ssd, pending_records_filter);

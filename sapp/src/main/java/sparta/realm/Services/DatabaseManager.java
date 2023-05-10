@@ -904,7 +904,7 @@ I thot of using an interface ,dint work
         String res = "";
         try {
 //            res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(new File(svars.current_app_config(act).file_path_employee_data, data_name).getAbsolutePath())), 0);
-            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(new File(svars.current_app_config(act).file_path_employee_data, data_name)), 0);
+            res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(new File(svars.current_app_config(act).appDataFolder, data_name)), 0);
             return res;
         } catch (Exception ex) {
             Log.e("Data file retreival :", " " + ex.getMessage());
@@ -922,7 +922,7 @@ I thot of using an interface ,dint work
 
         //   String prefix=svars.sparta_EA_calendar().getTime().toString()+"     =>";
 //        String root = act.getExternalFilesDir(null).getAbsolutePath() + "/logs";
-        String root = svars.current_app_config(act).file_path_logs;
+        String root = svars.current_app_config(act).logsFolder;
         Log.e(logTag, "PATH: " + root);
 
         File file = new File(root);
@@ -945,7 +945,7 @@ I thot of using an interface ,dint work
 
         //  String prefix=svars.sparta_EA_calendar().getTime().toString()+"     =>";
 //        String root = act.getExternalFilesDir(null).getAbsolutePath() + "/logs";
-        String root = svars.current_app_config(Realm.context).file_path_logs;
+        String root = svars.current_app_config(Realm.context).logsFolder;
         Log.e(logTag, "Logging: " + root);
 
         File file = new File(root);
@@ -965,7 +965,7 @@ I thot of using an interface ,dint work
     public static void log_String(String data) {
         gps = gps == null ? new Gpsprobe_r(Realm.context) : gps;
         String prefix = svars.sparta_EA_calendar().getTime().toString() + "   :   " + gps.getLatitude() + "," + gps.getLongitude() + "     =>";
-        String root = svars.current_app_config(Realm.context).file_path_logs;
+        String root = svars.current_app_config(Realm.context).logsFolder;
         Log.e(logTag, "PATH: " + root);
 
         File file = new File(root);

@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import sparta.realm.Realm;
 import sparta.realm.RealmClientCallbackInterface;
 import sparta.realm.Services.DatabaseManager;
 import sparta.realm.spartamodels.percent_calculation;
+import sparta.realm.spartautils.svars;
 
 import static sparta.realm.Realm.realm;
 
@@ -617,7 +619,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
         uploadArray(ssd);
     }
 
-    public void uploadArray(sync_service_description ssd) {
+    public void uploadArray_(sync_service_description ssd) {
         try {
             realmClientInterfaceTX.on_info_updated("Uploading " + ssd.service_name);
         } catch (RemoteException e) {
@@ -658,8 +660,6 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                     key_list.add((String) keys.next());
 
                 }
-
-
 //        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
                 List<String> filePathFields = realm.getFilePathFields(ssd.object_package, key_list);
                 for (String k : filePathFields) {
@@ -697,10 +697,112 @@ public class RealmClientProtocolV2 extends SocketProtocol {
 
 
     }
+    public void uploadArray(sync_service_description ssd) {
+        try {
+            realmClientInterfaceTX.on_info_updated("Uploading " + ssd.service_name);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        String transaction_no = "R" + System.currentTimeMillis() + "S";
+        String[] pending_records_filter = ssd.table_filters == null ? new String[1] : new String[ssd.table_filters.length + 1];
+        if (ssd.table_filters != null) {
+            System.arraycopy(ssd.table_filters, 0, pending_records_filter, 0, ssd.table_filters.length);
+
+        }
+        pending_records_filter[pending_records_filter.length - 1] = "sync_status='" + sync_status.pending.ordinal() + "'";
+
+        ArrayList<JSONObject> pending_records = Realm.databaseManager.load_dynamic_json_records_ann(ssd, pending_records_filter);
+        JSONArray arr = new JSONArray();
+        JsonArray jar=new JsonArray();
+
+        for (JSONObject jo : pending_records) {
+
+            try {
+                jo.put("filters", new JSONArray(ssd.uploadConstrainFields));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            io_operations_counter++;
+
+            arr.put(jo);
+
+        }
+
+        ArrayList<File> files=new ArrayList<>();
+        int objectCount=0;
+        int objectSizeCount=0;
+        if (ssd.storage_mode_check) {
+            Log.e(RealmClientProtocolV2.logTag, "Started storage checking ...");
+
+            for (int i = 0; i < pending_records.size(); i++) {
+                JSONObject jo = pending_records.get(i);
+                Iterator keys = jo.keys();
+                List<String> key_list = new ArrayList<>();
+                while (keys.hasNext()) {
+                    key_list.add((String) keys.next());
+
+                }
+//        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
+                List<String> filePathFields = realm.getFilePathFields(ssd.object_package, key_list);
+                for (String k : filePathFields) {
+                    try {
+                        String fieName=jo.getString(k);
+                        File file=new File(svars.current_app_config(Realm.context).appDataFolder, fieName);
+                        jo.remove(k);
+                        jo.put(k,"unavailable locally");
+                        if(file.exists()){
+                            jo.remove(k);
+                            String  fileExtension=fieName.contains(".")?fieName.split("[.]")[fieName.split("[.]").length-1]:"rd";
+                            jo.put(k,openEncoding+objectCount+"|"+ file.length()+"|"+ fileExtension+closeEncoding);
+                            files.add(file);
+                            objectSizeCount+=file.length();
+                            objectCount++;
+                        }
+
+//                        jo.put(k, base64);
+
+
+                    } catch (Exception e) {
+                        Log.e(RealmClientProtocolV2.logTag, "Base64 image error:" + e.getMessage());
+
+                    }
+
+                }
+            }
+        }
+        if (arr.length() > 0) {
+            sendMessage(transaction_no,objectSizeCount,files, "4", "1", ssd.service_id + "", arr.toString());
+        } else {
+            try {
+                realmClientInterfaceTX.on_info_updated("Synchronized");
+                realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+//        dpm.addTransaction(dataProcess.transferTypeTx,transaction_no,dataProcess.serviceTypeIo,ssd,transaction_no+""+DatabaseManager.concatRealmClientString(delimeter,new String[]{tx_transation_no,"4",ssd.service_id+"","2",Realm.databaseManager.greatest_sync_var(ssd.table_name),""+ssd.chunk_size}));
+
+
+    }
+    String encode(){
+
+
+        return null;
+    }
 
 
     public void SendMessageJ(String tx_transation_no, String... data) {
-        sc.sendData((tx_transation_no == null ? "R" + System.currentTimeMillis() + "S" : tx_transation_no) + delimeter + DatabaseManager.concatRealmClientString(delimeter, data));
+        String transaction_no=(tx_transation_no == null ? "R" + System.currentTimeMillis() + "S" : tx_transation_no);
+        String tx_data=transaction_no+ delimeter + DatabaseManager.concatRealmClientString(delimeter, data);
+        sc.sendData(tx_data);
+//        sc.sendData();
+        calc_progress();
+//Log.e(logTag,"TX :"+((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,data)));
+    }
+ public void sendMessage(String tx_transation_no,int total_file_size, ArrayList<File> files,String... data) {
+        String transaction_no=(tx_transation_no == null ? "R" + System.currentTimeMillis() + "S" : tx_transation_no);
+        String tx_data=transaction_no+ delimeter + DatabaseManager.concatRealmClientString(delimeter, data);
+        sc.sendData(tx_data,total_file_size,files);
         calc_progress();
 //Log.e(logTag,"TX :"+((tx_transation_no==null?"R"+System.currentTimeMillis()+"S":tx_transation_no)+delimeter+DatabaseManager.concatRealmClientString(delimeter,data)));
     }

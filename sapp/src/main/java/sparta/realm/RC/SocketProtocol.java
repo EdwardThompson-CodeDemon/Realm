@@ -11,7 +11,8 @@ public class SocketProtocol implements SocketInterface {
 
     public RealmClientCallbackInterface realmClientInterfaceTX;
 
-
+    public char openEncoding='░';
+    public char closeEncoding='▓';
     public SocketProtocol(RealmClientCallbackInterface realmClientInterfaceTX) {
         this.realmClientInterfaceTX = realmClientInterfaceTX;
     }

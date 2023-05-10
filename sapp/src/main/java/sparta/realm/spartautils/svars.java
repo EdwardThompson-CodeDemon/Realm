@@ -178,7 +178,7 @@ public class svars {
     }
 
     public static String getTransactionNo() {
-        return System.currentTimeMillis() + "::" + new Random().nextDouble() + "::" + new Random().nextDouble();
+        return (System.currentTimeMillis() + "_" + new Random().nextDouble() + "_" + new Random().nextDouble()).replace(".","_");
 
     }
 

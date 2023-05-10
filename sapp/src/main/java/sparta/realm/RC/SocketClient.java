@@ -31,10 +31,14 @@ public class SocketClient {
     public void sendData(String data) {
 
     }
-    public void sendData(String data, ArrayList<File> files) {
+    public void sendData_(String data, ArrayList<File> files) {
 
     }
-    public int InitializeSocket(String server_ip, int port, String device_code, String username, String password) {
+    public void sendData(String message,int total_files_size,ArrayList<File> files){
+
+    }
+
+        public int InitializeSocket(String server_ip, int port, String device_code, String username, String password) {
         SERVER_ADDR = server_ip;
         SERVER_PORT = port;
         this.device_code = device_code;

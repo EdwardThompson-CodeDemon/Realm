@@ -19,17 +19,29 @@ public class AppConfig {
         public boolean allow_employee_details_edition = false;
 
         public String app_folder_path = Environment.getExternalStorageDirectory().toString() + "/Realm/";
-        public String file_path_db_folder = app_folder_path + ".DB/";
+    /**
+     * @deprecated naming convention
+     */
+    public String file_path_db_folder = app_folder_path + ".DB/";
+        public String databaseFolder = app_folder_path + ".DB/";
     /**
      * @deprecated naming convention
      */
     public String file_path_db_traces = app_folder_path + ".CrashReports/";
         public String crashReportsFolder = app_folder_path + ".CrashReports/";
-        public String file_path_logs = app_folder_path + ".Logs/";
+    /**
+     * @deprecated naming convention
+     */
+    public String file_path_logs = app_folder_path + ".Logs/";
+    public String logsFolder = app_folder_path + ".Logs/";
         public String file_path_app_downloads = app_folder_path + ".RAW_D_APKS/";
         public String file_path_app_uploads = app_folder_path + ".RAW_U_APKS/";
 
-        public String file_path_employee_data = app_folder_path + ".RAW_APP_DATA/";
+    /**
+     * @deprecated naming convention
+     */
+    public String file_path_employee_data = app_folder_path + ".RAW_APP_DATA/";
+        public String appDataFolder = app_folder_path + ".RAW_APP_DATA/";
         public String file_path_db_backup = app_folder_path + ".DB_BACKUPS_RAW/";
         public String file_path_log_backup = app_folder_path + ".LOG_BACKUPS_RAW/";
         public String file_path_general_backup = app_folder_path + ".GN_BACKUPS/";
@@ -45,7 +57,7 @@ public class AppConfig {
 
         public String file_path_db() {
 //            return Realm.context.getExternalFilesDir(null).getAbsolutePath() + "/" + DB_NAME;
-            return file_path_db_folder+DB_NAME;
+            return databaseFolder+DB_NAME;
         }
 
         public enum PROFILE_MODE {
