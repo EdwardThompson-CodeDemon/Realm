@@ -149,8 +149,8 @@ public class RealmClientService extends JobIntentService {
                     try {
 
                         Log.e("Realm Client ", "Starting ...");
-//                        main_client = new RealmClient(realmClientInterfaceTX);
-                        main_client = new RealmClientJava(realmClientInterfaceTX);
+                        main_client = new sparta.realm.RC.RealmClient(realmClientInterfaceTX);
+//                        main_client = new RealmClientJava(realmClientInterfaceTX);
                         main_client.InitializeSocket(server_ip, port, devicecode, username, password);
                         main_client = null;
                         Log.e(log_tag, "Stopped Running");
