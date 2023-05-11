@@ -203,6 +203,120 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                     Log.e(RealmClientProtocolV2.logTag, "Converting " + ssd.service_name + " JSON");
                     JSONArray temp_ar = new JSONArray(data);
                     data = null;
+                    ssd.storage_mode_check=false;
+                    if (ssd.storage_mode_check) {
+                        Log.e(RealmClientProtocolV2.logTag, "Started storage checking ...");
+
+                        for (int i = 0; i < temp_ar.length(); i++) {
+                            JSONObject jo = temp_ar.getJSONObject(i);
+                            Iterator keys = jo.keys();
+                            List<String> key_list = new ArrayList<>();
+                            while (keys.hasNext()) {
+                                key_list.add((String) keys.next());
+
+                            }
+
+
+//        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
+                            for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
+                                try {
+                                    jo.put(k, DatabaseManager.save_doc(jo.getString(k)));
+                                } catch (Exception e) {
+                                    Log.e(RealmClientProtocolV2.logTag, "Base64 image error:" + e.getMessage());
+
+                                }
+
+                            }
+                        }
+                        Log.e(RealmClientProtocolV2.logTag, "Done storage checking ...");
+
+                    }
+
+                    double den = (double) temp_ar.length();
+                    if (!ssd.use_download_filter) {
+                        DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sync_status ='" + sync_status.syned.ordinal() + "'");
+                    }
+
+//    temp_ar=new JSONArray(rc.realmClientInterfaceTX.OnDownloadedObjects(service_id,temp_ar.toString()));
+                    temp_ar = new JSONArray(temp_ar.toString().replace("'", "''"));
+                    Log.e(ssd.service_name + " :: RX", "Inserting " + den);
+                    if (den > 0) {
+                        synchronized (DatabaseManager.database) {
+                            String[][] ins = realm.getInsertStatementsFromJson(temp_ar, ssd.object_package);
+                            String sidz = ins[0][0];
+                            String sidz_inactive = ins[0][1];
+                            String[] qryz = ins[1];
+                            int q_length = qryz.length;
+                            temp_ar = null;
+
+                            // ssi.on_status_changed("Synchronizing " + ssd.service_name);
+
+                            DatabaseManager.database.beginTransaction();
+                            DatabaseManager.database.execSQL("INSERT INTO CP_" + ssd.table_name + " SELECT * FROM " + ssd.table_name + " WHERE sid in " + sidz + " AND sync_status=" + sync_status.pending.ordinal() + "");
+
+                            for (int i = 0; i < q_length; i++) {
+                                DatabaseManager.database.execSQL(qryz[i]);
+                                double num = (double) i + 1;
+                                double per = (num / q_length) * 100.0;
+                                try {
+                                    rc.realmClientInterfaceTX.on_secondary_progress_changed((int) per);
+                                } catch (Exception e) {
+                                }
+                                //  ssi.on_secondary_progress_changed((int) per);
+
+//                  ssi.on_info_updated(ssd.service_name + " :" + num + "/" + q_length + "    Local data :" + Integer.parseInt(new DatabaseManager(Realm.context).get_record_count(ssd.table_name, ssd.table_filters)));
+                            }
+
+                            DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE data_status='false'");
+//                                         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sid IN("+sidz_inactive+")AND sync_status<>" + sync_status.pending.ordinal());
+//                                         DatabaseManager.database.execSQL("DELETE FROM " + ssd.table_name + " WHERE sid IN("+DatabaseManager.conccat_sql_string(sidz_inactive)+")AND sync_status<>" + sync_status.pending.ordinal());
+                            DatabaseManager.database.execSQL("REPLACE INTO " + ssd.table_name + " SELECT * FROM CP_" + ssd.table_name + "");
+                            DatabaseManager.database.execSQL("DELETE FROM CP_" + ssd.table_name + "");
+                            DatabaseManager.database.setTransactionSuccessful();
+                            DatabaseManager.database.endTransaction();
+
+                        }
+                    }
+                    if (den >= ssd.chunk_size) {
+                        try {
+                            rc.realmClientInterfaceTX.on_info_updated("Downloaded " + ssd.service_name + ". Re-downloading next batch");
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        rc.download(transaction_no, ssd);
+                    } else {
+                        try {
+                            rc.realmClientInterfaceTX.on_info_updated("Synchronized");
+                            rc.realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Log.e(ssd.service_name + "RX", "Inserted " + den);
+
+                } catch (Exception ex) {
+//    Log.e(rc.logTag,"Data insert error "+ex);
+                    DatabaseManager.log_String("Data insert error " + ex);
+
+                }
+            }
+
+            rc.io_operation_complete_counter++;
+        }
+  default void onDataDownloaded_(RealmClientProtocolV2 rc, String transaction_no, String service_id, String data) {
+//            Log.e(rc.logTag,"Data been downloaded "+data);
+
+            sync_service_description ssd = realm.getHashedSyncDescriptions().get(service_id);
+            if (ssd == null) {
+
+            } else {
+                try {
+
+
+//    JSONArray temp_ar = (JSONArray) SynchronizationManager.getJsonValue(ssd.download_array_position, new JSONObject(data));
+                    Log.e(RealmClientProtocolV2.logTag, "Converting " + ssd.service_name + " JSON");
+                    JSONArray temp_ar = new JSONArray(data);
+                    data = null;
 //    LinkedHashSet<E> hashSet = new LinkedHashSet<E>();
                     if (ssd.storage_mode_check) {
                         Log.e(RealmClientProtocolV2.logTag, "Started storage checking ...");
