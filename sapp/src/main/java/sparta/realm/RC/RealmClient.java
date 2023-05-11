@@ -280,13 +280,14 @@ public class RealmClient extends SocketClient {
     @Override
     public void sendData(String message, int total_files_size, ArrayList<File> files) {
         Log.e(logTag, "TX: " + message);
-        byte[] strLen = ByteBuffer.allocate(4).putInt(message.length()).array();
-        byte[] totalLen = ByteBuffer.allocate(4).putInt(message.length() + total_files_size).array();
+        byte[] str=message.getBytes();
+        byte[] strLen = ByteBuffer.allocate(4).putInt(str.length).array();
+        byte[] totalLen = ByteBuffer.allocate(4).putInt(str.length+ total_files_size).array();
         Log.e(logTag, "TX len: " + message.length());
         try {
             out_d.write(totalLen);
             out_d.write(strLen);
-            out_d.write(message.getBytes());
+            out_d.write(str);
             if (total_files_size > 0 && files != null && files.size() > 0) {
                 for (File file : files) {
                     try (
