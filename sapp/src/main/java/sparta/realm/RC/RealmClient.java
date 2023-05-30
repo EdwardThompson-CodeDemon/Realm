@@ -1,6 +1,7 @@
 package sparta.realm.RC;
 
 import android.content.Context;
+import android.os.DeadObjectException;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -110,7 +111,9 @@ public class RealmClient extends SocketClient {
                     Log.e(logTag, "Server connection closed !");
                     break;
                 }
-                realmClientInterfaceTX.on_status_changed("1");
+                try{
+                    realmClientInterfaceTX.on_status_changed("1");
+                }catch (DeadObjectException deadObjectException){}
 //                    while(socket.getInputStream().available() > 0);
                 int input_size = in_d.readInt();
                 int string_size = in_d.readInt();
@@ -179,6 +182,7 @@ public class RealmClient extends SocketClient {
 
         try {
             realmClientInterfaceTX.on_status_changed("0");
+        } catch (DeadObjectException e) {
         } catch (RemoteException remoteException) {
             remoteException.printStackTrace();
         }

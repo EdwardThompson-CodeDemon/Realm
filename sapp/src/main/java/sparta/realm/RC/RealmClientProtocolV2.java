@@ -2,6 +2,7 @@ package sparta.realm.RC;
 
 import android.content.ContentValues;
 import android.os.Build;
+import android.os.DeadObjectException;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -161,6 +162,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             if (sr.service_id != null && !sr.service_id.equals("null")) {
                 try {
                     rc.realmClientInterfaceTX.on_info_updated(sr.service_name + " data available");
+                } catch (DeadObjectException e) {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -174,6 +176,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
         default void onAuthenticated(RealmClientProtocolV2 rc, boolean authentication_status) {
             try {
                 rc.realmClientInterfaceTX.on_info_updated(authentication_status ? "Authenticated" : "Authentication failed");
+            } catch (DeadObjectException e) {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -280,6 +283,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                     if (den >= ssd.chunk_size) {
                         try {
                             rc.realmClientInterfaceTX.on_info_updated("Downloaded " + ssd.service_name + ". Re-downloading next batch");
+                        } catch (DeadObjectException e) {
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
@@ -288,6 +292,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                         try {
                             rc.realmClientInterfaceTX.on_info_updated("Synchronized");
                             rc.realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+                        } catch (DeadObjectException e) {
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
@@ -394,6 +399,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                     if (den >= ssd.chunk_size) {
                         try {
                             rc.realmClientInterfaceTX.on_info_updated("Downloaded " + ssd.service_name + ". Re-downloading next batch");
+                        } catch (DeadObjectException e) {
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
@@ -402,6 +408,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                         try {
                             rc.realmClientInterfaceTX.on_info_updated("Synchronized");
                             rc.realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+                        } catch (DeadObjectException e) {
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
@@ -438,6 +445,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                 }
                 try {
                     rc.realmClientInterfaceTX.on_info_updated("Uploaded: " + ssd.service_name);
+                } catch (DeadObjectException e) {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -481,6 +489,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             }
             try {
                 realmClientInterfaceTX.on_info_updated("Uploaded " + ssd.service_name);
+            } catch (DeadObjectException e) {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -569,6 +578,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             }
             try {
                 realmClientInterfaceTX.on_info_updated("Uploaded " + ssd.service_name);
+            } catch (DeadObjectException e) {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -618,6 +628,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
 
         try {
             realmClientInterfaceTX.on_info_updated("Syncing ");
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -633,6 +644,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
 
         try {
             realmClientInterfaceTX.on_info_updated("Syncing ");
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -657,6 +669,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
 
         try {
             realmClientInterfaceTX.on_info_updated("Downloading " + ssd.service_name);
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -667,6 +680,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             String o = realmClientInterfaceTX.OnAboutToDownloadObjects(ssd.service_id);
             SendMessageJ(tx_transaction_no, "4", "2", ssd.service_id + "", Realm.databaseManager.greatest_sync_var(ssd.table_name), "" + ssd.chunk_size, o);
             dpm.addTransaction(sparta.realm.realmclient.dataProcess.transferTypeTx, tx_transaction_no, sparta.realm.realmclient.dataProcess.serviceTypeIo, ssd, (tx_transaction_no == null ? "R" + System.currentTimeMillis() + "S" : tx_transaction_no) + delimeter + DatabaseManager.concatRealmClientString(delimeter, new String[]{tx_transaction_no, "4", ssd.service_id + "", "2", Realm.databaseManager.greatest_sync_var(ssd.table_name), "" + ssd.chunk_size, o}));
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -679,6 +693,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
 
         try {
             realmClientInterfaceTX.on_info_updated("Downloading " + ssd.service_name);
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -690,6 +705,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             liveRequests.add(tx_transaction_no);
             SendMessageJ(tx_transaction_no, "4", "3", ssd.service_id + "", Realm.databaseManager.greatest_sync_var(ssd.table_name), "" + ssd.chunk_size, o);
             dpm.addTransaction(sparta.realm.realmclient.dataProcess.transferTypeTx, tx_transaction_no, sparta.realm.realmclient.dataProcess.serviceTypeIo, ssd, (tx_transaction_no == null ? "R" + System.currentTimeMillis() + "S" : tx_transaction_no) + delimeter + DatabaseManager.concatRealmClientString(delimeter, new String[]{tx_transaction_no, "4", ssd.service_id + "", "2", Realm.databaseManager.greatest_sync_var(ssd.table_name), "" + ssd.chunk_size, o}));
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -699,6 +715,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
     public void uploadSingle(sync_service_description ssd) {
         try {
             realmClientInterfaceTX.on_info_updated("Uploading " + ssd.service_name);
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -736,6 +753,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
     public void uploadArray_(sync_service_description ssd) {
         try {
             realmClientInterfaceTX.on_info_updated("Uploading " + ssd.service_name);
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -803,6 +821,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             try {
                 realmClientInterfaceTX.on_info_updated("Synchronized");
                 realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+            } catch (DeadObjectException e) {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -814,6 +833,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
     public void uploadArray(sync_service_description ssd) {
         try {
             realmClientInterfaceTX.on_info_updated("Uploading " + ssd.service_name);
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -890,6 +910,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             try {
                 realmClientInterfaceTX.on_info_updated("Synchronized");
                 realmClientInterfaceTX.onServiceSynchronizationCompleted(ssd.service_id);
+            } catch (DeadObjectException e) {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -930,6 +951,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
                 realmClientInterfaceTX.on_info_updated("Sync complete");
                 realmClientInterfaceTX.onSynchronizationCompleted();
             }
+        } catch (DeadObjectException e) {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
