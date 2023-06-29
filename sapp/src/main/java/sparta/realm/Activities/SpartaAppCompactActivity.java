@@ -75,35 +75,38 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 
 public class SpartaAppCompactActivity extends AppCompatActivity {
-public Activity act;
-//public sdbw sd;
-public DatabaseManager dbm;
-public Drawable error_drawable;
-protected  Button next,previous,clear_all;
-Boolean registering=false;
-protected String select_item_index="";
+    public Activity act;
+    //public sdbw sd;
+    public DatabaseManager dbm;
+    public Drawable error_drawable;
+    protected Button next, previous, clear_all;
+    Boolean registering = false;
+    protected String select_item_index = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);act=this;
-        DatabaseManager.log_event(this, "AppNavigation:"+this.getClass().getName());
+        super.onCreate(savedInstanceState);
+        act = this;
+        DatabaseManager.log_event(this, "AppNavigation:" + this.getClass().getName());
 
 
-        try{
-           dbm= Realm.databaseManager;
+        try {
+            dbm = Realm.databaseManager;
 //           sd=new sdbw(Realm.context);
-        }catch (Exception ex){}
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } catch (Exception ex) {
+        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        error_drawable= getResources().getDrawable(R.drawable.ic_error_24dp);
-        error_drawable.setBounds(0, 0,40,40);
+        error_drawable = getResources().getDrawable(R.drawable.ic_error_24dp);
+        error_drawable.setBounds(0, 0, 40, 40);
     }
+
     static MediaPlayer player;
 
-    public void play_notification_tone(boolean success)
-    {
+    public void play_notification_tone(boolean success) {
         AssetManager am;
         try {
-            player = MediaPlayer.create(act, success? R.raw.dong:R.raw.stop);
+            player = MediaPlayer.create(act, success ? R.raw.dong : R.raw.stop);
             player.start();
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
@@ -117,125 +120,128 @@ protected String select_item_index="";
             player.setLooping(false);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            Log.e("MEDIA PLAY Eror =>"," "+e.getMessage());
+            Log.e("MEDIA PLAY Eror =>", " " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     public static boolean isNumeric(String str) {
-        if(str==null||str.length()==0)return false;
+        if (str == null || str.length() == 0) return false;
         try {
             Double.parseDouble(str);
             return true;
-        } catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }
+
     public static boolean containsNumeric(String str) {
-        for(char cct:str.toCharArray()){
+        for (char cct : str.toCharArray()) {
 
             try {
-                Double.parseDouble(cct+"");
+                Double.parseDouble(cct + "");
                 return true;
-            } catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
 
             }
-        }return false;
+        }
+        return false;
 
     }
-protected void set_text_error(EditText edt, String error)
-{
-    edt.setError(error);
-    edt.setBackground(act.getResources().getDrawable( R.drawable.textback_error));
-    edt.requestFocus();
+
+    protected void set_text_error(EditText edt, String error) {
+        edt.setError(error);
+        edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
+        edt.requestFocus();
 
 
-    Toast.makeText(act,error, Toast.LENGTH_LONG).show();
+        Toast.makeText(act, error, Toast.LENGTH_LONG).show();
 
-}
-protected void set_text_error(BlockEditText edt,String error)
-{
-    //edt.setError(Html.fromHtml("<marquee direction='down' width='100%'height='100%'><font color='red' background-color='red'>"+error+"</font></marquee>"),error_drawable);
-    edt.setBackground(act.getResources().getDrawable( R.drawable.textback_error));
-    edt.requestFocus();
+    }
+
+    protected void set_text_error(BlockEditText edt, String error) {
+        //edt.setError(Html.fromHtml("<marquee direction='down' width='100%'height='100%'><font color='red' background-color='red'>"+error+"</font></marquee>"),error_drawable);
+        edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
+        edt.requestFocus();
 
 
-    Toast.makeText(act,error, Toast.LENGTH_LONG).show();
+        Toast.makeText(act, error, Toast.LENGTH_LONG).show();
 
-}
-protected boolean set_conditional_input_error(boolean valid, View edt, String error, String input, int min_length)
-{
-    if(input==null||input.length()<min_length)
-    {
-       try {
-           if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
-               ((AppCompatEditText) edt).setError(error);
+    }
 
-           }
-           edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
-           edt.requestFocus();
-       }catch (Exception ex){}
-if(error!=null){
-    Toast.makeText(act,error, Toast.LENGTH_LONG).show();
+    protected boolean set_conditional_input_error(boolean valid, View edt, String error, String input, int min_length) {
+        if (input == null || input.length() < min_length) {
+            try {
+                if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
+                    ((AppCompatEditText) edt).setError(error);
 
-}
-        valid=false;
+                }
+                edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
+                edt.requestFocus();
+            } catch (Exception ex) {
+            }
+            if (error != null) {
+                Toast.makeText(act, error, Toast.LENGTH_LONG).show();
+
+            }
+            valid = false;
+            return valid;
+        } else {
+            if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
+                edt.setBackground(act.getResources().getDrawable(R.drawable.textback));
+                ((AppCompatEditText) edt).setError(null);
+
+            }
+
+        }
+
         return valid;
-    }else{
-         if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
-            edt.setBackground(act.getResources().getDrawable(R.drawable.textback));
-             ((AppCompatEditText) edt).setError(null);
-
-         }
-
     }
 
-return valid;
-}
-   public void start_activity(Intent i)
-    {
+    public void start_activity(Intent i) {
 
-         startActivity(i);
-    //    overridePendingTransition(R.transition.fade_in, R.transition.fade_out);
+        startActivity(i);
+        //    overridePendingTransition(R.transition.fade_in, R.transition.fade_out);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-   protected boolean setup_reg_control()
-    {
+    protected boolean setup_reg_control() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-try {
-    clear_all = (Button) findViewById(R.id.clear_all);
-    previous = (Button) findViewById(R.id.btn_prev);
-    next = (Button) findViewById(R.id.btn_next);
-    next.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            procceed();
-        }
-    });
-    previous.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            onBackPressed();
-        }
-    });
-    clear_all.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            clear_all(MainActivity.class);
-        }
-    });
+        try {
+            clear_all = (Button) findViewById(R.id.clear_all);
+            previous = (Button) findViewById(R.id.btn_prev);
+            next = (Button) findViewById(R.id.btn_next);
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    procceed();
+                }
+            });
+            previous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            clear_all.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clear_all(MainActivity.class);
+                }
+            });
 
-    registering = true;
+            registering = true;
 
-}catch (Exception ex){return false;}
+        } catch (Exception ex) {
+            return false;
+        }
         return true;
     }
 
-    void clear_all(Class<?> mm)
-    {
-        View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_confirm_clear_all,null);
-        final AlertDialog ald=new AlertDialog.Builder(act)
+    void clear_all(Class<?> mm) {
+        View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_confirm_clear_all, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
                 .setView(aldv)
                 .show();
         aldv.findViewById(R.id.clear_all).setOnClickListener(new View.OnClickListener() {
@@ -245,10 +251,10 @@ try {
 
                 ald.dismiss();
 
-                svars.set_working_employee(act,null);
-                svars.working_member =null;
-                Intent reg_intent=new Intent(act, mm);
-                reg_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK|FLAG_ACTIVITY_CLEAR_TOP);
+                svars.set_working_employee(act, null);
+                svars.working_member = null;
+                Intent reg_intent = new Intent(act, mm);
+                reg_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(reg_intent);
 
                 finish();
@@ -263,11 +269,11 @@ try {
         });
 
     }
-//bdmmjkjjvxvxsawqertyjuip
-    public void procceed()
-     {
 
-     }
+    //bdmmjkjjvxvxsawqertyjuip
+    public void procceed() {
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -288,30 +294,30 @@ try {
         });
 
     }
-    protected void search_field(final Spinner spn, final ArrayList<dyna_data_obj> original_list, String field_name)
-    {
-      //  hideKeyboardFrom(act,spn);
+
+    protected void search_field(final Spinner spn, final ArrayList<dyna_data_obj> original_list, String field_name) {
+        //  hideKeyboardFrom(act,spn);
 
         final List<dyna_data_obj>[] searched = new List[]{new ArrayList<>()};
-searched[0].addAll(original_list);
-        final View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_search_field,null);
-        final AlertDialog ald=new AlertDialog.Builder(act)
+        searched[0].addAll(original_list);
+        final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_search_field, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
                 .setView(aldv)
                 .show();
-        final GridView result_list=(GridView)aldv.findViewById(R.id.result_list);
-        result_list.setAdapter(new dyna_data_adapter(act,original_list));
-        Button dismiss=(Button)aldv.findViewById(R.id.dismiss);
+        final GridView result_list = (GridView) aldv.findViewById(R.id.result_list);
+        result_list.setAdapter(new dyna_data_adapter(act, original_list));
+        Button dismiss = (Button) aldv.findViewById(R.id.dismiss);
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ald.dismiss();
             }
         });
-        final AutoCompleteTextView serch_field=(AutoCompleteTextView)aldv.findViewById(R.id.search_field);
+        final AutoCompleteTextView serch_field = (AutoCompleteTextView) aldv.findViewById(R.id.search_field);
         final String[] searchterm = {""};
         final Thread[] search_thread = {null};
 
-         hideKeyboardFrom(act,serch_field);
+        hideKeyboardFrom(act, serch_field);
 
 
         serch_field.addTextChangedListener(new TextWatcher() {
@@ -322,22 +328,22 @@ searched[0].addAll(original_list);
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search_thread[0] =new Thread(new Runnable() {
+                search_thread[0] = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         searched[0].clear();
                         // searchterm[0].startsWith(serch_field.getText().toString())?searched[0]:
-                        searched[0] =  Stream.of(original_list).filter(new Predicate<dyna_data_obj>() {
+                        searched[0] = Stream.of(original_list).filter(new Predicate<dyna_data_obj>() {
                             @Override
                             public boolean test(dyna_data_obj item) {
                                 return item.data.value.toUpperCase().contains(serch_field.getText().toString().toUpperCase());
                             }
                         }).collect(Collectors.<dyna_data_obj>toList());
-                        searchterm[0] =serch_field.getText().toString();
+                        searchterm[0] = serch_field.getText().toString();
                         act.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                result_list.setAdapter(new dyna_data_adapter(act,searched[0]));
+                                result_list.setAdapter(new dyna_data_adapter(act, searched[0]));
 
                             }
                         });
@@ -363,11 +369,9 @@ searched[0].addAll(original_list);
         result_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                for(int j=0;j<original_list.size();j++)
-                {
-                    dyna_data_obj obj=original_list.get(j);
-                    if(obj.sid.value.equalsIgnoreCase(searched[0].get(i).sid.value))
-                    {
+                for (int j = 0; j < original_list.size(); j++) {
+                    dyna_data_obj obj = original_list.get(j);
+                    if (obj.sid.value.equalsIgnoreCase(searched[0].get(i).sid.value)) {
                         spn.setSelection(j);
                         ald.dismiss();
                         break;
@@ -377,30 +381,30 @@ searched[0].addAll(original_list);
             }
         });
     }
-    protected void search_field_(final Spinner spn, final ArrayList<dyna_data> original_list, String field_name)
-    {
+
+    protected void search_field_(final Spinner spn, final ArrayList<dyna_data> original_list, String field_name) {
         //  hideKeyboardFrom(act,spn);
 
         final List<dyna_data>[] searched = new List[]{new ArrayList<>()};
         searched[0].addAll(original_list);
-        final View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_search_field,null);
-        final AlertDialog ald=new AlertDialog.Builder(act)
+        final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_search_field, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
                 .setView(aldv)
                 .show();
-        final GridView result_list=(GridView)aldv.findViewById(R.id.result_list);
-        result_list.setAdapter(new dyna_data_adapter_(act,original_list));
-        Button dismiss=(Button)aldv.findViewById(R.id.dismiss);
+        final GridView result_list = (GridView) aldv.findViewById(R.id.result_list);
+        result_list.setAdapter(new dyna_data_adapter_(act, original_list));
+        Button dismiss = (Button) aldv.findViewById(R.id.dismiss);
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ald.dismiss();
             }
         });
-        final AutoCompleteTextView serch_field=(AutoCompleteTextView)aldv.findViewById(R.id.search_field);
+        final AutoCompleteTextView serch_field = (AutoCompleteTextView) aldv.findViewById(R.id.search_field);
         final String[] searchterm = {""};
         final Thread[] search_thread = {null};
 
-        hideKeyboardFrom(act,serch_field);
+        hideKeyboardFrom(act, serch_field);
 
 
         serch_field.addTextChangedListener(new TextWatcher() {
@@ -411,14 +415,14 @@ searched[0].addAll(original_list);
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search_thread[0] =new Thread(new Runnable() {
+                search_thread[0] = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         searched[0].clear();
                         // searchterm[0].startsWith(serch_field.getText().toString())?searched[0]:
-                        searched[0] =  Stream.of(original_list).filter(item -> item.data.toUpperCase().contains(serch_field.getText().toString().toUpperCase())).collect(Collectors.<dyna_data>toList());
-                        searchterm[0] =serch_field.getText().toString();
-                        act.runOnUiThread(() -> result_list.setAdapter(new dyna_data_adapter_(act,searched[0])));
+                        searched[0] = Stream.of(original_list).filter(item -> item.data.toUpperCase().contains(serch_field.getText().toString().toUpperCase())).collect(Collectors.<dyna_data>toList());
+                        searchterm[0] = serch_field.getText().toString();
+                        act.runOnUiThread(() -> result_list.setAdapter(new dyna_data_adapter_(act, searched[0])));
                     }
                 });
                 search_thread[0].start();
@@ -439,11 +443,9 @@ searched[0].addAll(original_list);
             }
         });
         result_list.setOnItemClickListener((adapterView, view, i, l) -> {
-            for(int j=0;j<original_list.size();j++)
-            {
-                dyna_data obj=original_list.get(j);
-                if(obj.sid.equalsIgnoreCase(searched[0].get(i).sid))
-                {
+            for (int j = 0; j < original_list.size(); j++) {
+                dyna_data obj = original_list.get(j);
+                if (obj.sid.equalsIgnoreCase(searched[0].get(i).sid)) {
                     spn.setSelection(j);
                     ald.dismiss();
                     break;
@@ -452,30 +454,30 @@ searched[0].addAll(original_list);
 
         });
     }
-    protected void search_field_code(final Spinner spn, final ArrayList<dyna_data> original_list)
-    {
+
+    protected void search_field_code(final Spinner spn, final ArrayList<dyna_data> original_list) {
         //  hideKeyboardFrom(act,spn);
 
         final List<dyna_data>[] searched = new List[]{new ArrayList<>()};
         searched[0].addAll(original_list);
-        final View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_search_field,null);
-        final AlertDialog ald=new AlertDialog.Builder(act)
+        final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_search_field, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
                 .setView(aldv)
                 .show();
-        final GridView result_list=(GridView)aldv.findViewById(R.id.result_list);
-        result_list.setAdapter(new dyna_data_adapter_(act,original_list));
-        Button dismiss=(Button)aldv.findViewById(R.id.dismiss);
+        final GridView result_list = (GridView) aldv.findViewById(R.id.result_list);
+        result_list.setAdapter(new dyna_data_adapter_(act, original_list));
+        Button dismiss = (Button) aldv.findViewById(R.id.dismiss);
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ald.dismiss();
             }
         });
-        final AutoCompleteTextView serch_field=(AutoCompleteTextView)aldv.findViewById(R.id.search_field);
+        final AutoCompleteTextView serch_field = (AutoCompleteTextView) aldv.findViewById(R.id.search_field);
         final String[] searchterm = {""};
         final Thread[] search_thread = {null};
 
-        hideKeyboardFrom(act,serch_field);
+        hideKeyboardFrom(act, serch_field);
 
 
         serch_field.addTextChangedListener(new TextWatcher() {
@@ -486,14 +488,14 @@ searched[0].addAll(original_list);
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search_thread[0] =new Thread(new Runnable() {
+                search_thread[0] = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         searched[0].clear();
                         // searchterm[0].startsWith(serch_field.getText().toString())?searched[0]:
-                        searched[0] =  Stream.of(original_list).filter(item ->item.code!=null&&item.code.toUpperCase().contains(serch_field.getText().toString().toUpperCase())).collect(Collectors.<dyna_data>toList());
-                        searchterm[0] =serch_field.getText().toString();
-                        act.runOnUiThread(() -> result_list.setAdapter(new dyna_data_adapter_(act,searched[0])));
+                        searched[0] = Stream.of(original_list).filter(item -> item.code != null && item.code.toUpperCase().contains(serch_field.getText().toString().toUpperCase())).collect(Collectors.<dyna_data>toList());
+                        searchterm[0] = serch_field.getText().toString();
+                        act.runOnUiThread(() -> result_list.setAdapter(new dyna_data_adapter_(act, searched[0])));
                     }
                 });
                 search_thread[0].start();
@@ -514,11 +516,9 @@ searched[0].addAll(original_list);
             }
         });
         result_list.setOnItemClickListener((adapterView, view, i, l) -> {
-            for(int j=0;j<original_list.size();j++)
-            {
-                dyna_data obj=original_list.get(j);
-                if(obj.sid.equalsIgnoreCase(searched[0].get(i).sid))
-                {
+            for (int j = 0; j < original_list.size(); j++) {
+                dyna_data obj = original_list.get(j);
+                if (obj.sid.equalsIgnoreCase(searched[0].get(i).sid)) {
                     spn.setSelection(j);
                     ald.dismiss();
                     break;
@@ -529,8 +529,7 @@ searched[0].addAll(original_list);
     }
 
 
-    protected void populate_spiner(final Spinner spn, final ArrayList<dyna_data_obj> original_list, String sid)
-    {
+    protected void populate_spiner(final Spinner spn, final ArrayList<dyna_data_obj> original_list, String sid) {
         for (int i = 0; i < original_list.size(); i++) {
             if (original_list.get(i).sid.value.equalsIgnoreCase(sid)) {
                 final int finalI = i;
@@ -545,8 +544,8 @@ searched[0].addAll(original_list);
             }
         }
     }
- protected void populate_spiner_(final Spinner spn, final ArrayList<dyna_data> original_list, String sid)
-    {
+
+    protected void populate_spiner_(final Spinner spn, final ArrayList<dyna_data> original_list, String sid) {
         for (int i = 0; i < original_list.size(); i++) {
             if (original_list.get(i).sid.equalsIgnoreCase(sid)) {
                 final int finalI = i;
@@ -563,22 +562,22 @@ searched[0].addAll(original_list);
     }
 
 
-    protected void populate_date(EditText edt,Calendar cb)
-    {
-        Calendar cc= Calendar.getInstance();
+    protected void populate_date(EditText edt, Calendar cb) {
+        Calendar cc = Calendar.getInstance();
         int mYear = cc.get(Calendar.YEAR);
         int mMonth = cc.get(Calendar.MONTH);
         int mDay = cc.get(Calendar.DAY_OF_MONTH);
 
 
-        try{
+        try {
 
 
             mYear = cb.get(Calendar.YEAR);
             mMonth = cb.get(Calendar.MONTH);
             mDay = cb.get(Calendar.DAY_OF_MONTH);
 
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
 
         // Launch Date Picker Dialog..Continuous reg
         DatePickerDialog dpd = new DatePickerDialog(act,
@@ -590,52 +589,52 @@ searched[0].addAll(original_list);
                                           int monthOfYear, int dayOfMonth) {
 
 
+                        edt.setText((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + " - " + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + " - " + year);
 
-                        edt.setText((dayOfMonth<10?"0"+dayOfMonth:dayOfMonth) + " - "  + ((monthOfYear + 1)<10?"0"+(monthOfYear + 1):(monthOfYear + 1)) +" - "+year );
 
-
-                        try{
-    cb.setTime(svars.sdf_user_friendly_date.parse(edt.getText().toString()));
-}catch (Exception ex){}
+                        try {
+                            cb.setTime(svars.sdf_user_friendly_date.parse(edt.getText().toString()));
+                        } catch (Exception ex) {
+                        }
 
                     }
                 }, mYear, mMonth, mDay);
         dpd.show();
         Calendar calendar_min = Calendar.getInstance();
-        calendar_min.set(Calendar.YEAR,calendar_min.get(Calendar.YEAR));
+        calendar_min.set(Calendar.YEAR, calendar_min.get(Calendar.YEAR));
 
 
         dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
 
-      //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
+        //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
     }
 
-    protected void setup_dob_field(BlockEditText edt)
-    {
+    protected void setup_dob_field(BlockEditText edt) {
         edt.setNumberOfBlock(3);
         edt.setDefaultLength(4);
-        edt.setLengthAt(0,2);
-        edt.setLengthAt(1,2);
-        edt.setLengthAt(2,4);
+        edt.setLengthAt(0, 2);
+        edt.setLengthAt(1, 2);
+        edt.setLengthAt(2, 4);
         edt.setSeparatorCharacter('-');
         edt.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
-    protected void populate_date(BlockEditText edt, Calendar cb)
-    {
-        Calendar cc= Calendar.getInstance();
+
+    protected void populate_date(BlockEditText edt, Calendar cb) {
+        Calendar cc = Calendar.getInstance();
         int mYear = cc.get(Calendar.YEAR);
         int mMonth = cc.get(Calendar.MONTH);
         int mDay = cc.get(Calendar.DAY_OF_MONTH);
 
 
-        try{
+        try {
 
 
             mYear = cb.get(Calendar.YEAR);
             mMonth = cb.get(Calendar.MONTH);
             mDay = cb.get(Calendar.DAY_OF_MONTH);
 
-        }catch (Exception ex){}
+        } catch (Exception ex) {
+        }
 
         // Launch Date Picker Dialog..Continuous reg
         DatePickerDialog dpd = new DatePickerDialog(act,
@@ -646,47 +645,49 @@ searched[0].addAll(original_list);
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-edt.post(new Runnable() {
-    @Override
-    public void run() {
-        edt.setText("");
-        setup_dob_field(edt);
-        String input =((dayOfMonth<10?"0"+dayOfMonth:dayOfMonth) + "-"  + ((monthOfYear + 1)<10?"0"+(monthOfYear + 1):(monthOfYear + 1)) +"-"+year );
-        Log.e("dt output :",""+input);
-        edt.setText(input);
-        Log.e("dt output :",""+edt.getText());
+                        edt.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                edt.setText("");
+                                setup_dob_field(edt);
+                                String input = ((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + "-" + year);
+                                Log.e("dt output :", "" + input);
+                                edt.setText(input);
+                                Log.e("dt output :", "" + edt.getText());
 
-    }
-});
+                            }
+                        });
 
 
-                        try{
-    cb.setTime(svars.sdf_user_friendly_date.parse(((dayOfMonth<10?"0"+dayOfMonth:dayOfMonth) + "-"  + ((monthOfYear + 1)<10?"0"+(monthOfYear + 1):(monthOfYear + 1)) +"-"+year )));
-}catch (Exception ex){}
+                        try {
+                            cb.setTime(svars.sdf_user_friendly_date.parse(((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + "-" + year)));
+                        } catch (Exception ex) {
+                        }
 
                     }
                 }, mYear, mMonth, mDay);
         dpd.show();
         Calendar calendar_min = Calendar.getInstance();
-        calendar_min.set(Calendar.YEAR,calendar_min.get(Calendar.YEAR));
+        calendar_min.set(Calendar.YEAR, calendar_min.get(Calendar.YEAR));
 
 
         dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
 
-      //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
+        //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
     }
-    public static String logTag="SpartaAppCompactActivity";
-    public static String save_app_image(Bitmap fpb)
-    {
-        String img_name="RE_DAT"+ System.currentTimeMillis()+"_IMG.JPG";
+
+    public static String logTag = "SpartaAppCompactActivity";
+
+    public static String save_app_image(Bitmap fpb) {
+        String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.JPG";
 
         File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
         if (!file.exists()) {
-            Log.e(logTag,"Creating data dir: "+ (file.mkdirs()?"Successfully created":"Failed to create !"));
+            Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
         }
         file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
 
-        try (OutputStream fOutputStream = new FileOutputStream(file)){
+        try (OutputStream fOutputStream = new FileOutputStream(file)) {
 
 
             fpb.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
@@ -707,50 +708,47 @@ edt.post(new Runnable() {
         return img_name;
     }
 
-    public  boolean isPackageInstalled(String packageName) {
+    public boolean isPackageInstalled(String packageName) {
         try {
             return act.getPackageManager().getApplicationInfo(packageName, 0).enabled;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
     }
-   public void show_camera_config_dialog(int img_index)
-    {
+
+    public void show_camera_config_dialog(int img_index) {
 
 //        photo_index=svars.image_indexes.id_photo;
 //        startActivityForResult(new Intent("sparta.icaochecker.doc_camera"),1);
-        View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_config_camera_parameters,null);
-        final AlertDialog ald =new AlertDialog.Builder(act)
+        View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_config_camera_parameters, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
                 .setView(aldv)
                 .show();
         ald.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        RadioButton icao_rdb=aldv.findViewById(R.id.icao_rdb),
-                doc_scanner_rdb=aldv.findViewById(R.id.doc_scanner_rdb);
-        String icao_package_name="sparta.icaochecker";
-        RadioGroup camera_types=aldv.findViewById(R.id.camera_types);
-        if(!isPackageInstalled(icao_package_name))
-        {
+        RadioButton icao_rdb = aldv.findViewById(R.id.icao_rdb),
+                doc_scanner_rdb = aldv.findViewById(R.id.doc_scanner_rdb);
+        String icao_package_name = "sparta.icaochecker";
+        RadioGroup camera_types = aldv.findViewById(R.id.camera_types);
+        if (!isPackageInstalled(icao_package_name)) {
             icao_rdb.setEnabled(false);
-            icao_rdb.setText(icao_rdb.getText()+"!!! (Imaging package not installed)");
+            icao_rdb.setText(icao_rdb.getText() + "!!! (Imaging package not installed)");
             doc_scanner_rdb.setEnabled(false);
-            doc_scanner_rdb.setText(doc_scanner_rdb.getText()+"!!! (Imaging package not installed)");
+            doc_scanner_rdb.setText(doc_scanner_rdb.getText() + "!!! (Imaging package not installed)");
 //            if(svars.photo_camera_type(act,img_index)==1||svars.photo_camera_type(act,img_index)==2)
 //            {
 //                svars.set_photo_camera_type(act,img_index,rb_index+1);
 //
 //            }
         }
-        ((RadioButton) camera_types.getChildAt(svars.photo_camera_type(act,img_index)-1)).setChecked(true);
+        ((RadioButton) camera_types.getChildAt(svars.photo_camera_type(act, img_index) - 1)).setChecked(true);
         camera_types.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                for (int rb_index=0;rb_index<camera_types.getChildCount();rb_index++)
-                {
-                    Log.e("RADIOBUTTON :",""+rb_index+"/"+camera_types.getChildCount());
-                    if(((RadioButton) camera_types.getChildAt(rb_index)).isChecked()){
-                        Log.e("RADIOBUTTON :"," OK "+rb_index);
-                        svars.set_photo_camera_type(act,img_index,rb_index+1);
+                for (int rb_index = 0; rb_index < camera_types.getChildCount(); rb_index++) {
+                    Log.e("RADIOBUTTON :", "" + rb_index + "/" + camera_types.getChildCount());
+                    if (((RadioButton) camera_types.getChildAt(rb_index)).isChecked()) {
+                        Log.e("RADIOBUTTON :", " OK " + rb_index);
+                        svars.set_photo_camera_type(act, img_index, rb_index + 1);
                     }
                 }
 
@@ -768,46 +766,54 @@ edt.post(new Runnable() {
             @Override
             public void onClick(View view) {
 
-                svars.set_photo_camera_type(act,img_index,svars.default_photo_camera_type(act));
-                ((RadioButton) camera_types.getChildAt(svars.photo_camera_type(act,img_index)-1)).setChecked(true);
+                svars.set_photo_camera_type(act, img_index, svars.default_photo_camera_type(act));
+                ((RadioButton) camera_types.getChildAt(svars.photo_camera_type(act, img_index) - 1)).setChecked(true);
 
             }
         });
 
     }
 
-  public void show_remember_me_config_dialog()
-    {
+    public void showImageCameraConfigDialog(String img_index) {
 
 //        photo_index=svars.image_indexes.id_photo;
 //        startActivityForResult(new Intent("sparta.icaochecker.doc_camera"),1);
-        View aldv= LayoutInflater.from(act).inflate(R.layout.dialog_config_remember_me,null);
-        final AlertDialog ald =new AlertDialog.Builder(act)
+        View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_config_camera_parameters, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
                 .setView(aldv)
                 .show();
         ald.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        CheckBox remember_username_chk=aldv.findViewById(R.id.remember_username_chk),
-                remember_password_chk=aldv.findViewById(R.id.remember_password_chk);
-
-        remember_username_chk.setChecked(svars.remember(act,svars.remember_indexes.username));
-        remember_password_chk.setChecked(svars.remember(act,svars.remember_indexes.password));
-
-        remember_username_chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        RadioButton icao_rdb = aldv.findViewById(R.id.icao_rdb),
+                doc_scanner_rdb = aldv.findViewById(R.id.doc_scanner_rdb);
+        String icao_package_name = "sparta.icaochecker";
+        RadioGroup camera_types = aldv.findViewById(R.id.camera_types);
+        if (!isPackageInstalled(icao_package_name)) {
+            icao_rdb.setEnabled(false);
+            icao_rdb.setText(icao_rdb.getText() + "!!! (Imaging package not installed)");
+            doc_scanner_rdb.setEnabled(false);
+            doc_scanner_rdb.setText(doc_scanner_rdb.getText() + "!!! (Imaging package not installed)");
+//            if(svars.photo_camera_type(act,img_index)==1||svars.photo_camera_type(act,img_index)==2)
+//            {
+//                svars.set_photo_camera_type(act,img_index,rb_index+1);
+//
+//            }
+        }
+        ((RadioButton) camera_types.getChildAt(svars.imageCameraType(act, img_index) - 1)).setChecked(true);
+        camera_types.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                svars.set_remember(act,svars.remember_indexes.username,isChecked);
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                for (int rb_index = 0; rb_index < camera_types.getChildCount(); rb_index++) {
+                    Log.e("RADIOBUTTON :", "" + rb_index + "/" + camera_types.getChildCount());
+                    if (((RadioButton) camera_types.getChildAt(rb_index)).isChecked()) {
+                        Log.e("RADIOBUTTON :", " OK " + rb_index);
+                        svars.setImageCameraType(act, img_index, rb_index + 1);
+                    }
+                }
+
+
             }
         });
-        remember_password_chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                svars.set_remember(act,svars.remember_indexes.password,isChecked);
-
-            }
-        });
-
-
-              aldv.findViewById(R.id.dismiss).setOnClickListener(new View.OnClickListener() {
+        aldv.findViewById(R.id.dismiss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ald.dismiss();
@@ -817,29 +823,84 @@ edt.post(new Runnable() {
         aldv.findViewById(R.id.restore_defaults).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                svars.set_remember(act,svars.remember_indexes.username,svars.default_remember_username);
-                svars.set_remember(act,svars.remember_indexes.password,svars.default_remember_password);
+
+                svars.setImageCameraType(act, img_index, svars.default_photo_camera_type(act));
+                ((RadioButton) camera_types.getChildAt(svars.imageCameraType(act, img_index) - 1)).setChecked(true);
+
+            }
+        });
+
+    }
+
+    public void show_remember_me_config_dialog() {
+
+//        photo_index=svars.image_indexes.id_photo;
+//        startActivityForResult(new Intent("sparta.icaochecker.doc_camera"),1);
+        View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_config_remember_me, null);
+        final AlertDialog ald = new AlertDialog.Builder(act)
+                .setView(aldv)
+                .show();
+        ald.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        CheckBox remember_username_chk = aldv.findViewById(R.id.remember_username_chk),
+                remember_password_chk = aldv.findViewById(R.id.remember_password_chk);
+
+        remember_username_chk.setChecked(svars.remember(act, svars.remember_indexes.username));
+        remember_password_chk.setChecked(svars.remember(act, svars.remember_indexes.password));
+
+        remember_username_chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                svars.set_remember(act, svars.remember_indexes.username, isChecked);
+            }
+        });
+        remember_password_chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                svars.set_remember(act, svars.remember_indexes.password, isChecked);
+
+            }
+        });
 
 
-                remember_username_chk.setChecked(svars.remember(act,svars.remember_indexes.username));
-                remember_password_chk.setChecked(svars.remember(act,svars.remember_indexes.password));
+        aldv.findViewById(R.id.dismiss).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ald.dismiss();
+            }
+        });
+
+        aldv.findViewById(R.id.restore_defaults).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                svars.set_remember(act, svars.remember_indexes.username, svars.default_remember_username);
+                svars.set_remember(act, svars.remember_indexes.password, svars.default_remember_password);
+
+
+                remember_username_chk.setChecked(svars.remember(act, svars.remember_indexes.username));
+                remember_password_chk.setChecked(svars.remember(act, svars.remember_indexes.password));
 
 
             }
         });
 
     }
-boolean taking_picture=false;
-private int photo_index=0;
+
+    boolean taking_picture = false;
+    private int photo_index = 0;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode == Activity.RESULT_OK&&photo_index!=0) {
+        if (resultCode == Activity.RESULT_OK && photo_index != 0) {
             int photo_camera_type = svars.photo_camera_type(act, photo_index);
             Bitmap bitmap = null;
             String data_url = null;
             switch (photo_camera_type) {
                 case 1:
+                    data.putExtra("ImageUrl", data.getExtras().getParcelable("scannedResult").toString());
+                    data.putExtra("ImageIndex", photo_index);
+
+                    break;
                 case 2:
                     Uri uri = data.getExtras().getParcelable("scannedResult");
                     try {
@@ -859,12 +920,12 @@ private int photo_index=0;
 
                 case 3:
 
-                    data_url=data.getStringExtra("ImageUrl");
+                    data_url = data.getStringExtra("ImageUrl");
                     data.putExtra("ImageUrl", data_url);
                     data.putExtra("ImageIndex", photo_index);
-break;
+                    break;
 
-case 5:
+                case 5:
 
                     Bundle extras = data.getExtras();
 
@@ -889,68 +950,179 @@ case 5:
                     break;
 
 
-
-
-
             }
-            try{
-                data.putExtra("FaceUrl", face_handler.extract_face(svars.current_app_config(Realm.context).file_path_employee_data+data_url));
+            try {
+                data.putExtra("FaceUrl", face_handler.extract_face(svars.current_app_config(Realm.context).file_path_employee_data + data_url));
 
-            }catch (Throwable ex){}
-        }else {
+            } catch (Throwable ex) {
+            }
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
 
-                    }
-                    public void take_photo ( int image_index,String sid)
-                {
-                    photo_index = image_index;
-                    int photo_camera_type = svars.photo_camera_type(act, image_index);
-                    String icao_package_name = "sparta.icaochecker";
-                    if (photo_camera_type == 1 || photo_camera_type == 2 && !isPackageInstalled(icao_package_name)) {
-                        if (svars.default_photo_camera_type(act) == 1 || svars.default_photo_camera_type(act) == 2) {
-                            image_index = 5;
-                        } else {
-                            image_index = svars.default_photo_camera_type(act);
-                        }
+    }
 
-                    }
-                    switch (photo_camera_type) {
-                        case 1:
-                            startActivityForResult(new Intent("sparta.icaochecker.icao_camera"), image_index);
-
-                            break;
-                        case 2:
-                            startActivityForResult(new Intent("sparta.icaochecker.doc_camera"), image_index);
-
-
-                            break;
-                         case 3:
-                             Intent intt=new Intent(act,sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
-                             intt.putExtra("sid",sid);
-                            startActivityForResult(intt, image_index);
-
-
-                            break;
-                        case 4:
-                            startActivityForResult(new Intent(act, CameraActivity.class), image_index);
-
-                            sparta_camera.latest_image = null;
-
-                            break;
-
-                        case 5:
-
-                            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-                                startActivityForResult(takePictureIntent, image_index);
-                            }
-                            break;
-
-
-                    }
-
-                }
+    @Deprecated
+    public void take_photo(int image_index, String sid) {
+        photo_index = image_index;
+        int photo_camera_type = svars.photo_camera_type(act, image_index);
+        String icao_package_name = "sparta.icaochecker";
+        if (photo_camera_type == 1 || photo_camera_type == 2 && !isPackageInstalled(icao_package_name)) {
+            if (svars.default_photo_camera_type(act) == 1 || svars.default_photo_camera_type(act) == 2) {
+                image_index = 5;
+            } else {
+                image_index = svars.default_photo_camera_type(act);
             }
+
+        }
+        switch (photo_camera_type) {
+            case 1:
+                startActivityForResult(new Intent("sparta.icaochecker.icao_camera"), image_index);
+
+                break;
+            case 2:
+                startActivityForResult(new Intent("sparta.icaochecker.doc_camera"), image_index);
+
+
+                break;
+            case 3:
+                Intent intt = new Intent(act, sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
+                intt.putExtra("sid", sid);
+                startActivityForResult(intt, image_index);
+
+
+                break;
+            case 4:
+                startActivityForResult(new Intent(act, CameraActivity.class), image_index);
+
+                sparta_camera.latest_image = null;
+
+                break;
+
+            case 5:
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, image_index);
+                }
+                break;
+
+
+        }
+
+    }
+
+    public void takePhoto(int photo_camera_type, String sid) {
+        photo_index = photo_camera_type;
+        String icao_package_name = "sparta.realm.iccaoluxand";
+        String doc_scanner_package_name = "sparta.icaochecker";
+        if ((photo_camera_type == 1 && !isPackageInstalled(icao_package_name)) || (photo_camera_type == 2 && !isPackageInstalled(doc_scanner_package_name))) {
+            Toast.makeText(this, "Camera unavailable", Toast.LENGTH_LONG).show();
+
+            return;
+        }
+
+        switch (photo_camera_type) {
+            case 1:
+                Intent iccao_int = new Intent("sparta.icaochecker.icao_camera2");
+                iccao_int.putExtra("sid", "memberPhoto.transaction_no");
+                iccao_int.putExtra("camera_index", 0);
+                iccao_int.putExtra("camera_rotation", 90);
+                iccao_int.putExtra("replaceFromTrackerOnRegistration", true);
+                iccao_int.putExtra("replaceOnRegistration", true);
+                iccao_int.putExtra("perform_checks", true);
+                startActivityForResult(iccao_int, photo_camera_type);
+//                            startActivityForResult(new Intent("sparta.icaochecker.icao_camera"), image_index);
+
+                break;
+            case 2:
+                startActivityForResult(new Intent("sparta.icaochecker.doc_camera"), photo_camera_type);
+
+
+                break;
+            case 3:
+                Intent intt = new Intent(act, sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
+                intt.putExtra("sid", sid);
+                startActivityForResult(intt, photo_camera_type);
+
+
+                break;
+            case 4:
+                startActivityForResult(new Intent(act, CameraActivity.class), photo_camera_type);
+
+                sparta_camera.latest_image = null;
+
+                break;
+
+            case 5:
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, photo_camera_type);
+                }
+                break;
+
+
+        }
+
+    }
+
+    public void takePhoto(int image_index) {
+        photo_index = image_index;
+        int photo_camera_type = svars.photo_camera_type(act, image_index);
+        String icao_package_name = "sparta.realm.iccaoluxand";
+        String doc_scanner_package_name = "sparta.icaochecker";
+        if ((photo_camera_type == 1 && !isPackageInstalled(icao_package_name)) || (photo_camera_type == 2 && !isPackageInstalled(doc_scanner_package_name))) {
+            Toast.makeText(this, "Camera unavailable", Toast.LENGTH_LONG).show();
+
+            return;
+        }
+
+        switch (photo_camera_type) {
+            case 1:
+                Intent iccao_int = new Intent("sparta.icaochecker.icao_camera2");
+                iccao_int.putExtra("sid", "memberPhoto.transaction_no");
+                iccao_int.putExtra("camera_index", 0);
+                iccao_int.putExtra("camera_rotation", 90);
+                iccao_int.putExtra("replaceFromTrackerOnRegistration", true);
+                iccao_int.putExtra("replaceOnRegistration", true);
+                iccao_int.putExtra("perform_checks", true);
+                startActivityForResult(iccao_int, image_index);
+//                            startActivityForResult(new Intent("sparta.icaochecker.icao_camera"), image_index);
+
+                break;
+            case 2:
+                startActivityForResult(new Intent("sparta.icaochecker.doc_camera"), image_index);
+
+
+                break;
+            case 3:
+                Intent intt = new Intent(act, sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
+                intt.putExtra("sid", sid);
+                startActivityForResult(intt, image_index);
+
+
+                break;
+            case 4:
+                startActivityForResult(new Intent(act, CameraActivity.class), image_index);
+
+                sparta_camera.latest_image = null;
+
+                break;
+
+            case 5:
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, image_index);
+                }
+                break;
+
+
+        }
+
+    }
+
+}
 
 

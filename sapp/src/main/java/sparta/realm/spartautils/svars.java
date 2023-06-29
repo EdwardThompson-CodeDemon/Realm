@@ -179,7 +179,6 @@ public class svars {
 
     public static String getTransactionNo() {
         return (System.currentTimeMillis() + "_" + new Random().nextDouble() + "_" + new Random().nextDouble()).replace(".","_");
-
     }
 
     public static String device_specific_transaction_no(Context act) {
@@ -998,7 +997,6 @@ public class svars {
         return prefs.getInt(image_index + "photo_camera_type", default_photo_camera_type(act));
 
     }
-
     public static void set_photo_camera_type(Context act, int image_index, int camera_type) {
 
         SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
@@ -1008,6 +1006,22 @@ public class svars {
         saver.commit();
 
     }
+    public static void setImageCameraType(Context act, String image_index, int camera_type) {
+
+        SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+        saver.putInt(image_index + "photo_camera_type", camera_type);
+
+        saver.commit();
+
+    }
+public static int imageCameraType(Context act, String image_index) {
+
+        SharedPreferences prefs = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE);
+        return prefs.getInt(image_index + "photo_camera_type", default_photo_camera_type(act));
+
+    }
+
 
     public static int printer_type(Context act, int print_job_index) {
 
