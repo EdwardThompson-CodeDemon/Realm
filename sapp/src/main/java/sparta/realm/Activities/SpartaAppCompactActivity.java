@@ -1098,7 +1098,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                 break;
             case 3:
                 Intent intt = new Intent(act, sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
-                intt.putExtra("sid", sid);
+                intt.putExtra("sid", image_index);
                 startActivityForResult(intt, image_index);
 
 
