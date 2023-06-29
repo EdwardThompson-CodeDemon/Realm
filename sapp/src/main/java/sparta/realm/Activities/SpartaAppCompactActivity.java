@@ -886,13 +886,13 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     }
 
     boolean taking_picture = false;
-    private int photo_index = 0;
+    private String photo_index;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode == Activity.RESULT_OK && photo_index != 0) {
-            int photo_camera_type = svars.photo_camera_type(act, photo_index);
+        if (resultCode == Activity.RESULT_OK && photo_index != null) {
+            int photo_camera_type = svars.imageCameraType(act, photo_index);
             Bitmap bitmap = null;
             String data_url = null;
             switch (photo_camera_type) {
@@ -964,7 +964,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
     @Deprecated
     public void take_photo(int image_index, String sid) {
-        photo_index = image_index;
+        photo_index = image_index+"";
         int photo_camera_type = svars.photo_camera_type(act, image_index);
         String icao_package_name = "sparta.icaochecker";
         if (photo_camera_type == 1 || photo_camera_type == 2 && !isPackageInstalled(icao_package_name)) {
@@ -1013,7 +1013,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     }
 
     public void takePhoto(int photo_camera_type, String sid) {
-        photo_index = photo_camera_type;
+        photo_index = photo_camera_type+"";
         String icao_package_name = "sparta.realm.iccaoluxand";
         String doc_scanner_package_name = "sparta.icaochecker";
         if ((photo_camera_type == 1 && !isPackageInstalled(icao_package_name)) || (photo_camera_type == 2 && !isPackageInstalled(doc_scanner_package_name))) {
@@ -1067,9 +1067,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
     }
 
-    public void takePhoto(int image_index) {
+    public void takePhoto(String image_index) {
         photo_index = image_index;
-        int photo_camera_type = svars.photo_camera_type(act, image_index);
+        int photo_camera_type = svars.imageCameraType(act, image_index);
         String icao_package_name = "sparta.realm.iccaoluxand";
         String doc_scanner_package_name = "sparta.icaochecker";
         if ((photo_camera_type == 1 && !isPackageInstalled(icao_package_name)) || (photo_camera_type == 2 && !isPackageInstalled(doc_scanner_package_name))) {
@@ -1087,24 +1087,24 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                 iccao_int.putExtra("replaceFromTrackerOnRegistration", true);
                 iccao_int.putExtra("replaceOnRegistration", true);
                 iccao_int.putExtra("perform_checks", true);
-                startActivityForResult(iccao_int, image_index);
+                startActivityForResult(iccao_int, 1);
 //                            startActivityForResult(new Intent("sparta.icaochecker.icao_camera"), image_index);
 
                 break;
             case 2:
-                startActivityForResult(new Intent("sparta.icaochecker.doc_camera"), image_index);
+                startActivityForResult(new Intent("sparta.icaochecker.doc_camera"), 1);
 
 
                 break;
             case 3:
                 Intent intt = new Intent(act, sparta.realm.spartautils.biometrics.face.SpartaFaceCamera.class);
                 intt.putExtra("sid", image_index);
-                startActivityForResult(intt, image_index);
+                startActivityForResult(intt, 1);
 
 
                 break;
             case 4:
-                startActivityForResult(new Intent(act, CameraActivity.class), image_index);
+                startActivityForResult(new Intent(act, CameraActivity.class), 1);
 
                 sparta_camera.latest_image = null;
 
@@ -1114,7 +1114,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, image_index);
+                    startActivityForResult(takePictureIntent, 1);
                 }
                 break;
 
