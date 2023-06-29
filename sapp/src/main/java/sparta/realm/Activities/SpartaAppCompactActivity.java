@@ -897,7 +897,8 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
             String data_url = null;
             switch (photo_camera_type) {
                 case 1:
-                    data.putExtra("ImageUrl", data.getExtras().getParcelable("scannedResult").toString());
+                    bitmap = BitmapFactory.decodeFile(data.getExtras().getParcelable("scannedResult").toString());
+                    data.putExtra("ImageUrl",save_app_image(bitmap));
                     data.putExtra("ImageIndex", photo_index);
 
                     break;
