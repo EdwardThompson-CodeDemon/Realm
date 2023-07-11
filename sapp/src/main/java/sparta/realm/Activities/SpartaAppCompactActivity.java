@@ -95,7 +95,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 //           sd=new sdbw(Realm.context);
         } catch (Exception ex) {
         }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         error_drawable = getResources().getDrawable(R.drawable.ic_error_24dp);
         error_drawable.setBounds(0, 0, 40, 40);
@@ -1015,7 +1015,8 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
     public void takePhoto(int photo_camera_type, String sid) {
         photo_index = photo_camera_type+"";
-        String icao_package_name = "sparta.realm.iccaoluxand";
+//        String icao_package_name = "sparta.realm.iccaoluxand";
+        String icao_package_name = "sparta.realm.iccaocamera";
         String doc_scanner_package_name = "sparta.icaochecker";
         if ((photo_camera_type == 1 && !isPackageInstalled(icao_package_name)) || (photo_camera_type == 2 && !isPackageInstalled(doc_scanner_package_name))) {
             Toast.makeText(this, "Camera unavailable", Toast.LENGTH_LONG).show();
@@ -1071,7 +1072,8 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     public void takePhoto(String image_index) {
         photo_index = image_index;
         int photo_camera_type = svars.imageCameraType(act, image_index);
-        String icao_package_name = "sparta.realm.iccaoluxand";
+//        String icao_package_name = "sparta.realm.iccaoluxand";
+        String icao_package_name = "sparta.realm.iccaocamera";
         String doc_scanner_package_name = "sparta.icaochecker";
         if ((photo_camera_type == 1 && !isPackageInstalled(icao_package_name)) || (photo_camera_type == 2 && !isPackageInstalled(doc_scanner_package_name))) {
             Toast.makeText(this, "Camera unavailable", Toast.LENGTH_LONG).show();
