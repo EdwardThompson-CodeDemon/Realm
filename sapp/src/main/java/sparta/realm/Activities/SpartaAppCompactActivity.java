@@ -125,78 +125,8 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         }
     }
 
-    public static boolean isNumeric(String str) {
-        if (str == null || str.length() == 0) return false;
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    public static boolean containsNumeric(String str) {
-        for (char cct : str.toCharArray()) {
-
-            try {
-                Double.parseDouble(cct + "");
-                return true;
-            } catch (NumberFormatException e) {
-
-            }
-        }
-        return false;
-
-    }
-
-    protected void set_text_error(EditText edt, String error) {
-        edt.setError(error);
-        edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
-        edt.requestFocus();
 
 
-        Toast.makeText(act, error, Toast.LENGTH_LONG).show();
-
-    }
-
-    protected void set_text_error(BlockEditText edt, String error) {
-        //edt.setError(Html.fromHtml("<marquee direction='down' width='100%'height='100%'><font color='red' background-color='red'>"+error+"</font></marquee>"),error_drawable);
-        edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
-        edt.requestFocus();
-
-
-        Toast.makeText(act, error, Toast.LENGTH_LONG).show();
-
-    }
-
-    protected boolean set_conditional_input_error(boolean valid, View edt, String error, String input, int min_length) {
-        if (input == null || input.length() < min_length) {
-            try {
-                if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
-                    ((AppCompatEditText) edt).setError(error);
-
-                }
-                edt.setBackground(act.getResources().getDrawable(R.drawable.textback_error));
-                edt.requestFocus();
-            } catch (Exception ex) {
-            }
-            if (error != null) {
-                Toast.makeText(act, error, Toast.LENGTH_LONG).show();
-
-            }
-            valid = false;
-            return valid;
-        } else {
-            if (edt.getClass().isInstance(new AppCompatEditText(edt.getContext()))) {
-                edt.setBackground(act.getResources().getDrawable(R.drawable.textback));
-                ((AppCompatEditText) edt).setError(null);
-
-            }
-
-        }
-
-        return valid;
-    }
 
     public void start_activity(Intent i) {
 
@@ -205,6 +135,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    @Deprecated
     protected boolean setup_reg_control() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -224,12 +155,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     onBackPressed();
                 }
             });
-            clear_all.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clear_all(MainActivity.class);
-                }
-            });
+
 
             registering = true;
 
@@ -239,36 +165,6 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         return true;
     }
 
-    void clear_all(Class<?> mm) {
-        View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_confirm_clear_all, null);
-        final AlertDialog ald = new AlertDialog.Builder(act)
-                .setView(aldv)
-                .show();
-        aldv.findViewById(R.id.clear_all).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                ald.dismiss();
-
-                svars.set_working_employee(act, null);
-                svars.working_member = null;
-                Intent reg_intent = new Intent(act, mm);
-                reg_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(reg_intent);
-
-                finish();
-            }
-        });
-
-        aldv.findViewById(R.id.dismiss).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ald.dismiss();
-            }
-        });
-
-    }
 
     //bdmmjkjjvxvxsawqertyjuip
     public void procceed() {
@@ -292,274 +188,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
             }
         });
-
-    }
-
-    protected void search_field(final Spinner spn, final ArrayList<dyna_data_obj> original_list, String field_name) {
-        //  hideKeyboardFrom(act,spn);
-
-        final List<dyna_data_obj>[] searched = new List[]{new ArrayList<>()};
-        searched[0].addAll(original_list);
-        final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_search_field, null);
-        final AlertDialog ald = new AlertDialog.Builder(act)
-                .setView(aldv)
-                .show();
-        final GridView result_list = (GridView) aldv.findViewById(R.id.result_list);
-        result_list.setAdapter(new dyna_data_adapter(act, original_list));
-        Button dismiss = (Button) aldv.findViewById(R.id.dismiss);
-        dismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ald.dismiss();
-            }
-        });
-        final AutoCompleteTextView serch_field = (AutoCompleteTextView) aldv.findViewById(R.id.search_field);
-        final String[] searchterm = {""};
-        final Thread[] search_thread = {null};
-
-        hideKeyboardFrom(act, serch_field);
-
-
-        serch_field.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search_thread[0] = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searched[0].clear();
-                        // searchterm[0].startsWith(serch_field.getText().toString())?searched[0]:
-                        searched[0] = Stream.of(original_list).filter(new Predicate<dyna_data_obj>() {
-                            @Override
-                            public boolean test(dyna_data_obj item) {
-                                return item.data.value.toUpperCase().contains(serch_field.getText().toString().toUpperCase());
-                            }
-                        }).collect(Collectors.<dyna_data_obj>toList());
-                        searchterm[0] = serch_field.getText().toString();
-                        act.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                result_list.setAdapter(new dyna_data_adapter(act, searched[0]));
-
-                            }
-                        });
-                    }
-                });
-                search_thread[0].start();
-
-               /* for (dyna_data_obj obj:original_list)
-                {
-                    if(obj.data.toLowerCase().trim().contains(serch_field.getText().toString().toLowerCase().trim()))
-                    {
-                        searched.add(obj);
-                    }
-                    result_list.setAdapter(new dyna_data_adapter(act,searched));
-                }*/
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        result_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                for (int j = 0; j < original_list.size(); j++) {
-                    dyna_data_obj obj = original_list.get(j);
-                    if (obj.sid.value.equalsIgnoreCase(searched[0].get(i).sid.value)) {
-                        spn.setSelection(j);
-                        ald.dismiss();
-                        break;
-                    }
-                }
-
-            }
-        });
-    }
-
-    protected void search_field_(final Spinner spn, final ArrayList<dyna_data> original_list, String field_name) {
-        //  hideKeyboardFrom(act,spn);
-
-        final List<dyna_data>[] searched = new List[]{new ArrayList<>()};
-        searched[0].addAll(original_list);
-        final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_search_field, null);
-        final AlertDialog ald = new AlertDialog.Builder(act)
-                .setView(aldv)
-                .show();
-        final GridView result_list = (GridView) aldv.findViewById(R.id.result_list);
-        result_list.setAdapter(new dyna_data_adapter_(act, original_list));
-        Button dismiss = (Button) aldv.findViewById(R.id.dismiss);
-        dismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ald.dismiss();
-            }
-        });
-        final AutoCompleteTextView serch_field = (AutoCompleteTextView) aldv.findViewById(R.id.search_field);
-        final String[] searchterm = {""};
-        final Thread[] search_thread = {null};
-
-        hideKeyboardFrom(act, serch_field);
-
-
-        serch_field.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search_thread[0] = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searched[0].clear();
-                        // searchterm[0].startsWith(serch_field.getText().toString())?searched[0]:
-                        searched[0] = Stream.of(original_list).filter(item -> item.data.toUpperCase().contains(serch_field.getText().toString().toUpperCase())).collect(Collectors.<dyna_data>toList());
-                        searchterm[0] = serch_field.getText().toString();
-                        act.runOnUiThread(() -> result_list.setAdapter(new dyna_data_adapter_(act, searched[0])));
-                    }
-                });
-                search_thread[0].start();
-
-               /* for (dyna_data_obj obj:original_list)
-                {
-                    if(obj.data.toLowerCase().trim().contains(serch_field.getText().toString().toLowerCase().trim()))
-                    {
-                        searched.add(obj);
-                    }
-                    result_list.setAdapter(new dyna_data_adapter(act,searched));
-                }*/
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        result_list.setOnItemClickListener((adapterView, view, i, l) -> {
-            for (int j = 0; j < original_list.size(); j++) {
-                dyna_data obj = original_list.get(j);
-                if (obj.sid.equalsIgnoreCase(searched[0].get(i).sid)) {
-                    spn.setSelection(j);
-                    ald.dismiss();
-                    break;
-                }
-            }
-
-        });
-    }
-
-    protected void search_field_code(final Spinner spn, final ArrayList<dyna_data> original_list) {
-        //  hideKeyboardFrom(act,spn);
-
-        final List<dyna_data>[] searched = new List[]{new ArrayList<>()};
-        searched[0].addAll(original_list);
-        final View aldv = LayoutInflater.from(act).inflate(R.layout.dialog_search_field, null);
-        final AlertDialog ald = new AlertDialog.Builder(act)
-                .setView(aldv)
-                .show();
-        final GridView result_list = (GridView) aldv.findViewById(R.id.result_list);
-        result_list.setAdapter(new dyna_data_adapter_(act, original_list));
-        Button dismiss = (Button) aldv.findViewById(R.id.dismiss);
-        dismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ald.dismiss();
-            }
-        });
-        final AutoCompleteTextView serch_field = (AutoCompleteTextView) aldv.findViewById(R.id.search_field);
-        final String[] searchterm = {""};
-        final Thread[] search_thread = {null};
-
-        hideKeyboardFrom(act, serch_field);
-
-
-        serch_field.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search_thread[0] = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searched[0].clear();
-                        // searchterm[0].startsWith(serch_field.getText().toString())?searched[0]:
-                        searched[0] = Stream.of(original_list).filter(item -> item.code != null && item.code.toUpperCase().contains(serch_field.getText().toString().toUpperCase())).collect(Collectors.<dyna_data>toList());
-                        searchterm[0] = serch_field.getText().toString();
-                        act.runOnUiThread(() -> result_list.setAdapter(new dyna_data_adapter_(act, searched[0])));
-                    }
-                });
-                search_thread[0].start();
-
-               /* for (dyna_data_obj obj:original_list)
-                {
-                    if(obj.data.toLowerCase().trim().contains(serch_field.getText().toString().toLowerCase().trim()))
-                    {
-                        searched.add(obj);
-                    }
-                    result_list.setAdapter(new dyna_data_adapter(act,searched));
-                }*/
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        result_list.setOnItemClickListener((adapterView, view, i, l) -> {
-            for (int j = 0; j < original_list.size(); j++) {
-                dyna_data obj = original_list.get(j);
-                if (obj.sid.equalsIgnoreCase(searched[0].get(i).sid)) {
-                    spn.setSelection(j);
-                    ald.dismiss();
-                    break;
-                }
-            }
-
-        });
     }
 
 
-    protected void populate_spiner(final Spinner spn, final ArrayList<dyna_data_obj> original_list, String sid) {
-        for (int i = 0; i < original_list.size(); i++) {
-            if (original_list.get(i).sid.value.equalsIgnoreCase(sid)) {
-                final int finalI = i;
-                spn.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        spn.setSelection(finalI, true);
-
-                    }
-                });
-
-            }
-        }
-    }
-
-    protected void populate_spiner_(final Spinner spn, final ArrayList<dyna_data> original_list, String sid) {
-        for (int i = 0; i < original_list.size(); i++) {
-            if (original_list.get(i).sid.equalsIgnoreCase(sid)) {
-                final int finalI = i;
-                spn.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        spn.setSelection(finalI, true);
-
-                    }
-                });
-
-            }
-        }
-    }
 
 
     protected void populate_date(EditText edt, Calendar cb) {
@@ -681,11 +312,11 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     public static String save_app_image(Bitmap fpb) {
         String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.JPG";
 
-        File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
+        File file = new File(svars.current_app_config(Realm.context).appDataFolder);
         if (!file.exists()) {
             Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
         }
-        file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
+        file = new File(svars.current_app_config(Realm.context).appDataFolder, img_name);
 
         try (OutputStream fOutputStream = new FileOutputStream(file)) {
 
@@ -699,11 +330,11 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
 
-            return "--------------";
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
 
-            return "--------------";
+            return null;
         }
         return img_name;
     }
