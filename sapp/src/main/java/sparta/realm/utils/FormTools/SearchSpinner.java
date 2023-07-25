@@ -214,7 +214,7 @@ public class SearchSpinner extends LinearLayout {
         mPopupWindow.setElevation(16);
 //        mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.spinner_drawable));
         setState(state.idle);
-        title.setTextSize(dpToPx(20));
+      //  title.setTextSize(dpToPx(20));
 //        inputText.setTextSize(18);
     }
 

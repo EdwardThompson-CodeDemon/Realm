@@ -139,8 +139,8 @@ public class FormEdittext extends ConstraintLayout {
                 }
             }
         });
-        title.setTextSize(dpToPx(20));
-        inputText.setTextSize(dpToPx(18));
+//        title.setTextSize(dpToPx(20));
+//        inputText.setTextSize(dpToPx(18));
     }
 
     public String getInput() {

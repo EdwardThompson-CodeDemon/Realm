@@ -223,7 +223,7 @@ imageView.setOnClickListener(view -> {
 
 deleteButton.setOnClickListener(view -> clearImage());
 
-        title.setTextSize(dpToPx(20));
+//        title.setTextSize(dpToPx(20));
 
 
     }
