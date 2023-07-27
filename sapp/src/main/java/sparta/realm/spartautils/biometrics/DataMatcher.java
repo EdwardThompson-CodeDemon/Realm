@@ -608,7 +608,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
 
 
 
-                                if (face_handler.match_ok(model,svars.current_app_config(Realm.context).file_path_employee_data+c.getString(c.getColumnIndex("data"))) ) {
+                                if (face_handler.match_ok(model,svars.current_app_config(Realm.context).appDataFolder+c.getString(c.getColumnIndex("data"))) ) {
 
                                     Log.e("FACE MATCH ", "OBTAINED ");
                                     ContentValues cv =new ContentValues();
@@ -763,7 +763,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
 
 
 
-                                if (face_handler.match_ok(model,svars.current_app_config(Realm.context).file_path_employee_data+c.getString(c.getColumnIndex("data"))) ) {
+                                if (face_handler.match_ok(model,svars.current_app_config(Realm.context).appDataFolder+c.getString(c.getColumnIndex("data"))) ) {
 
                                     Log.e("FACE MATCH ", "OBTAINED ");
                                     ContentValues cv =new ContentValues();

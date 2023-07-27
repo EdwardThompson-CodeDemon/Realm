@@ -390,7 +390,7 @@ public class backup_ {
             e.printStackTrace();
         }
         //  File fp_images_folder = new File(Environment.getExternalStorageDirectory().toString() + "/realm", "/.UNCOMPRESSED_FP_IMGS");
-        File fp_images_folder = new File(svars.current_app_config(act).file_path_employee_data);
+        File fp_images_folder = new File(svars.current_app_config(act).appDataFolder);
         fp_images_folder.mkdirs();
         //   listener.on_secondary_status_changed(act.getString(R.string.image_files_ok));
         listener.on_secondary_status_changed(act.getString(R.string.employee_data_files_ok));

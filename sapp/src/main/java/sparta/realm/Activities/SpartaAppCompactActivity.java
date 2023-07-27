@@ -584,7 +584,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
             }
             try {
-                data.putExtra("FaceUrl", face_handler.extract_face(svars.current_app_config(Realm.context).file_path_employee_data + data_url));
+                data.putExtra("FaceUrl", face_handler.extract_face(svars.current_app_config(Realm.context).appDataFolder + data_url));
 
             } catch (Throwable ex) {
             }

@@ -640,7 +640,7 @@ public  boolean conected=false;
 
 
         Log.e("Print pos :","i"+  cp.getCurrentPointY());
-        cp.drawImage( s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.current_app_config(act).file_path_employee_data+svars.working_member.images[svars.image_indexes.signature]), 170, 100, false)));
+        cp.drawImage( s_bitmap_handler.toGrayscale(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(svars.current_app_config(act).appDataFolder+svars.working_member.images[svars.image_indexes.signature]), 170, 100, false)));
         Log.e("Print pos :","ii"+  cp.getCurrentPointY());
         mPrinter.printImage(cp.getCanvasImage());
      cp= new CanvasPrint();

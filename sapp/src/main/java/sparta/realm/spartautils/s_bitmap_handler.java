@@ -135,8 +135,8 @@ public static byte[] getBytes_JPG(Bitmap bitmap) {
         return cs;
     }
     public static String combineImages(String c_path,String s_path) { // can add a 3rd parameter 'String loc' if you want to save the new image - left some code to do that at the bottom
-        Bitmap c=BitmapFactory.decodeFile(svars.current_app_config(Realm.context).file_path_employee_data+c_path);
-         Bitmap s=BitmapFactory.decodeFile(svars.current_app_config(Realm.context).file_path_employee_data+s_path);
+        Bitmap c=BitmapFactory.decodeFile(svars.current_app_config(Realm.context).appDataFolder+c_path);
+         Bitmap s=BitmapFactory.decodeFile(svars.current_app_config(Realm.context).appDataFolder+s_path);
 
         Bitmap cs = null;
 

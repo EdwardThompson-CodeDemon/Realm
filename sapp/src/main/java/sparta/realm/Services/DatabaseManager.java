@@ -760,8 +760,8 @@ I thot of using an interface ,dint work
 
     public static String saveAppFileBytes(byte[] file_bytes, boolean encrypt) throws Exception {
 
-        return encrypt ? saveFileBytes(encryptBytes(appEncryptionKey(""), file_bytes), new File(svars.current_app_config(Realm.context).file_path_employee_data).getAbsolutePath()) :
-                saveFileBytes(file_bytes, new File(svars.current_app_config(Realm.context).file_path_employee_data).getAbsolutePath());
+        return encrypt ? saveFileBytes(encryptBytes(appEncryptionKey(""), file_bytes), new File(svars.current_app_config(Realm.context).appDataFolder).getAbsolutePath()) :
+                saveFileBytes(file_bytes, new File(svars.current_app_config(Realm.context).appDataFolder).getAbsolutePath());
     }
 
     public static String saveFileBytes(byte[] outdata, String full_folder_path) {
@@ -772,7 +772,7 @@ I thot of using an interface ,dint work
         if (!file.exists()) {
             Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
         }
-        file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
+        file = new File(svars.current_app_config(Realm.context).appDataFolder, img_name);
         try (RandomAccessFile randomFile = new RandomAccessFile(file.getAbsolutePath(), "rw")) {
             long fileLength = randomFile.length();
             randomFile.seek(fileLength);
@@ -801,8 +801,8 @@ I thot of using an interface ,dint work
 
     public static String retrieveAppFileBase64(String file_name, boolean encrypted) throws Exception {
 
-        return encrypted ? Base64.encodeToString(decryptBytes(appEncryptionKey("222222"), retrieveFileBytes(new File(svars.current_app_config(act).file_path_employee_data, file_name).getAbsolutePath())), Base64.DEFAULT) :
-                Base64.encodeToString(retrieveFileBytes(new File(svars.current_app_config(act).file_path_employee_data, file_name).getAbsolutePath()), Base64.DEFAULT);
+        return encrypted ? Base64.encodeToString(decryptBytes(appEncryptionKey("222222"), retrieveFileBytes(new File(svars.current_app_config(act).appDataFolder, file_name).getAbsolutePath())), Base64.DEFAULT) :
+                Base64.encodeToString(retrieveFileBytes(new File(svars.current_app_config(act).appDataFolder, file_name).getAbsolutePath()), Base64.DEFAULT);
     }
 
     public static byte[] retrieveFileBytes(String full_file_path) {
@@ -823,11 +823,11 @@ I thot of using an interface ,dint work
 //            Bitmap bmp = s_bitmap_handler.getImage();
             String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.JPG";
 
-            File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
+            File file = new File(svars.current_app_config(Realm.context).appDataFolder);
             if (!file.exists()) {
                 Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
             }
-            file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
+            file = new File(svars.current_app_config(Realm.context).appDataFolder, img_name);
 
             try (OutputStream fOutputStream = new FileOutputStream(file)) {
 
@@ -864,11 +864,11 @@ I thot of using an interface ,dint work
         } catch (Exception ex) {
             String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.JPG";
 
-            File file = new File(svars.current_app_config(Realm.context).file_path_employee_data);
+            File file = new File(svars.current_app_config(Realm.context).appDataFolder);
             if (!file.exists()) {
                 Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
             }
-            file = new File(svars.current_app_config(Realm.context).file_path_employee_data, img_name);
+            file = new File(svars.current_app_config(Realm.context).appDataFolder, img_name);
             byte[] file_bytes = Base64.decode(base64_bytes, 0);
             OutputStream fOutputStream = null;
 
@@ -903,7 +903,6 @@ I thot of using an interface ,dint work
     public static String get_saved_doc_base64(String data_name) {
         String res = "";
         try {
-//            res = Base64.encodeToString(s_bitmap_handler.getBytes(BitmapFactory.decodeFile(new File(svars.current_app_config(act).file_path_employee_data, data_name).getAbsolutePath())), 0);
             res = Base64.encodeToString(org.apache.commons.io.FileUtils.readFileToByteArray(new File(svars.current_app_config(act).appDataFolder, data_name)), 0);
             return res;
         } catch (Exception ex) {
@@ -3237,12 +3236,12 @@ I thot of using an interface ,dint work
         //  String path = Environment.getExternalStorageDirectory().toString();
         OutputStream fOutputStream = null;
         //  File file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/");
-        File file = new File(svars.current_app_config(act).file_path_employee_data);
+        File file = new File(svars.current_app_config(act).appDataFolder);
         if (!file.exists()) {
             Log.e("Creating data dir=>", "" + String.valueOf(file.mkdirs()));
         }
         //  file = new File(path + "/TimeAndAttendance/.RAW_EMPLOYEE_DATA/", img_name);
-        file = new File(svars.current_app_config(act).file_path_employee_data, img_name);
+        file = new File(svars.current_app_config(act).appDataFolder, img_name);
 
         try {
             fOutputStream = new FileOutputStream(file);

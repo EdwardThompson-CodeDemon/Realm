@@ -552,10 +552,10 @@ public class CaptureHandler extends View {
         //	sdbw sd;
         String img_name = "";
         img_name = "TA_DAT" + System.currentTimeMillis() + "FB_SCH.JPG";
-        String full_path = svars.current_app_config(Realm.context).file_path_employee_data + img_name;
+        String full_path = svars.current_app_config(Realm.context).appDataFolder + img_name;
         //FSDK.SaveImageToFile(frame,svars.current_app_config(Realm.context).file_path_employee_data +img_name);
 
-        if (FSDK.SaveImageToFile(frame, full_path) == FSDK.FSDKE_OK && (full_path = svars.current_app_config(Realm.context).file_path_employee_data + face_handler.extract_face(svars.current_app_config(Realm.context).file_path_employee_data + img_name)) != svars.current_app_config(Realm.context).file_path_employee_data + "!!!") {
+        if (FSDK.SaveImageToFile(frame, full_path) == FSDK.FSDKE_OK && (full_path = svars.current_app_config(Realm.context).appDataFolder + face_handler.extract_face(svars.current_app_config(Realm.context).appDataFolder + img_name)) != svars.current_app_config(Realm.context).appDataFolder + "!!!") {
             //sd=new sdbw(MatchingActivity.acty);
             searching = true;
             dm.load_face_match(full_path, new matching_interface() {
@@ -611,7 +611,7 @@ public class CaptureHandler extends View {
         save_face_to_tracker(tracker_index, transaction_no);
         String img_name = "";
         img_name = "TA_DAT" + System.currentTimeMillis() + "FB_SCH.JPG";
-        FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).file_path_employee_data + img_name);
+        FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).appDataFolder + img_name);
 
         try {
 
@@ -629,7 +629,7 @@ public class CaptureHandler extends View {
 //        save_face_to_tracker(tracker_index, transaction_no);
         String img_name = "";
         img_name = "TA_DAT" + System.currentTimeMillis() + "FB_SCH.JPG";
-        FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).file_path_employee_data + img_name);
+        FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).appDataFolder + img_name);
 
         try {
 
@@ -654,7 +654,7 @@ public class CaptureHandler extends View {
         FSDK.UnlockID(mTracker, tracker_index);
         String img_name = "";
         img_name = "TA_DAT" + System.currentTimeMillis() + "FB_SCH.JPG";
-        FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).file_path_employee_data + img_name);
+        FSDK.SaveImageToFile(frame, svars.current_app_config(Realm.context).appDataFolder + img_name);
 
         try {
 

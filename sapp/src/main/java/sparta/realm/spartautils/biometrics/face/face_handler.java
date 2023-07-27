@@ -104,7 +104,7 @@ ald.show();
 
     public  static String extract_face(member_data mb, FaceImageView fiv)
     {
-        String picture_path=svars.current_app_config(Realm.context).file_path_employee_data +mb.data.value;
+        String picture_path=svars.current_app_config(Realm.context).appDataFolder +mb.data.value;
         Stopwatch stw=new Stopwatch();
         stw.start();
         int result=-1;
@@ -141,7 +141,7 @@ ald.show();
                     result = FSDK.ExtractFaceImage(picture, features, 100, 100, picture2, features2);
                     Log.e("Extraction :","Face extracted  :"+result);
                     String img_name="TA_DAT"+ System.currentTimeMillis()+"FB_SCH.JPG";
-                    picture_path = svars.current_app_config(Realm.context).file_path_employee_data +img_name;
+                    picture_path = svars.current_app_config(Realm.context).appDataFolder +img_name;
                     result = FSDK.SaveImageToFile(picture2, picture_path);
                     FSDK.FreeImage(picture);
                     FSDK.FreeImage(picture2);
@@ -226,7 +226,7 @@ ald.show();
                     result = FSDK.ExtractFaceImage(picture, features, 100, 100, picture2, features2);
                     Log.e("Extraction :","Face extracted  :"+result);
                     String img_name="TA_DAT"+ System.currentTimeMillis()+"FB_SCH.JPG";
-                    picture_path = svars.current_app_config(Realm.context).file_path_employee_data +img_name;
+                    picture_path = svars.current_app_config(Realm.context).appDataFolder +img_name;
                     result = FSDK.SaveImageToFile(picture2, picture_path);
                     if (result == FSDK.FSDKE_OK) {
 
