@@ -2121,6 +2121,7 @@ I thot of using an interface ,dint work
      * @deprecated As of release 1.0.187, replaced by {@link #loadObjectArray(Class, String, String[], String[], String[], int, int, String[])} ()}
      * <p> Use {@link #loadObjectArray(Class, String, String[], String[], String[], int, int, String[])} instead.
      */
+    @Deprecated
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String[] columns, String[] table_filters, String[] order_filters, boolean order_asc, int limit, int offset) {
         ArrayList<RM> objs = new ArrayList<RM>();
         String table_name = realm.getPackageTable(realm_model.getName());

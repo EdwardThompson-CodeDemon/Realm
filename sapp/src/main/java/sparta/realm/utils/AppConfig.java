@@ -22,16 +22,19 @@ public class AppConfig {
     /**
      * @deprecated naming convention
      */
+    @Deprecated
     public String file_path_db_folder = app_folder_path + ".DB/";
         public String databaseFolder = app_folder_path + ".DB/";
     /**
      * @deprecated naming convention
      */
+    @Deprecated
     public String file_path_db_traces = app_folder_path + ".CrashReports/";
         public String crashReportsFolder = app_folder_path + ".CrashReports/";
     /**
      * @deprecated naming convention
      */
+    @Deprecated
     public String file_path_logs = app_folder_path + ".Logs/";
     public String logsFolder = app_folder_path + ".Logs/";
         public String file_path_app_downloads = app_folder_path + ".RAW_D_APKS/";
@@ -40,6 +43,7 @@ public class AppConfig {
     /**
      * @deprecated naming convention
      */
+    @Deprecated
     public String file_path_employee_data = app_folder_path + ".RAW_APP_DATA/";
         public String appDataFolder = app_folder_path + ".RAW_APP_DATA/";
         public String file_path_db_backup = app_folder_path + ".DB_BACKUPS_RAW/";
