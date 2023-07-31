@@ -28,6 +28,9 @@ public class InputGroup extends RealmModel implements Serializable {
   //  @DynamicProperty(json_key = "inputFields"/*,parent_column="",child_column=""*/)
     public ArrayList<InputField> inputFields=new ArrayList<>();
     public ArrayList<InputGroup> inputGroups=new ArrayList<>();
+//    public InputFieldInputConstraint inputFieldInputConstraint;
+    public ArrayList<InputFieldInputConstraint> inputFieldInputConstraints=new ArrayList<>();
+    public ValidationRules validationRules = new ValidationRules();
 
     public InputGroup( String sid,String title,String form,String parent,String order_index) {
         this.form = form;

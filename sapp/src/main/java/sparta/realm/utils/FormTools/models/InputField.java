@@ -51,8 +51,6 @@ public class InputField extends InputGroup implements Serializable {
     public String order_index;
 
     //    @DynamicProperty(json_key = "validationRules"/*,parent_column="",child_column=""*/)
-    public ValidationRules validationRules = new ValidationRules();
-    public InputFieldInputConstraint inputFieldInputConstraint;
 
     public InputField() {
 
@@ -89,8 +87,8 @@ public class InputField extends InputGroup implements Serializable {
         this.validationRules = validationRules;
     }
 //Image constructor
-    public InputField(String sid, String title, String subTitle, String dataset, String defaultImageSource, String object_field_name, ValidationRules validationRules, InputFieldInputConstraint inputFieldInputConstraint) {
-        this.inputFieldInputConstraint = inputFieldInputConstraint;
+    public InputField(String sid, String title, String subTitle, String dataset, String defaultImageSource, String object_field_name, ValidationRules validationRules, ArrayList<InputFieldInputConstraint> inputFieldInputConstraints) {
+        this.inputFieldInputConstraints = inputFieldInputConstraints;
 
         this.sid = sid;
         this.title = title;
@@ -103,7 +101,7 @@ public class InputField extends InputGroup implements Serializable {
     }
 
     //Selection constractor
-    public InputField(String sid, String title, String search_placeholder, String search_title, String dataset, String parent, String order_index,  String object_field_name, ValidationRules validationRules, InputFieldInputConstraint inputFieldInputConstraint) {
+    public InputField(String sid, String title, String search_placeholder, String search_title, String dataset, String parent, String order_index,  String object_field_name, ValidationRules validationRules, ArrayList<InputFieldInputConstraint> inputFieldInputConstraints) {
         super(sid, title, null, parent, order_index);
         this.search_placeholder = search_placeholder;
         this.search_title = search_title;
@@ -114,7 +112,7 @@ public class InputField extends InputGroup implements Serializable {
         this.order_index = order_index;
         this.object_field_name = object_field_name;
         this.validationRules = validationRules;
-        this.inputFieldInputConstraint = inputFieldInputConstraint;
+        this.inputFieldInputConstraints = inputFieldInputConstraints;
     }
 
     public InputField(String sid, String title, String placeholder, String dataset, String input_type, String parent, String order_index, ValidationRules validationRules, String object_field_name) {
@@ -131,10 +129,10 @@ public class InputField extends InputGroup implements Serializable {
 
     }
 
-    public InputField(String sid, String title, String placeholder, String dataset, String input_type, String parent, String order_index, ValidationRules validationRules, String object_field_name, InputFieldInputConstraint inputFieldInputConstraint) {
+    public InputField(String sid, String title, String placeholder, String dataset, String input_type, String parent, String order_index, ValidationRules validationRules, String object_field_name, ArrayList<InputFieldInputConstraint> inputFieldInputConstraints) {
         super(sid, title, null, parent, order_index);
         this.object_field_name = object_field_name;
-        this.inputFieldInputConstraint = inputFieldInputConstraint;
+        this.inputFieldInputConstraints = inputFieldInputConstraints;
         this.title = title;
         this.placeholder = placeholder;
         this.dataset = dataset;

@@ -6,6 +6,7 @@ import com.realm.annotations.DynamicProperty;
 import com.realm.annotations.RealmModel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 @DynamicClass(table_name = "input_field_constraints")
@@ -26,19 +27,26 @@ public class InputFieldInputConstraint extends RealmModel implements Serializabl
 
     @DynamicProperty(json_key = "operation_value")
     public String operation_value;
-
+    @DynamicProperty(json_key = "dataset_values")
+    public String dataset_values;
+    public ArrayList<IndependentInputFieldVariable> orIndependentInputFieldVariables=new ArrayList<>();
+    public ArrayList<IndependentInputFieldVariable> andIndependentInputFieldVariables=new ArrayList<>();
     public enum ConstraintType{
         EqualTo,
         NotEqualTo,
-        ParentChild
+        ParentChild,
+        IncludeOnly,
+        Exclude
     }
 
 
-    public InputFieldInputConstraint(String constraint_type, String independent_input_field, String dependent_column, String operation_value) {
+    public InputFieldInputConstraint(String constraint_type, String independent_input_field, String dependent_column, String operation_value,ArrayList<IndependentInputFieldVariable> orIndependentInputFieldVariables,ArrayList<IndependentInputFieldVariable> andIndependentInputFieldVariables) {
         this.constraint_type = constraint_type;
         this.independent_input_field = independent_input_field;
         this.dependent_column = dependent_column;
         this.operation_value = operation_value;
+        this.orIndependentInputFieldVariables = orIndependentInputFieldVariables;
+        this.andIndependentInputFieldVariables = andIndependentInputFieldVariables;
         this.sid = sid;
 
     }

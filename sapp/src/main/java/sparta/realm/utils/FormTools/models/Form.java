@@ -21,7 +21,11 @@ public class Form extends RealmModel implements Serializable {
     @DynamicProperty(json_key = "code")
     public String code;
 
-  //  @DynamicProperty(json_key = "inputGroups"/*,parent_column="",child_column=""*/)
+    @DynamicProperty(json_key = "instructions")
+    public String instructions;
+
+
+    //  @DynamicProperty(json_key = "inputGroups"/*,parent_column="",child_column=""*/)
     public ArrayList<InputGroup> inputGroups=new ArrayList<>();
 
 
