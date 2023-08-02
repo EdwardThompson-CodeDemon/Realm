@@ -17,6 +17,8 @@ public class InputField extends InputGroup implements Serializable {
     public String object_field_name;
     @DynamicProperty(json_key = "dataset")
     public String dataset;
+   @DynamicProperty(json_key = "dataset_table_filter")
+    public String dataset_table_filter;
     //region Image input
   @DynamicProperty(json_key = "default_image_source")
     public String default_image_source;

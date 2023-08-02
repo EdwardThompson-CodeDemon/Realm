@@ -254,12 +254,28 @@ public class SearchSpinner extends LinearLayout {
     public void setDataset(ArrayList dataset, InputListener inputListener) {
         this.inputListener = inputListener;
         selectionData.clear();
-        selectionDataRecyclerViewAdapter.setupLists();
-        selectionData.clear();
-        selectionData.addAll(dataset);
-        selectedItem = null;
-        selectionDataRecyclerViewAdapter.setupLists();
+//        selectionDataRecyclerViewAdapter.setupLists();
+//        selectionData.clear();
+//        selectionData.addAll(dataset);
+//        selectedItem = null;
+//        selectionDataRecyclerViewAdapter.setupLists();
+        Handler handler=new Handler(getContext().getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
+                    selectionData.addAll(dataset);
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        selectionDataRecyclerViewAdapter.setupLists();
+                        setInput(inputField.input);
+                        inputField.inputValid=isInputValid();
+                    }
+                });
+            }
+        }).start();
         setState(state.idle);
 
     }
@@ -464,7 +480,8 @@ public class SearchSpinner extends LinearLayout {
                 @Override
                 public void run() {
                     try {
-                        selectionData.addAll((ArrayList) Realm.databaseManager.loadObjectArray(Class.forName(inputField.dataset), new Query()));
+//                        selectionData.addAll((ArrayList) Realm.databaseManager.loadObjectArray(Class.forName(inputField.dataset), new Query().setTableFilters(inputField.dataset_table_filter)));
+                        selectionData.addAll((ArrayList) Realm.databaseManager.loadObjectArray(Class.forName(inputField.dataset), inputField.dataset_table_filter==null?new Query():new Query().setTableFilters(inputField.dataset_table_filter)));
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
