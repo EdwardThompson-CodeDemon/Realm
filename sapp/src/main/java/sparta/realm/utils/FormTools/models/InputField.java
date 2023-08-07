@@ -75,6 +75,19 @@ public class InputField extends InputGroup implements Serializable {
 
         this.input_type = InputType.FormReview.ordinal()+"";
     }
+    //Value only constructor
+  public InputField(String sid) {
+
+        this.sid = sid;
+        this.input_type = InputType.ValueOnly.ordinal()+"";
+    }
+ //Value only constructor
+  public InputField(String sid,String input) {
+      this.input = input;
+
+      this.sid = sid;
+        this.input_type = InputType.ValueOnly.ordinal()+"";
+    }
 
 //Image constructor
     public InputField(String sid, String title, String subTitle, String dataset, String defaultImageSource, String object_field_name, ValidationRules validationRules) {
@@ -176,7 +189,8 @@ public class InputField extends InputGroup implements Serializable {
         Image,
         Signature,
         Fingerprint,
-        FormReview
+        FormReview,
+        ValueOnly
 
     }
 }
