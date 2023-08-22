@@ -38,10 +38,13 @@ public class InputField extends InputGroup implements Serializable {
     @DynamicProperty(json_key = "input_type")
     public String input_type;
 
+  @DynamicProperty(json_key = "input_enabled")
+    public String input_enabled;
+
 //region Input section
     @DynamicProperty(json_key = "input")
     public String input;
-    public MemberImage imageInput = null;
+    public AppData imageInput = null;
     public ArrayList<MemberFingerprint> fingerprintsInput = new ArrayList<>();
     public MemberFingerprint fingerprintInput = new MemberFingerprint();
     @DynamicProperty(json_key = "input_format")

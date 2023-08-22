@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -133,7 +134,9 @@ public class SearchSpinner extends LinearLayout {
         selectedItemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                setState(state.searching);
+               if(isEnabled()){
+                   setState(state.searching);
+               }
             }
         });
 //        searchText.setOnClickListener(new OnClickListener() {
@@ -145,7 +148,7 @@ public class SearchSpinner extends LinearLayout {
         searchText.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP&&isEnabled()) {
                     setState(state.searching);
 //                    return true;
                 }
@@ -184,7 +187,9 @@ public class SearchSpinner extends LinearLayout {
         topSelectInstructions.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                setState(state.searching);
+              if(isEnabled()){
+                  setState(state.searching);
+              }
 
             }
         });
@@ -192,7 +197,7 @@ public class SearchSpinner extends LinearLayout {
         searchList.setAdapter(selectionDataRecyclerViewAdapter);
         LinearLayout layout = new LinearLayout(getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setBackgroundColor(getContext().getColor(R.color.whitesmoke));
+        layout.setBackgroundColor(getContext().getColor(R.color.transparent));
         params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = 1;
         layout.addView(selectInstructions, params);
@@ -520,4 +525,18 @@ public class SearchSpinner extends LinearLayout {
             inputListener.onInputAvailable(isInputValid(), selectionData.sid);
         }
     });
+
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if(enabled){
+            setAlpha(1f);
+
+        }else{
+
+            setAlpha(0.5f);
+
+        }
+    }
 }

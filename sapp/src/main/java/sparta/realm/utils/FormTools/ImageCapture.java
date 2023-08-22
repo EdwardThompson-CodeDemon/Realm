@@ -23,8 +23,8 @@ import sparta.realm.Activities.SpartaAppCompactFingerPrintActivity;
 import sparta.realm.R;
 
 import sparta.realm.spartautils.svars;
+import sparta.realm.utils.FormTools.models.AppData;
 import sparta.realm.utils.FormTools.models.InputField;
-import sparta.realm.utils.FormTools.models.MemberImage;
 
 public class ImageCapture extends ConstraintLayout {
 
@@ -33,11 +33,11 @@ public class ImageCapture extends ConstraintLayout {
     ConstraintLayout constraintLayout;
     ImageView imageView, deleteButton, configButton;
     InputField inputField = new InputField();
-//    MemberImage memberImage;
+//    AppData memberImage;
 SpartaAppCompactFingerPrintActivity activity;
     InputListener inputListener = new InputListener() {
         @Override
-        public void onInputAvailable(boolean valid, MemberImage input) {
+        public void onInputAvailable(boolean valid, AppData input) {
 
         }
 
@@ -50,7 +50,7 @@ SpartaAppCompactFingerPrintActivity activity;
 
     public interface InputListener {
         void onInputRequested(InputField inputField) ;
-        default void onInputAvailable(boolean valid, MemberImage input) {
+        default void onInputAvailable(boolean valid, AppData input) {
 
         }
 
@@ -266,13 +266,13 @@ deleteButton.setOnClickListener(view -> clearImage());
 //      ImageViewCompat.setImageTintList(imageView, null);
       inputField.imageInput=null;
   }
-  public void setImage(MemberImage memberImage) {
+  public void setImage(AppData appData) {
       clearImage();
-        if(memberImage==null||memberImage.image==null){
+        if(appData ==null|| appData.data ==null){
             inputField.inputValid=false;
             return;
         }else {
-            File file = new File(svars.current_app_config(getContext()).appDataFolder, memberImage.image);
+            File file = new File(svars.current_app_config(getContext()).appDataFolder, appData.data);
             if (!file.exists() || file.length() < 500) {
                 inputField.inputValid=false;
                 return;
@@ -282,11 +282,11 @@ deleteButton.setOnClickListener(view -> clearImage());
       try {
 
           imageView.setImageURI(null);
-          imageView.setImageURI(Uri.parse(Uri.parse(svars.current_app_config(getContext()).appDataFolder) + memberImage.image));
+          imageView.setImageURI(Uri.parse(Uri.parse(svars.current_app_config(getContext()).appDataFolder) + appData.data));
           imageView.setColorFilter(null);
           imageView.getDrawable().setTintList(null);
           ImageViewCompat.setImageTintList(imageView, null);
-          inputField.imageInput=memberImage;
+          inputField.imageInput= appData;
           inputField.inputValid=true;
       } catch (Exception ex) {
 
