@@ -192,7 +192,7 @@ public class FingerprintCapture extends ConstraintLayout {
 
         setTitle(inputField.title);
         setInstructions(inputField.instructions);
-        populateFingerprintToCapture(inputField.fingerprintsInput);
+        populateFingerprintToCapture(inputField.fingerprintsInput.fingerprintsInput);
         inputField.inputValid=validated();
         reasons_to_skip.clear();
         reasons_to_skip.add(0, new FingerprintSkippingReason("1", "Finger is missing"));
@@ -361,7 +361,7 @@ public class FingerprintCapture extends ConstraintLayout {
                 }
             }
             inputField.inputValid=validated();
-            inputField.fingerprintsInput=memberFingerprints;
+            inputField.fingerprintsInput.fingerprintsInput=memberFingerprints;
             inputListener.onInputAvailable(inputField.inputValid,memberFingerprints);
             fpGrid.getAdapter().notifyDataSetChanged();
 

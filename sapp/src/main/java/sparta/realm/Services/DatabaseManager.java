@@ -2411,7 +2411,8 @@ I thot of using an interface ,dint work
         return loadObjectArray(realm_model, pagerEventId, searchIndex, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
 
     }
- public  ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, int pagerEventId, int searchIndex, Query query) {
+
+    public ArrayList<JSONObject> loadJSONArray(Class<?> realm_model, int pagerEventId, int searchIndex, Query query) {
         return loadJSONArray(realm_model, pagerEventId, searchIndex, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
 
     }
@@ -2423,7 +2424,7 @@ I thot of using an interface ,dint work
 
     }
 
- public JSONObject loadJSONObject(Class<?> realm_model, Query query) {
+    public JSONObject loadJSONObject(Class<?> realm_model, Query query) {
         ArrayList<JSONObject> res = loadJSONArray(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), 1, 0, query.queryParameters);
         return res.size() > 0 ? res.get(0) : null;
 

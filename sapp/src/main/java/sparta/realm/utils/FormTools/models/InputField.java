@@ -45,15 +45,15 @@ public class InputField extends InputGroup implements Serializable {
     @DynamicProperty(json_key = "input")
     public String input;
     public AppData imageInput = null;
-    public ArrayList<MemberFingerprint> fingerprintsInput = new ArrayList<>();
+    public MemberFingerprints fingerprintsInput = new MemberFingerprints();
     public MemberFingerprint fingerprintInput = new MemberFingerprint();
     @DynamicProperty(json_key = "input_format")
     public String input_format;
 
     //endregion
 
-    @DynamicProperty(json_key = "order_index")
-    public String order_index;
+    @DynamicProperty(json_key = "search_filter_status")
+    public String search_filter_status;
 
     //    @DynamicProperty(json_key = "validationRules"/*,parent_column="",child_column=""*/)
 
