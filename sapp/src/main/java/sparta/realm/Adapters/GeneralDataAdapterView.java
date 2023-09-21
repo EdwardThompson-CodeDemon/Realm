@@ -36,7 +36,7 @@ public abstract class GeneralDataAdapterView<RM, L extends GeneralDataAdapterLis
     }
 
 
-    public int dpToPx(int dp) {
+    public static int dpToPx(int dp) {
         final float scale = Realm.context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
