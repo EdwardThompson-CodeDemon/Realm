@@ -22,6 +22,7 @@ public class SelectionData extends RealmModel implements Serializable {
     @DynamicProperty(json_key = "code")
     public String code;
 
+    public boolean selected=false;
 
     public SelectionData() {
 

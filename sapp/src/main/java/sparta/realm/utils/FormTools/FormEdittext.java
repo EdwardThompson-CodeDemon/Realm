@@ -6,6 +6,7 @@ import static androidx.constraintlayout.widget.ConstraintSet.PARENT_ID;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -152,7 +153,9 @@ public class FormEdittext extends ConstraintLayout {
         return inputText;
 
     }
-
+    public void setIconTint(int color){
+        icon.setImageTintList(ColorStateList.valueOf(color));
+    }
     public void setTitle(String title_) {
         this.title.setText(title_);
 

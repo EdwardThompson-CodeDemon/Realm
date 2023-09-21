@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import sparta.realm.Realm;
 
 public abstract class GeneralDataAdapterView<RM, L extends GeneralDataAdapterListener<RM>> extends RecyclerView.ViewHolder {
-    L listener;
+    public L listener;
     private Context context;
 
-    RM item;
-    ArrayList<RM> items;
+    public  RM item;
+    public ArrayList<RM> items;
 
     public GeneralDataAdapterView(@NonNull View itemView) {
         super(itemView);
@@ -36,7 +36,7 @@ public abstract class GeneralDataAdapterView<RM, L extends GeneralDataAdapterLis
     }
 
 
-    int dpToPx(int dp) {
+    public int dpToPx(int dp) {
         final float scale = Realm.context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }

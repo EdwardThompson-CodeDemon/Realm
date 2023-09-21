@@ -34,7 +34,7 @@ public class GeneralDataAdapter<RM extends RealmModel, L extends GeneralDataAdap
 
     }
 
-    void setItems(ArrayList<RM> items) {
+    public void setItems(ArrayList<RM> items) {
         this.items = items;
         notifyDataSetChanged();
     }

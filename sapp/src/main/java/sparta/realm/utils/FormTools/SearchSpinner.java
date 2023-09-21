@@ -228,7 +228,7 @@ public class SearchSpinner extends LinearLayout {
 
     }
 
-    private void setMandatory(boolean mandatory) {
+    public void setMandatory(boolean mandatory) {
 //        this.mandatoryIndicator.setVisibility(mandatory ? VISIBLE : GONE);
         inputField.validationRules.mandatory = mandatory ? ValidationRules.MandatoryStatus.Mandatory.ordinal() + "" : ValidationRules.MandatoryStatus.NonMandatory.ordinal() + "";
     }
