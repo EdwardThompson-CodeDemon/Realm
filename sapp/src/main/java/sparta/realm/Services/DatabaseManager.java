@@ -2236,7 +2236,27 @@ I thot of using an interface ,dint work
     }
 
     public <RM> int getRecordCount(Class<RM> realm_model, Query query) {
-        return loadObjectArray(realm_model, query.setColumns("rowid")).size();
+        return loadObjectCount(realm_model, query.customQuery, query.columns, query.tableFilters, orderStatements(query.orderFilters), query.limit, query.offset, query.queryParameters);
+
+//        return loadObjectArray(realm_model, query.setColumns("rowid")).size();
+    }
+
+    public <RM> int loadObjectCount(Class<RM> realm_model, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
+        String table_name = realm.getPackageTable(realm_model.getName());
+        String qry = "SELECT " + (columns == null ? "*" : concatString(",", columns)) + " FROM " + (customQuery == null ? table_name : "( " + customQuery + ")") + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + (order_filters == null || order_filters.length < 1 ? "" : " ORDER BY " + concatString(",", order_filters)) + " " + (limit <= 0 ? "" : " LIMIT " + limit + (offset <= 0 ? "" : " OFFSET " + offset));
+        qry = "SELECT COUNT(*) FROM (" + qry + ")";
+        Cursor c = database.rawQuery(qry, queryParameters);
+        if (c.moveToFirst()) {
+            do {
+                int cnt = c.getInt(0);
+                c.close();
+                return cnt;
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return 0;
     }
 
     public <RM> ArrayList<RM> loadObjectArray(Class<RM> realm_model, String customQuery, String[] columns, String[] table_filters, String[] order_filters, int limit, int offset, String[] queryParameters) {
@@ -2445,9 +2465,10 @@ I thot of using an interface ,dint work
         return database.insert(table_name, null, (ContentValues) realm.getContentValuesFromObject(realm_model)) > 0;
 
     }
-   public void executeQuery(String query,String... queryParams ) {
 
-       database.execSQL(query, queryParams);
+    public void executeQuery(String query, String... queryParams) {
+
+        database.execSQL(query, queryParams);
 
     }
 
