@@ -1,5 +1,7 @@
 package sparta.realm.utils;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -134,4 +136,23 @@ public class Conversions {
         return distanceInMetersSQ;
     }
 
+    public static double computeDistanceBetween(LatLng from, LatLng to) {
+        return computeAngleBetween(from, to) * 6371009.0;
+    }
+    public static double computeAngleBetween(LatLng from, LatLng to) {
+        return distanceRadians(Math.toRadians(from.latitude), Math.toRadians(from.longitude), Math.toRadians(to.latitude), Math.toRadians(to.longitude));
+    }
+    public static double distanceRadians(double lat1, double lng1, double lat2, double lng2) {
+        return arcHav(havDistance(lat1, lat2, lng1 - lng2));
+    }
+    public static double arcHav(double x) {
+        return 2.0 * Math.asin(Math.sqrt(x));
+    }
+    public static double havDistance(double lat1, double lat2, double dLng) {
+        return hav(lat1 - lat2) + hav(dLng) * Math.cos(lat1) * Math.cos(lat2);
+    }
+    public static double hav(double x) {
+        double sinHalf = Math.sin(x * 0.5);
+        return sinHalf * sinHalf;
+    }
 }

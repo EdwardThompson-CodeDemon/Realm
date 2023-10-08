@@ -2445,6 +2445,11 @@ I thot of using an interface ,dint work
         return database.insert(table_name, null, (ContentValues) realm.getContentValuesFromObject(realm_model)) > 0;
 
     }
+   public void executeQuery(String query,String... queryParams ) {
+
+       database.execSQL(query, queryParams);
+
+    }
 
     public Object getJsonValue(String pos, JSONObject jo) {
         Object json = jo;
