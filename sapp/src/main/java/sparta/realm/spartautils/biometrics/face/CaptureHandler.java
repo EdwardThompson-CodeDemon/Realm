@@ -57,6 +57,7 @@ public class CaptureHandler extends View {
     public int mImageHeight;
     boolean first_frame_saved;
     public boolean rotated;
+    public boolean mirror_image=false;
     float sDensity = 1.0f;
 
     public interface capturing_interface {
@@ -269,7 +270,9 @@ public class CaptureHandler extends View {
         if (rotated) {
             ImageWidth = mImageHeight;
             FSDK.RotateImage90(Image, -1, RotatedImage);
-            FSDK.MirrorImage(RotatedImage, false);
+            if(mirror_image){
+                FSDK.MirrorImage(RotatedImage, false);
+            }
         } else {
             FSDK.CopyImage(Image, RotatedImage);
         }
