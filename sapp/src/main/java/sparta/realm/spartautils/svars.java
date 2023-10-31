@@ -1250,13 +1250,44 @@ public static int imageCameraType(Context act, String image_index) {
         return null;
     }
 
+    /**
+     * @deprecated Use conversions instead not svars
+     * @param db_date
+     * @return
+     */
+    @Deprecated
     public static SimpleDateFormat sdf_user_friendly_date = new SimpleDateFormat("dd-MM-yyyy");//=null;
+    /**
+     * @deprecated Use conversions instead not svars
+     * @param db_date
+     * @return
+     */
+    @Deprecated
     public static SimpleDateFormat sdf_db_date = new SimpleDateFormat("yyyy-MM-dd");//=null;
+    /**
+     * @deprecated Use conversions instead not svars
+     * @param db_date
+     * @return
+     */
+    @Deprecated
     public static SimpleDateFormat sdf_db_date_unseparated = new SimpleDateFormat("yyyyMMdd");//=null;
 
+    /**
+     * @deprecated Use conversions instead not svars
+     * @param db_date
+     * @return
+     */
+    @Deprecated
     public static SimpleDateFormat sdf_user_friendly_time = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//=null;
+    @Deprecated
     public static SimpleDateFormat sdf_db_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//=null;
 
+    /**
+     * @deprecated Use conversions instead not svars
+     * @param db_date
+     * @return
+     */
+    @Deprecated
     public static String get_user_date_from_db_date(String db_date) {
 
 

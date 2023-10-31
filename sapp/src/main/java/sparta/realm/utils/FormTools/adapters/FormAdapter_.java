@@ -1,7 +1,6 @@
 package sparta.realm.utils.FormTools.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +13,20 @@ import java.util.ArrayList;
 
 import sparta.realm.Activities.SpartaAppCompactFingerPrintActivity;
 import sparta.realm.R;
-import sparta.realm.Services.DatabaseManager;
 import sparta.realm.utils.FormTools.FingerprintCapture;
 import sparta.realm.utils.FormTools.FormEdittext;
 import sparta.realm.utils.FormTools.ImageCapture;
 import sparta.realm.utils.FormTools.SearchSpinner;
 import sparta.realm.utils.FormTools.SignatureCapture;
-import sparta.realm.utils.FormTools.models.IndependentInputFieldVariable;
 import sparta.realm.utils.FormTools.models.InputField;
-import sparta.realm.utils.FormTools.models.InputFieldInputConstraint;
-import sparta.realm.utils.FormTools.models.InputFieldInputConstraintProcessingResult;
 import sparta.realm.utils.FormTools.models.InputGroup;
 import sparta.realm.utils.FormTools.models.MemberFingerprint;
 
 
-public class FormAdapter extends RecyclerView.Adapter<FormAdapter.view> {
+public class FormAdapter_ extends RecyclerView.Adapter<FormAdapter_.view> {
 
     Activity activity;
-    Context context;
-    public InputGroup page=new InputGroup();
+    public InputGroup page;
     public FingerprintCapture activeFingerprintCapture;
     public ImageCapture activeImageCapture;
 
@@ -41,42 +35,23 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.view> {
         void onInputAvailable(InputField inputField);
 
         boolean onInputActivityStatusRequired(InputField inputField);
-        InputFieldInputConstraintProcessingResult onInputFieldInputConstraintProcessingResultRequired(InputField inputField);
     }
 
     InputListener inputListener;
 
-    public FormAdapter(Activity activity, InputGroup page, InputListener inputListener) {
+    public FormAdapter_(Activity activity, InputGroup page, InputListener inputListener) {
         this.activity = activity;
         this.page = page;
 
+
         this.inputListener = inputListener;
-    }
-
-    public FormAdapter(InputGroup page, InputListener inputListener) {
-        this.page = page;
-        this.inputListener = inputListener;
-    }
-
-    public FormAdapter(InputListener inputListener) {
-        this.inputListener = inputListener;
-    }
-
-    public void setPage(InputGroup page) {
-        this.page = page;
-    }
-
-    public void setActivity(Activity activity) {
-
-
-        this.activity = activity;
     }
 
     @NonNull
     @Override
     public view onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.item_form_input, parent, false);
+//        this.cntxt = parent.getContext();
+        View view = LayoutInflater.from(activity).inflate(R.layout.item_form_input, parent, false);
 
         return new view(view);
     }
@@ -111,87 +86,39 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.view> {
             fingerprintCapture = itemView.findViewById(R.id.fingerprint_capture);
             imageCapture = itemView.findViewById(R.id.image_capture);
             signatureCapture = itemView.findViewById(R.id.signature_capture);
-//            formReview = itemView.findViewById(R.id.form_review);
 
         }
-
-        boolean isInputFieldInputAffectingOtherFieldsInThisPage_(InputField inputField) {
-            for (InputField inputField1 : page.inputFields) {
-                if (inputField1.inputFieldInputConstraint != null && inputField1.inputFieldInputConstraint.independent_input_field.equals(inputField.sid)) {
+        boolean isInputFieldInputAffectingOtherFieldsInThisPage(    InputField inputField){
+            for(InputField inputField1:page.inputFields){
+                if(inputField1.inputFieldInputConstraint!=null&&inputField1.inputFieldInputConstraint.independent_input_field.equals(inputField.sid)){
                     return true;
                 }
             }
             return false;
         }
- boolean isInputFieldInputAffectingOtherFieldsInThisPage(InputField inputField) {
-            for (InputField inputField1 : page.inputFields) {
-                if (inputField1.inputFieldInputConstraint != null && inputField1.inputFieldInputConstraint.independent_input_field.equals(inputField.sid)) {
-
-                    return true;
-                }else{
-                    for (InputFieldInputConstraint inputFieldInputConstraint : inputField1.inputFieldInputConstraints) {
-                        if (inputFieldInputConstraint.independent_input_field!=null&&inputFieldInputConstraint.independent_input_field.equals(inputField.sid)) {
-                            return true;
-
-                        }
-                            for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.andIndependentInputFieldVariables) {
-      if(independentInputFieldVariable.independent_input_field!=null&&independentInputFieldVariable.independent_input_field.equals(inputField.sid)){
-          return true;
-      }
-
-  }
-for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.orIndependentInputFieldVariables) {
-      if(independentInputFieldVariable.independent_input_field!=null&&independentInputFieldVariable.independent_input_field.equals(inputField.sid)){
-          return true;
-      }
-
-  }
-
-                    }
-                    }
-            }
-            return false;
-        }
-
         void populate(int position) {
             this.position = position;
             InputField inputField = page.inputFields.get(position);
-            InputFieldInputConstraintProcessingResult inputFieldInputConstraintProcessingResult=null;
-            if (inputField.inputFieldInputConstraints != null&&inputField.inputFieldInputConstraints.size()>0) {
-                inputFieldInputConstraintProcessingResult=inputListener.onInputFieldInputConstraintProcessingResultRequired(inputField);
-                if (!inputFieldInputConstraintProcessingResult.field_active) {
+            if (inputField.inputFieldInputConstraint != null) {
+                if (!inputListener.onInputActivityStatusRequired(inputField)) {
                     inputField.input = null;
                     inputField.inputValid = true;
+//    itemView.setVisibility(View.GONE);
                     ViewGroup.LayoutParams params = itemView.getLayoutParams();
                     params.height = 0;
                     itemView.setLayoutParams(params);
                     return;
                 } else {
-                    if (inputField.input_type.equals(InputField.InputType.ValueOnly.ordinal()+"")) {
-                        inputField.inputValid = true;
-                        ViewGroup.LayoutParams params = itemView.getLayoutParams();
-                        params.height = 0;
-                        itemView.setLayoutParams(params);
-                    }else {
-                        ViewGroup.LayoutParams params = itemView.getLayoutParams();
-                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                        itemView.setLayoutParams(params);
-                        inputField.inputValid = false;
-                    }
-
-                }
-            } else {
-                if (inputField.input_type.equals(InputField.InputType.ValueOnly.ordinal()+"")) {
-                    inputField.inputValid = true;
-                    ViewGroup.LayoutParams params = itemView.getLayoutParams();
-                    params.height = 0;
-                    itemView.setLayoutParams(params);
-                }else{
                     ViewGroup.LayoutParams params = itemView.getLayoutParams();
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                     itemView.setLayoutParams(params);
-                }
+                    inputField.inputValid = false;
 
+                }
+            } else {
+                ViewGroup.LayoutParams params = itemView.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                itemView.setLayoutParams(params);
 
             }
 //            formReview.setVisibility(inputField.input_type.equalsIgnoreCase(InputField.InputType.FormReview.ordinal() + "") ? View.VISIBLE : View.GONE);
@@ -212,7 +139,7 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
                     public void onInputAvailable(boolean valid, String input) {
                         inputField.input = input;
                         inputField.inputValid = textInput.isInputValid();
-                        if (isInputFieldInputAffectingOtherFieldsInThisPage(inputField)) {
+                        if(isInputFieldInputAffectingOtherFieldsInThisPage(inputField)){
                             try {
                                 notifyDataSetChanged();
                             } catch (Exception ex) {
@@ -226,12 +153,12 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
 
 
             } else if (selectionInput.getVisibility() == View.VISIBLE) {
-                SearchSpinner.InputListener inputListener1= new SearchSpinner.InputListener() {
+                selectionInput.setInputField(inputField, new SearchSpinner.InputListener() {
                     @Override
                     public void onInputAvailable(boolean valid, String input) {
                         inputField.input = input;
 //                        inputField.inputValid = selectionInput.isInputValid();
-                        if (isInputFieldInputAffectingOtherFieldsInThisPage(inputField)) {
+                        if(isInputFieldInputAffectingOtherFieldsInThisPage(inputField)){
                             try {
                                 notifyDataSetChanged();
                             } catch (Exception ex) {
@@ -240,26 +167,12 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
 
                         inputListener.onInputAvailable(inputField);
                     }
-                };
-
-                if (inputField.inputFieldInputConstraints != null&&inputField.inputFieldInputConstraints.size()>0&&inputFieldInputConstraintProcessingResult!=null&&inputFieldInputConstraintProcessingResult.tableFilters!=null&&inputFieldInputConstraintProcessingResult.tableFilters.size()>0) {
-                    try {
-                        String[] tblfilters=new String[inputFieldInputConstraintProcessingResult.tableFilters.size()];
-                        tblfilters=inputFieldInputConstraintProcessingResult.tableFilters.toArray(tblfilters);
-
-//                        String[] tblfilters=inputFieldInputConstraintProcessingResult.tableFilters.stream().map(s->s).toArray();
-                        inputField.dataset_table_filter=DatabaseManager.concatString(" AND ",tblfilters);
-//                        selectionInput.setDataset((ArrayList) Realm.databaseManager.loadObjectArray(Class.forName(inputField.dataset), new Query().setTableFilters(DatabaseManager.concatString(" AND ",tblfilters))),inputListener1);
-                    } catch (Exception e) {
-//                        throw new RuntimeException(e);
-                    }
-                }
-                selectionInput.setInputField(inputField,inputListener1);
+                });
 //                selectionInput.setInput(inputField.input);
 //                inputField.inputValid = selectionInput.isInputValid();
 
             } else if (fingerprintCapture.getVisibility() == View.VISIBLE) {
-                activeFingerprintCapture = fingerprintCapture;
+                activeFingerprintCapture=fingerprintCapture;
                 fingerprintCapture.initFingerprint(activity);
                 fingerprintCapture.setInputField(inputField, new FingerprintCapture.InputListener() {
                     @Override
@@ -270,17 +183,17 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
                     }
                 });
 
-            } else if (imageCapture.getVisibility() == View.VISIBLE) {
+            }else if (imageCapture.getVisibility() == View.VISIBLE) {
                 imageCapture.setActivity((SpartaAppCompactFingerPrintActivity) activity);
                 imageCapture.setInputField(inputField, new ImageCapture.InputListener() {
                     @Override
                     public void onInputRequested(InputField inputField) {
-                        activeImageCapture = imageCapture;
+                        activeImageCapture=imageCapture;
                     }
                 });
 
 
-            } else if (signatureCapture.getVisibility() == View.VISIBLE) {
+            }else if (signatureCapture.getVisibility() == View.VISIBLE) {
 
                 signatureCapture.setInputField(inputField, new SignatureCapture.InputListener() {
                     @Override

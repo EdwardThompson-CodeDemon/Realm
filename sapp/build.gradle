@@ -17,7 +17,7 @@ android {
     ndkVersion "22.1.7171670"
     defaultConfig {
 //     applicationId "sparta.realm"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 33
         versionCode 1
         versionName "1.0.191"
@@ -94,5 +94,7 @@ dependencies {
     //implementation project(path: ':AnnotationProcessor')
     implementation 'com.github.Chrisvin:RubberPicker:v1.5'
     implementation 'com.gemalto.wsq:wsq-android:1.0'
+    implementation 'com.shuhart.stepview:stepview:1.5.1'
+
 
 }

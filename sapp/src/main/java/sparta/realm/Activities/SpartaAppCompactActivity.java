@@ -70,6 +70,7 @@ import sparta.realm.spartautils.camera.CameraActivity;
 import sparta.realm.spartautils.camera.sparta_camera;
 import sparta.realm.spartautils.biometrics.face.face_handler;
 import sparta.realm.spartautils.svars;
+import sparta.realm.utils.Conversions;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
@@ -224,7 +225,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
 
                         try {
-                            cb.setTime(svars.sdf_user_friendly_date.parse(edt.getText().toString()));
+                            cb.setTime(Conversions.sdf_user_friendly_date.parse(edt.getText().toString()));
                         } catch (Exception ex) {
                         }
 
@@ -291,7 +292,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
 
                         try {
-                            cb.setTime(svars.sdf_user_friendly_date.parse(((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + "-" + year)));
+                            cb.setTime(Conversions.sdf_user_friendly_date.parse(((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + "-" + year)));
                         } catch (Exception ex) {
                         }
 

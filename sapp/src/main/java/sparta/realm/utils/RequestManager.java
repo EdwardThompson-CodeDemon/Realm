@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -55,7 +56,19 @@ public class RequestManager {
 
         void OnRequestFailed();
 
+        default void  OnAuthenticatedSuccessfully(String token, JSONObject response) {
 
+
+        }
+
+        default void  OnAuthenticationFailed() {
+
+        }
+
+        default void OnAuthenticated(JSONObject response) {
+
+
+        }
     }
 
     public interface DownloadCallback {
@@ -81,6 +94,109 @@ public class RequestManager {
 
         }
     }
+
+    public void authenticate(String is_ok_position, String username, String password, RequestCallback requestCallback) {
+        Context context = Realm.context;
+        AppConfig appConfig = svars.current_app_config(context);
+
+        final JSONObject JO = new JSONObject();
+
+        JSONObject user = new JSONObject();
+        try {
+
+            user.put("PassWord", password);
+            user.put("UserName", username);
+            user.put("Branch", appConfig.ACCOUNT_BRANCH);
+            user.put("AccountName", appConfig.ACCOUNT);
+            user.put("Language", "English");
+
+
+            JO.put("IsRenewalPasswordRequest", "false");
+            JO.put("CurrentUser", user);
+        } catch (JSONException ex) {
+        }
+        Thread thread = new Thread() {
+            public void run() {
+                Looper.prepare();
+                final JSONObject[] maindata = {new JSONObject()};
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        if (svars.isInternetAvailable()) {
+                            String response = "";
+                            String error_data = "";
+                            HttpURLConnection httpURLConnection = null;
+
+                            try {
+                                Log.e("JSON ST PG =>", "" + svars.login_url);
+                                Log.e("LOGIN TX =>", "" + JO.toString());
+//                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(context).APP_MAINLINK+"/SystemAccounts/Authentication/Login/Submit").openConnection();
+                                httpURLConnection = (HttpURLConnection) new URL(appConfig.APP_MAINLINK + appConfig.AUTHENTICATION_URL).openConnection();
+                                httpURLConnection.setRequestMethod("POST");
+                                httpURLConnection.setRequestProperty("Content-Type", "application/json");
+                                httpURLConnection.setDoOutput(true);
+
+                                requestCallback.onServerConnected();
+                                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                                wr.write(JO.toString().getBytes());
+                                wr.flush();
+                                wr.close();
+                                int status = httpURLConnection.getResponseCode();
+                                requestCallback.onApiConnectionStatusUpdated(status);
+
+                                try {
+                                    InputStream in = httpURLConnection.getInputStream();
+                                    response = new String(ByteStreams.toByteArray(in));
+                                    Log.d(logTag, "Response:" + response);
+
+                                    maindata[0] = new JSONObject(response);
+                                    requestCallback.OnAuthenticated(maindata[0]);
+
+                                    if (is_ok_position == null || (boolean) getJsonValue(is_ok_position, maindata[0])) {
+                                        requestCallback.OnAuthenticatedSuccessfully(httpURLConnection.getHeaderField("authorization"), maindata[0]);
+
+//                                       svars.set_Service_token(context, httpURLConnection.getHeaderField("authorization"));
+
+                                    } else {
+                                        requestCallback.OnAuthenticationFailed();
+
+                                    }
+
+                                } catch (Exception ex) {
+                                    InputStream error = httpURLConnection.getErrorStream();
+                                    error_data = new String(ByteStreams.toByteArray(error));
+                                    requestCallback.OnAuthenticationFailed();
+                                    requestCallback.OnRequestFailed();
+
+                                    Log.e(logTag, "Authentication Error: " + error_data);
+
+                                }
+
+                            } catch (Exception e) {
+
+                                requestCallback.OnRequestFailed();
+                            }
+                        } else {
+
+
+                            requestCallback.onApiConnectionFailed();
+                            requestCallback.OnRequestFailed();
+                        }
+                    }
+                }, 10);
+
+                Looper.loop();
+            }
+        };
+        thread.start();
+
+
+    }
+
 
     public void requestGet(String url, String is_ok_position, RequestCallback requestCallback) {
         Context context = Realm.context;
