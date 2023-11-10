@@ -472,7 +472,7 @@ long minTimeAutoMovedToNext=500;
 
 //                    procceed();
                 }
-
+                inputField.inputValid=validated();
             }
         });
 
