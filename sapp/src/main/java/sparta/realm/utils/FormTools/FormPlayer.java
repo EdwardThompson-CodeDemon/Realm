@@ -236,7 +236,7 @@ public class FormPlayer extends ConstraintLayout {
         pageTitleParams.endToEnd = PARENT_ID;
         addView(pageTitle, pageTitleParams);
 
-        LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         recyclerViewParams.topToBottom = pageTitleId;
         recyclerViewParams.startToStart = PARENT_ID;
         recyclerViewParams.endToEnd = PARENT_ID;
@@ -293,6 +293,7 @@ public class FormPlayer extends ConstraintLayout {
             }
         });
         formAdapter.setPage(currentPage);
+        formAdapter.setActivity(activity);
         recyclerView.setAdapter(formAdapter);
 
         next.setOnClickListener(view -> {
