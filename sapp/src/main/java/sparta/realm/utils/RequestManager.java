@@ -200,8 +200,6 @@ public class RequestManager {
 
     public void requestGet(String url, String is_ok_position, RequestCallback requestCallback) {
         Context context = Realm.context;
-        AppConfig appConfig = svars.current_app_config(context);
-
         Thread thread = new Thread() {
             public void run() {
                 Looper.prepare();
@@ -218,7 +216,7 @@ public class RequestManager {
 
                             try {
                                 Log.e(logTag, "URL:" + url);
-                                httpURLConnection = (HttpURLConnection) new URL(appConfig.APP_MAINLINK + url).openConnection();
+                                httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
                                 httpURLConnection.setRequestMethod("GET");
                                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
                                 httpURLConnection.setDoOutput(false);
@@ -274,8 +272,6 @@ public class RequestManager {
 
     public void requestPost(String url, String is_ok_position, JSONObject output, RequestCallback requestCallback) {
         Context context = Realm.context;
-        AppConfig appConfig = svars.current_app_config(context);
-
 
         Thread thread = new Thread() {
             public void run() {

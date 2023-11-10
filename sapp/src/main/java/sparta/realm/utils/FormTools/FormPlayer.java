@@ -240,6 +240,7 @@ public class FormPlayer extends ConstraintLayout {
         recyclerViewParams.topToBottom = pageTitleId;
         recyclerViewParams.startToStart = PARENT_ID;
         recyclerViewParams.endToEnd = PARENT_ID;
+        recyclerViewParams.bottomToTop = previousId;
         recyclerViewParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         addView(recyclerView, recyclerViewParams);
 
