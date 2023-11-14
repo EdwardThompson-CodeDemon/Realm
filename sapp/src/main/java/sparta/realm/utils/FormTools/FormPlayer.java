@@ -1182,6 +1182,10 @@ public class FormPlayer extends ConstraintLayout {
         this.inputListener = inputListener;
     }
 int currentPageIndex=0;
+    public void setForm(SpartaAppCompactFingerPrintActivity spartaAppCompactFingerPrintActivity,Form form, InputListener inputListener, Object registeringObject) {
+        this.activity=spartaAppCompactFingerPrintActivity;
+        setForm(form,inputListener,registeringObject);
+    }
     public void setForm(Form form, InputListener inputListener, Object registeringObject) {
         this.form = form;
         this.inputListener = inputListener;
@@ -1239,6 +1243,7 @@ int currentPageIndex=0;
     }
 
     public void setActivity(SpartaAppCompactFingerPrintActivity activity) {
+        formAdapter.setActivity(activity);
         this.activity = activity;
     }
 
