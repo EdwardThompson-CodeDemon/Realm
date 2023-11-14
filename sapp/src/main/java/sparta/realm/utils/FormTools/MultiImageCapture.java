@@ -273,6 +273,7 @@ public class MultiImageCapture extends ConstraintLayout {
         }
 
 
+        inputField.imagesInput.imagesInput.add(appData);
         multiPhotoInputAdapter.addImage(appData);
         inputField.inputValid = isInputValid();
         inputListener.onInputAvailable(inputField.inputValid, inputField);

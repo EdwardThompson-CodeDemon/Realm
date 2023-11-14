@@ -1238,10 +1238,15 @@ int currentPageIndex=0;
     }
     public void refresh(){
          formAdapter.notifyDataSetChanged();
-
+    }
+    public void setActiveCaptureImage(AppData image) {
+        formAdapter.activeImageCapture.setImage(image);
 
     }
+    public void addActiveCaptureImage(AppData image) {
+        formAdapter.activeMultiImageCapture.addImage(image);
 
+    }
     public void setActivity(SpartaAppCompactFingerPrintActivity activity) {
         formAdapter.setActivity(activity);
         this.activity = activity;
