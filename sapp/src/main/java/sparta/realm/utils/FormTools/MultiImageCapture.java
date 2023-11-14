@@ -169,6 +169,7 @@ public class MultiImageCapture extends ConstraintLayout {
             public void onImageDeleted(AppData appData) {
                 MultiPhotoInputAdapter.InputListener.super.onImageDeleted(appData);
                 inputField.imagesInput.imagesInput=multiPhotoInputAdapter.getItems();
+                inputField.inputValid=isInputValid();
                 inputListener.onInputUpdated(inputField.inputValid, inputField);
 
             }
@@ -177,6 +178,7 @@ public class MultiImageCapture extends ConstraintLayout {
             public void onImagesDeleted() {
                 MultiPhotoInputAdapter.InputListener.super.onImagesDeleted();
                 inputField.imagesInput.imagesInput=multiPhotoInputAdapter.getItems();
+                inputField.inputValid=isInputValid();
                 inputListener.onInputUpdated(inputField.inputValid, inputField);
             }
         });
@@ -234,8 +236,8 @@ public class MultiImageCapture extends ConstraintLayout {
             return true;
         }
         int imageCount = multiPhotoInputAdapter.getImageCount();
-        int minImages = InputValidation.isNumeric(inputField.validationRules.min_input_value) ? Integer.parseInt(inputField.validationRules.min_input_value) : 0;
-        int maxImages = InputValidation.isNumeric(inputField.validationRules.max_input_value) ? Integer.parseInt(inputField.validationRules.max_input_value) : -1;
+        int minImages = InputValidation.isNumeric(inputField.validationRules.min_images) ? Integer.parseInt(inputField.validationRules.min_images) : 0;
+        int maxImages = InputValidation.isNumeric(inputField.validationRules.max_images) ? Integer.parseInt(inputField.validationRules.max_images) : -1;
         if (imageCount < minImages) {
             ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
 
