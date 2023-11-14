@@ -43,7 +43,7 @@ public class MultiImageCapture extends ConstraintLayout {
     SpartaAppCompactActivity activity;
     InputListener inputListener = new InputListener() {
         @Override
-        public void onInputAvailable(boolean valid, AppData input) {
+        public void onInputUpdated(boolean valid, AppData input) {
 
         }
 
@@ -57,10 +57,10 @@ public class MultiImageCapture extends ConstraintLayout {
     public interface InputListener {
         void onInputRequested(InputField inputField);
 
-        default void onInputAvailable(boolean valid, AppData input) {
+        default void onInputUpdated(boolean valid, AppData input) {
 
         }
-        default void onInputAvailable(boolean valid,InputField inputField) {
+        default void onInputUpdated(boolean valid, InputField inputField) {
 
         }
 
@@ -164,6 +164,13 @@ public class MultiImageCapture extends ConstraintLayout {
                 MultiPhotoInputAdapter.InputListener.super.onMaxItemsReached();
 
             }
+
+            @Override
+            public void onImageDeleted() {
+                MultiPhotoInputAdapter.InputListener.super.onImageDeleted();
+                inputListener.onInputUpdated(inputField.inputValid, inputField);
+
+            }
         });
         FlowLayoutManager flowLayoutManager = new FlowLayoutManager();
         flowLayoutManager.setAutoMeasureEnabled(true);
@@ -203,7 +210,7 @@ public class MultiImageCapture extends ConstraintLayout {
         for(AppData appData:appImages.imagesInput){
             multiPhotoInputAdapter.addImage(appData);
         }
-        inputListener.onInputAvailable(isInputValid(), inputField);
+        inputListener.onInputUpdated(isInputValid(), inputField);
 
     }
     public void setValidationRules(ValidationRules validationRules) {
@@ -276,7 +283,7 @@ public class MultiImageCapture extends ConstraintLayout {
         inputField.imagesInput.imagesInput.add(appData);
         multiPhotoInputAdapter.addImage(appData);
         inputField.inputValid = isInputValid();
-        inputListener.onInputAvailable(inputField.inputValid, inputField);
+        inputListener.onInputUpdated(inputField.inputValid, inputField);
 
     }
 

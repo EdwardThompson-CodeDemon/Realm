@@ -22,7 +22,6 @@ import sparta.realm.utils.FormTools.ImageCapture;
 import sparta.realm.utils.FormTools.MultiImageCapture;
 import sparta.realm.utils.FormTools.SearchSpinner;
 import sparta.realm.utils.FormTools.SignatureCapture;
-import sparta.realm.utils.FormTools.models.AppData;
 import sparta.realm.utils.FormTools.models.IndependentInputFieldVariable;
 import sparta.realm.utils.FormTools.models.InputField;
 import sparta.realm.utils.FormTools.models.InputFieldInputConstraint;
@@ -306,8 +305,8 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
                     }
 
                     @Override
-                    public void onInputAvailable(boolean valid, InputField inputField) {
-                        MultiImageCapture.InputListener.super.onInputAvailable(valid, inputField);
+                    public void onInputUpdated(boolean valid, InputField inputField) {
+                        MultiImageCapture.InputListener.super.onInputUpdated(valid, inputField);
                         inputListener.onInputAvailable(inputField);
                     }
                 });

@@ -43,6 +43,10 @@ public class MultiPhotoInputAdapter extends RecyclerView.Adapter<MultiPhotoInput
 
 
         }
+default void onImageDeleted() {
+
+
+        }
 
         default void onMaxItemsReached() {
 
@@ -139,6 +143,7 @@ public class MultiPhotoInputAdapter extends RecyclerView.Adapter<MultiPhotoInput
             notifyItemInserted(items.indexOf(addImage));
 
         }
+        listener.onImageDeleted();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -201,6 +206,7 @@ public class MultiPhotoInputAdapter extends RecyclerView.Adapter<MultiPhotoInput
                         notifyItemInserted(items.indexOf(addImage));
 
                     }
+                    listener.onImageDeleted();
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
