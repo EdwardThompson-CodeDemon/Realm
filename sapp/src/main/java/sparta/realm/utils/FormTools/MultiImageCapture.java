@@ -166,10 +166,18 @@ public class MultiImageCapture extends ConstraintLayout {
             }
 
             @Override
-            public void onImageDeleted() {
-                MultiPhotoInputAdapter.InputListener.super.onImageDeleted();
+            public void onImageDeleted(AppData appData) {
+                MultiPhotoInputAdapter.InputListener.super.onImageDeleted(appData);
+                inputField.imagesInput.imagesInput=multiPhotoInputAdapter.getItems();
                 inputListener.onInputUpdated(inputField.inputValid, inputField);
 
+            }
+
+            @Override
+            public void onImagesDeleted() {
+                MultiPhotoInputAdapter.InputListener.super.onImagesDeleted();
+                inputField.imagesInput.imagesInput=multiPhotoInputAdapter.getItems();
+                inputListener.onInputUpdated(inputField.inputValid, inputField);
             }
         });
         FlowLayoutManager flowLayoutManager = new FlowLayoutManager();

@@ -43,7 +43,11 @@ public class MultiPhotoInputAdapter extends RecyclerView.Adapter<MultiPhotoInput
 
 
         }
-default void onImageDeleted() {
+default void onImageDeleted(AppData image) {
+
+
+        }
+default void onImagesDeleted() {
 
 
         }
@@ -131,10 +135,17 @@ default void onImageDeleted() {
     public void clearItems() {
         int currentSize = items.size();
 //     items.clear();
+//        for(    AppData appData:items){
+//            if(appData.transaction_no == null || !appData.transaction_no.equals(addImageTransactionNo)){
+//                listener.onImageDeleted(appData);
+//
+//            }
+//
+//        }
         items.removeIf(x -> (x.transaction_no == null || !x.transaction_no.equals(addImageTransactionNo)));
         notifyItemRangeRemoved(0, currentSize - 1);
 
-        ArrayList<AppData>  result = new ArrayList<>(items);
+        ArrayList<AppData>   result = new ArrayList<>(items);
         result.removeIf(x -> (x.transaction_no != null && x.transaction_no.equals(addImageTransactionNo)));
         if(result.size()==items.size()&&maxItems!=-1&&result.size()<maxItems){
             AppData addImage = new AppData();
@@ -143,7 +154,7 @@ default void onImageDeleted() {
             notifyItemInserted(items.indexOf(addImage));
 
         }
-        listener.onImageDeleted();
+        listener.onImagesDeleted();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -195,6 +206,7 @@ default void onImageDeleted() {
             clearButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    AppData appData=items.get(position);
                     items.remove(position);
                     notifyItemRemoved(position);
                     ArrayList<AppData>  result = new ArrayList<>(items);
@@ -206,7 +218,7 @@ default void onImageDeleted() {
                         notifyItemInserted(items.indexOf(addImage));
 
                     }
-                    listener.onImageDeleted();
+                    listener.onImageDeleted(appData);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
