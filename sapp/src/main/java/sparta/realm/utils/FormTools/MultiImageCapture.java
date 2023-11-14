@@ -213,6 +213,7 @@ public class MultiImageCapture extends ConstraintLayout {
 
         setValidationRules(inputField.validationRules);
         setImagesInput(inputField.imagesInput);
+        isInputValid();
     }
     public void setImagesInput(AppImages appImages) {
         for(AppData appData:appImages.imagesInput){
