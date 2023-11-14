@@ -149,6 +149,12 @@ public class FormEdittext extends ConstraintLayout {
 
     }
 
+    public void setInput(String input) {
+        inputText.setText(input);
+        inputListener.onInputAvailable(isInputValid(), inputText.getText().toString());
+
+    }
+
     public AutoCompleteTextView getInputView() {
         return inputText;
 
@@ -179,11 +185,7 @@ public class FormEdittext extends ConstraintLayout {
 
     }
 
-    public void setInput(String input) {
-        inputText.setText(input);
-        inputListener.onInputAvailable(isInputValid(), inputText.getText().toString());
 
-    }
 
     public void setInputType(int input_type) {
         switch (InputField.InputType.values()[input_type]) {

@@ -11,7 +11,6 @@ import sparta.realm.spartautils.svars;
 
 
 @DynamicClass(table_name = "member_fingerprint")
-@SyncDescription(service_name = "Member fingerprint", upload_link = "/MobiServices/SaveData/SaveFingerImages",service_type = SyncDescription.service_type.Upload,storage_mode_check = true)
 public class MemberFingerprint extends Fingerprint implements Serializable {
 
     @DynamicProperty(json_key = "unique_code")

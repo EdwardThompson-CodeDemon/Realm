@@ -38,6 +38,7 @@ import sparta.realm.Realm;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.FormTools.adapters.FormAdapter;
 import sparta.realm.utils.FormTools.models.AppData;
+import sparta.realm.utils.FormTools.models.AppImages;
 import sparta.realm.utils.FormTools.models.Form;
 import sparta.realm.utils.FormTools.models.IndependentInputFieldVariable;
 import sparta.realm.utils.FormTools.models.InputField;
@@ -1061,7 +1062,10 @@ public class FormPlayer extends ConstraintLayout {
                 ff.setAccessible(true);
                 try {
                     Object fieldData = ff.get(object);
-                    if (fieldData instanceof ArrayList) {
+                    if (fieldData instanceof AppImages) {
+                        AppImages appImages = (AppImages) fieldData;
+                        inputField.imagesInput = appImages;
+                    }else if (fieldData instanceof MemberFingerprints) {
                         MemberFingerprints fingerprintsInput = (MemberFingerprints) fieldData;
                         inputField.fingerprintsInput = fingerprintsInput;
                     } else if (fieldData instanceof String) {
@@ -1099,7 +1103,10 @@ public class FormPlayer extends ConstraintLayout {
                 if (ff.getType() == String.class) {
                     ff.set(registeringObject, inputField.input);
 
-                } else if (ff.getType() == ArrayList.class) {
+                } else if (ff.getType() == AppImages.class) {
+                    ff.set(registeringObject, inputField.imagesInput);
+
+                } else if (ff.getType() == MemberFingerprints.class) {
                     ff.set(registeringObject, inputField.fingerprintsInput);
 
                 } else if (ff.getType() == MemberFingerprint.class) {
@@ -1135,7 +1142,10 @@ public class FormPlayer extends ConstraintLayout {
                     if (ff.getType() == String.class) {
                         ff.set(registeringObject, inputField.input);
 
-                    } else if (ff.getType() == ArrayList.class) {
+                    } else if (ff.getType() == AppImages.class) {
+                        ff.set(registeringObject, inputField.imagesInput);
+
+                    }else if (ff.getType() == ArrayList.class) {
                         ff.set(registeringObject, inputField.fingerprintsInput);
 
                     } else if (ff.getType() == MemberFingerprint.class) {

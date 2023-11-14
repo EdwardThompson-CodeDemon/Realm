@@ -41,6 +41,14 @@
         android:layout_height="wrap_content"/>
 
 
+<sparta.realm.utils.FormTools.MultiImageCapture
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input"
+    android:visibility="gone"
+    android:id="@+id/multi_image_capture"
+        android:layout_height="wrap_content"/>
+
+
 
 
 

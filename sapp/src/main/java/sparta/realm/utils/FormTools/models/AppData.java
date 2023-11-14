@@ -12,7 +12,7 @@ import sparta.realm.spartautils.svars;
 
 
 @DynamicClass(table_name = "app_image")
-@SyncDescription(service_name = "App image", service_type = SyncDescription.service_type.Upload, storage_mode_check = true)
+//@SyncDescription(service_name = "App image", service_type = SyncDescription.service_type.Upload, storage_mode_check = true)
 public class AppData extends RealmModel implements Serializable {
 
     //7194276

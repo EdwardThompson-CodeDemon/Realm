@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-
 @DynamicClass(table_name = "input_field")
 public class InputField extends InputGroup implements Serializable {
 
@@ -17,34 +16,35 @@ public class InputField extends InputGroup implements Serializable {
     public String object_field_name;
     @DynamicProperty(json_key = "dataset")
     public String dataset;
-   @DynamicProperty(json_key = "dataset_table_filter")
+    @DynamicProperty(json_key = "dataset_table_filter")
     public String dataset_table_filter;
     //region Image input
-  @DynamicProperty(json_key = "default_image_source")
+    @DynamicProperty(json_key = "default_image_source")
     public String default_image_source;
     //endregion
     @DynamicProperty(json_key = "placeholder")
     public String placeholder;
     //region selection input
-   @DynamicProperty(json_key = "search_placeholder")
+    @DynamicProperty(json_key = "search_placeholder")
     public String search_placeholder;
-   @DynamicProperty(json_key = "search_placeholder")
+    @DynamicProperty(json_key = "search_placeholder")
     public String search_title;
 
-   //endregion
-   @DynamicProperty(json_key = "instructions")
+    //endregion
+    @DynamicProperty(json_key = "instructions")
     public String instructions;
 
     @DynamicProperty(json_key = "input_type")
     public String input_type;
 
-  @DynamicProperty(json_key = "input_enabled")
+    @DynamicProperty(json_key = "input_enabled")
     public String input_enabled;
 
-//region Input section
+    //region Input section
     @DynamicProperty(json_key = "input")
     public String input;
     public AppData imageInput = null;
+    public AppImages imagesInput = new AppImages();
     public MemberFingerprints fingerprintsInput = new MemberFingerprints();
     public MemberFingerprint fingerprintInput = new MemberFingerprint();
     @DynamicProperty(json_key = "input_format")
@@ -76,23 +76,25 @@ public class InputField extends InputGroup implements Serializable {
         this.title = title;
         this.instructions = instructions;
 
-        this.input_type = InputType.FormReview.ordinal()+"";
+        this.input_type = InputType.FormReview.ordinal() + "";
     }
+
     //Value only constructor
-  public InputField(String sid) {
+    public InputField(String sid) {
 
         this.sid = sid;
-        this.input_type = InputType.ValueOnly.ordinal()+"";
-    }
- //Value only constructor
-  public InputField(String sid,String input) {
-      this.input = input;
-
-      this.sid = sid;
-        this.input_type = InputType.ValueOnly.ordinal()+"";
+        this.input_type = InputType.ValueOnly.ordinal() + "";
     }
 
-//Image constructor
+    //Value only constructor
+    public InputField(String sid, String input) {
+        this.input = input;
+
+        this.sid = sid;
+        this.input_type = InputType.ValueOnly.ordinal() + "";
+    }
+
+    //Image constructor
     public InputField(String sid, String title, String subTitle, String dataset, String defaultImageSource, String object_field_name, ValidationRules validationRules) {
 
         this.sid = sid;
@@ -101,10 +103,11 @@ public class InputField extends InputGroup implements Serializable {
         this.dataset = dataset;
         this.default_image_source = defaultImageSource;
         this.object_field_name = object_field_name;
-        this.input_type = InputType.Image.ordinal()+"";
+        this.input_type = InputType.Image.ordinal() + "";
         this.validationRules = validationRules;
     }
-//Image constructor
+
+    //Image constructor
     public InputField(String sid, String title, String subTitle, String dataset, String defaultImageSource, String object_field_name, ValidationRules validationRules, ArrayList<InputFieldInputConstraint> inputFieldInputConstraints) {
         this.inputFieldInputConstraints = inputFieldInputConstraints;
 
@@ -114,17 +117,32 @@ public class InputField extends InputGroup implements Serializable {
         this.dataset = dataset;
         this.default_image_source = defaultImageSource;
         this.object_field_name = object_field_name;
-        this.input_type = InputType.Image.ordinal()+"";
+        this.input_type = InputType.Image.ordinal() + "";
         this.validationRules = validationRules;
     }
 
     //Selection constractor
-    public InputField(String sid, String title, String search_placeholder, String search_title, String dataset, String parent, String order_index,  String object_field_name, ValidationRules validationRules, ArrayList<InputFieldInputConstraint> inputFieldInputConstraints) {
+
+    /**
+     * This is the selection constructor
+     *
+     * @param sid
+     * @param title
+     * @param search_placeholder
+     * @param search_title
+     * @param dataset
+     * @param parent
+     * @param order_index
+     * @param object_field_name
+     * @param validationRules
+     * @param inputFieldInputConstraints
+     */
+    public InputField(String sid, String title, String search_placeholder, String search_title, String dataset, String parent, String order_index, String object_field_name, ValidationRules validationRules, ArrayList<InputFieldInputConstraint> inputFieldInputConstraints) {
         super(sid, title, null, parent, order_index);
         this.search_placeholder = search_placeholder;
         this.search_title = search_title;
         this.title = title;
-        this.input_type = InputType.Selection.ordinal()+"";
+        this.input_type = InputType.Selection.ordinal() + "";
         this.dataset = dataset;
         this.parent = parent;
         this.order_index = order_index;
@@ -193,7 +211,9 @@ public class InputField extends InputGroup implements Serializable {
         Signature,
         Fingerprint,
         FormReview,
-        ValueOnly
+        ValueOnly,
+        MultiImage
+
 
     }
 }

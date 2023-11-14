@@ -18,6 +18,7 @@ import sparta.realm.Services.DatabaseManager;
 import sparta.realm.utils.FormTools.FingerprintCapture;
 import sparta.realm.utils.FormTools.FormEdittext;
 import sparta.realm.utils.FormTools.ImageCapture;
+import sparta.realm.utils.FormTools.MultiImageCapture;
 import sparta.realm.utils.FormTools.SearchSpinner;
 import sparta.realm.utils.FormTools.SignatureCapture;
 import sparta.realm.utils.FormTools.models.IndependentInputFieldVariable;
@@ -35,6 +36,7 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.view> {
     public InputGroup page=new InputGroup();
     public FingerprintCapture activeFingerprintCapture;
     public ImageCapture activeImageCapture;
+    public MultiImageCapture activeMultiImageCapture;
 
 
     public interface InputListener {
@@ -96,6 +98,7 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.view> {
     public class view extends RecyclerView.ViewHolder implements View.OnClickListener {
         public FingerprintCapture fingerprintCapture;
         public ImageCapture imageCapture;
+        public MultiImageCapture multiImageCapture;
         public SignatureCapture signatureCapture;
         public SearchSpinner selectionInput;
         public FormEdittext textInput;
@@ -111,7 +114,7 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.view> {
             fingerprintCapture = itemView.findViewById(R.id.fingerprint_capture);
             imageCapture = itemView.findViewById(R.id.image_capture);
             signatureCapture = itemView.findViewById(R.id.signature_capture);
-//            formReview = itemView.findViewById(R.id.form_review);
+            multiImageCapture = itemView.findViewById(R.id.multi_image_capture);
 
         }
 
@@ -194,7 +197,7 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
 
 
             }
-//            formReview.setVisibility(inputField.input_type.equalsIgnoreCase(InputField.InputType.FormReview.ordinal() + "") ? View.VISIBLE : View.GONE);
+            multiImageCapture.setVisibility(inputField.input_type.equalsIgnoreCase(InputField.InputType.MultiImage.ordinal() + "") ? View.VISIBLE : View.GONE);
             signatureCapture.setVisibility(inputField.input_type.equalsIgnoreCase(InputField.InputType.Signature.ordinal() + "") ? View.VISIBLE : View.GONE);
             imageCapture.setVisibility(inputField.input_type.equalsIgnoreCase(InputField.InputType.Image.ordinal() + "") ? View.VISIBLE : View.GONE);
             fingerprintCapture.setVisibility(inputField.input_type.equalsIgnoreCase(InputField.InputType.Fingerprint.ordinal() + "") ? View.VISIBLE : View.GONE);
@@ -285,6 +288,17 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
                 signatureCapture.setInputField(inputField, new SignatureCapture.InputListener() {
                     @Override
                     public void onInputRequested(InputField inputField) {
+
+                    }
+                });
+
+
+            }else if (multiImageCapture.getVisibility() == View.VISIBLE) {
+
+                multiImageCapture.setInputField(inputField, new MultiImageCapture.InputListener() {
+                    @Override
+                    public void onInputRequested(InputField inputField) {
+                        activeMultiImageCapture = multiImageCapture;
 
                     }
                 });
