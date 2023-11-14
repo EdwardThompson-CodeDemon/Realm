@@ -235,17 +235,13 @@ public class MultiImageCapture extends ConstraintLayout {
         int minImages = InputValidation.isNumeric(inputField.validationRules.min_input_value) ? Integer.parseInt(inputField.validationRules.min_input_value) : 0;
         int maxImages = InputValidation.isNumeric(inputField.validationRules.max_input_value) ? Integer.parseInt(inputField.validationRules.max_input_value) : -1;
         if (imageCount < minImages) {
-            inputField.inputValid = isInputValid();
-            if(!inputField.inputValid){
-                ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
-            }
+            ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
+
             return false;
         }
         if (maxImages != -1 && imageCount > maxImages) {
-            inputField.inputValid = isInputValid();
-            if(!inputField.inputValid){
-                ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
-            }
+            ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
+
             return false;
         }
 
