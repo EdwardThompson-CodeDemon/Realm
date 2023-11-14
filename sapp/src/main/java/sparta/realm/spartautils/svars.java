@@ -14,6 +14,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,7 +79,11 @@ public class svars {
         Gson gson = new Gson();
         String json = prefs.getString("wo::" + id + s.getName(), "");
         if (!json.equals("")) {
-            return gson.fromJson(json, s);
+            try {
+                return gson.fromJson(json, s);
+            }catch (JsonSyntaxException e){
+                return null;
+            }
         } else {
             return null;
         }

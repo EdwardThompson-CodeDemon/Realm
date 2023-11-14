@@ -130,6 +130,15 @@ public class MultiPhotoInputAdapter extends RecyclerView.Adapter<MultiPhotoInput
         items.removeIf(x -> (x.transaction_no == null || !x.transaction_no.equals(addImageTransactionNo)));
         notifyItemRangeRemoved(0, currentSize - 1);
 
+        ArrayList<AppData>  result = new ArrayList<>(items);
+        result.removeIf(x -> (x.transaction_no != null && x.transaction_no.equals(addImageTransactionNo)));
+        if(result.size()==items.size()&&maxItems!=-1&&result.size()<maxItems){
+            AppData addImage = new AppData();
+            addImage.transaction_no = addImageTransactionNo;
+            items.add(addImage);
+            notifyItemInserted(items.indexOf(addImage));
+
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -183,6 +192,16 @@ public class MultiPhotoInputAdapter extends RecyclerView.Adapter<MultiPhotoInput
                 public void onClick(View view) {
                     items.remove(position);
                     notifyItemRemoved(position);
+                    ArrayList<AppData>  result = new ArrayList<>(items);
+                    result.removeIf(x -> (x.transaction_no != null && x.transaction_no.equals(addImageTransactionNo)));
+                    if(result.size()==items.size()&&maxItems!=-1&&result.size()<maxItems){
+                        AppData addImage = new AppData();
+                        addImage.transaction_no = addImageTransactionNo;
+                        items.add(addImage);
+                        notifyItemInserted(items.indexOf(addImage));
+
+                    }
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

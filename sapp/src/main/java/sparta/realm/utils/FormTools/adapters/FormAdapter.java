@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import sparta.realm.Activities.SpartaAppCompactActivity;
 import sparta.realm.Activities.SpartaAppCompactFingerPrintActivity;
 import sparta.realm.R;
 import sparta.realm.Services.DatabaseManager;
@@ -21,6 +22,7 @@ import sparta.realm.utils.FormTools.ImageCapture;
 import sparta.realm.utils.FormTools.MultiImageCapture;
 import sparta.realm.utils.FormTools.SearchSpinner;
 import sparta.realm.utils.FormTools.SignatureCapture;
+import sparta.realm.utils.FormTools.models.AppData;
 import sparta.realm.utils.FormTools.models.IndependentInputFieldVariable;
 import sparta.realm.utils.FormTools.models.InputField;
 import sparta.realm.utils.FormTools.models.InputFieldInputConstraint;
@@ -294,12 +296,19 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
 
 
             }else if (multiImageCapture.getVisibility() == View.VISIBLE) {
+                multiImageCapture.setActivity((SpartaAppCompactActivity) activity);
 
                 multiImageCapture.setInputField(inputField, new MultiImageCapture.InputListener() {
                     @Override
                     public void onInputRequested(InputField inputField) {
                         activeMultiImageCapture = multiImageCapture;
 
+                    }
+
+                    @Override
+                    public void onInputAvailable(boolean valid, InputField inputField) {
+                        MultiImageCapture.InputListener.super.onInputAvailable(valid, inputField);
+                        inputListener.onInputAvailable(inputField);
                     }
                 });
 

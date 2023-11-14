@@ -2,6 +2,7 @@ package sparta.realm.utils.FormTools;
 
 import static androidx.constraintlayout.widget.ConstraintSet.PARENT_ID;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -25,14 +26,16 @@ import sparta.realm.R;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.FormTools.adapters.MultiPhotoInputAdapter;
 import sparta.realm.utils.FormTools.models.AppData;
+import sparta.realm.utils.FormTools.models.AppImages;
 import sparta.realm.utils.FormTools.models.InputField;
 import sparta.realm.utils.FormTools.models.ValidationRules;
 import sparta.realm.utils.InputValidation;
 
+
 public class MultiImageCapture extends ConstraintLayout {
 
     TextView title, subTitle;
-    ImageView clearAllButon;
+    ImageView clearAllButton;
 
     InputField inputField = new InputField();
     RecyclerView recyclerView;
@@ -55,6 +58,9 @@ public class MultiImageCapture extends ConstraintLayout {
         void onInputRequested(InputField inputField);
 
         default void onInputAvailable(boolean valid, AppData input) {
+
+        }
+        default void onInputAvailable(boolean valid,InputField inputField) {
 
         }
 
@@ -101,10 +107,10 @@ public class MultiImageCapture extends ConstraintLayout {
         int subTitleId = View.generateViewId();
         subTitle.setId(subTitleId);
 
-        clearAllButon = new ImageView(getContext());
-        clearAllButon.setImageDrawable(getContext().getDrawable(android.R.drawable.ic_menu_delete));
+        clearAllButton = new ImageView(getContext());
+        clearAllButton.setImageDrawable(getContext().getDrawable(android.R.drawable.ic_menu_delete));
         int clearAllButonId = View.generateViewId();
-        clearAllButon.setId(clearAllButonId);
+        clearAllButton.setId(clearAllButonId);
 
 
         LayoutParams titleParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -124,7 +130,7 @@ public class MultiImageCapture extends ConstraintLayout {
         LayoutParams clearAllButtonParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         clearAllButtonParams.topToBottom = title_id;
         clearAllButtonParams.endToEnd = PARENT_ID;
-        addView(clearAllButon, clearAllButtonParams);
+        addView(clearAllButton, clearAllButtonParams);
 
 
         LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -134,7 +140,7 @@ public class MultiImageCapture extends ConstraintLayout {
 //        recyclerView.setBackgroundColor(getContext().getColor(R.color.antiquewhite));
 
 
-        clearAllButon.setOnClickListener(new OnClickListener() {
+        clearAllButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 multiPhotoInputAdapter.clearItems();
@@ -163,9 +169,14 @@ public class MultiImageCapture extends ConstraintLayout {
         flowLayoutManager.setAutoMeasureEnabled(true);
         recyclerView.setLayoutManager(flowLayoutManager);
         recyclerView.setAdapter(multiPhotoInputAdapter);
-
+        populate();
 
     }
+//    public String getInput() {
+//        return inputText.getText().toString();
+//
+//    }
+//
 
     int requiredImages = 1;
 
@@ -186,11 +197,17 @@ public class MultiImageCapture extends ConstraintLayout {
         svars.setImageCameraType(getContext(), inputField.sid, Integer.parseInt(inputField.default_image_source));
 
         setValidationRules(inputField.validationRules);
+        setImagesInput(inputField.imagesInput);
+    }
+    public void setImagesInput(AppImages appImages) {
+        for(AppData appData:appImages.imagesInput){
+            multiPhotoInputAdapter.addImage(appData);
+        }
+        inputListener.onInputAvailable(isInputValid(), inputField);
 
     }
-
     public void setValidationRules(ValidationRules validationRules) {
-        multiPhotoInputAdapter.setMaxImages(InputValidation.isNumeric(validationRules.max_input_value) ? Integer.parseInt(validationRules.max_input_value) : 0);
+        multiPhotoInputAdapter.setMaxImages(InputValidation.isNumeric(validationRules.max_images) ? Integer.parseInt(validationRules.max_images) : -1);
 
     }
 
@@ -202,9 +219,17 @@ public class MultiImageCapture extends ConstraintLayout {
         int minImages = InputValidation.isNumeric(inputField.validationRules.min_input_value) ? Integer.parseInt(inputField.validationRules.min_input_value) : 0;
         int maxImages = InputValidation.isNumeric(inputField.validationRules.max_input_value) ? Integer.parseInt(inputField.validationRules.max_input_value) : -1;
         if (imageCount < minImages) {
+            inputField.inputValid = isInputValid();
+            if(!inputField.inputValid){
+                ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
+            }
             return false;
         }
         if (maxImages != -1 && imageCount > maxImages) {
+            inputField.inputValid = isInputValid();
+            if(!inputField.inputValid){
+                ObjectAnimator.ofFloat(this, "translationX", 0, 25, -25, 25, -25, 15, -15, 6, -6, 0);
+            }
             return false;
         }
 
@@ -227,25 +252,34 @@ public class MultiImageCapture extends ConstraintLayout {
     }
 
     public void clearImages() {
-        inputField.inputValid = false;
+
         multiPhotoInputAdapter.clearItems();
+        inputField.inputValid = isInputValid();
+
     }
 
     public void addImage(AppData appData) {
 
         if (appData == null || appData.data == null) {
-            inputField.inputValid = false;
+//            inputField.inputValid = false;
             return;
         } else {
             File file = new File(svars.current_app_config(getContext()).appDataFolder, appData.data);
             if (!file.exists() || file.length() < 500) {
-                inputField.inputValid = false;
+//                inputField.inputValid = false;
                 return;
             }
 
         }
-        multiPhotoInputAdapter.addImage(appData);
 
+
+        multiPhotoInputAdapter.addImage(appData);
+        inputField.inputValid = isInputValid();
+        inputListener.onInputAvailable(inputField.inputValid, inputField);
+
+    }
+
+    public void populate(){
 
     }
 
