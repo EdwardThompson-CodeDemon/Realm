@@ -526,6 +526,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
             int photo_camera_type = svars.imageCameraType(act, photo_index);
             Bitmap bitmap = null;
             String data_url = null;
+            data=data==null?new Intent():data;
             switch (photo_camera_type) {
                 case 1:
                     bitmap = BitmapFactory.decodeFile(data.getExtras().getParcelable("scannedResult").toString());
@@ -699,7 +700,23 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, photo_camera_type);
+                    File photo;
+                    try
+                    {
+                        // place where to store camera taken picture
+                        photo = this.createTemporaryFile("Realm_Photo"+System.currentTimeMillis(), ".png");
+                        photo.delete();
+                    }
+                    catch(Exception e)
+                    {
+                        Log.e(logTag, "Can't create file to take picture!");
+//                    Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
+                        return ;
+                    }
+                    latestCameraPhotoUri = Uri.fromFile(photo);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
+
+                    startActivityForResult(takePictureIntent, 1);
                 }
                 break;
 
