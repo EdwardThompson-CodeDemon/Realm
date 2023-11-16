@@ -787,6 +787,12 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
 
                     latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
+                    File file=new File(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
 
                     startActivityForResult(takePictureIntent, 1);
