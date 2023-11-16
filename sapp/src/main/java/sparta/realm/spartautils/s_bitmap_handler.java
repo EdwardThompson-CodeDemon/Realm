@@ -167,7 +167,7 @@ public static byte[] getBytes_JPG(Bitmap bitmap) {
     } catch(IOException e) {
       Log.e("combineImages", "problem combining images", e);
     }*/
-       return SpartaAppCompactActivity.save_app_image(cs);
+       return SpartaAppCompactActivity.saveUncompressedPng(cs);
 
     }
     public static Bitmap convertToBlackWhite(Bitmap bmp) {

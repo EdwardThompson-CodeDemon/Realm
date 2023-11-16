@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -17,35 +16,24 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatEditText;
 
-import com.annimon.stream.Collectors;
-import com.annimon.stream.Stream;
-import com.annimon.stream.function.Predicate;
 import com.infideap.blockedittext.BlockEditText;
 
 import java.io.File;
@@ -53,26 +41,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
-import sparta.realm.MainActivity;
 import sparta.realm.R;
 import sparta.realm.Realm;
 import sparta.realm.Services.DatabaseManager;
-import sparta.realm.spartaadapters.dyna_data_adapter;
-import sparta.realm.spartaadapters.dyna_data_adapter_;
-import sparta.realm.spartamodels.dyna_data;
-import sparta.realm.spartamodels.dyna_data_obj;
-import sparta.realm.Services.sdbw;
 import sparta.realm.spartautils.camera.CameraActivity;
 import sparta.realm.spartautils.camera.sparta_camera;
 import sparta.realm.spartautils.biometrics.face.face_handler;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.Conversions;
-
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 
 public class SpartaAppCompactActivity extends AppCompatActivity {
@@ -339,7 +317,26 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         }
         return img_name;
     }
+    public static String saveUncompressedPng(Bitmap fpb) {
+        String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
 
+        File file = new File(svars.current_app_config(Realm.context).appDataFolder);
+        if (!file.exists()) {
+            Log.e(logTag, "Creating data dir: " + (file.mkdirs() ? "Successfully created" : "Failed to create !"));
+        }
+        file = new File(svars.current_app_config(Realm.context).appDataFolder, img_name);
+        try (OutputStream fOutputStream = new FileOutputStream(file)) {
+            fpb.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
+            fOutputStream.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return img_name;
+    }
     public boolean isPackageInstalled(String packageName) {
         try {
             return act.getPackageManager().getApplicationInfo(packageName, 0).enabled;
@@ -530,7 +527,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
             switch (photo_camera_type) {
                 case 1:
                     bitmap = BitmapFactory.decodeFile(data.getExtras().getParcelable("scannedResult").toString());
-                    data.putExtra("ImageUrl",save_app_image(bitmap));
+                    data.putExtra("ImageUrl",saveUncompressedPng(bitmap));
                     data.putExtra("ImageIndex", photo_index);
 
                     break;
@@ -539,7 +536,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         getContentResolver().delete(uri, null, null);
-                        data_url = save_app_image(bitmap);
+                        data_url = saveUncompressedPng(bitmap);
                         data.putExtra("ImageUrl", data_url);
                         data.putExtra("ImageIndex", photo_index);
 
@@ -563,7 +560,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     Bundle extras = data.getExtras();
 
                     bitmap = (Bitmap) extras.get("data");
-                    data_url = save_app_image(bitmap);
+                    data_url = saveUncompressedPng(bitmap);
                     data.putExtra("ImageUrl", data_url);
                     data.putExtra("ImageIndex", photo_index);
                     bitmap.recycle();
@@ -573,7 +570,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     break;
                 case 4:
                     bitmap = BitmapFactory.decodeByteArray(sparta_camera.latest_image, 0, sparta_camera.latest_image.length, null);
-                    data_url = save_app_image(bitmap);
+                    data_url = saveUncompressedPng(bitmap);
                     data.putExtra("ImageUrl", data_url);
                     data.putExtra("ImageIndex", photo_index);
                     bitmap.recycle();
