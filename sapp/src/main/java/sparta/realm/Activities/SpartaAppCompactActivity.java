@@ -570,9 +570,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                         Log.e(logTag, "Failed to load", e);
                     }
 
-                    data_url = saveUncompressedPng(bitmap);
+                    latestCameraPhotoName = saveUncompressedPng(bitmap);
 //                    data.putExtra("ThumbnailUrl", saveUncompressedPng((Bitmap) data.getExtras().get("data")));
-                    data.putExtra("ImageUrl", data_url);
+                    data.putExtra("ImageUrl", latestCameraPhotoName);
                     data.putExtra("ImageIndex", photo_index);
                     bitmap.recycle();
                     bitmap = null;
@@ -800,6 +800,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
     }
     Uri latestCameraPhotoUri;
+    String latestCameraPhotoName;
     private File createTemporaryFile(String part, String ext) throws Exception
     {
         File tempDir= Environment.getExternalStorageDirectory();
