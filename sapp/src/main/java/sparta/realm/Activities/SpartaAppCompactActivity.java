@@ -793,6 +793,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                    latestCameraPhotoUri=Uri.fromFile(file);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
 
                     startActivityForResult(takePictureIntent, 1);
