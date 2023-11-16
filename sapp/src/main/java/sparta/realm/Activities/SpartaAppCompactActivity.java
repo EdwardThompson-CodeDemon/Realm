@@ -3,6 +3,7 @@ package sparta.realm.Activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
@@ -556,10 +558,19 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     break;
 
                 case 5:
-
+                    getContentResolver().notifyChange(latestCameraPhotoUri, null);
+                    ContentResolver cr = this.getContentResolver();
+                    try
+                    {
+                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, latestCameraPhotoUri);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e(logTag, "Failed to load", e);
+                    }
                     Bundle extras = data.getExtras();
 
-                    bitmap = (Bitmap) extras.get("data");
+//                    bitmap = (Bitmap) extras.get("data");
                     data_url = saveUncompressedPng(bitmap);
                     data.putExtra("ImageUrl", data_url);
                     data.putExtra("ImageIndex", photo_index);
@@ -746,13 +757,42 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
+                    File photo;
+                    try
+                    {
+                        // place where to store camera taken picture
+                        photo = this.createTemporaryFile("Realm_Photo"+System.currentTimeMillis(), ".png");
+                        photo.delete();
+                    }
+                    catch(Exception e)
+                    {
+                        Log.e(logTag, "Can't create file to take picture!");
+//                    Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
+                        return ;
+                    }
+                    latestCameraPhotoUri = Uri.fromFile(photo);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
+
                     startActivityForResult(takePictureIntent, 1);
                 }
+
+
                 break;
 
 
         }
 
+    }
+    Uri latestCameraPhotoUri;
+    private File createTemporaryFile(String part, String ext) throws Exception
+    {
+        File tempDir= Environment.getExternalStorageDirectory();
+        tempDir=new File(tempDir.getAbsolutePath()+"/.temp/");
+        if(!tempDir.exists())
+        {
+            tempDir.mkdirs();
+        }
+        return File.createTempFile(part, ext, tempDir);
     }
 
 }
