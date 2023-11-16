@@ -568,10 +568,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     {
                         Log.e(logTag, "Failed to load", e);
                     }
-                    Bundle extras = data.getExtras();
 
-//                    bitmap = (Bitmap) extras.get("data");
                     data_url = saveUncompressedPng(bitmap);
+//                    data.putExtra("ThumbnailUrl", saveUncompressedPng((Bitmap) data.getExtras().get("data")));
                     data.putExtra("ImageUrl", data_url);
                     data.putExtra("ImageIndex", photo_index);
                     bitmap.recycle();
