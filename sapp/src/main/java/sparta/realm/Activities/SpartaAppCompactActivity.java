@@ -558,11 +558,11 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     break;
 
                 case 5:
-                    getContentResolver().notifyChange(latestCameraPhotoUri, null);
-                    ContentResolver cr = this.getContentResolver();
+//                    getContentResolver().notifyChange(latestCameraPhotoUri, null);
+//                    ContentResolver cr = this.getContentResolver();
                     try
                     {
-                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, latestCameraPhotoUri);
+                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), latestCameraPhotoUri);
                     }
                     catch (Exception e)
                     {
