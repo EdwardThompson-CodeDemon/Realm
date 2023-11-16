@@ -570,7 +570,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                         Log.e(logTag, "Failed to load", e);
                     }
 
-                    latestCameraPhotoName = saveUncompressedPng(bitmap);
+//                    latestCameraPhotoName = saveUncompressedPng(bitmap);
 //                    data.putExtra("ThumbnailUrl", saveUncompressedPng((Bitmap) data.getExtras().get("data")));
                     data.putExtra("ImageUrl", latestCameraPhotoName);
                     data.putExtra("ImageIndex", photo_index);
@@ -700,20 +700,10 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-                    File photo;
-                    try
-                    {
-                        // place where to store camera taken picture
-                        photo = this.createTemporaryFile("Realm_Photo"+System.currentTimeMillis(), ".png");
-                        photo.delete();
-                    }
-                    catch(Exception e)
-                    {
-                        Log.e(logTag, "Can't create file to take picture!");
-//                    Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
-                        return ;
-                    }
-                    latestCameraPhotoUri = Uri.fromFile(photo);
+
+                    latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
+
+                    latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
 
                     startActivityForResult(takePictureIntent, 1);
@@ -771,27 +761,36 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
             case 5:
 
+//                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
+//                    File photo;
+//                    try
+//                    {
+//                        // place where to store camera taken picture
+//                        photo = this.createTemporaryFile( "RE_DAT" + System.currentTimeMillis() + "_IMG", ".PNG");
+//                        photo.delete();
+//                    }
+//                    catch(Exception e)
+//                    {
+//                        Log.e(logTag, "Can't create file to take picture!");
+////                    Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
+//                        return ;
+//                    }
+//                    latestCameraPhotoUri = Uri.fromFile(photo);
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
+//
+//                    startActivityForResult(takePictureIntent, 1);
+//                }
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-                    File photo;
-                    try
-                    {
-                        // place where to store camera taken picture
-                        photo = this.createTemporaryFile("Realm_Photo"+System.currentTimeMillis(), ".png");
-                        photo.delete();
-                    }
-                    catch(Exception e)
-                    {
-                        Log.e(logTag, "Can't create file to take picture!");
-//                    Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
-                        return ;
-                    }
-                    latestCameraPhotoUri = Uri.fromFile(photo);
+
+                    latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
+
+                    latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
 
                     startActivityForResult(takePictureIntent, 1);
                 }
-
 
                 break;
 
@@ -799,8 +798,8 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         }
 
     }
-    Uri latestCameraPhotoUri;
-    String latestCameraPhotoName;
+    public  Uri latestCameraPhotoUri;
+   public String latestCameraPhotoName;
     private File createTemporaryFile(String part, String ext) throws Exception
     {
         File tempDir= Environment.getExternalStorageDirectory();
