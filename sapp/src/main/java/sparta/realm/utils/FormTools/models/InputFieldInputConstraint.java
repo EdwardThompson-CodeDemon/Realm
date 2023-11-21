@@ -25,6 +25,9 @@ public class InputFieldInputConstraint extends RealmModel implements Serializabl
     @DynamicProperty(json_key = "dependent_column")
     public String dependent_column;
 
+ @DynamicProperty(json_key = "independent_column")
+    public String independent_column;
+
     @DynamicProperty(json_key = "operation_value")
     public String operation_value;
     @DynamicProperty(json_key = "dataset_values")
