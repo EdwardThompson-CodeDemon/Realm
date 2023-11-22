@@ -397,7 +397,19 @@ public class FormPlayer extends ConstraintLayout {
 
                     for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.andIndependentInputFieldVariables) {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field).object_field_name);
-                        String independentValue = getInputField_(independentInputFieldVariable.independent_input_field,inputGroups).input;
+//                        String independentValue = getInputField_(independentInputFieldVariable.independent_input_field,inputGroups).input;
+                        InputField independentInputField=getInputField_(independentInputFieldVariable.independent_input_field,inputGroups);
+                        String independentValue = independentInputField.input;
+
+                        if(independentInputFieldVariable.independent_input_field_column!=null){
+                            try {
+                                independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
+                            } catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
+                            }
+
+                        }
+
                         if (independentValue == null) {
                             andFilterOk = false;
                             break;
