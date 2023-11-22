@@ -237,11 +237,11 @@ public class FormPlayer extends ConstraintLayout {
         pageTitleParams.endToEnd = PARENT_ID;
         addView(pageTitle, pageTitleParams);
 
-        LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         recyclerViewParams.topToBottom = pageTitleId;
         recyclerViewParams.startToStart = PARENT_ID;
         recyclerViewParams.endToEnd = PARENT_ID;
-        recyclerViewParams.bottomToTop = previousId;
+//        recyclerViewParams.bottomToTop = previousId;
         recyclerViewParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         addView(recyclerView, recyclerViewParams);
 
