@@ -500,7 +500,7 @@ public class FormPlayer extends ConstraintLayout {
                         }
                     }
 
-                    if (!(orFilterOk == null || orFilterOk) && (andFilterOk == null || andFilterOk)) {
+                    if (!((orFilterOk == null || orFilterOk) && (andFilterOk == null || andFilterOk))) {
                         notEqualToFilterCanDisplay = false;
                     } else if (notEqualToFilterCanDisplay == null) {
                         notEqualToFilterCanDisplay = true;
@@ -801,7 +801,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                         }
                     }
 
-                    if (!(orFilterOk == null || orFilterOk) && (andFilterOk == null || andFilterOk)) {
+                    if (!((orFilterOk == null || orFilterOk) && (andFilterOk == null || andFilterOk))) {
                         notEqualToFilterCanDisplay = false;
                     } else if (notEqualToFilterCanDisplay == null) {
                         notEqualToFilterCanDisplay = true;
