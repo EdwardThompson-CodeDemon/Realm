@@ -678,7 +678,18 @@ if(independentInputFieldVariable.independent_input_field_column!=null){
 
                     for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.andIndependentInputFieldVariables) {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field).object_field_name);
-                        String independentValue = getInputField(independentInputFieldVariable.independent_input_field,inputFields).input;
+//                        String independentValue = getInputField(independentInputFieldVariable.independent_input_field,inputFields).input;
+                        InputField independentInputField=getInputField(independentInputFieldVariable.independent_input_field,inputFields);
+                        String independentValue = independentInputField.input;
+
+                        if(independentInputFieldVariable.independent_input_field_column!=null){
+                            try {
+                                independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
+                            } catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
+                            }
+
+                        }
                         if (independentValue == null) {
                             andFilterOk = false;
                             break;
