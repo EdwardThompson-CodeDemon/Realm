@@ -376,7 +376,7 @@ public class FormPlayer extends ConstraintLayout {
                         InputField independentInputField=getInputField_(independentInputFieldVariable.independent_input_field,inputGroups);
                         String independentValue = independentInputField.input;
 
-                        if(independentInputFieldVariable.independent_input_field_column!=null){
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
                             } catch (ClassNotFoundException e) {
@@ -401,7 +401,7 @@ public class FormPlayer extends ConstraintLayout {
                         InputField independentInputField=getInputField_(independentInputFieldVariable.independent_input_field,inputGroups);
                         String independentValue = independentInputField.input;
 
-                        if(independentInputFieldVariable.independent_input_field_column!=null){
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
                             } catch (ClassNotFoundException e) {
@@ -449,8 +449,18 @@ public class FormPlayer extends ConstraintLayout {
                     Boolean orFilterOk = null;
                     for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.orIndependentInputFieldVariables) {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field,inputGroups).object_field_name);
-                        String independentValue = getInputField_(independentInputFieldVariable.independent_input_field,inputGroups).input;
+//                        String independentValue = getInputField_(independentInputFieldVariable.independent_input_field,inputGroups).input;
+                        InputField independentInputField=getInputField_(independentInputFieldVariable.independent_input_field,inputGroups);
+                        String independentValue = independentInputField.input;
 
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
+                            try {
+                                independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
+                            } catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
+                            }
+
+                        }
                         if (!independentValue.equals(independentInputFieldVariable.operation_value)) {
                             orFilterOk = true;
                             break;
@@ -462,9 +472,20 @@ public class FormPlayer extends ConstraintLayout {
                     }
                     Boolean andFilterOk = null;
 
-                    for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.orIndependentInputFieldVariables) {
+                    for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.andIndependentInputFieldVariables) {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field,inputGroups).object_field_name);
-                        String independentValue = getInputField_(independentInputFieldVariable.independent_input_field,inputGroups).input;
+//                        String independentValue = getInputField_(independentInputFieldVariable.independent_input_field,inputGroups).input;
+                        InputField independentInputField=getInputField_(independentInputFieldVariable.independent_input_field,inputGroups);
+                        String independentValue = independentInputField.input;
+
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
+                            try {
+                                independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
+                            } catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
+                            }
+
+                        }
                         if (independentValue == null) {
                             inputFieldInputConstraintProcessingResult.field_active = false;
                             return inputFieldInputConstraintProcessingResult;
@@ -505,7 +526,7 @@ public class FormPlayer extends ConstraintLayout {
                     InputField independentInputField = getInputField_(inputFieldInputConstraint.independent_input_field,inputGroups);
 //                    String independentInput = getField(registeringObject, independentInputField.object_field_name);
                     String independentInput =independentInputField.input;
-                    if(inputFieldInputConstraint.independent_column!=null){
+                    if(inputFieldInputConstraint.independent_column!=null&&independentInput!=null){
                         try {
                             independentInput =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),inputFieldInputConstraint.independent_column);
                         } catch (ClassNotFoundException e) {
@@ -656,7 +677,7 @@ public class FormPlayer extends ConstraintLayout {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field).object_field_name);
                         InputField independentInputField=getInputField(independentInputFieldVariable.independent_input_field,inputFields);
                         String independentValue = independentInputField.input;
-if(independentInputFieldVariable.independent_input_field_column!=null){
+if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
     try {
         independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
     } catch (ClassNotFoundException e) {
@@ -682,7 +703,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null){
                         InputField independentInputField=getInputField(independentInputFieldVariable.independent_input_field,inputFields);
                         String independentValue = independentInputField.input;
 
-                        if(independentInputFieldVariable.independent_input_field_column!=null){
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
                             } catch (ClassNotFoundException e) {
@@ -729,8 +750,18 @@ if(independentInputFieldVariable.independent_input_field_column!=null){
                     Boolean orFilterOk = null;
                     for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.orIndependentInputFieldVariables) {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field,inputGroups).object_field_name);
-                        String independentValue = getInputField(independentInputFieldVariable.independent_input_field,inputFields).input;
+//                        String independentValue = getInputField(independentInputFieldVariable.independent_input_field,inputFields).input;
+                        InputField independentInputField=getInputField(independentInputFieldVariable.independent_input_field,inputFields);
+                        String independentValue = independentInputField.input;
 
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
+                            try {
+                                independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
+                            } catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
+                            }
+
+                        }
                         if (!independentValue.equals(independentInputFieldVariable.operation_value)) {
                             orFilterOk = true;
                             break;
@@ -742,9 +773,20 @@ if(independentInputFieldVariable.independent_input_field_column!=null){
                     }
                     Boolean andFilterOk = null;
 
-                    for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.orIndependentInputFieldVariables) {
+                    for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInputConstraint.andIndependentInputFieldVariables) {
 //                        String independentValue = getField(registeringObject, getInputField(independentInputFieldVariable.independent_input_field,inputGroups).object_field_name);
-                        String independentValue = getInputField(independentInputFieldVariable.independent_input_field,inputFields).input;
+//                        String independentValue = getInputField(independentInputFieldVariable.independent_input_field,inputFields).input;
+                        InputField independentInputField=getInputField(independentInputFieldVariable.independent_input_field,inputFields);
+                        String independentValue = independentInputField.input;
+
+                        if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
+                            try {
+                                independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
+                            } catch (ClassNotFoundException e) {
+//                            throw new RuntimeException(e);
+                            }
+
+                        }
                         if (independentValue == null) {
                             inputFieldInputConstraintProcessingResult.field_active = false;
                             return inputFieldInputConstraintProcessingResult;
