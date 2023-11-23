@@ -469,7 +469,7 @@ public class SearchSpinner extends LinearLayout {
 
     InputField inputField = new InputField();
 
-    public void setInputField(InputField inputField, InputListener inputListener) {
+    public void setInputField_OtherThreadLoad(InputField inputField, InputListener inputListener) {
         this.inputField = inputField;
         this.inputListener = inputListener;
         reset();
@@ -508,6 +508,60 @@ public class SearchSpinner extends LinearLayout {
 
         selectionDataRecyclerViewAdapter.setupLists();
         setInput(inputField.input);
+    }
+    public void setInputField(InputField inputField, InputListener inputListener) {
+        this.inputField = inputField;
+        this.inputListener = inputListener;
+        reset();
+        setTitle(inputField.title);
+//        searchText.setHint(inputField.placeholder);
+        searchText.setHint(getContext().getString(R.string.search)+" " +inputField.title.toLowerCase());
+        setSearchTitle((inputField.title.toLowerCase().startsWith("a")
+                ||inputField.title.toLowerCase().startsWith("e")
+                ||inputField.title.toLowerCase().startsWith("i")
+                ||inputField.title.toLowerCase().startsWith("o")
+                ||inputField.title.toLowerCase().startsWith("u")?getContext().getString(R.string.select_an) :getContext().getString(R.string.select_a))+"" +inputField.title.toLowerCase());
+            selectionData.clear();
+            Handler handler=new Handler(getContext().getMainLooper());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+//                        selectionData.addAll((ArrayList) Realm.databaseManager.loadObjectArray(Class.forName(inputField.dataset), new Query().setTableFilters(inputField.dataset_table_filter)));
+                        selectionData.addAll((ArrayList) Realm.databaseManager.loadObjectArray(Class.forName(inputField.dataset), inputField.dataset_table_filter==null?new Query():new Query().setTableFilters(inputField.dataset_table_filter)));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            selectionDataRecyclerViewAdapter.setupLists();
+                            setInput(inputField.input);
+                            inputField.inputValid=isInputValid();
+                        }
+                    });
+                }
+            }).start();
+
+
+//        searchText.setAdapter(new SelectionDataAdapter(getContext(),selectionData));
+
+        selectionDataRecyclerViewAdapter.setupLists();
+        if(inputField.input!=null){
+            try {
+                SelectionData selectionData1=((SelectionData) Realm.databaseManager.loadObject(Class.forName(inputField.dataset), inputField.dataset_table_filter==null?new Query().setTableFilters("sid=?").setQueryParams(inputField.input):new Query().setTableFilters(inputField.dataset_table_filter,"sid=?").setQueryParams(inputField.input)));
+      if(selectionData1==null){
+          inputField.input=null;
+      }else {
+          selectedItemTitle.setText(selectionData1.name);
+          selectedItemInfo.setText(selectionData1.code);
+      }
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+//        setInput(inputField.input);
     }
 //    SelectionDataRecyclerViewAdapter selectionDataRecyclerViewAdapter=new SelectionDataRecyclerViewAdapter(selectionData, new SelectionDataRecyclerViewAdapter.onItemClickListener() {
 //        @Override
