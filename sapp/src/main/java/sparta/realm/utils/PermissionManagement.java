@@ -80,7 +80,11 @@ public class PermissionManagement {
         }
     }
 
-
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static boolean checkAndRequestAllPermissions(Activity context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
@@ -272,41 +276,103 @@ public class PermissionManagement {
     }
 
     public static boolean checkPermissions(Activity context, String[] permissions) {
-        int result;
         boolean ok = true;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p : permissions) {
-            result = ContextCompat.checkSelfPermission(context, p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
+        List<String> listPermissionsNeeded = new ArrayList();
+        String[] var5 = permissions;
+        int var6 = permissions.length;
+
+        for(int var7 = 0; var7 < var6; ++var7) {
+            String p = var5[var7];
+            int result = ContextCompat.checkSelfPermission(context, p);
+            if (result != 0) {
                 listPermissionsNeeded.add(p);
             }
         }
-        if (listPermissionsNeeded.contains(Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
 
-            if (SDK_INT >= Build.VERSION_CODES.R) {
+        if (listPermissionsNeeded.contains("android.permission.MANAGE_EXTERNAL_STORAGE")) {
+            if (Build.VERSION.SDK_INT >= 30) {
                 if (Environment.isExternalStorageManager()) {
-                    listPermissionsNeeded.remove(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+                    listPermissionsNeeded.remove("android.permission.MANAGE_EXTERNAL_STORAGE");
+                } else {
+                    ok = false;
+//                    Intent intent = new Intent("android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION");
+//                    Uri uri = Uri.fromParts("package", context.getPackageName(), (String)null);
+//                    intent.setData(uri);
+//                    context.startActivity(intent);
                 }
             } else {
-                listPermissionsNeeded.remove(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+                listPermissionsNeeded.remove("android.permission.MANAGE_EXTERNAL_STORAGE");
             }
         }
+
         if (listPermissionsNeeded.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
             if (!Settings.canDrawOverlays(context)) {
+                openOverlaySettings(context);
                 ok = false;
             } else {
                 listPermissionsNeeded.remove(Manifest.permission.SYSTEM_ALERT_WINDOW);
             }
         }
-        if (listPermissionsNeeded.contains(Manifest.permission.REQUEST_INSTALL_PACKAGES)) {
-            listPermissionsNeeded.remove(Manifest.permission.REQUEST_INSTALL_PACKAGES);
+        if (listPermissionsNeeded.contains(Manifest.permission.PACKAGE_USAGE_STATS)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if(hasPermission(Manifest.permission.PACKAGE_USAGE_STATS)){
+                    listPermissionsNeeded.remove(Manifest.permission.PACKAGE_USAGE_STATS);
+
+                }else{
+//                    context.startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+                    ok = false;
+
+                }
+            }else{
+                listPermissionsNeeded.remove(Manifest.permission.PACKAGE_USAGE_STATS);
+
+            }
+        }
+        if (listPermissionsNeeded.contains(Manifest.permission.BLUETOOTH_CONNECT)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ok = false;
+
+            }else{
+                listPermissionsNeeded.remove(Manifest.permission.BLUETOOTH_CONNECT);
+            }
         }
 
-        if (listPermissionsNeeded.isEmpty() || (listPermissionsNeeded.size() == 1 & listPermissionsNeeded.get(0).equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION))) {
+        if (listPermissionsNeeded.contains(Manifest.permission.BLUETOOTH_SCAN)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ok = false;
 
-        } else {
+            }else{
+                listPermissionsNeeded.remove(Manifest.permission.BLUETOOTH_SCAN);
+            }
+        }
+        if (listPermissionsNeeded.contains(Manifest.permission.BLUETOOTH_PRIVILEGED)) {
+            listPermissionsNeeded.remove(Manifest.permission.BLUETOOTH_PRIVILEGED);
+        }
+        if (listPermissionsNeeded.contains(Manifest.permission.READ_PRECISE_PHONE_STATE)) {
+            listPermissionsNeeded.remove(Manifest.permission.READ_PRECISE_PHONE_STATE);
+        }
+
+        if (listPermissionsNeeded.contains("android.permission.READ_PRIVILEGED_PHONE_STATE")) {
+            listPermissionsNeeded.remove("android.permission.READ_PRIVILEGED_PHONE_STATE");
+        }
+
+        if (listPermissionsNeeded.contains("android.permission.REQUEST_INSTALL_PACKAGES")) {
+            listPermissionsNeeded.remove("android.permission.REQUEST_INSTALL_PACKAGES");
+        }
+
+        if (listPermissionsNeeded.contains("com.mediatek.permission.CTA_ENABLE_BT")) {
+            listPermissionsNeeded.remove("com.mediatek.permission.CTA_ENABLE_BT");
+        }
+
+        if (!listPermissionsNeeded.isEmpty() && !(listPermissionsNeeded.size() == 1 & ((String)listPermissionsNeeded.get(0)).equalsIgnoreCase("android.permission.ACCESS_FINE_LOCATION"))) {
+            ActivityCompat.requestPermissions(context, (String[])listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 10);
             ok = false;
         }
+
+        if (ContextCompat.checkSelfPermission(context, "android.permission.SYSTEM_ALERT_WINDOW") != 0) {
+        }
+
+
 
 
         return ok;
