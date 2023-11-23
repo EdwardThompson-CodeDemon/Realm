@@ -365,7 +365,6 @@ public class PermissionManagement {
         }
 
         if (!listPermissionsNeeded.isEmpty() && !(listPermissionsNeeded.size() == 1 & ((String)listPermissionsNeeded.get(0)).equalsIgnoreCase("android.permission.ACCESS_FINE_LOCATION"))) {
-            ActivityCompat.requestPermissions(context, (String[])listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 10);
             ok = false;
         }
 
