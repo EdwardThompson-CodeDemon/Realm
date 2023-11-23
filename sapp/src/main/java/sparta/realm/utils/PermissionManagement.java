@@ -307,7 +307,7 @@ public class PermissionManagement {
 
         if (listPermissionsNeeded.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
             if (!Settings.canDrawOverlays(context)) {
-                openOverlaySettings(context);
+//                openOverlaySettings(context);
                 ok = false;
             } else {
                 listPermissionsNeeded.remove(Manifest.permission.SYSTEM_ALERT_WINDOW);

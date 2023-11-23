@@ -379,7 +379,8 @@ public class FormPlayer extends ConstraintLayout {
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
 //                            throw new RuntimeException(e);
                             }
 
@@ -404,7 +405,8 @@ public class FormPlayer extends ConstraintLayout {
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
 //                            throw new RuntimeException(e);
                             }
 
@@ -456,7 +458,8 @@ public class FormPlayer extends ConstraintLayout {
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
 //                            throw new RuntimeException(e);
                             }
 
@@ -481,7 +484,8 @@ public class FormPlayer extends ConstraintLayout {
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
 //                            throw new RuntimeException(e);
                             }
 
@@ -529,7 +533,8 @@ public class FormPlayer extends ConstraintLayout {
                     if(inputFieldInputConstraint.independent_column!=null&&independentInput!=null){
                         try {
                             independentInput =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),inputFieldInputConstraint.independent_column);
-                        } catch (ClassNotFoundException e) {
+                        } catch (Exception e) {
+                            independentInput=null;
 //                            throw new RuntimeException(e);
                         }
                     }
@@ -680,7 +685,9 @@ public class FormPlayer extends ConstraintLayout {
 if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
     try {
         independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-    } catch (ClassNotFoundException e) {
+    } catch (Exception e) {
+        independentValue=null;
+
 //                            throw new RuntimeException(e);
     }
 
@@ -706,7 +713,9 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
+
 //                            throw new RuntimeException(e);
                             }
 
@@ -757,7 +766,9 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
+
 //                            throw new RuntimeException(e);
                             }
 
@@ -782,7 +793,8 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                         if(independentInputFieldVariable.independent_input_field_column!=null&&independentValue!=null){
                             try {
                                 independentValue =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),independentInputFieldVariable.independent_input_field_column);
-                            } catch (ClassNotFoundException e) {
+                            } catch (Exception e) {
+                                independentValue=null;
 //                            throw new RuntimeException(e);
                             }
 
@@ -830,7 +842,8 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                     if(inputFieldInputConstraint.independent_column!=null){
                         try {
                             independentInput =getField(Realm.databaseManager.loadObject(Class.forName(independentInputField.dataset),new Query().setTableFilters("sid=?").setQueryParams(independentInputField.input)),inputFieldInputConstraint.independent_column);
-                        } catch (ClassNotFoundException e) {
+                        } catch (Exception e) {
+                            independentInput=null;
 //                            throw new RuntimeException(e);
                         }
                     }
