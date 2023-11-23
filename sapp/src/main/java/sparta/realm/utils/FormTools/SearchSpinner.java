@@ -552,6 +552,7 @@ public class SearchSpinner extends LinearLayout {
                 SelectionData selectionData1=((SelectionData) Realm.databaseManager.loadObject(Class.forName(inputField.dataset), inputField.dataset_table_filter==null?new Query().setTableFilters("sid=?").setQueryParams(inputField.input):new Query().setTableFilters(inputField.dataset_table_filter,"sid=?").setQueryParams(inputField.input)));
       if(selectionData1==null){
           inputField.input=null;
+          inputListener.onInputAvailable(isInputValid(),null);
       }else {
           selectedItemTitle.setText(selectionData1.name);
           selectedItemInfo.setText(selectionData1.code);
