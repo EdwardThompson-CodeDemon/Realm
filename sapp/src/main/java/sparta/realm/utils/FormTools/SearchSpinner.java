@@ -304,7 +304,9 @@ public class SearchSpinner extends LinearLayout {
                 break;
             }
         }
-
+        if(selectedItem==null){
+            inputField.input=null;
+        }
         setState(state.idle);
 
 
