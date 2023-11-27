@@ -8,13 +8,12 @@ import sparta.realm.spartautils.biometrics.fp.BTV2;
 import sparta.realm.spartautils.biometrics.fp.FingerprintManger;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_bt;
 import sparta.realm.spartautils.biometrics.fp.fp_handler_stf_usb_8_inch;
-import sparta.realm.spartautils.biometrics.fp.fp_handler_wall_mounted;
 import sparta.realm.spartautils.biometrics.fp.sfp_i;
 import sparta.realm.spartautils.svars;
 
 
 public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivity implements sfp_i {
-    public fp_handler_wall_mounted fph_wall_mounted;
+//    public fp_handler_wall_mounted fph_wall_mounted;
 
   public BTV2 fph_bt;
     @Override
