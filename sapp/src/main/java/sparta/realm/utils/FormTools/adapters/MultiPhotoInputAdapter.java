@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
@@ -234,7 +236,7 @@ default void onImagesDeleted() {
                 @Override
                 public void onClick(View view) {
                     int items_size = items.size() - 1;
-                    if (position == items_size) {
+                    if (position == items_size&&items.get(position).transaction_no!=null&&items.get(position).transaction_no.equals(addImageTransactionNo)) {
                         if (maxItems == -1 || items_size < maxItems) {
 //                        svars.setImageCameraType(context,"2",5);
 //                        activity.takePhoto("2");
@@ -269,8 +271,13 @@ default void onImagesDeleted() {
                 if (memberImage != null && memberImage.data != null) {
                     image.setImageDrawable(null);
                     image.setImageURI(null);
-                    image.setImageURI(Uri.parse(Uri.parse(svars.current_app_config(Realm.context).appDataFolder) + memberImage.data));
+//                    image.setImageURI(Uri.parse(Uri.parse(svars.current_app_config(Realm.context).appDataFolder) + memberImage.data));
                     title.setText(null);
+                    Uri uri = Uri.fromFile(new File(svars.current_app_config(Realm.context).appDataFolder + memberImage.data));
+                    Glide.with(itemView.getContext()).
+                            load(uri).
+                            thumbnail(0.1f).
+                            into(image);
                 } else {
                     image.setImageURI(null);
                     title.setText("Error loading");

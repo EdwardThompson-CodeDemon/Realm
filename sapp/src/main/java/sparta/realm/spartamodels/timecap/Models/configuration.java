@@ -2,6 +2,7 @@ package sparta.realm.spartamodels.timecap.Models;
 
 import com.realm.annotations.DynamicClass;
 import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.RealmModel;
 import com.realm.annotations.SyncDescription;
 import com.realm.annotations.db_class_;
 
@@ -9,7 +10,7 @@ import com.realm.annotations.db_class_;
 //@SyncDescription(service_name = "Config",service_type = SyncDescription.service_type.Download,download_link = "/Api_v1.0/Camera/GetDeviceConfig",use_download_filter = false,is_ok_position = "JO:isOkay",download_array_position = "JO:result")//uipa
 //@SyncDescription(service_id = "7",service_name = "Config",service_type = SyncDescription.service_type.Download,download_link = "/Api_v1.0/Camera/GetDeviceConfig",use_download_filter = false,is_ok_position = "JO:IsOkay",download_array_position = "JO:Result")
 @SyncDescription(service_id = "7",service_name = "Config",service_type = SyncDescription.service_type.Download,download_link = "/Api_v1.0/Camera/GetDeviceConfig",use_download_filter = false,is_ok_position = "JO:isOkay",download_array_position = "JO:result")
-public class configuration extends db_class_ {
+public class configuration extends RealmModel {
 /*
 
 ///Api_v1.0/Camera/AddCamVerificationApi_v1.0/Camera/AddRejectedImages

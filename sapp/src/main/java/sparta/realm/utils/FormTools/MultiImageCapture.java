@@ -122,7 +122,7 @@ public class MultiImageCapture extends ConstraintLayout {
         LayoutParams subTitleParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
         subTitleParams.topToBottom = title_id;
         subTitleParams.startToStart = PARENT_ID;
-        subTitleParams.endToEnd = clearAllButonId;
+        subTitleParams.endToStart = clearAllButonId;
         subTitleParams.setMargins(dpToPx(4), dpToPx(8), dpToPx(0), dpToPx(0));
         subTitleParams.bottomMargin = 0;
         addView(subTitle, subTitleParams);
