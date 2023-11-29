@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.Barrier;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +40,7 @@ public class MultiImageCapture extends ConstraintLayout {
 
     InputField inputField = new InputField();
     RecyclerView recyclerView;
+    Barrier barrier1;
     //    AppData memberImage;
     SpartaAppCompactActivity activity;
     InputListener inputListener = new InputListener() {
@@ -112,6 +114,10 @@ public class MultiImageCapture extends ConstraintLayout {
         int clearAllButonId = View.generateViewId();
         clearAllButton.setId(clearAllButonId);
 
+        barrier1 = new Barrier(getContext());
+        int barrier1Id = View.generateViewId();
+        barrier1.setId(barrier1Id);
+
 
         LayoutParams titleParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         titleParams.topToTop = PARENT_ID;
@@ -134,12 +140,18 @@ public class MultiImageCapture extends ConstraintLayout {
 
 
         LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        recyclerViewParams.topToBottom = clearAllButonId;
+        recyclerViewParams.topToBottom = barrier1Id;
         recyclerViewParams.setMargins(dpToPx(4), dpToPx(0), dpToPx(4), dpToPx(0));
         addView(recyclerView, recyclerViewParams);
 //        recyclerView.setBackgroundColor(getContext().getColor(R.color.antiquewhite));
 
+ LayoutParams barrier1Params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        barrier1Params.topToBottom = clearAllButonId;
+        addView(barrier1, barrier1Params);
 
+        barrier1.setType(Barrier.BOTTOM);
+        int[] referenceIds = new int[]{clearAllButonId,subTitleId};
+        barrier1.setReferencedIds(referenceIds);
         clearAllButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
