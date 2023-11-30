@@ -1241,6 +1241,12 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
 
     }
 
+    public void resetObject(){
+        svars.setWorkingObject(registeringObject, "FormItem:" + form.sid);
+        populate(svars.workingObject(registeringObject.getClass(),"FormItem:" + form.sid));
+
+    }
+
     void saveTempRegistration() {
         for (InputField inputField : currentPage.inputFields) {
             if (inputField.object_field_name == null) {

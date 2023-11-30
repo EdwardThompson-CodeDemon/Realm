@@ -169,6 +169,7 @@ for (IndependentInputFieldVariable independentInputFieldVariable : inputFieldInp
                     ViewGroup.LayoutParams params = itemView.getLayoutParams();
                     params.height = 0;
                     itemView.setLayoutParams(params);
+                    inputListener.onInputAvailable(inputField);
                     return;
                 } else {
                     if (inputField.input_type.equals(InputField.InputType.ValueOnly.ordinal()+"")) {
