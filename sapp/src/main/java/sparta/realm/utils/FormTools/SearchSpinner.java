@@ -197,7 +197,7 @@ public class SearchSpinner extends LinearLayout {
         searchList.setAdapter(selectionDataRecyclerViewAdapter);
         LinearLayout layout = new LinearLayout(getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setBackgroundColor(getContext().getColor(R.color.transparent));
+        layout.setBackgroundColor(getContext().getColor(R.color.ghostwhite));
         params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = 1;
         layout.addView(selectInstructions, params);
