@@ -1242,7 +1242,13 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
     }
 
     public void resetObject(){
-        svars.setWorkingObject(registeringObject, "FormItem:" + form.sid);
+        try {
+            svars.setWorkingObject(registeringObject.getClass().newInstance(), "FormItem:" + form.sid);
+        } catch (IllegalAccessException e) {
+//            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+//            throw new RuntimeException(e);
+        }
         populate(svars.workingObject(registeringObject.getClass(),"FormItem:" + form.sid));
 
     }
