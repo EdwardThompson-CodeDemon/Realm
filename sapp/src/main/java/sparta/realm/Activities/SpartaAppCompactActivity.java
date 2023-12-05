@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -559,16 +560,24 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     break;
 
                 case 5:
-//                    getContentResolver().notifyChange(latestCameraPhotoUri, null);
-//                    ContentResolver cr = this.getContentResolver();
-                    try
-                    {
-                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), latestCameraPhotoUri);
+                    ContentResolver contentResolver = getContentResolver();
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(contentResolver, latestCameraPhotoUri);
+                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
                     }
-                    catch (Exception e)
-                    {
-                        Log.e(logTag, "Failed to load", e);
+                    if (bitmap != null){
+                        contentResolver.delete(latestCameraPhotoUri, MediaStore.Images.Media.TITLE + "=?", new String[]{latestCameraPhotoName});
                     }
+                    latestCameraPhotoName=    save_app_image(bitmap);
+//                    try
+//                    {
+//                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), latestCameraPhotoUri);
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        Log.e(logTag, "Failed to load", e);
+//                    }
 
 //                    latestCameraPhotoName = saveUncompressedPng(bitmap);
 //                    data.putExtra("ThumbnailUrl", saveUncompressedPng((Bitmap) data.getExtras().get("data")));
@@ -761,49 +770,50 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
             case 5:
 
+                takeCameraPhoto();
 //                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //                if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-//                    File photo;
-//                    try
-//                    {
-//                        // place where to store camera taken picture
-//                        photo = this.createTemporaryFile( "RE_DAT" + System.currentTimeMillis() + "_IMG", ".PNG");
-//                        photo.delete();
+//
+//                    latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
+//
+//                    latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
+//                    File file=new File(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
+//                    try {
+//                        file.createNewFile();
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
 //                    }
-//                    catch(Exception e)
-//                    {
-//                        Log.e(logTag, "Can't create file to take picture!");
-////                    Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
-//                        return ;
-//                    }
-//                    latestCameraPhotoUri = Uri.fromFile(photo);
+//                    latestCameraPhotoUri=Uri.fromFile(file);
 //                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
 //
 //                    startActivityForResult(takePictureIntent, 1);
 //                }
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
-
-                    latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
-
-                    latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
-                    File file=new File(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
-                    try {
-                        file.createNewFile();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    latestCameraPhotoUri=Uri.fromFile(file);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
-
-                    startActivityForResult(takePictureIntent, 1);
-                }
 
                 break;
 
 
         }
 
+    }
+    void takeCameraPhoto(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
+
+            latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
+
+            latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder +latestCameraPhotoName);
+
+
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, latestCameraPhotoName);
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Realm Image");
+
+            latestCameraPhotoUri = act.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
+
+            act.startActivityForResult(intent, 1);
+        }
     }
     public  Uri latestCameraPhotoUri;
    public String latestCameraPhotoName;
