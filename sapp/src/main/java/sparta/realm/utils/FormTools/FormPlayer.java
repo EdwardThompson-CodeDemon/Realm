@@ -1242,6 +1242,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
     }
 
     public void resetObject(){
+        clearTempRegistration();
         try {
             svars.setWorkingObject(registeringObject.getClass().newInstance(), "FormItem:" + form.sid);
         } catch (IllegalAccessException e) {
@@ -1290,6 +1291,50 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
 
         }
         svars.setWorkingObject(registeringObject, "FormItem:" + form.sid);
+
+    }
+   void clearTempRegistration() {
+        for (InputField inputField : currentPage.inputFields) {
+            if (inputField.object_field_name == null) {
+                continue;
+            }
+            Field ff = null;
+            try {
+                ff = registeringObject.getClass().getField(inputField.object_field_name);
+                ff.setAccessible(true);
+                try {
+                    if (ff.getType() == String.class) {
+//                        ff.set(registeringObject, inputField.input);
+                        inputField.input=null;
+                    } else if (ff.getType() == AppImages.class) {
+//                        ff.set(registeringObject, inputField.imagesInput);
+                        inputField.imagesInput=new AppImages();
+
+                    }else if (ff.getType() == MemberFingerprints.class) {
+//                        ff.set(registeringObject, inputField.fingerprintsInput);
+                        inputField.fingerprintsInput=new MemberFingerprints();
+
+                    } else if (ff.getType() == MemberFingerprint.class) {
+//                        ff.set(registeringObject, inputField.fingerprintInput);
+                        inputField.fingerprintInput=new MemberFingerprint();
+
+                    } else if (ff.getType() == AppData.class) {
+//                        ff.set(registeringObject, inputField.imageInput);
+                        inputField.imageInput=new AppData();
+
+                    }
+                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+                }
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (Exception e) {
+
+            }
+
+
+        }
+        formAdapter.notifyDataSetChanged();
 
     }
 
