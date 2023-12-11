@@ -106,7 +106,7 @@ public class SynchronizationManager {
 
     public SynchronizationManager() {
 
-        app_config = current_app_config(act);
+        app_config =app_config==null? current_app_config(act):app_config;
 
     }
 
@@ -371,6 +371,7 @@ public class SynchronizationManager {
 
 
     public static void download_(sync_service_description ssd) {
+        app_config =app_config==null? current_app_config(act):app_config;
 
         Log.e("SYNC ::  ", "\nObject table :" + ssd.table_name + "\n"
                 + "Service name :" + ssd.service_name + "\n"
@@ -634,6 +635,7 @@ public class SynchronizationManager {
                 + "Service name :" + ssd.service_name + "\n"
                 + "Service type :" + ssd.servic_type.name() + "\n"
                 + "upload link :" + ssd.upload_link + "\n");
+        app_config =app_config==null? current_app_config(act):app_config;
 
         //   sync_sum_counter++;
         ssi.on_status_code_changed(2);
@@ -935,6 +937,8 @@ public class SynchronizationManager {
     }
 
     void renew_token() {
+        app_config =app_config==null? current_app_config(act):app_config;
+
         ssi.on_status_changed(act.getString(R.string.authenticating));
         final JSONObject JO = new JSONObject();
 
