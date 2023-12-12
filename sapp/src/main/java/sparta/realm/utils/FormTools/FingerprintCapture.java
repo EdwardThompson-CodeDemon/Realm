@@ -304,7 +304,7 @@ public class FingerprintCapture extends ConstraintLayout {
         famoco_devices.add("FX205");
         if(uareu_devices.contains(Build.MODEL))return new FP08_UAREU(activity);
         if(t801_devices.contains(Build.MODEL))return new T801(activity);
-        if(t801_devices.contains(Build.MODEL))return new MorphoFPManager(activity);
+        if(famoco_devices.contains(Build.MODEL))return new MorphoFPManager(activity);
 
         return new BTV2(activity);
     }

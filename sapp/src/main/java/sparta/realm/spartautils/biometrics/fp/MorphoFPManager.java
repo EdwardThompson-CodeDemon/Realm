@@ -66,7 +66,7 @@ public class MorphoFPManager extends FingerprintManger{
         USBManager.getInstance().initialize(activity, ACTION_USB_PERMISSION);
         initiateMorphoDevice();
 
-        
+
     }
 
     @Override
