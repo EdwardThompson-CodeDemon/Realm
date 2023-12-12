@@ -65,12 +65,8 @@ public class MorphoFPManager extends FingerprintManger{
         activity.registerReceiver(this.usbPermissionBroadcastReceiver, new IntentFilter(ACTION_USB_PERMISSION));
         USBManager.getInstance().initialize(activity, ACTION_USB_PERMISSION);
         initiateMorphoDevice();
-//        openConnection();
-        //place your finger
-        //ok
-        //ni kama FP device haikuwi opened. haileti light ya red
-        //ok
 
+        
     }
 
     @Override

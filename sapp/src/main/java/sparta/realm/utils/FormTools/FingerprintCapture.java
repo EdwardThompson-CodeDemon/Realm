@@ -33,6 +33,7 @@ import sparta.realm.Activities.SpartaAppCompactFingerPrintActivity;
 import sparta.realm.spartautils.biometrics.fp.BTV2;
 import sparta.realm.spartautils.biometrics.fp.FP08_UAREU;
 import sparta.realm.spartautils.biometrics.fp.FingerprintManger;
+import sparta.realm.spartautils.biometrics.fp.MorphoFPManager;
 import sparta.realm.spartautils.biometrics.fp.T801;
 import sparta.realm.utils.FormTools.adapters.FingerprintSkippingReasonAdapter;
 import sparta.realm.utils.FormTools.adapters.FingerprintToCaptureAdapter;
@@ -290,6 +291,7 @@ public class FingerprintCapture extends ConstraintLayout {
     {
         ArrayList<String>uareu_devices=new ArrayList<>();
         ArrayList<String>t801_devices=new ArrayList<>();
+        ArrayList<String>famoco_devices=new ArrayList<>();
         uareu_devices.add("SF807N");
         uareu_devices.add("F807");
         uareu_devices.add("FP-08");
@@ -299,8 +301,10 @@ public class FingerprintCapture extends ConstraintLayout {
         uareu_devices.add("ax6737_65_n");
         uareu_devices.add("SF-807N");
         t801_devices.add("SEEA900");
+        famoco_devices.add("FX205");
         if(uareu_devices.contains(Build.MODEL))return new FP08_UAREU(activity);
         if(t801_devices.contains(Build.MODEL))return new T801(activity);
+        if(t801_devices.contains(Build.MODEL))return new MorphoFPManager(activity);
 
         return new BTV2(activity);
     }
