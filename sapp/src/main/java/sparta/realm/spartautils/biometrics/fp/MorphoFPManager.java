@@ -264,10 +264,8 @@ public class MorphoFPManager extends FingerprintManger{
                         MorphoUtils.storeFFDLogs(morphoDevice);
 
                         if (ret == ErrorCodes.MORPHO_OK) {
-//                            exportWSQCompressedImage(morphoImage[0]);
-//                            handleImage(morphoImage[0].getImage());
-//                            exportWSQCompressedImageWithNewHeader(morphoImage[0]);
-                            interf.on_result_image_obtained(MorphoUtils.createBitmap(image));
+
+                            interf.on_result_image_obtained(MorphoUtils.createBitmap(morphoImage[0].getImage()));
 //                            interf.on_result_image_obtained(MorphoUtils.createBitmap(morphoImage[0].getImage()));
                             interf.on_result_wsq_obtained(morphoImage[0].getCompressedImage());
 
