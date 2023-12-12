@@ -1416,6 +1416,18 @@ int currentPageIndex=0;
         formAdapter.activeMultiImageCapture.addImage(image);
 
     }
+  public void addActiveFingerprintCaptureDataWSQ(String wsq) {
+        formAdapter.activeFingerprintCapture.setData(FingerprintCapture.FingerprintDataType.WSQ,wsq);
+
+    }
+ public void addActiveFingerprintCaptureDataJPG(String jpg) {
+        formAdapter.activeFingerprintCapture.setData(FingerprintCapture.FingerprintDataType.JPEG,jpg);
+
+    }
+public void addActiveFingerprintCaptureDataISO(String iso) {
+        formAdapter.activeFingerprintCapture.setData(FingerprintCapture.FingerprintDataType.ISO,iso);
+
+    }
     public void setActivity(SpartaAppCompactFingerPrintActivity activity) {
         formAdapter.setActivity(activity);
         this.activity = activity;
