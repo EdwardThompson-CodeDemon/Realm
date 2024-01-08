@@ -64,7 +64,7 @@ public class MorphoFPManager extends FingerprintManger{
         // is dismissed)
         activity.registerReceiver(this.usbPermissionBroadcastReceiver, new IntentFilter(ACTION_USB_PERMISSION));
         USBManager.getInstance().initialize(activity, ACTION_USB_PERMISSION);
-        initiateMorphoDevice();
+
 
 
     }
@@ -73,15 +73,28 @@ public class MorphoFPManager extends FingerprintManger{
     public void stop() {
         super.stop();
         closeConnection();
+        started=false;
     }
 
     byte[] image;
-
+public boolean started=false;
 
 
     @Override
     public void start() {
         super.start();
+        if(!started){
+            started=true;
+            initiateMorphoDevice();
+        }else {
+            stop();
+            start();
+            return;
+        }
+
+    }
+
+    public void attachCallback(){
         run=true;
 
         morphoDeviceGetImage((observable, arg) -> {
@@ -265,7 +278,7 @@ public class MorphoFPManager extends FingerprintManger{
 
                         if (ret == ErrorCodes.MORPHO_OK) {
 
-                            interf.on_result_image_obtained(MorphoUtils.createBitmap(morphoImage[0].getImage()));
+                            interf.on_result_image_obtained(MorphoUtils.createBitmap(image));
 //                            interf.on_result_image_obtained(MorphoUtils.createBitmap(morphoImage[0].getImage()));
                             interf.on_result_wsq_obtained(morphoImage[0].getCompressedImage());
 

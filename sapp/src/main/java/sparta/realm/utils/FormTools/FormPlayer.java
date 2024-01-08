@@ -1103,7 +1103,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                 next.setVisibility(VISIBLE);
                 previous.setVisibility(VISIBLE);
             }
-
+            populate(this.registeringObject);
             formAdapter.notifyDataSetChanged();
 
         }
@@ -1157,7 +1157,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                 previous.setVisibility(VISIBLE);
             }
 
-
+            populate(this.registeringObject);
         }
 
     }
