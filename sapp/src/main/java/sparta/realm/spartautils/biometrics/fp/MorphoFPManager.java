@@ -140,7 +140,7 @@ public boolean started=false;
             Log.e(logTag, "\t--> Error opening device in DeviceDetectionMode.SdkDetection");
         }
         Log.e(logTag, "\t--> Opening device in DeviceDetectionMode.SdkDetection");
-        start();
+        attachCallback();
     }
 
     // kiasi kinushow
