@@ -64,7 +64,7 @@ public class MorphoFPManager extends FingerprintManger{
         // is dismissed)
         activity.registerReceiver(this.usbPermissionBroadcastReceiver, new IntentFilter(ACTION_USB_PERMISSION));
         USBManager.getInstance().initialize(activity, ACTION_USB_PERMISSION);
-
+        initiateMorphoDevice();
 
 
     }
@@ -73,28 +73,15 @@ public class MorphoFPManager extends FingerprintManger{
     public void stop() {
         super.stop();
         closeConnection();
-        started=false;
     }
 
     byte[] image;
-public boolean started=false;
+
 
 
     @Override
     public void start() {
         super.start();
-        if(!started){
-            started=true;
-            initiateMorphoDevice();
-        }else {
-            stop();
-            start();
-            return;
-        }
-
-    }
-
-    public void attachCallback(){
         run=true;
 
         morphoDeviceGetImage((observable, arg) -> {
@@ -140,7 +127,7 @@ public boolean started=false;
             Log.e(logTag, "\t--> Error opening device in DeviceDetectionMode.SdkDetection");
         }
         Log.e(logTag, "\t--> Opening device in DeviceDetectionMode.SdkDetection");
-        attachCallback();
+        start();
     }
 
     // kiasi kinushow
@@ -290,6 +277,7 @@ public boolean started=false;
 
 
                     }
+                    running=false;
                 }
             }
         }).start();
