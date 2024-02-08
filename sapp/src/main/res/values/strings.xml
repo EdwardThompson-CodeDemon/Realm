@@ -582,5 +582,31 @@
     <string name="select_a">"Select a "</string>
     <string name="select_an">"Select an "</string>
 
+
+    <string name="log_files_ok">Log files OK</string>
+    <string name="trace_files_ok">Trace files OK</string>
+
+    <string name="today_at">Today at </string>
+    <string name="app_version_name">Realm demo</string>
+    <string name="sign_in">Sign In</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="closed">Closed</string>
+    <string name="capture_solutions_ltd_will_use_the_data_collected_through_this_application_in_line_with_a_the_general_data_protection_regulation_gdpr_b_data_protection_act_no_24_of_2019_of_kenya_or_c_any_other_legislation_applicable_to_the_protection_of_personal_information_in_kenya_and_or_the_laws_of_the_country_you_operate_in_capture_solutions_ltd_and_its_agents_will_not_use_this_information_for_any_other_use_other_than_that_which_it_is_intended_for">Capture Solutions Ltd will use the data collected through this application in line with (a)the General Data Protection Regulation (GDPR); (b)Data Protection Act, No. 24 of 2019 of Ivory Coast; or (c) any other legislation applicable to the protection of personal information in Kenya and/or the laws of the country you operate in. Capture Solutions Ltd, and its Agents will not use this information for any other use, other than that which it is intended for.</string>
+    <string name="terms_and_conditions">Terms and conditions</string>
+    <string name="accept_terms_and_conditions">Accept terms and conditions</string>
+    <string name="licence_title">LICENCE AUTHENTICATION</string>
+    <string name="licence_message">Sorry.\nYour Device Licence Is Not Valid.\nContact Your Administrator.</string>
+    <string name="are_you_sure_you_want_to_exit">Are you sure you want to exit?</string>
+    <string name="procceed">Proceed</string>
+    <string name="your_member_account_cant_be_loaded">Your Member account cannot be loaded</string>
+    <string name="your_credentials_couldn_t_be_verified_checking_online">Your Credentials couldn\'t be verified,checking online</string>
+    <string name="sign_in_failed">Sign in failed !</string>
+    <string name="your_member_account_details_couldn_t_be_loaded">Your Member account details couldn\'t be loaded</string>
+    <string name="table_records">Table Records</string>
+    <string name="local_records">Local records</string>
+    <string name="synchronized_">Synchronized</string>
+    <string name="pending">Pending</string>
+    <string name="erroneous">Erroneous</string>
+    <string name="synchronization_report">Synchronization report</string>
 </resources>
 

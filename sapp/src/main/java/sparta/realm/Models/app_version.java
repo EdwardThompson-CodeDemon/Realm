@@ -2,6 +2,7 @@ package sparta.realm.Models;
 
 import com.realm.annotations.DynamicClass;
 import com.realm.annotations.DynamicProperty;
+import com.realm.annotations.RealmModel;
 import com.realm.annotations.SyncDescription;
 import com.realm.annotations.db_class_;
 
@@ -13,7 +14,7 @@ import static com.realm.annotations.SyncDescription.service_type.Download;
 
 
 //@DynamicClass(table_name = "app_versions_table")
-public class app_version extends db_class_ implements Serializable {
+public class app_version extends RealmModel implements Serializable {
 
 
         @DynamicProperty(json_key = "version_name")

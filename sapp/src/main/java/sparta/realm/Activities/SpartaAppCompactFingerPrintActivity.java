@@ -33,7 +33,9 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     @Override
     protected void onPause() {
         super.onPause();
-        fingerprintManger.stop();
+        if(fingerprintManger!=null){
+            fingerprintManger.stop();
+        }
 
 
     }
@@ -44,7 +46,9 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
     @Override
     protected void onResume() {
-        fingerprintManger.start();
+        if(fingerprintManger!=null){
+            fingerprintManger.start();
+        }
 
 
         super.onResume();

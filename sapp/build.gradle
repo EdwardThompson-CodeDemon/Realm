@@ -96,6 +96,7 @@ dependencies {
     implementation 'com.gemalto.wsq:wsq-android:1.2'
     implementation 'com.shuhart.stepview:stepview:1.5.1'
     implementation 'com.xiaofeng.android:flowlayoutmanager:1.2.3.2'
+    implementation 'net.lingala.zip4j:zip4j:2.11.5'
 
 
 }

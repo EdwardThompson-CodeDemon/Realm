@@ -39,12 +39,14 @@ import java.util.regex.Pattern;
 import androidx.core.app.ActivityCompat;
 
 
+import sparta.realm.Models.EmailConfiguration;
 import sparta.realm.Realm;
 import sparta.realm.spartamodels.member;
 
 
 import sparta.realm.spartautils.bluetooth.bt_device_connector;
 import sparta.realm.utils.AppConfig;
+import sparta.realm.utils.BackupManager;
 
 
 /**
@@ -60,6 +62,42 @@ public class svars {
     public static final boolean hide_product_quantity_available = false;
     public static int decimal_extent = 2;
     public static boolean show_categories = true;
+    public static String backupEmail() {
+        SharedPreferences prefs = Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE);
+        return prefs.getString("backupEmail", null);
+
+    }
+
+    public static void setBackupEmail(String backupEmail) {
+
+        SharedPreferences.Editor saver = Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE).edit();
+
+        saver.putString("backupEmail", backupEmail);
+        saver.commit();
+
+    }
+    public static boolean isBackupTypeActive(BackupManager.BackupType backupType) {
+        SharedPreferences prefs = Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE);
+        return prefs.getBoolean("isBackupTypeActive_"+backupType.name(), true);
+
+    }
+
+    public static void setIsBackupTypeActive(BackupManager.BackupType backupType, boolean active) {
+
+        SharedPreferences.Editor saver = Realm.context.getSharedPreferences(svars.sharedprefsname, Realm.context.MODE_PRIVATE).edit();
+
+        saver.putBoolean("isBackupTypeActive_"+backupType.name(), active);
+        saver.commit();
+
+    }
+    public static void setBackupEmailConfiguration(EmailConfiguration config) {
+        svars.setWorkingObject(config, "backup_email");
+    }
+
+    public static EmailConfiguration backupEmailConfiguration() {
+        return svars.workingObject(EmailConfiguration.class, "backup_email");
+    }
+
 
     public static void setWorkingObject( Object working_object, String id) {
         Context act=Realm.context;
@@ -256,12 +294,6 @@ public class svars {
     }
 
 
-    static AppConfig DEMO() {
-        AppConfig APPP = new AppConfig("http://ta.cs4africa.com:9000", "", "SNEDAI", " realm");
-        //  AppConfig APPP = new AppConfig("http://ta.cs4africa.com:1000", "", "DEMO ACCOUNT", "Demo");
-        APPP.WORKING_PROFILE_MODE = AppConfig.PROFILE_MODE.GENERAL;
-        return APPP;
-    }
 
 
     public static final int members_request_limit = 1000;

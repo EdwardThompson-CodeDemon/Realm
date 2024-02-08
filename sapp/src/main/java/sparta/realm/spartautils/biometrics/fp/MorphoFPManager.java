@@ -67,6 +67,7 @@ public class MorphoFPManager extends FingerprintManger{
         initiateMorphoDevice();
 
 
+
     }
 
     @Override

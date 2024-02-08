@@ -308,6 +308,27 @@ public class FingerprintCapture extends ConstraintLayout {
 
         return new BTV2(activity);
     }
+   public static FingerprintManger getDeviceFingerprintManger(Activity activity)
+    {
+        ArrayList<String>uareu_devices=new ArrayList<>();
+        ArrayList<String>t801_devices=new ArrayList<>();
+        ArrayList<String>famoco_devices=new ArrayList<>();
+        uareu_devices.add("SF807N");
+        uareu_devices.add("F807");
+        uareu_devices.add("FP-08");
+        uareu_devices.add("SF-08");
+        uareu_devices.add("SF-807");
+        uareu_devices.add("S807");
+        uareu_devices.add("ax6737_65_n");
+        uareu_devices.add("SF-807N");
+        t801_devices.add("SEEA900");
+        famoco_devices.add("FX205");
+        if(uareu_devices.contains(Build.MODEL))return new FP08_UAREU(activity);
+        if(t801_devices.contains(Build.MODEL))return new T801(activity);
+        if(famoco_devices.contains(Build.MODEL))return new MorphoFPManager(activity);
+
+        return new BTV2(activity);
+    }
     public enum FingerprintDataType {
         None,
 
