@@ -59,7 +59,7 @@ import sparta.realm.utils.Conversions;
 public class SpartaAppCompactActivity extends AppCompatActivity {
     public Activity act;
     //public sdbw sd;
-    public DatabaseManager dbm;
+//    public DatabaseManager dbm;
     public Drawable error_drawable;
     protected Button next, previous, clear_all;
     Boolean registering = false;
@@ -69,12 +69,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         act = this;
+        try{
         DatabaseManager.log_event(this, "AppNavigation:" + this.getClass().getName());
 
-
-        try {
-            dbm = Realm.databaseManager;
-//           sd=new sdbw(Realm.context);
         } catch (Exception ex) {
         }
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
