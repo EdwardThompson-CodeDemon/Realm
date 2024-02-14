@@ -19,6 +19,7 @@ import java.util.List;
 
 
 import sparta.realm.R;
+import sparta.realm.Realm;
 import sparta.realm.spartaadapters.employees_adapter;
 import sparta.realm.spartamodels.member;
 import sparta.realm.Services.sdbw;
@@ -159,9 +160,9 @@ String member_category=null;
                 if(search_counter==int_counter)
                 { /* */
                     if(search_tearm==null ||search_tearm.length()<1) {
-                        total = Integer.parseInt(dbm.get_record_count("member_info_table", "category='"+member_category+"'"));
+                        total = Integer.parseInt(Realm.databaseManager.get_record_count("member_info_table", "category='"+member_category+"'"));
                     }else{
-                        total = Integer.parseInt(dbm.get_record_count("member_info_table", "UPPER(fullname) LIKE '%" + search_tearm + "%' OR UPPER(idno) LIKE '%" + search_tearm + "%'", "category='"+member_category+"'"));
+                        total = Integer.parseInt(Realm.databaseManager.get_record_count("member_info_table", "UPPER(fullname) LIKE '%" + search_tearm + "%' OR UPPER(idno) LIKE '%" + search_tearm + "%'", "category='"+member_category+"'"));
 
                     }
 //                    if(employees.size()<limit)
