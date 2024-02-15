@@ -29,7 +29,6 @@
 <sparta.realm.utils.FormTools.ImageCapture
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@id/text_input"
-    android:visibility="gone"
     android:id="@+id/image_capture"
         android:layout_height="wrap_content"/>
 
