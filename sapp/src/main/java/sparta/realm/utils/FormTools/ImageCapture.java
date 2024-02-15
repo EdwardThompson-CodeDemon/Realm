@@ -156,7 +156,7 @@ SpartaAppCompactFingerPrintActivity activity;
 
 
 
-        LayoutParams imageViewParams = new LayoutParams(0, dpToPx(250));
+        LayoutParams imageViewParams = new LayoutParams(0, dpToPx(200));
         imageViewParams.topToBottom = subTitleId;
         imageViewParams.startToStart = PARENT_ID;
         imageViewParams.endToEnd = PARENT_ID;

@@ -20,7 +20,6 @@
 
   <sparta.realm.utils.FormTools.FingerprintCapture
         android:layout_width="match_parent"
-      android:visibility="gone"
 
         app:layout_constraintTop_toBottomOf="@id/text_input"
         android:id="@+id/fingerprint_capture"
@@ -28,22 +27,20 @@
 
 <sparta.realm.utils.FormTools.ImageCapture
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/text_input"
+    app:layout_constraintTop_toTopOf="parent"
     android:id="@+id/image_capture"
         android:layout_height="wrap_content"/>
 
 <sparta.realm.utils.FormTools.SignatureCapture
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/text_input"
-    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent"
     android:id="@+id/signature_capture"
         android:layout_height="wrap_content"/>
 
 
 <sparta.realm.utils.FormTools.MultiImageCapture
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/text_input"
-    android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
     android:id="@+id/multi_image_capture"
         android:layout_height="wrap_content"/>
 

@@ -275,7 +275,8 @@ public class FormPlayer extends ConstraintLayout {
         nextButtonParams.startToEnd = guidelineId;
         nextButtonParams.endToEnd = PARENT_ID;
         addView(next, nextButtonParams);
-        recyclerView.setPadding(0, 0, 0, dpToPx(70));
+//        recyclerView.setPadding(0, 0, 0, dpToPx(70));
+        recyclerView.setClipToPadding(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         formAdapter = new FormAdapter(new FormAdapter.InputListener() {
@@ -1061,9 +1062,9 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
     int operationMode = 0;
     int operationModeStatic = 0;
     int operationModeDb = 1;
-    boolean lastPage = false;
-    boolean firstPage = false;
-    boolean onlyPage = false;
+   public boolean lastPage = false;
+    public  boolean firstPage = false;
+    public boolean onlyPage = false;
 
     void nextPage() {
         if (lastPage) {
@@ -1360,7 +1361,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
     public void setInputListener(InputListener inputListener) {
         this.inputListener = inputListener;
     }
-int currentPageIndex=0;
+public int currentPageIndex=0;
     public void setForm(SpartaAppCompactFingerPrintActivity spartaAppCompactFingerPrintActivity,Form form, InputListener inputListener, Object registeringObject) {
         this.activity=spartaAppCompactFingerPrintActivity;
         setForm(form,inputListener,registeringObject);
