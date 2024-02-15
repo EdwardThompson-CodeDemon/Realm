@@ -76,6 +76,10 @@ public class FormPlayer extends ConstraintLayout {
 
         }
 
+ default void onPageChanged(InputGroup inputField,int index) {
+
+        }
+
 
     }
 
@@ -1085,7 +1089,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                 stepView.go(currentPageIndex, true);
                 stepView.done(currentPageIndex == form.inputGroups.size() - 1);
                 setPageTitle("Page " + (currentPageIndex + 1) + " of " + form.inputGroups.size() + "  " + currentPage.title);
-                          recyclerView.setPadding(0, 0, 0, dpToPx(70));
+//                          recyclerView.setPadding(0, 0, 0, dpToPx(70));
 
                       } else {
                 recyclerView.setPadding(0, 0, 0, 0);
@@ -1107,7 +1111,8 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
             }
             populate(this.registeringObject);
             formAdapter.notifyDataSetChanged();
-
+            recyclerView.invalidate();
+            inputListener.onPageChanged(currentPage,currentPageIndex);
         }
 
 
@@ -1139,7 +1144,7 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                 stepView.go(currentPageIndex, true);
                 stepView.done(currentPageIndex == form.inputGroups.size() - 1);
                 setPageTitle("Page " + (currentPageIndex + 1) + " of " + form.inputGroups.size() + "  " + currentPage.title);
-                recyclerView.setPadding(0, 0, 0, dpToPx(70));
+//                recyclerView.setPadding(0, 0, 0, dpToPx(70));
             } else {
                 recyclerView.setPadding(0, 0, 0, 0);
                 stepView.setVisibility(GONE);
@@ -1147,6 +1152,8 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                 next.setVisibility(GONE);
             }
             formAdapter.notifyDataSetChanged();
+            recyclerView.invalidate();
+            inputListener.onPageChanged(currentPage,currentPageIndex);
             if(firstPage&&!onlyPage){
                 previous.setVisibility(GONE);
                 next.setVisibility(VISIBLE);
@@ -1390,7 +1397,7 @@ int currentPageIndex=0;
             stepView.go(form.inputGroups.indexOf(currentPage), true);
             stepView.done(form.inputGroups.indexOf(currentPage) == form.inputGroups.size() - 1);
             setPageTitle("Page " + (form.inputGroups.indexOf(currentPage) + 1) + " of " + form.inputGroups.size() + "  " + currentPage.title);
-            recyclerView.setPadding(0, 0, 0, dpToPx(70));
+//            recyclerView.setPadding(0, 0, 0, dpToPx(70));
         } else {
             setPageTitle(currentPage.title);
             if(currentPage.title==null){
