@@ -1363,7 +1363,7 @@ I thot of using an interface ,dint work
         String codepath = act.getPackageCodePath();
 
         DexFile df = new DexFile(codepath);
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw = Stopwatch.createUnstarted();
         sw.start();
         // List<String> resultList = Lists.newArrayList(Collections.list(df.entries())).stream().filter(s -> s.startsWith(package_path)).collect(Collectors.toList());
 //        for (String iter :resultList) {
@@ -1507,7 +1507,7 @@ I thot of using an interface ,dint work
         svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
 
 
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw =  Stopwatch.createUnstarted();
         sw.start();
 
 

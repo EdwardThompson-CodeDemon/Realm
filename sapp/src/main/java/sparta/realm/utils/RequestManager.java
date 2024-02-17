@@ -503,7 +503,7 @@ public class RequestManager {
     }
 
     public void downloadUsingNIO(URL url, File outFile, DownloadCallback downloadCallback) {
-        Stopwatch stopwatch = new Stopwatch();
+        Stopwatch stopwatch =  Stopwatch.createUnstarted();
         stopwatch.start();
         downloadCallback.onApiConnectionStatusUpdated(200);
         try (ReadableByteChannel rbc = Channels.newChannel(url.openStream()); FileOutputStream fos = new FileOutputStream(outFile)) {

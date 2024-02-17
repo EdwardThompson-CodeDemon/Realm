@@ -105,7 +105,7 @@ ald.show();
     public  static String extract_face(member_data mb, FaceImageView fiv)
     {
         String picture_path=svars.current_app_config(Realm.context).appDataFolder +mb.data.value;
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int result=-1;
 
@@ -198,7 +198,7 @@ ald.show();
   public static String extract_face(String picture_path)
     {
 
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int result=-1;
 
@@ -296,7 +296,7 @@ ald.show();
     public static Boolean match_ok(byte[] model1,String model2path)
     {
 
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int result=-1;
 
@@ -403,7 +403,7 @@ ald.show();
     public static Boolean match_ok(String model1path,String model2path)
     {
 
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int result=-1;
 

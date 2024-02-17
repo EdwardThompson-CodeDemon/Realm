@@ -84,7 +84,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
     {
 
         Log.e(logTag,"CPU CORE COUNT :"+ svars.getCpuCores());
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int mm_score=1000;
         try {
@@ -131,7 +131,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
             do{
                 employee_count_actual=cnt_c.getInt(0);
             }while(cnt_c.moveToNext());}
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
 
 
         stw.start();
@@ -366,7 +366,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
             do{
                 employee_count_actual=cnt_c.getInt(0);
             }while(cnt_c.moveToNext());}
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
 
 
         stw.start();
@@ -531,7 +531,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
             do{
                 employee_count_actual=cnt_c.getInt(0);
             }while(cnt_c.moveToNext());}
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
 
 
         stw.start();
@@ -673,7 +673,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
             do{
                 employee_count_actual=cnt_c.getInt(0);
             }while(cnt_c.moveToNext());}
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
 
 
         stw.start();
@@ -828,7 +828,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
             do{
                 employee_count_actual=cnt_c.getInt(0);
             }while(cnt_c.moveToNext());}
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
 
 
         stw.start();
@@ -969,7 +969,7 @@ public LinkedHashMap<String,Fmd> base_64_tofmd(HashMap<String,String> fpId_fpbse
         }
 
 
-        final Stopwatch stw=new Stopwatch();
+        final Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
 
 

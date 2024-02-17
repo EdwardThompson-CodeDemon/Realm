@@ -85,7 +85,7 @@ public class FormPlayer extends ConstraintLayout {
 
     public FormPlayer(@NonNull Context context) {
         super(context);
-        Stopwatch stopwatch=new Stopwatch();
+        Stopwatch stopwatch= Stopwatch.createUnstarted();
         stopwatch.start();
         long before=   System.currentTimeMillis();
         setupUI();
@@ -96,7 +96,7 @@ public class FormPlayer extends ConstraintLayout {
 
     public FormPlayer(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        Stopwatch stopwatch=new Stopwatch();
+        Stopwatch stopwatch= Stopwatch.createUnstarted();
         stopwatch.start();
         long before=   System.currentTimeMillis();
         setupUI();
@@ -107,7 +107,7 @@ public class FormPlayer extends ConstraintLayout {
 
     public FormPlayer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Stopwatch stopwatch=new Stopwatch();
+        Stopwatch stopwatch= Stopwatch.createUnstarted();
         stopwatch.start();
         long before=   System.currentTimeMillis();
         setupUI();
@@ -118,7 +118,7 @@ public class FormPlayer extends ConstraintLayout {
 
     public FormPlayer(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        Stopwatch stopwatch=new Stopwatch();
+        Stopwatch stopwatch= Stopwatch.createUnstarted();
         stopwatch.start();
      long before=   System.currentTimeMillis();
         setupUI();

@@ -314,7 +314,7 @@ public class SynchronizationManager_ {
         String codepath = act.getPackageCodePath();
 
         DexFile df = new DexFile(codepath);
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw =  Stopwatch.createUnstarted();
         sw.start();
 
         for (Enumeration<String> iter = df.entries(); iter.hasMoreElements(); ) {
@@ -405,7 +405,7 @@ public class SynchronizationManager_ {
     void setup_sync_action_ann_0() {
 
         HashMap<sync_service_description, Object> service_descriptions = new HashMap<>();
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw =  Stopwatch.createUnstarted();
         sw.start();
         try {
 
@@ -464,7 +464,7 @@ public class SynchronizationManager_ {
      * No runtime reflection
      */
     void setup_sync_action_ann() {
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw =  Stopwatch.createUnstarted();
         sw.start();
         try {
             List<sync_service_description> sync_services = realm.getSyncDescription();

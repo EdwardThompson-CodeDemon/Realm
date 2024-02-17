@@ -461,7 +461,7 @@ JSONObject response(int cnt)
 }
 long insert_v1(String jos)
 {
-    Stopwatch stw=new Stopwatch();
+    Stopwatch stw= Stopwatch.createUnstarted();
     stw.start();
     try {
         JSONObject job = new JSONObject(jos);
@@ -488,7 +488,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
 }
 long insert_v1_sd(String jos)
 {
-    Stopwatch stw=new Stopwatch();
+    Stopwatch stw= Stopwatch.createUnstarted();
     stw.start();
     try {
         JSONObject job = new JSONObject(jos);
@@ -510,7 +510,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
 }
 long insert_gson(String jos)
 {
-    Stopwatch stw=new Stopwatch();
+    Stopwatch stw= Stopwatch.createUnstarted();
     stw.start();
     try {
         JsonObject job = new JsonParser().parse(jos).getAsJsonObject();
@@ -538,7 +538,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
 }
 long insert_gson2(String jos)
 {
-    Stopwatch stw=new Stopwatch();
+    Stopwatch stw= Stopwatch.createUnstarted();
     stw.start();
     try {
         JsonObject job = new JsonParser().parse(jos).getAsJsonObject();
@@ -566,7 +566,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
 }
     long  insert_v2(String jos)
     {
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         try {
             JsonObject job = new JsonParser().parse(jos).getAsJsonObject();
@@ -651,7 +651,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
     }
   long  insert_v2_2(String jos)
     {
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int compound_limit=500;
         try {
@@ -738,7 +738,7 @@ return stw.elapsed(TimeUnit.MILLISECONDS);
     }
   String[][] insert_sttz(JSONArray array)
     {
-         Stopwatch stw=new Stopwatch();
+         Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         int compound_limit=500;
         int ar_sz=array.length();
@@ -802,7 +802,7 @@ int det=(((m2)+compound_limit)<=ar_sz?compound_limit:l2);
 
   long  insert_from(String jos)
     {
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         try {
             JSONObject job = new JSONObject(jos);
@@ -841,7 +841,7 @@ int det=(((m2)+compound_limit)<=ar_sz?compound_limit:l2);
     }
  long  insert_v3(String jos)
     {
-        Stopwatch stw=new Stopwatch();
+        Stopwatch stw= Stopwatch.createUnstarted();
         stw.start();
         try {
             JsonObject job = new JsonParser().parse(jos).getAsJsonObject();

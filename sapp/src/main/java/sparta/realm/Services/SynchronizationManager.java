@@ -283,7 +283,7 @@ public class SynchronizationManager {
      * No runtime reflection
      */
     void setupSyncActionAnn_() {
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw =  Stopwatch.createUnstarted();
         sw.start();
         try {
             List<sync_service_description> sync_services = realm.getSyncDescription();
@@ -333,7 +333,7 @@ public class SynchronizationManager {
      * No runtime reflection
      */
     void setupSyncActionAnn() {
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw =  Stopwatch.createUnstarted();
         sw.start();
         try {
             List<sync_service_description> sync_services = realm.getSyncDescription();
