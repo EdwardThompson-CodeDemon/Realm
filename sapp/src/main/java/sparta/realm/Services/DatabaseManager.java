@@ -1507,7 +1507,7 @@ I thot of using an interface ,dint work
         svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
 
 
-        Stopwatch sw =  Stopwatch.createUnstarted();
+        Stopwatch sw = Stopwatch.createUnstarted();
         sw.start();
 
 
@@ -2470,6 +2470,21 @@ I thot of using an interface ,dint work
 
         database.execSQL(query, queryParams);
 
+    }
+
+    public void beginTransaction() {
+        database.beginTransaction();
+
+    }
+
+
+    public void finishSuccessTransaction() {
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public void finishErrorTransaction() {
+        database.endTransaction();
     }
 
     public Object getJsonValue(String pos, JSONObject jo) {
