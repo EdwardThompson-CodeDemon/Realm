@@ -1392,7 +1392,7 @@ public int currentPageIndex=0;
         firstPage = true;
         onlyPage=form.inputGroups.size()==1;
         if (!onlyPage) {
-            previous.setVisibility(GONE);
+            previous.setVisibility(INVISIBLE);
             pageTitle.setVisibility(GONE);
             stepView.setStepsNumber(form.inputGroups.size());
             stepView.go(form.inputGroups.indexOf(currentPage), true);
