@@ -1099,11 +1099,11 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
                 next.setVisibility(GONE);
             }
                       if(firstPage&&!onlyPage){
-                          previous.setVisibility(GONE);
+                          previous.setVisibility(INVISIBLE);
                           next.setVisibility(VISIBLE);
                       }
                       if(lastPage&&!onlyPage){
-                          next.setVisibility(GONE);
+                          next.setVisibility(INVISIBLE);
                           previous.setVisibility(VISIBLE);
                       }
             if(!lastPage&&!firstPage&&!onlyPage){
@@ -1156,11 +1156,11 @@ if(independentInputFieldVariable.independent_input_field_column!=null&&independe
             recyclerView.invalidate();
             inputListener.onPageChanged(currentPage,currentPageIndex);
             if(firstPage&&!onlyPage){
-                previous.setVisibility(GONE);
+                previous.setVisibility(INVISIBLE);
                 next.setVisibility(VISIBLE);
             }
             if(lastPage&&!onlyPage){
-                next.setVisibility(GONE);
+                next.setVisibility(INVISIBLE);
                 previous.setVisibility(VISIBLE);
             }
       if(!lastPage&&!firstPage&&!onlyPage){
