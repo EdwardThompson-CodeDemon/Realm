@@ -132,9 +132,8 @@ public class RequestManager {
                             HttpURLConnection httpURLConnection = null;
 
                             try {
-                                Log.e("JSON ST PG =>", "" + svars.login_url);
-                                Log.e("LOGIN TX =>", "" + JO.toString());
-//                                httpURLConnection = (HttpURLConnection) new URL(current_app_config(context).APP_MAINLINK+"/SystemAccounts/Authentication/Login/Submit").openConnection();
+                                Log.e(logTag, "URL: " + appConfig.APP_MAINLINK + appConfig.AUTHENTICATION_URL);
+                                Log.e(logTag, "TX: " + JO);
                                 httpURLConnection = (HttpURLConnection) new URL(appConfig.APP_MAINLINK + appConfig.AUTHENTICATION_URL).openConnection();
                                 httpURLConnection.setRequestMethod("POST");
                                 httpURLConnection.setRequestProperty("Content-Type", "application/json");

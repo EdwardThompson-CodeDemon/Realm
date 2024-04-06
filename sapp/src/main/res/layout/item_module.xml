@@ -6,8 +6,8 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/module_icon"
-        android:layout_width="40dp"
+        android:id="@+id/icon"
+        android:layout_width="30dp"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
@@ -22,12 +22,12 @@
         app:tint="?attr/colorControlNormal" />
 
     <TextView
-        android:id="@+id/module_name"
+        android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
         android:padding="5dp"
-        android:text="Module name"
+        android:text=" ... "
 
         app:layout_constraintBottom_toBottomOf="@+id/icon"
         app:layout_constraintStart_toEndOf="@+id/icon" />
