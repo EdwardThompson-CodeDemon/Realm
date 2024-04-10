@@ -3,6 +3,22 @@ package sparta.realm.spartautils.biometrics.fp;
 import android.graphics.Bitmap;
 
 public interface sfp_i {
+
+    void onRegistrationComplete();
+    void onRegistrationSegmentChanged(int segment_type);
+
+    void on_result_obtained(int fp_index, String capt_result);
+
+    void onGlobalImageObtained(Bitmap image);
+
+    void on_result_image_obtained(int fp_index, Bitmap capt_result_img);
+
+    void on_result_wsq_obtained(int fp_index, byte[] wsq);
+
+
+
+
+
     void onDeviceStarted();
 
     void onDeviceClosed();

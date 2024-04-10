@@ -67,6 +67,8 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
     public void onMatchFound(String sid, String data_index, String match_time, int v_type, int verrification_mode) {
 
     }
+
+
     @Override
     public void on_result_obtained(String capt_result) {
 
@@ -99,6 +101,36 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
     @Override
     public void on_result_image_error(String s) {
+
+    }
+
+    @Override
+    public void onRegistrationComplete() {
+
+    }
+
+    @Override
+    public void onRegistrationSegmentChanged(int segment_type) {
+
+    }
+
+    @Override
+    public void on_result_obtained(int fp_index, String capt_result) {
+
+    }
+
+    @Override
+    public void onGlobalImageObtained(Bitmap image) {
+
+    }
+
+    @Override
+    public void on_result_image_obtained(int fp_index, Bitmap capt_result_img) {
+
+    }
+
+    @Override
+    public void on_result_wsq_obtained(int fp_index, byte[] wsq) {
 
     }
 }
