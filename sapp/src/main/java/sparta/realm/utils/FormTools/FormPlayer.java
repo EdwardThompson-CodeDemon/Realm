@@ -241,11 +241,11 @@ public class FormPlayer extends ConstraintLayout {
         pageTitleParams.endToEnd = PARENT_ID;
         addView(pageTitle, pageTitleParams);
 
-        LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        LayoutParams recyclerViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         recyclerViewParams.topToBottom = pageTitleId;
         recyclerViewParams.startToStart = PARENT_ID;
         recyclerViewParams.endToEnd = PARENT_ID;
-        recyclerViewParams.bottomToTop = previousId;
+//        recyclerViewParams.bottomToTop = previousId;
         recyclerViewParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         addView(recyclerView, recyclerViewParams);
 
@@ -253,7 +253,7 @@ public class FormPlayer extends ConstraintLayout {
         int guidelineId = View.generateViewId();
         guideline.setId(guidelineId);
         LayoutParams guidelineParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        guidelineParams.topToBottom = PARENT_ID;
+        guidelineParams.topToBottom = recyclerVieweId;
         guidelineParams.startToStart = PARENT_ID;
         guidelineParams.endToEnd = PARENT_ID;
         guidelineParams.orientation = VERTICAL_GUIDELINE;
@@ -262,7 +262,8 @@ public class FormPlayer extends ConstraintLayout {
 
 
         LayoutParams previousButtonParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        previousButtonParams.bottomToBottom = PARENT_ID;
+        previousButtonParams.topToBottom = recyclerVieweId;
+//        previousButtonParams.bottomToBottom = PARENT_ID;
         previousButtonParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         previousButtonParams.startToStart = PARENT_ID;
         previousButtonParams.endToStart = guidelineId;
@@ -270,7 +271,8 @@ public class FormPlayer extends ConstraintLayout {
 
 
         LayoutParams nextButtonParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        nextButtonParams.bottomToBottom = PARENT_ID;
+        nextButtonParams.topToBottom = recyclerVieweId;
+//        nextButtonParams.bottomToBottom = PARENT_ID;
         nextButtonParams.setMargins(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
         nextButtonParams.startToEnd = guidelineId;
         nextButtonParams.endToEnd = PARENT_ID;
