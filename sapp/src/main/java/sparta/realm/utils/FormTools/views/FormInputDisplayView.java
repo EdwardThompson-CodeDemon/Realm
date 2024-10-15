@@ -77,7 +77,10 @@ public class FormInputDisplayView extends GeneralDataAdapterView<InputField, Gen
             try {
                 value.setText(((SelectionData) Realm.databaseManager.loadObject(Class.forName(inputField.dataset), new Query().setTableFilters("sid=?").setQueryParams(inputField.input))).name);
             } catch (ClassNotFoundException e) {
+                value.setText("!!!");
                 throw new RuntimeException(e);
+            }catch (NullPointerException e){
+                value.setText(null);
             }
 
         } else {
