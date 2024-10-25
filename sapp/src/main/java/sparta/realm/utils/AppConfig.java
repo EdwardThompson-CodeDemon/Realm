@@ -10,6 +10,7 @@ import sparta.realm.spartautils.app_control.models.module;
 
 public class AppConfig {
         public String APP_MAINLINK = "",
+                BASE_URL_REQUEST_URL = null,
                 APP_CONTROLL_MAIN_LINK = "",
                 ACCOUNT = "",
                 ACCOUNT_BRANCH = "",
