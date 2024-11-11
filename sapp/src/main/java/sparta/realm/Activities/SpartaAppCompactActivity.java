@@ -37,7 +37,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.infideap.blockedittext.BlockEditText;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -219,72 +219,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
     }
 
-    protected void setup_dob_field(BlockEditText edt) {
-        edt.setNumberOfBlock(3);
-        edt.setDefaultLength(4);
-        edt.setLengthAt(0, 2);
-        edt.setLengthAt(1, 2);
-        edt.setLengthAt(2, 4);
-        edt.setSeparatorCharacter('-');
-        edt.setInputType(InputType.TYPE_CLASS_NUMBER);
-    }
-
-    protected void populate_date(BlockEditText edt, Calendar cb) {
-        Calendar cc = Calendar.getInstance();
-        int mYear = cc.get(Calendar.YEAR);
-        int mMonth = cc.get(Calendar.MONTH);
-        int mDay = cc.get(Calendar.DAY_OF_MONTH);
 
 
-        try {
 
-
-            mYear = cb.get(Calendar.YEAR);
-            mMonth = cb.get(Calendar.MONTH);
-            mDay = cb.get(Calendar.DAY_OF_MONTH);
-
-        } catch (Exception ex) {
-        }
-
-        // Launch Date Picker Dialog..Continuous reg
-        DatePickerDialog dpd = new DatePickerDialog(act,
-                new DatePickerDialog.OnDateSetListener() {
-
-
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-
-                        edt.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                edt.setText("");
-                                setup_dob_field(edt);
-                                String input = ((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + "-" + year);
-                                Log.e("dt output :", "" + input);
-                                edt.setText(input);
-                                Log.e("dt output :", "" + edt.getText());
-
-                            }
-                        });
-
-
-                        try {
-                            cb.setTime(Conversions.sdf_user_friendly_date.parse(((dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth) + "-" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1)) + "-" + year)));
-                        } catch (Exception ex) {
-                        }
-
-                    }
-                }, mYear, mMonth, mDay);
-        dpd.show();
-        Calendar calendar_min = Calendar.getInstance();
-        calendar_min.set(Calendar.YEAR, calendar_min.get(Calendar.YEAR));
-
-
-        dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
-
-        //  dpd.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
-    }
 
     public static String logTag = "SpartaAppCompactActivity";
 
