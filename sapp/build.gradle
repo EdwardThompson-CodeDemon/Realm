@@ -62,7 +62,10 @@ dependencies {
     implementation files('libs\\mail.jar')
     implementation files('libs\\printersdk.jar')
     implementation files('libs\\com.datecs.fiscalprinter.jar')
-    implementation files('libs\\MorphoSmart_SDK_6.37.0.0.jar')
+//    implementation files('libs\\fingerprintutilslib-release.aar')
+//    implementation files('libs\\MorphoSmart_SDK_6.37.0.0.jar')
+    implementation files('libs\\MorphoSmart_SDK_6.45.0.0.jar')
+
     implementation files('libs\\TrustFinger_v2.1.0.1.jar')
     // implementation project(path: ':Annotations')
     testImplementation 'junit:junit:4.12'
@@ -99,5 +102,8 @@ dependencies {
     implementation 'com.xiaofeng.android:flowlayoutmanager:1.2.3.2'
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
 
+
+    implementation ("io.github.jeremyliao:live-event-bus-x:1.8.0")
+    implementation ("com.fasterxml.uuid:java-uuid-generator:3.2.0")
 
 }

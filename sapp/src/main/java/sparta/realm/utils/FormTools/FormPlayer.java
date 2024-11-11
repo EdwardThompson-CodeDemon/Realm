@@ -69,6 +69,7 @@ public class FormPlayer extends ConstraintLayout {
 
     public Object registeringObject;
 
+
     public interface InputListener {
         void onInputRequested(InputField inputField);
 
