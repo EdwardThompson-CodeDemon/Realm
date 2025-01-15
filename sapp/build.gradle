@@ -24,7 +24,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 1
-        versionName "1.0.292"
+        versionName "1.0.314"
 
     }
     buildTypes {
@@ -114,7 +114,7 @@ publishing {
                 from components.findByName("release") ?: components.findByName("android")
                 groupId = "sparta.realm"
                 artifactId = "Realm"
-                version = "1.0.312"
+                version = "1.0.314"
             }
         }
     }
