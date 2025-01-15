@@ -1,2 +1,6 @@
 jdk:
   -openjdk17
+
+install:
+  - FILE="-Dfile=Realm.aar"
+  - mvn install:install-file $FILE -DgroupId=sparta.realm -DartifactId=Realm -Dversion=1.0.308 -Dpackaging=aar -DgeneratePom=true
