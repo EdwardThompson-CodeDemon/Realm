@@ -22,7 +22,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Predicate;
-import com.infideap.blockedittext.BlockEditText;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,13 +70,6 @@ public class InputValidation {
 
     }
 
-    protected void set_text_error(BlockEditText edt, String error) {
-        //edt.setError(Html.fromHtml("<marquee direction='down' width='100%'height='100%'><font color='red' background-color='red'>"+error+"</font></marquee>"),error_drawable);
-        edt.setBackground(edt.getContext().getDrawable(R.drawable.textback_error));
-        edt.requestFocus();
-        Toast.makeText(edt.getContext(), error, Toast.LENGTH_LONG).show();
-
-    }
 
     protected boolean set_conditional_input_error(boolean valid, View edt, String error, String input, int min_length) {
         if (input == null || input.length() < min_length) {

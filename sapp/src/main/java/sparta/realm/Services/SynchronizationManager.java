@@ -36,12 +36,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import sparta.realm.BuildConfig;
+
 
 
 import sparta.realm.R;
 import sparta.realm.Realm;
-import sparta.realm.spartamodels.dyna_data_obj;
+
 
 
 import sparta.realm.spartautils.svars;

@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import sparta.realm.BuildConfig;
 import sparta.realm.R;
 import sparta.realm.spartaadapters.storage_item_adapter;
 import sparta.realm.spartautils.StorageUtils;

@@ -27,9 +27,6 @@ public class SpartaApplication extends Application {
                 "/Authentication/Login/Submit",false
 
         );
-
-
-        
     }
 
     public static Context getAppContext() {

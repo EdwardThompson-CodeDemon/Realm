@@ -41,7 +41,7 @@
 			android:layout_gravity="center_horizontal|center_vertical"
 
 			android:layout_marginLeft="105sp"
-			android:src="@drawable/ic_amex" />
+			/>
 
 
 	</LinearLayout>

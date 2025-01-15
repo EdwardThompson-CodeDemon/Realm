@@ -4,7 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-
+    <color name="idcapture_red">#b72d28</color>
+    <color name="idcapture_gold">#ffa500</color>
+    <color name="idcapture_blue">#72B1F2</color>
+    <color name="idcapture_green">#78CFA5</color>
 
     <color name="primary_transparent">#507AB2FF</color>
     <color name="primary_semi_transparent">#907AB2FF</color>
@@ -12,9 +15,12 @@
     <color name="accent_semi_transparent">#90ff8c00</color>
     <color name="semi_transparent">#82ffffff</color>
 
-    <!--    <color name="colorAccent">#7BAFFF</color>-->
-    <!--    <color name="primary_transparent">#507AB2FF</color>-->
-    <!--    <color name="primary_semi_transparent">#907AB2FF</color>-->
+    <color name="menu_button_back">#ffffa500</color>
+    <color name="menu_button_front">#b72d28</color>
+<!--    <color name="semi_transparent">#c8ffffff</color>-->
+    <color name="realm_background">#F4F6F6</color>
+    <color name="itemback">#000000</color>
+
 
 
 

@@ -33,7 +33,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import androidx.core.app.ActivityCompat;
-import sparta.realm.BuildConfig;
+
 import sparta.realm.Realm;
 import sparta.realm.spartamodels.member;
 

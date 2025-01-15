@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="app_realmBackground" format="reference|color"/>
+    <attr name="realmSurfaceBackground" format="reference|color"/>
+    <attr name="realmStatusBarBackground" format="reference|color"/>
+
+
     <attr name="title" format="string" />
     <attr name="mandatory" format="boolean" />
     <attr name="placeholder" format="string" />

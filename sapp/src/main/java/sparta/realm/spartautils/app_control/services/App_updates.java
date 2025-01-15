@@ -46,7 +46,7 @@ import java.util.Timer;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
-import sparta.realm.BuildConfig;
+
 import sparta.realm.R;
 import sparta.realm.Realm;
 import sparta.realm.spartamodels.percent_calculation;

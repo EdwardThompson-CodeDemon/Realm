@@ -69,7 +69,7 @@ public class NfcProbe extends SpartaAppCompactActivity {
             return;
         }
         mPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE);
         
         mNdefPushMessage = new NdefMessage(new NdefRecord[] { newTextRecord(
                "Message from NFC Reader :-)", Locale.ENGLISH, true) });
@@ -132,7 +132,7 @@ public class NfcProbe extends SpartaAppCompactActivity {
                 showWirelessSettingsDialog();
             }
             mAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);
-            mAdapter.enableForegroundNdefPush(this, mNdefPushMessage);
+//            mAdapter.enableForegroundNdefPush(this, mNdefPushMessage);
         }
     }
     
@@ -142,7 +142,7 @@ public class NfcProbe extends SpartaAppCompactActivity {
         super.onPause();
         if (mAdapter != null) {
             mAdapter.disableForegroundDispatch(this);
-            mAdapter.disableForegroundNdefPush(this);
+//            mAdapter.disableForegroundNdefPush(this);
         }
         
         //myKioskActivity.myState = NfcActivity.class;

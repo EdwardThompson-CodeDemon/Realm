@@ -45,7 +45,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import dalvik.system.DexFile;
-import sparta.realm.BuildConfig;
+
 import sparta.realm.R;
 import sparta.realm.Realm;
 import sparta.realm.spartamodels.db_class;
