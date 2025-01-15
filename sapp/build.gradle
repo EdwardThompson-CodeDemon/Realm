@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:11.+'
     implementation 'com.google.android.gms:play-services-location:11.+'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
-    implementation 'com.amitshekhar.android:android-networking:1.0.2'
+    implementation 'com.amitshekhar.android:android-networking:1.0.4'
 //    implementation 'net.zetetic:android-database-sqlcipher:4.3.0'
     implementation 'net.zetetic:android-database-sqlcipher:4.5.0'
     implementation 'com.annimon:stream:1.1.2'
