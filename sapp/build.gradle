@@ -114,7 +114,7 @@ publishing {
                 from components.findByName("release") ?: components.findByName("android")
                 groupId = "sparta.realm"
                 artifactId = "Realm"
-                version = "1.0.300"
+                version = "1.0.310"
             }
         }
     }
