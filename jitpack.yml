@@ -2,5 +2,6 @@ jdk:
   -openjdk17
 
 install:
-  - FILE="-Dfile=com/github/EdwardThompson-CodeDemon/Realm/1.0.312/Realm-1.0.312.aar"
-  - mvn install:install-file $FILE -DgroupId=sparta.realm -DartifactId=Realm -Dversion=1.0.312 -Dpackaging=aar -DgeneratePom=true
+  - ./gradlew clean build
+  - FILE="-Dfile=build/outputs/aar/realm-release.aar"
+  - mvn install:install-file $FILE -DgroupId=com.github.EdwardThompson-CodeDemon -DartifactId=Realm -Dversion=1.0.313 -Dpackaging=aar -DgeneratePom=true
