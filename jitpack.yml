@@ -2,6 +2,4 @@ jdk:
   -openjdk17
 
 install:
-  - ./gradlew clean build
-  - FILE="-Dfile=build/outputs/aar/realm-release.aar"
-  - mvn install:install-file $FILE -DgroupId=com.github.EdwardThompson-CodeDemon -DartifactId=Realm -Dversion=1.0.313 -Dpackaging=aar -DgeneratePom=true
+  - ./gradlew clean assembleRelease
