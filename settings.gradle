@@ -20,6 +20,7 @@ dependencyResolutionManagement {
         jcenter()
         maven { url = uri("https://jitpack.io" )}
     }
+//    resolutionStrategy { eachPlugin { if (requested.id.namespace == 'com.android') { useModule("com.android.tools.build:gradle:8.7.0") } } }
 }
 include ':sapp'
 rootProject.name='Realm'
