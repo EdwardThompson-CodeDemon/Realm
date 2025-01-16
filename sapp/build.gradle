@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
-//    id 'maven-publish'
-    id 'maven'
+    id 'maven-publish'
+//    id 'maven'
 }
 //apply plugin: 'com.android.application'
 //apply plugin: 'com.android.library'
