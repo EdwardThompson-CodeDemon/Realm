@@ -7,10 +7,16 @@ plugins {
 //apply plugin: 'com.android.library'
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
+group = "com.github.EdwardThompson-CodeDemon"
+version = "1.0.319"
 
 android {
     namespace  "sparta.realm"
-
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
     lintOptions {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
@@ -107,6 +113,21 @@ dependencies {
     implementation ("io.github.jeremyliao:live-event-bus-x:1.8.0")
     implementation ("com.fasterxml.uuid:java-uuid-generator:3.2.0")
 
+}
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.EdwardThompson-CodeDemon"
+                artifactId = "Realm"
+                version = "1.0.319"
+
+                // Use the layout property to specify the path to the AAR file
+//                artifact(layout.buildDirectory.file("outputs/aar/realm-release.aar"))
+            }
+        }
+    }
 }
 //publishing {
 //    publications {
