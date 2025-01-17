@@ -8,7 +8,7 @@ plugins {
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
 group = "com.github.EdwardThompson-CodeDemon"
-version = "1.0.319"
+version = "1.0.320"
 
 android {
     namespace  "sparta.realm"
@@ -31,7 +31,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 1
-        versionName "1.0.317"
+        versionName "1.0.320"
 
     }
     buildTypes {
@@ -114,21 +114,21 @@ dependencies {
     implementation ("com.fasterxml.uuid:java-uuid-generator:3.2.0")
 
 }
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
-                groupId = "com.github.EdwardThompson-CodeDemon"
-                artifactId = "Realm"
-                version = "1.0.319"
-
-                // Use the layout property to specify the path to the AAR file
-//                artifact(layout.buildDirectory.file("outputs/aar/realm-release.aar"))
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            create<MavenPublication>("release") {
+//                from(components["release"])
+//                groupId = "com.github.EdwardThompson-CodeDemon"
+//                artifactId = "Realm"
+//                version = "1.0.319"
+//
+//                // Use the layout property to specify the path to the AAR file
+////                artifact(layout.buildDirectory.file("outputs/aar/realm-release.aar"))
+//            }
+//        }
+//    }
+//}
 //publishing {
 //    publications {
 //        release(MavenPublication) {
@@ -142,15 +142,15 @@ afterEvaluate {
 //    }
 //}
 
-//afterEvaluate {
-//    publishing {
-//        publications {
-//            release(MavenPublication) {
-//                from components.release
-//                groupId = "sparta.realm"
-//                artifactId = "Realm"
-//                version = "1.0.317"
-//            }
-//        }
-//    }
-//}
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = "com.github.EdwardThompson-CodeDemon"
+                artifactId = "Realm"
+                version = "1.0.320"
+            }
+        }
+    }
+}
