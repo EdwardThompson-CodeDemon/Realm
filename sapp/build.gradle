@@ -8,7 +8,7 @@ plugins {
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
 group = "com.github.EdwardThompson-CodeDemon"
-version = "1.0.320"
+version = "1.0.321"
 
 android {
     namespace  "sparta.realm"
@@ -31,7 +31,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 1
-        versionName "1.0.320"
+        versionName "1.0.321"
 
     }
     buildTypes {
@@ -149,7 +149,7 @@ afterEvaluate {
                 from components.release
                 groupId = "com.github.EdwardThompson-CodeDemon"
                 artifactId = "Realm"
-                version = "1.0.320"
+                version = "1.0.321"
             }
         }
     }
