@@ -54,16 +54,20 @@ public class MorphoFingerprintManager extends FingerprintManger implements Obser
         ProcessInfo.getInstance().setMorphoDevice(this.morphoDevice);
        // initiateMorphoDevice();
     }
+    boolean started=false;
     @Override
     public void start() {
         super.start();
+        if(started)return;
+        started=true;
         closed=false;
         initiateMorphoDevice();
     }
         @Override
     public void stop() {
         super.stop();
-        closeConnection();
+            started=false;
+            closeConnection();
     }
     public void initiateMorphoDevice() {
         // {Morpho SDK method} to check the USB permission
@@ -134,9 +138,6 @@ public class MorphoFingerprintManager extends FingerprintManger implements Obser
         if (ret == ErrorCodes.MORPHO_OK) {
             // Set Morpho device data
             initMorphoDeviceData();
-
-//            view.informUserOfCurrentProgress(MSG_USER_PROGRESS_CONNECTION_ESTABLISHED, LAST_STEP);
-
             String productDescriptor = morphoDevice.getProductDescriptor();
             java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(productDescriptor, "\n");
             if (tokenizer.hasMoreTokens())
@@ -269,14 +270,14 @@ boolean closed=false;
 //                    exportWSQCompressedImageWithHeader(morphoImage[0]);
 //                    exportWSQCompressedImageWithNewHeader(morphoImage[0]);
 //                    saveImage(morphoImage);
-                    byte[] bitmapdata=latest_img;
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
+//                    byte[] bitmapdata=latest_img;
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
 //                    interf.on_result_image_obtained(wsqToIso(bitmapdata));
 
 
 
 
-
+                    Bitmap bitmap =MorphoUtils.createBitmap(latest_img);
                     interf.on_result_image_obtained(bitmap);
                     interf.on_result_wsq_obtained(morphoImage[0].getCompressedImage());
                     interf.on_result_obtained(wsqToIso(morphoImage[0].getCompressedImage()));
@@ -302,27 +303,10 @@ if(!closed){
             }
         }).start();
     }
-//    private void exportWSQCompressedImageWithNewHeader(final MorphoImage morphoImage) {
-//        try (FileOutputStream fos = new FileOutputStream("sdcard/TemplateFP_WSQ_newHeader" + CompressionAlgorithm.MORPHO_COMPRESS_WSQ.getExtension())) {
-//            byte[] data = morphoImage.getCompressedImage();
-//            byte[] result = WSQUtils.setNewHeader(data);
-//            Log.d(TAG, "Writing data in file with WSQ format : " + Arrays.toString(data));
-//            fos.write(result);
-//        } catch (IOException e) {
-//            Log.e(TAG, "An error has occurred while manipulating files " + e.getMessage());
-//        }
-//    }
+
 byte[] latest_img=null;
-    private void exportWSQCompressedImage(final MorphoImage morphoImage) {
-        try (FileOutputStream fos = new FileOutputStream("sdcard/TemplateFP_WSQ" + CompressionAlgorithm.MORPHO_COMPRESS_WSQ.getExtension())) {
-            byte[] data = morphoImage.getCompressedImage();
-            Log.d(TAG, "Writing data in file with WSQ format : " + Arrays.toString(data));
-            fos.write(data);
-        } catch (IOException e) {
-            Log.e(TAG, "An error has occurred while manipulating files " + e.getMessage());
-        }
-    }
-    public void update(Observable o, Object arg) {
+
+       public void update(Observable o, Object arg) {
 // Convert the object to a callback message.
         CallbackMessage message = (CallbackMessage) arg;
         int type = message.getMessageType();
@@ -446,20 +430,6 @@ byte[] latest_img=null;
     }
     private static final String TAG = MorphoFingerprintManager.class.getSimpleName();
 
-//    private void exportFP(TemplateList templateList) {
-//        int nbTemplate = templateList.getNbTemplate();
-//        for (int i = 0; i < nbTemplate; i++) {
-//            try (FileOutputStream fos = new FileOutputStream("sdcard/TemplateFP_" + ID_USER + "_f" + (i + 1) + TEMPLATE_TYPE.getExtension())) {
-//                Template t = templateList.getTemplate(i);
-//                byte[] data = t.getData();
-//                Log.d(TAG, "Writing data in file with FP format : " + Arrays.toString(data));
-//                fos.write(data);
-//            } catch (IOException e) {
-//                Log.e(TAG, "An error has occurred while manipulating files " + e.getMessage());
-//            }
-//        }
-//    }
-
     /**
      * Write data in a file with FVP format
      *
@@ -481,17 +451,6 @@ byte[] latest_img=null;
     private Handler mHandler;
 
 
-
-    /**
-     * Constructor of the Presenter
-     *
-     * @param view of the MVP pattern
-     */
-//    EnrollPresenter(EnrollContract.View view) {
-//        this.view = checkNotNull(view);
-//        mHandler = new Handler();
-//        morphoDevice = ProcessInfo.getInstance().getMorphoDevice();
-//    }
 
 
 }
