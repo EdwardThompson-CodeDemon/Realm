@@ -8,7 +8,7 @@ plugins {
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
 group = "com.github.EdwardThompson-CodeDemon"
-version = "1.0.325"
+version = "1.0.326"
 
 android {
     namespace  "sparta.realm"
@@ -88,8 +88,8 @@ dependencies {
     implementation 'nl.psdcompany:duo-navigation-drawer:2.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation('com.journeyapps:zxing-android-embedded:3.6.0') { transitive = false }
-    implementation 'com.google.android.gms:play-services-maps:11.+'
-    implementation 'com.google.android.gms:play-services-location:11.+'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.github.amitshekhariitbhu:Fast-Android-Networking:1.0.4'
 //    implementation 'net.zetetic:android-database-sqlcipher:4.3.0'
@@ -150,7 +150,7 @@ afterEvaluate {
                 from components.release
                 groupId = "com.github.EdwardThompson-CodeDemon"
                 artifactId = "Realm"
-                version = "1.0.325"
+                version = "1.0.326"
             }
         }
     }
