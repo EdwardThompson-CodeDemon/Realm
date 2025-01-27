@@ -546,7 +546,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                       try{
                           getContentResolver().delete(gmsDocumentScanningResult.getPages().get(0).getImageUri(), null, null);
                       }catch (Exception exception){
-                          
+
                       }
                         data_url = saveUncompressedPng(bitmap);
                         data.putExtra("ImageUrl", data_url);

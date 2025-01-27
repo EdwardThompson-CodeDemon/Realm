@@ -8,7 +8,7 @@ plugins {
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
 group = "com.github.EdwardThompson-CodeDemon"
-version = "1.0.326"
+version = "1.0.327"
 
 android {
     namespace  "sparta.realm"
@@ -150,7 +150,7 @@ afterEvaluate {
                 from components.release
                 groupId = "com.github.EdwardThompson-CodeDemon"
                 artifactId = "Realm"
-                version = "1.0.326"
+//                version = "1.0.326"
             }
         }
     }
