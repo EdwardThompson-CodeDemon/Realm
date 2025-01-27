@@ -1,5 +1,8 @@
 package sparta.realm.Activities;
 
+import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_JPEG;
+import static com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -35,9 +38,18 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning;
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,8 +81,8 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         act = this;
-        try{
-        DatabaseManager.log_event(this, "AppNavigation:" + this.getClass().getName());
+        try {
+            DatabaseManager.log_event(this, "AppNavigation:" + this.getClass().getName());
 
         } catch (Exception ex) {
         }
@@ -103,8 +115,6 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
 
 
     public void start_activity(Intent i) {
@@ -170,8 +180,6 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     }
 
 
-
-
     protected void populate_date(EditText edt, Calendar cb) {
         Calendar cc = Calendar.getInstance();
         int mYear = cc.get(Calendar.YEAR);
@@ -220,9 +228,6 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public static String logTag = "SpartaAppCompactActivity";
 
     public static String save_app_image(Bitmap fpb) {
@@ -254,6 +259,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         }
         return img_name;
     }
+
     public static String saveUncompressedPng(Bitmap fpb) {
         String img_name = "RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
 
@@ -274,6 +280,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
         }
         return img_name;
     }
+
     public boolean isPackageInstalled(String packageName) {
         try {
             return act.getPackageManager().getApplicationInfo(packageName, 0).enabled;
@@ -461,11 +468,11 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
             int photo_camera_type = svars.imageCameraType(act, photo_index);
             Bitmap bitmap = null;
             String data_url = null;
-            data=data==null?new Intent():data;
+            data = data == null ? new Intent() : data;
             switch (photo_camera_type) {
                 case 1:
                     bitmap = BitmapFactory.decodeFile(data.getExtras().getParcelable("scannedResult").toString());
-                    data.putExtra("ImageUrl",saveUncompressedPng(bitmap));
+                    data.putExtra("ImageUrl", saveUncompressedPng(bitmap));
                     data.putExtra("ImageIndex", photo_index);
 
                     break;
@@ -500,10 +507,10 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     } catch (IOException e) {
 //                        throw new RuntimeException(e);
                     }
-                    if (bitmap != null){
+                    if (bitmap != null) {
                         contentResolver.delete(latestCameraPhotoUri, MediaStore.Images.Media.TITLE + "=?", new String[]{latestCameraPhotoName});
                     }
-                    latestCameraPhotoName=    save_app_image(bitmap);
+                    latestCameraPhotoName = save_app_image(bitmap);
 //                    try
 //                    {
 //                        bitmap = android.provider.MediaStore.Images.Media.getBitmap(getContentResolver(), latestCameraPhotoUri);
@@ -532,6 +539,23 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
                     sparta_camera.latest_image = null;
                     break;
+                case 6:
+                    try {
+                        GmsDocumentScanningResult gmsDocumentScanningResult = GmsDocumentScanningResult.fromActivityResultIntent(data);
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), gmsDocumentScanningResult.getPages().get(0).getImageUri());
+                        getContentResolver().delete(gmsDocumentScanningResult.getPages().get(0).getImageUri(), null, null);
+                        data_url = saveUncompressedPng(bitmap);
+                        data.putExtra("ImageUrl", data_url);
+                        data.putExtra("ImageIndex", photo_index);
+
+                        bitmap.recycle();
+                        bitmap = null;
+                    } catch (Exception ex) {
+
+                    }
+
+
+                    break;
 
 
             }
@@ -548,7 +572,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 
     @Deprecated
     public void take_photo(int image_index, String sid) {
-        photo_index = image_index+"";
+        photo_index = image_index + "";
         int photo_camera_type = svars.photo_camera_type(act, image_index);
         String icao_package_name = "sparta.icaochecker";
         if (photo_camera_type == 1 || photo_camera_type == 2 && !isPackageInstalled(icao_package_name)) {
@@ -597,7 +621,7 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
     }
 
     public void takePhoto(int photo_camera_type, String sid) {
-        photo_index = photo_camera_type+"";
+        photo_index = photo_camera_type + "";
 //        String icao_package_name = "sparta.realm.iccaoluxand";
         String icao_package_name = "sparta.realm.iccaocamera";
         String doc_scanner_package_name = "sparta.icaochecker";
@@ -644,9 +668,9 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
 
-                    latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
+                    latestCameraPhotoName = "RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
 
-                    latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder+latestCameraPhotoName);
+                    latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder + latestCameraPhotoName);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, latestCameraPhotoUri);
 
                     startActivityForResult(takePictureIntent, 1);
@@ -724,18 +748,50 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
 //                }
 
                 break;
+              case 6:
+scanDocument();
+            break;
 
 
         }
 
     }
-    void takeCameraPhoto(){
+    ActivityResultLauncher<IntentSenderRequest> scannerLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartIntentSenderForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK) {
+
+                        }
+                    });
+
+   public void scanDocument(){
+        GmsDocumentScannerOptions options = new GmsDocumentScannerOptions.Builder()
+                .setGalleryImportAllowed(false)
+                .setPageLimit(1)
+                .setResultFormats(RESULT_FORMAT_JPEG)
+                .setScannerMode(SCANNER_MODE_FULL)
+                .build();
+        GmsDocumentScanner scanner = GmsDocumentScanning.getClient(options);
+
+        scanner.getStartScanIntent(this)
+                .addOnSuccessListener(intentSender ->
+                        scannerLauncher.launch(new IntentSenderRequest.Builder(intentSender).build()))
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    void takeCameraPhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(act.getPackageManager()) != null) {
 
-            latestCameraPhotoName="RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
+            latestCameraPhotoName = "RE_DAT" + System.currentTimeMillis() + "_IMG.PNG";
 
-            latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder +latestCameraPhotoName);
+            latestCameraPhotoUri = Uri.parse(svars.current_app_config(Realm.context).appDataFolder + latestCameraPhotoName);
 
 
             ContentValues values = new ContentValues();
@@ -749,14 +805,14 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
             act.startActivityForResult(intent, 1);
         }
     }
-    public  Uri latestCameraPhotoUri;
-   public String latestCameraPhotoName;
-    private File createTemporaryFile(String part, String ext) throws Exception
-    {
-        File tempDir= Environment.getExternalStorageDirectory();
-        tempDir=new File(tempDir.getAbsolutePath()+"/.temp/");
-        if(!tempDir.exists())
-        {
+
+    public Uri latestCameraPhotoUri;
+    public String latestCameraPhotoName;
+
+    private File createTemporaryFile(String part, String ext) throws Exception {
+        File tempDir = Environment.getExternalStorageDirectory();
+        tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");
+        if (!tempDir.exists()) {
             tempDir.mkdirs();
         }
         return File.createTempFile(part, ext, tempDir);
