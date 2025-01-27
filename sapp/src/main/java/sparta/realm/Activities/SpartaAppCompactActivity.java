@@ -543,7 +543,11 @@ public class SpartaAppCompactActivity extends AppCompatActivity {
                     try {
                         GmsDocumentScanningResult gmsDocumentScanningResult = GmsDocumentScanningResult.fromActivityResultIntent(data);
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), gmsDocumentScanningResult.getPages().get(0).getImageUri());
-                        getContentResolver().delete(gmsDocumentScanningResult.getPages().get(0).getImageUri(), null, null);
+                      try{
+                          getContentResolver().delete(gmsDocumentScanningResult.getPages().get(0).getImageUri(), null, null);
+                      }catch (Exception exception){
+                          
+                      }
                         data_url = saveUncompressedPng(bitmap);
                         data.putExtra("ImageUrl", data_url);
                         data.putExtra("ImageIndex", photo_index);
