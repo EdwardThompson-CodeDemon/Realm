@@ -1,2 +1,15 @@
 configurations.maybeCreate("default")
 artifacts.add("default", file("Miaxis_Live.aar"))
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = "com.github.EdwardThompson-CodeDemon"
+                artifactId = "Realm.miaxis_Live"
+//                version = "1.0.326"
+            }
+        }
+    }
+}
