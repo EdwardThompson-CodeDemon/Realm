@@ -1,3 +1,7 @@
+plugins {
+    id 'maven-publish'
+}
+
 configurations.maybeCreate("default")
 artifacts.add("default", file("JustouchApi.aar"))
 
@@ -5,10 +9,11 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                from components.findByName('release')
                 groupId = "com.github.EdwardThompson-CodeDemon"
                 artifactId = "Realm.justouchApi"
-//                version = "1.0.326"
+
+                //...
             }
         }
     }

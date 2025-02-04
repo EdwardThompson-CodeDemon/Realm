@@ -1,3 +1,7 @@
+plugins {
+    id 'maven-publish'
+}
+
 configurations.maybeCreate("default")
 artifacts.add("default", file("MxAlgShankshake.aar"))
 
@@ -5,11 +9,25 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                from components.findByName('release')
                 groupId = "com.github.EdwardThompson-CodeDemon"
                 artifactId = "Realm.MxAlgShankshake"
-//                version = "1.0.326"
+
+                //...
             }
         }
     }
 }
+
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            release(MavenPublication) {
+//                from components.release
+//                groupId = "com.github.EdwardThompson-CodeDemon"
+//                artifactId = "Realm.MxAlgShankshake"
+////                version = "1.0.326"
+//            }
+//        }
+//    }
+//}
