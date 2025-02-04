@@ -8,7 +8,7 @@ plugins {
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
 group = "com.github.EdwardThompson-CodeDemon"
-version = "1.0.330"
+version = "1.0.331"
 
 android {
     namespace  "sparta.realm"
@@ -118,6 +118,12 @@ dependencies {
     implementation ("io.github.jeremyliao:live-event-bus-x:1.8.0")
     implementation ("com.fasterxml.uuid:java-uuid-generator:3.2.0")
     implementation ("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
+
+
+    api project(':mxAlgShankshake')
+    api project(':justouchApi')
+    api project(':miaxis_Driver')
+    api project(':miaxis_Live')
 
 }
 //afterEvaluate {
