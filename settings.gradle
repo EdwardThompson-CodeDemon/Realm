@@ -40,4 +40,9 @@ dependencyResolutionManagement {
     }
 }
 include ':sapp'
+include ':mxAlgShankshake'
+include ':justouchApi'
+include ':miaxis_Driver'
+include ':miaxis_Live'
+
 rootProject.name='Realm'
