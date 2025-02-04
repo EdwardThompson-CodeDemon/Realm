@@ -51,7 +51,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(include: ['*.aar'], dir: 'libs')
+//    implementation fileTree(include: ['*.aar'], dir: 'libs')
     implementation "androidx.activity:activity:1.9.2"
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -77,6 +77,10 @@ dependencies {
 
     implementation files('libs\\TrustFinger_v2.1.0.1.jar')
     implementation files('libs\\bcprov-jdk15on-149.jar')
+    implementation files("libs\\MxAlgShankshake.aar")
+    implementation files("libs\\Miaxis_Live.aar")
+    implementation files("libs\\Miaxis_Driver.aar")
+    implementation files("libs\\JustouchApi.aar")
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
