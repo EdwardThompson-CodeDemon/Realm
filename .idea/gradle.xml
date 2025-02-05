@@ -10,6 +10,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/justouchApi" />
+            <option value="$PROJECT_DIR$/miaxis_Driver" />
+            <option value="$PROJECT_DIR$/miaxis_Live" />
+            <option value="$PROJECT_DIR$/mxAlgShankshake" />
             <option value="$PROJECT_DIR$/sapp" />
           </set>
         </option>

@@ -90,7 +90,7 @@ public class SM9XFingerprintManager extends FingerprintManger {
     }
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private JustouchFingerAPI mJustouchApi;
+//    private JustouchFingerAPI mJustouchApi;
 
     public void openDevice(final boolean isSleep) {
         Log.e(TAG, "start open devices isSleep: " + isSleep);
@@ -143,13 +143,11 @@ public class SM9XFingerprintManager extends FingerprintManger {
 //                    featureType.postValue(result.getData());
                     msg.append("\n[GET FEATURE TYPE]\nSuccess");
 
-                    int initMiaxisDevice = mJustouchApi.initMiaxisDevice(activity);
-                    if (initMiaxisDevice != 0) {
-//                        log.postValue("[AUTH JUSTOUCH ALG]\nFailed\n" + initMiaxisDevice);
-//                        busy.postValue(false);
-                        busy = false;
-                        return;
-                    }
+//                    int initMiaxisDevice = mJustouchApi.initMiaxisDevice(activity);
+//                    if (initMiaxisDevice != 0) {
+//                        busy = false;
+//                        return;
+//                    }
                     msg.append("\n[AUTH JUSTOUCH ALG]\nSuccess");
                 } else {
 //                    supportsDeviceAlgorithm.postValue(false);
@@ -184,8 +182,31 @@ public class SM9XFingerprintManager extends FingerprintManger {
         });
 
     }
-
     public void closeDevice() {
+     try {
+         if (mFingerApi == null) {
+             return;
+         }
+         busy = false;
+         connected = false;
+         int i = mFingerApi.closeDevice();
+         mFingerApi.algHandshakeFree();
+         mFingerApi.freeLFDResidualAlg();
+         if (i >= 0) {
+             Log.e(TAG, "[CLOSE]\nSuccess");
+         } else {
+             Log.e(TAG, "[CLOSE]\nFailed\n" + i);
+         }
+         connected = false;
+         executor.isShutdown();
+         mFingerApi.lamp(0, 0);
+     }catch (Exception exception){
+         Log.e(TAG, "[CLOSE]\nFailed\n" + exception.getMessage());
+
+     }
+
+    }
+    public void closeDevice_() {
 
         executor.execute(() -> {
             if (mFingerApi == null) {
@@ -197,7 +218,7 @@ public class SM9XFingerprintManager extends FingerprintManger {
             int i = mFingerApi.closeDevice();
             mFingerApi.algHandshakeFree();
             mFingerApi.freeLFDResidualAlg();
-            mJustouchApi.free();
+//            mJustouchApi.free();
             if (i >= 0) {
 //                opened.postValue(false);
                 Log.e(TAG, "[CLOSE]\nSuccess");
