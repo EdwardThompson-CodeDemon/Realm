@@ -228,11 +228,20 @@ public class SM9XFingerprintManager extends FingerprintManger {
             connected=false;
         });
     }
-
+    boolean isFingerDetected(){
+        MxResult<Boolean> result = mFingerApi.detectFinger();
+        if (result.isSuccess()) {
+            if (result.getData()) {
+                return true;
+            }
+        }
+        return false;
+    }
     public void getFinalImage() {
         executor.execute(() -> {
             busy = true;
             while (connected) {
+                if(!isFingerDetected())continue;
                 long st = System.currentTimeMillis();
                 MxResult<MxImage> result = getImage();
                 long getImageTime = System.currentTimeMillis();
