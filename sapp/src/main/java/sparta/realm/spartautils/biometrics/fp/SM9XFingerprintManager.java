@@ -230,11 +230,18 @@ public class SM9XFingerprintManager extends FingerprintManger {
                     byte[] imageDate = new byte[mxImage.width * mxImage.height + 1078];
                     int raw2Bmp = BmpLoader.Raw2Bmp(imageDate, mxImage.data, mxImage.width, mxImage.height);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageDate, 0, imageDate.length);
+                    try {
+                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) (bitmap.getWidth() * 0.85), (int) bitmap.getHeight() - 10);
 
-                    interf.on_result_image_obtained(bitmap);
-                    interf.on_result_wsq_obtained(imageToWsq(bitmap));
+                        interf.on_result_image_obtained(bitmap);
 
-                    interf.on_result_obtained(imageToIso(bitmap));
+                        interf.on_result_wsq_obtained(imageToWsq(bitmap));
+
+                        interf.on_result_obtained(imageToIso(bitmap));
+                    }catch (Exception exception){
+                        Log.e(TAG, ("[CAPTURE]\nFailed"),exception);
+                        interf.on_device_error(exception.getMessage());
+                    }
                 } else {
                     Log.e(TAG, ("[CAPTURE]\nFailed"));
                 }
