@@ -121,7 +121,8 @@ public class ValidationRules extends RealmModel implements Serializable {
         DateTime,
         phone,
         Image,
-        Signature
+        Signature,
+        uppercase_no_special_characters
 
     }
 }

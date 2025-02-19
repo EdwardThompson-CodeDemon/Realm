@@ -359,6 +359,14 @@ public class FormEdittext extends ConstraintLayout {
 //                      inputText.setKeyListener(DigitsKeyListener.getInstance("~+()-_/.QWERTYUIOPASDFGHJKLZXCVBNM1234567890 "));
                 inputText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                 break;
+         case uppercase_no_special_characters:
+                if (validationRules.max_text_input_length != null) {
+                    inputText.setFilters(new InputFilter[]{upperCaseNoSpecialCharactersInputFilter,new InputFilter.LengthFilter(Integer.parseInt(validationRules.max_text_input_length))});
+                }else{
+                    inputText.setFilters(new InputFilter[]{upperCaseNoSpecialCharactersInputFilter});
+                }
+                inputText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                break;
             case lowercase:
                 if (validationRules.max_text_input_length != null) {
                     inputText.setFilters(new InputFilter[]{lowerCaseInputFilter,new InputFilter.LengthFilter(Integer.parseInt(validationRules.max_text_input_length))});
@@ -399,6 +407,8 @@ public class FormEdittext extends ConstraintLayout {
     InputFilter dateInputFilter = new ContainsInputFilter("-/:1234567890 ");
     InputFilter numericInputFilter = new ContainsInputFilter("0123456789.");
     InputFilter alphanumericInputFilter = new ContainsInputFilter("@~+()-_/.çéâêîôûàèìòùëïüqwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890 ");
+    InputFilter alphanumericNoSpecialCharactersInputFilter = new ContainsInputFilter("çéâêîôûàèìòùëïüqwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890 ");
+    InputFilter upperCaseNoSpecialCharactersInputFilter = new ContainsInputFilter("QWERTYUIOPASDFGHJKLZXCVBNM1234567890 ");
 
     public interface InputListener {
         default void onInputAvailable(boolean valid, String input) {
@@ -455,7 +465,7 @@ public class FormEdittext extends ConstraintLayout {
         return valid;
     }
 
-    boolean setError(String error) {
+    public boolean setError(String error) {
         inputText.setError(error);
         inputText.getBackground().mutate().setColorFilter(getResources().getColor(android.R.color.holo_red_light), PorterDuff.Mode.SRC_ATOP);
 //        inputText.requestFocus();
