@@ -157,7 +157,10 @@ public class SynchronizationManager {
     };
 
     public interface SynchronizationStatusHandler {
-        default void on_status_code_changed(int status) {
+        default void onUserAuthenticationFailed() {
+
+        }
+default void on_status_code_changed(int status) {
         }
 
         ;
@@ -1017,7 +1020,8 @@ public class SynchronizationManager {
                                         ssi.on_status_changed(act.getString(R.string.authentication_error));
                                         ssi.on_status_code_changed(666);
                                         ssi.on_status_code_changed(4);
-                                        sdb.database.execSQL("DELETE FROM user_table WHERE sid ='" + svars.user_id(act) + "'");
+                                        ssi.onUserAuthenticationFailed();
+//                                        sdb.database.execSQL("DELETE FROM user_table WHERE sid ='" + svars.user_id(act) + "'");
 
                                         //   sdb.logout_user();
                                         android.os.Process.killProcess(android.os.Process.myPid());

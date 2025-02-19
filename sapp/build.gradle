@@ -8,7 +8,7 @@ plugins {
 //apply plugin: 'maven'
 //group='com.github.EdwardThompson-CodeDemon'
 group = "com.github.EdwardThompson-CodeDemon"
-version = "1.0.337"
+version = "1.0.339"
 
 android {
     namespace  "sparta.realm"
