@@ -35,11 +35,15 @@ public class InputFieldInputConstraint extends RealmModel implements Serializabl
     public ArrayList<IndependentInputFieldVariable> orIndependentInputFieldVariables=new ArrayList<>();
     public ArrayList<IndependentInputFieldVariable> andIndependentInputFieldVariables=new ArrayList<>();
     public enum ConstraintType{
-        EqualTo,
-        NotEqualTo,
-        ParentChild,
+        EqualTo,//displays the inputfield only if independent inputfield variable returns true
+        // for orfilter or the and filteris equal to the value set.This is a display filter
+        NotEqualTo,//displays the inputfield only if independent inputfield variable returns false
+        // for orfilter or the and filteris equal to the value set.This is a display filter
+        ParentChild,//displays if the parent is not null
         IncludeOnly,
-        Exclude
+        Exclude,
+              EQUAL_TO_INCLUDE_ONLY_ELSE_SHOW_ALL,//always displays but if input variable contitions pass includes only the dataset
+        NOT_EQUAL_TO_INCLUDE_ONLY_ELSE_SHOW_ALL
     }
 
 
