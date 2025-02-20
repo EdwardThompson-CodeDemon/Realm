@@ -25,10 +25,11 @@ import sparta.realm.R;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.FormTools.models.AppData;
 import sparta.realm.utils.FormTools.models.InputField;
+import sparta.realm.utils.FormTools.models.ValidationRules;
 
 public class ImageCapture extends ConstraintLayout {
 
-    TextView title, subTitle,spacer;
+    TextView title, subTitle,spacer,mandatoryIndicator;
     CardView cardView;
     ConstraintLayout constraintLayout;
     ImageView imageView, deleteButton, configButton;
@@ -105,6 +106,13 @@ SpartaAppCompactFingerPrintActivity activity;
         int spacereId = View.generateViewId();
         spacer.setId(spacereId);
 
+
+        mandatoryIndicator =  new TextView(getContext(), null, R.style.TextAppearance_AppCompat_SearchResult_Title);
+        mandatoryIndicator.setText(" * ");
+        mandatoryIndicator.setTextColor(getContext().getColor(R.color.gold));
+        int mandatoryIndicatorId = View.generateViewId();
+        mandatoryIndicator.setId(mandatoryIndicatorId);
+
         imageView = new ImageView(getContext());
         imageView.setImageDrawable(getContext().getDrawable(R.drawable.baseline_add_a_photo_24));
         int imageViewId = View.generateViewId();
@@ -165,8 +173,14 @@ SpartaAppCompactFingerPrintActivity activity;
 
 
 
-        LayoutParams deleteButtonParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        deleteButtonParams.topToTop = PARENT_ID;
+        LayoutParams mandatoryIndicatorParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mandatoryIndicatorParams.topToTop = PARENT_ID;
+        mandatoryIndicatorParams.endToEnd = PARENT_ID;
+
+        constraintLayout.addView(mandatoryIndicator, mandatoryIndicatorParams);
+//        mandatoryIndicator.setVisibility(GONE);
+ LayoutParams deleteButtonParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        deleteButtonParams.topToBottom = mandatoryIndicatorId;
         deleteButtonParams.endToEnd = PARENT_ID;
 
         constraintLayout.addView(deleteButton, deleteButtonParams);
@@ -238,7 +252,12 @@ deleteButton.setOnClickListener(view -> clearImage());
         setSubTitle(inputField.sub_title);
         setImage(inputField.imageInput);
         svars.setImageCameraType(getContext(),inputField.sid,Integer.parseInt(inputField.default_image_source));
+        if(inputField.validationRules!=null&&inputField.validationRules.mandatory.equals(ValidationRules.MandatoryStatus.Mandatory.ordinal()+"")){
 
+            mandatoryIndicator.setVisibility(VISIBLE);
+        }else {
+            mandatoryIndicator.setVisibility(GONE);
+        }
 //        setValidationRules(inputField.validationRules);
 
     }
