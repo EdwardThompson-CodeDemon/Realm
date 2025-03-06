@@ -495,7 +495,9 @@ public class TPS450FingerprintManager extends FingerprintManger {
             }
 
             interf.on_result_image_obtained(capturedImage);
+            interf.on_result_wsq_obtained(imageToWsq(capturedImage));
 
+            interf.on_result_obtained(imageToIso(capturedImage));
             return true;
 
         }
