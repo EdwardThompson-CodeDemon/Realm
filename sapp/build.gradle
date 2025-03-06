@@ -77,6 +77,8 @@ dependencies {
 
     implementation files('libs\\TrustFinger_v2.1.0.1.jar')
     implementation files('libs\\bcprov-jdk15on-149.jar')
+    implementation project(':libBioMini')
+    implementation files('libs\\telpo_api.jar')
 //    implementation files("libs\\MxAlgShankshake.aar")
 //    implementation files("libs\\Miaxis_Live.aar")
 //    implementation files("libs\\Miaxis_Driver.aar")

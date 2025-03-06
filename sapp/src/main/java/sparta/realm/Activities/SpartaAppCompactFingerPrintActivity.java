@@ -1,6 +1,7 @@
 package sparta.realm.Activities;
 
 import android.graphics.Bitmap;
+import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -101,6 +102,11 @@ public class SpartaAppCompactFingerPrintActivity extends SpartaAppCompactActivit
 
     @Override
     public void on_result_image_error(String s) {
+
+    }
+
+    @Override
+    public void onConnectionStatusChanged(boolean connected, UsbDevice usbDevice) {
 
     }
 

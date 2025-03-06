@@ -1,8 +1,11 @@
 package sparta.realm.spartautils.biometrics.fp;
 
 import android.graphics.Bitmap;
+import android.hardware.usb.UsbDevice;
 
 public interface sfp_i {
+
+    void onConnectionStatusChanged(boolean connected, UsbDevice usbDevice);
 
     void onRegistrationComplete();
     void onRegistrationSegmentChanged(int segment_type);

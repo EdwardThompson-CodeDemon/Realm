@@ -276,7 +276,7 @@ public class SM9XFingerprintManager extends FingerprintManger {
                     Log.e(TAG, ("[CAPTURE]\nFailed"));
                 }
             }
-//            getFinalImage();
+            mFingerApi.lamp(0, 0);
         });
 //        getFinalImage();
 

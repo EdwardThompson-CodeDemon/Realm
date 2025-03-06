@@ -46,3 +46,4 @@ include ':miaxis_Driver'
 include ':miaxis_Live'
 
 rootProject.name='Realm'
+include ':libBioMini'
