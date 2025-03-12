@@ -441,7 +441,39 @@ public class TPS450FingerprintManager extends FingerprintManger {
     private IBioMiniDevice.CaptureOption mCaptureOption = new IBioMiniDevice.CaptureOption();
     private IBioMiniDevice.TemplateData mTemplateData;
 
+    @Override
+    public void capture() {
+        super.capture();
+        doCapture(IBioMiniDevice.CaptureFuntion.ENROLLMENT);
+    }
     private void doAutoCapture() {
+        doCapture(IBioMiniDevice.CaptureFuntion.CAPTURE_SINGLE);
+    }
+    private void doCapture(IBioMiniDevice.CaptureFuntion captureFuntion) {
+        mTemplateData = null;
+        mCaptureOption.captureFuntion = captureFuntion;
+        mCaptureOption.extractParam.captureTemplate = true;
+        if(mCurrentDevice != null) {
+            if(captureFuntion==IBioMiniDevice.CaptureFuntion.CAPTURE_SINGLE||captureFuntion==IBioMiniDevice.CaptureFuntion.ENROLLMENT){
+                boolean result = mCurrentDevice.captureSingle(
+                        mCaptureOption,
+                        mCaptureCallBack,
+                        true);
+
+            }else{
+                int result = mCurrentDevice.captureAuto(mCaptureOption, mCaptureCallBack);
+
+                if (result == IBioMiniDevice.ErrorCode.ERR_NOT_SUPPORTED.value()) {
+                    Log.e(logTag, "This device does not support the capture function!");
+                    interf.on_device_error("This device does not support "+captureFuntion.toString());
+                }
+            }
+
+
+        }
+    }
+
+    private void doAutoCapture_() {
         mTemplateData = null;
         mCaptureOption.extractParam.captureTemplate = true;
         mCaptureOption.captureFuntion = IBioMiniDevice.CaptureFuntion.CAPTURE_AUTO;
