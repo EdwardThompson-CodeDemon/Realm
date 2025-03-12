@@ -444,7 +444,7 @@ public class TPS450FingerprintManager extends FingerprintManger {
     @Override
     public void capture() {
         super.capture();
-        doCapture(IBioMiniDevice.CaptureFuntion.ENROLLMENT);
+        doCapture(IBioMiniDevice.CaptureFuntion.CAPTURE_SINGLE);
     }
     private void doAutoCapture() {
         doCapture(IBioMiniDevice.CaptureFuntion.CAPTURE_SINGLE);
