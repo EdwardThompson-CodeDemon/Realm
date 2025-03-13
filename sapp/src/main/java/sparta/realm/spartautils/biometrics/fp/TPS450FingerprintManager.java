@@ -525,11 +525,13 @@ public class TPS450FingerprintManager extends FingerprintManger {
                     Log.e(logTag, "_fpquality : " + _fpquality);
                 }
             }
+            Bitmap bitmap = Bitmap.createBitmap(capturedImage, 0, 0, (int) (capturedImage.getWidth() * 0.85), (int) capturedImage.getHeight() - 10);
 
-            interf.on_result_image_obtained(capturedImage);
-            interf.on_result_wsq_obtained(imageToWsq(capturedImage));
 
-            interf.on_result_obtained(imageToIso(capturedImage));
+            interf.on_result_image_obtained(bitmap);
+            interf.on_result_wsq_obtained(imageToWsq(bitmap));
+
+            interf.on_result_obtained(imageToIso(bitmap));
             return true;
 
         }
