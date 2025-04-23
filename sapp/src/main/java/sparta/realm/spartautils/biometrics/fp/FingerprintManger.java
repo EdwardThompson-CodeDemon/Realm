@@ -118,4 +118,24 @@ public class FingerprintManger {
         return null;
     }
 
+    public static Bitmap cropBitmapCenter(Bitmap source, int targetWidth, int targetHeight) {
+        // Get the dimensions of the source bitmap
+        int width = source.getWidth();
+        int height = source.getHeight();
+
+        // Calculate the crop starting points (to crop from the center)
+        int x = (width - targetWidth) / 2;
+        int y = (height - targetHeight) / 2;
+
+        // Ensure the target dimensions don't exceed the source bitmap
+        x = Math.max(0, x);
+        y = Math.max(0, y);
+        targetWidth = Math.min(targetWidth, width);
+        targetHeight = Math.min(targetHeight, height);
+
+        // Crop the bitmap
+        return Bitmap.createBitmap(source, x, y, targetWidth, targetHeight);
+    }
+
+
 }

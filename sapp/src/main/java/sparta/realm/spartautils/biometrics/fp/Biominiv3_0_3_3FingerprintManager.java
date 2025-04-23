@@ -810,6 +810,9 @@ Context mContext=activity;
                             mImageViewCanvas.drawCircle(coord.get(0),  coord.get(1), 10, paint);
                         }
 //                        mImageView.setImageBitmap(_captureOtherImgDev);
+//                        _captureOtherImgDev = Bitmap.createBitmap(_captureOtherImgDev, 0, 0, (int) (_captureOtherImgDev.getWidth() * 0.85), (int) _captureOtherImgDev.getHeight() - 10);
+                        _captureOtherImgDev= cropBitmapCenter(_captureOtherImgDev, 256, 360);
+
                         interf.on_result_image_obtained(_captureOtherImgDev);
                         interf.on_result_wsq_obtained(imageToWsq(_captureOtherImgDev));
                         interf.on_result_obtained(imageToIso(_captureOtherImgDev));
