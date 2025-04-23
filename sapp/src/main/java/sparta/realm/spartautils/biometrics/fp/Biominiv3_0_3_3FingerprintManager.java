@@ -811,6 +811,8 @@ Context mContext=activity;
                         }
 //                        mImageView.setImageBitmap(_captureOtherImgDev);
                         interf.on_result_image_obtained(_captureOtherImgDev);
+                        interf.on_result_wsq_obtained(imageToWsq(_captureOtherImgDev));
+                        interf.on_result_obtained(imageToIso(_captureOtherImgDev));
                     }
                     break;
                 case SET_USER_INPUT_ENABLED:
