@@ -857,7 +857,11 @@ Context mContext=activity;
             if(result == IBioMiniDevice.ErrorCode.OK.value() || result == IBioMiniDevice.ErrorCode.ERR_NO_DEVICE.value())
             {
                 mBioMiniFactory.close();
-                activity.unregisterReceiver(mUsbReceiver);
+                try{
+                    activity.unregisterReceiver(mUsbReceiver);
+                }catch (Exception exception){
+                    
+                }
                 mUsbDevice = null;
                 mCurrentDevice = null;
             }
