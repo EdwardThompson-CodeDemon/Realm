@@ -264,7 +264,11 @@ public class BTV2 extends FingerprintManger {
         //System.arraycopy(mMatData, 0, buf, 512, 256);
         SendCommand(CMD_MATCH, buf, 1024);
     }
+    public static Bitmap processBitmap(Bitmap source)
+    {
+        return Bitmap.createScaledBitmap(source, 256, 360, true);
 
+    }
     public void writecard() {
         SendCommand(CMD_WRITECARD, mCardData, 1024);
     }
