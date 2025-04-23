@@ -1,2 +1,19 @@
+plugins {
+    id 'maven-publish'
+}
 configurations.maybeCreate("default")
 artifacts.add("default", file('libBioMini.aar'))
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.findByName('release')
+                groupId = "com.github.EdwardThompson-CodeDemon"
+                artifactId = "Realm.libBioMini"
+
+                //...
+            }
+        }
+    }
+}
