@@ -860,7 +860,7 @@ Context mContext=activity;
                 try{
                     activity.unregisterReceiver(mUsbReceiver);
                 }catch (Exception exception){
-                    
+
                 }
                 mUsbDevice = null;
                 mCurrentDevice = null;
