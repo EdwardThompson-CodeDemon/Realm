@@ -32,6 +32,15 @@ public class FingerprintManger {
     public void capture() {
 
     }
+public void capture4left() {
+
+    }
+public void capture4right() {
+
+    }
+public void captureThumbs() {
+
+    }
 
     public void stop() {
 
