@@ -313,7 +313,7 @@ default void on_status_code_changed(int status) {
                         //  upload_(ssd_t);
 
                         break;
-                    case Configuration:
+                    case DownloadSingle:
                         if (svars.global_data_sync(act)) {
                             //  download_configuration_ann(ssd_t);
 

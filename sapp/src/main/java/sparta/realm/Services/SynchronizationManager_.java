@@ -55,7 +55,7 @@ import sparta.realm.spartamodels.member_data;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.AppConfig;
 
-import static com.realm.annotations.SyncDescription.service_type.Configuration;
+import static com.realm.annotations.SyncDescription.service_type.DownloadSingle;
 import static com.realm.annotations.SyncDescription.service_type.Download;
 import static com.realm.annotations.SyncDescription.service_type.Download_Upload;
 import static com.realm.annotations.SyncDescription.service_type.Upload;
@@ -381,7 +381,7 @@ public class SynchronizationManager_ {
                 upload(ssd_t, service_descriptions.get(o));
                 // download((sync_service_description) ssd_.get(clazz.newInstance()),clazz.newInstance());
 
-            } else if (ssd_t.servic_type == Configuration) {
+            } else if (ssd_t.servic_type == DownloadSingle) {
                 if (svars.global_data_sync(act)) {
                     download_configuration(ssd_t);
 
@@ -444,7 +444,7 @@ public class SynchronizationManager_ {
                 upload_(ssd_t);
 
 
-            } else if (ssd_t.servic_type == Configuration) {
+            } else if (ssd_t.servic_type == DownloadSingle) {
                 if (svars.global_data_sync(act)) {
                     download_configuration(ssd_t);
 
@@ -492,7 +492,7 @@ public class SynchronizationManager_ {
                         //  upload_(ssd_t);
 
                         break;
-                    case Configuration:
+                    case DownloadSingle:
                         if (svars.global_data_sync(act)) {
                             //  download_configuration_ann(ssd_t);
 
