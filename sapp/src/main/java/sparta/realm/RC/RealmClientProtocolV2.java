@@ -852,7 +852,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
         for (JSONObject jo : pending_records) {
 
             try {
-                jo.put("filters", new JSONArray(ssd.uploadConstrainFields));
+                jo.put("filters", ssd.uploadConstrainFields!=null?new JSONArray(ssd.uploadConstrainFields):new JSONArray());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -868,39 +868,43 @@ public class RealmClientProtocolV2 extends SocketProtocol {
         if (ssd.storage_mode_check) {
             Log.e(RealmClientProtocolV2.logTag, "Started storage checking ...");
 
-            for (int i = 0; i < pending_records.size(); i++) {
-                JSONObject jo = pending_records.get(i);
-                Iterator keys = jo.keys();
-                List<String> key_list = new ArrayList<>();
-                while (keys.hasNext()) {
-                    key_list.add((String) keys.next());
+            for (int i = 0; i < arr.length(); i++) {
+                try {
+                    JSONObject jo = arr.getJSONObject(i);
+                    Iterator keys = jo.keys();
+                    List<String> key_list = new ArrayList<>();
+                    while (keys.hasNext()) {
+                        key_list.add((String) keys.next());
 
-                }
+                    }
 //        Log.e(RealmClient.logTag,"Keys to save to file  "+realm.getFilePathFields(ssd.object_package,key_list));
-                List<String> filePathFields = realm.getFilePathFields(ssd.object_package, key_list);
-                for (String k : filePathFields) {
-                    try {
-                        String fieName=jo.getString(k);
-                        File file=new File(svars.current_app_config(Realm.context).appDataFolder, fieName);
-                        jo.remove(k);
-                        jo.put(k,"unavailable locally");
-                        if(file.exists()){
+                    List<String> filePathFields = realm.getFilePathFields(ssd.object_package, key_list);
+                    for (String k : filePathFields) {
+                        try {
+                            String fieName = jo.getString(k);
+                            File file = new File(svars.current_app_config(Realm.context).appDataFolder, fieName);
                             jo.remove(k);
-                            String  fileExtension=fieName.contains(".")?fieName.split("[.]")[fieName.split("[.]").length-1]:"rd";
-                            jo.put(k,openEncoding+""+objectCount+"|"+ file.length()+"|"+ fileExtension+""+closeEncoding);
-                            files.add(file);
-                            objectSizeCount+=file.length();
-                            objectCount++;
-                        }
+                            jo.put(k, "unavailable locally");
+                            if (file.exists()) {
+                                jo.remove(k);
+                                String fileExtension = fieName.contains(".") ? fieName.split("[.]")[fieName.split("[.]").length - 1] : "rd";
+                                jo.put(k, openEncoding + "" + objectCount + "|" + file.length() + "|" + fileExtension + "" + closeEncoding);
+                                files.add(file);
+                                objectSizeCount += file.length();
+                                objectCount++;
+                            }
 
 //                        jo.put(k, base64);
 
 
-                    } catch (Exception e) {
-                        Log.e(RealmClientProtocolV2.logTag, "Base64 image error:" + e.getMessage());
+                        } catch (Exception e) {
+                            Log.e(RealmClientProtocolV2.logTag, "Placeholddr build error:" + e.getMessage());
+
+                        }
 
                     }
-
+                }catch (Exception exception){
+                    Log.e(RealmClientProtocolV2.logTag, "Upload build error:" + exception.getMessage());
                 }
             }
         }
