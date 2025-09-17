@@ -155,7 +155,7 @@ public class RealmClientProtocolV2 extends SocketProtocol {
             sync_service_description sr = Realm.realm.getHashedSyncDescriptions().get(service_id);//should include service id to get one syncdesc
             if (sr == null) {
                 Log.e(rc.logTag, "RX prompt on an unimplemented service " + service_id);
-
+                return;
             }
             Log.e(rc.logTag, "RX prompt on " + sr.service_name);
 

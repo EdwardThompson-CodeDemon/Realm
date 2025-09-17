@@ -73,7 +73,10 @@ dependencies {
     implementation files('libs\\com.datecs.fiscalprinter.jar')
 //    implementation files('libs\\fingerprintutilslib-release.aar')
 //    implementation files('libs\\MorphoSmart_SDK_6.37.0.0.jar')
-    implementation files('libs\\MorphoSmart_SDK_6.45.0.0.jar')
+//    implementation files('libs\\MorphoSmart_SDK_6.45.0.0.jar')
+    implementation files('libs\\MorphoSmart_SDK_6.49.1.jar')
+    implementation files('libs\\MSO_Secu.jar')
+    implementation files('libs\\minutiaecounter-1.0.0.jar')
 
     implementation files('libs\\TrustFinger_v2.1.0.1.jar')
     implementation files('libs\\bcprov-jdk15on-149.jar')

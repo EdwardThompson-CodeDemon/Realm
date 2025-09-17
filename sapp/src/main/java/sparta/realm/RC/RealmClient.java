@@ -282,7 +282,7 @@ public class RealmClient extends SocketClient {
     }
 
     @Override
-    public void sendData(String message, int total_files_size, ArrayList<File> files) {
+    public void sendData(String message, int total_files_size, ArrayList<File> files) {//sending totallength stringlength string files
         Log.e(logTag, "TX: " + message);
         byte[] str=message.getBytes();
         byte[] strLen = ByteBuffer.allocate(4).putInt(str.length).array();
