@@ -37,8 +37,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
-
-
+import okhttp3.OkHttpClient;
 import sparta.realm.R;
 import sparta.realm.Realm;
 
@@ -74,7 +73,12 @@ public class SynchronizationManager {
 
             builder.detectFileUriExposure();
         }
-        AndroidNetworking.initialize(act);
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(60, TimeUnit.SECONDS) // Connection timeout
+                .readTimeout(60, TimeUnit.SECONDS)    // Read timeout
+                .writeTimeout(60, TimeUnit.SECONDS)   // Write timeout
+                .build();
+        AndroidNetworking.initialize(act,okHttpClient);
         ssi = new SynchronizationStatusHandler() {
             @Override
             public void on_status_code_changed(int status) {
