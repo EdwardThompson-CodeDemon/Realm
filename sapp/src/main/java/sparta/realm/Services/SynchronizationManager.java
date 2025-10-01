@@ -14,6 +14,7 @@ import android.util.Log;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interceptors.HttpLoggingInterceptor;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;
@@ -73,10 +74,13 @@ public class SynchronizationManager {
 
             builder.detectFileUriExposure();
         }
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(60, TimeUnit.SECONDS) // Connection timeout
                 .readTimeout(60, TimeUnit.SECONDS)    // Read timeout
                 .writeTimeout(60, TimeUnit.SECONDS)   // Write timeout
+                .addInterceptor(loggingInterceptor)
                 .build();
         AndroidNetworking.initialize(act,okHttpClient);
         ssi = new SynchronizationStatusHandler() {
