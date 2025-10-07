@@ -519,7 +519,13 @@ public class svars {
         saver.commit();
 
     }
+    public static String baseUrl() {
+        return Realm.context.getSharedPreferences(svars.sharedprefsname, Context.MODE_PRIVATE).getString("baseUrl", null);
+    }
 
+    public static void setBaseUrl(String baseUrl) {
+        Realm.context.getSharedPreferences(svars.sharedprefsname, Context.MODE_PRIVATE).edit().putString("baseUrl", baseUrl).commit();
+    }
     public static AppConfig current_app_config(Context act) {
 
         AppConfig app = null;

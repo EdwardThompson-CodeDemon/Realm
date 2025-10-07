@@ -1,5 +1,8 @@
 package sparta.realm.Services;
 
+import static sparta.realm.Realm.realm;
+import static sparta.realm.spartautils.svars.current_app_config;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +21,8 @@ import com.androidnetworking.interceptors.HttpLoggingInterceptor;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;
+import com.realm.annotations.sync_service_description;
+import com.realm.annotations.sync_status;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,32 +35,20 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-
 import okhttp3.OkHttpClient;
 import sparta.realm.R;
 import sparta.realm.Realm;
-
-
-
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.AppConfig;
 
 
-import com.realm.annotations.sync_service_description;
-import com.realm.annotations.sync_status;
-
-import static sparta.realm.Realm.realm;
-import static sparta.realm.spartautils.svars.current_app_config;
-
-
-public class SynchronizationManager {
+public class SynchronizationManagerV2 {
     public static String logTag = "SynchronizationManager";
     static Context act;
     String st = "";
@@ -112,7 +105,7 @@ public class SynchronizationManager {
         };
     }
 
-    public SynchronizationManager() {
+    public SynchronizationManagerV2() {
 
         app_config =app_config==null? current_app_config(act):app_config;
 
@@ -205,7 +198,7 @@ default void on_status_code_changed(int status) {
     static SynchronizationStatusHandler ssi;
     static AppConfig app_config;
 
-    public SynchronizationManager(SynchronizationStatusHandler ssi) {
+    public SynchronizationManagerV2(SynchronizationStatusHandler ssi) {
 
 
         this.ssi = ssi;
@@ -380,7 +373,7 @@ default void on_status_code_changed(int status) {
         Log.e(logTag, "Ann reflection time:" + sw.elapsed(TimeUnit.MILLISECONDS) + " mills");
     }
 
-    private static final Object SYNC_COUNTER_LOCK = new Object();
+
     public static void download_(sync_service_description ssd) {
         app_config =app_config==null? current_app_config(act):app_config;
 
@@ -577,23 +570,24 @@ default void on_status_code_changed(int status) {
                                 Log.e(ssd.service_name + " :: RX", " DONE ");
 
 
-                                boolean moreChunks = (den >= ssd.chunk_size && ssd.use_download_filter);
-                                double per =0.0;
+                                //   sdb.register_object_auto_ann(false,null,ssd);
 
-                                synchronized (this) {
-                                    if (moreChunks) {
-                                        sync_sum_counter++;
-                                    }
-                                    sync_complete_counter++;
-                                    sync_success_counter++;
-                                    per = ( (double) sync_complete_counter / (double) sync_sum_counter ) * 100.0;
-                                    if (per > 100.0) per = 100.0; // guard
-                                    ssi.on_main_percentage_changed((int) per);
-                                    ssi.on_status_changed("Synchronized " + ssd.service_name);
-                                }
 
-                                if (moreChunks) {
+                                sync_complete_counter++;
+                                sync_success_counter++;
+                                double denm = (double) sync_sum_counter;
+                                ssi.on_status_changed("Synchronized " + ssd.service_name);
+
+                                double num = (double) sync_complete_counter;
+                                double per = (num / denm) * 100.0;
+                                ssi.on_main_percentage_changed((int) per);
+
+
+                                if (den >= ssd.chunk_size && ssd.use_download_filter) {
+                                    sync_sum_counter++;
                                     download_(ssd);
+
+
                                 } else {
                                     if (per == 100.0) {
                                         ssi.on_main_percentage_changed(100);
@@ -607,8 +601,9 @@ default void on_status_code_changed(int status) {
                                     } else {
                                         ssi.onSynchronizationCompleted(ssd);
 
-                                    }                                }
+                                    }
 
+                                }
                                 maindata[0] = null;
                                 temp_ar = null;
                             }
@@ -863,7 +858,7 @@ default void on_status_code_changed(int status) {
 
     }
 
-    static synchronized void update_counter(sync_service_description ssd, String[] pending_records_filter) {
+    static void update_counter(sync_service_description ssd, String[] pending_records_filter) {
         sync_complete_counter++;
         sync_success_counter++;
         Log.e(ssd.service_name + " ::", "Sync counter" + sync_complete_counter);

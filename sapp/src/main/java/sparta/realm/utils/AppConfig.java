@@ -10,11 +10,13 @@ import sparta.realm.spartautils.app_control.models.module;
 
 public class AppConfig {
         public String APP_MAINLINK = "",
-                BASE_URL_REQUEST_URL = null,
+                BASE_URL_REQUEST_LINK = null,
                 APP_CONTROLL_MAIN_LINK = "",
                 ACCOUNT = "",
                 ACCOUNT_BRANCH = "",
-                AUTHENTICATION_URL = "";
+                AUTHENTICATION_URL = "",
+                LICENCE_VALIDATION_URL = "",
+                CLIENT_NAME="";
         public boolean SYNC_USE_CAPS = true;
         public boolean print_receipt_on_registration = false;
         public boolean allow_employee_details_edition = false;
