@@ -862,6 +862,229 @@ default void on_status_code_changed(int status) {
 
 
     }
+    public static void upload(sync_service_description ssd) {
+        Log.e("SYNC ::  ", "Object table :" + ssd.table_name + "\n"
+                + "Service name :" + ssd.service_name + "\n"
+                + "Service type :" + ssd.servic_type.name() + "\n"
+                + "upload link :" + ssd.upload_link + "\n");
+        app_config =app_config==null? current_app_config(act):app_config;
+
+        //   sync_sum_counter++;
+        ssi.on_status_code_changed(2);
+        //  ssi.on_status_changed("Sparta sync");
+        double denm2 = (double) sync_sum_counter;
+        ssi.on_status_changed(act.getResources().getString(R.string.synchronizing) + ssd.service_name + " ↑");
+
+        double num2 = (double) sync_complete_counter;
+        double per2 = (num2 / denm2) * 100.0;
+        ssi.on_main_percentage_changed((int) per2);
+
+        String[] pending_records_filter = ssd.table_filters == null ? new String[1] : new String[ssd.table_filters.length + 1];
+        if (ssd.table_filters != null) {
+            System.arraycopy(ssd.table_filters, 0, pending_records_filter, 0, ssd.table_filters.length);
+
+        }
+        pending_records_filter[pending_records_filter.length - 1] = "sync_status='" + sync_status.pending.ordinal() + "'";
+        // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
+//        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.load_dynamic_json_records_ann(ssd, pending_records_filter));
+        ArrayList<JSONObject> pending_records = Main_handler.OnAboutToUploadObjects(ssd, sdb.load_dynamic_json_records_ann(ssd, pending_records_filter));
+        final int[] upload_counter = {0};
+        final int upload_length = pending_records.size();
+        String table_name = ssd.table_name;
+        if (pending_records.size() < 1) {
+            Log.e(ssd.service_name + ":: upload::", "No records");
+            sync_complete_counter++;
+            sync_success_counter++;
+            Log.e("sync", "Sync counter " + sync_complete_counter);
+            double denm = (double) sync_sum_counter;
+            ssi.on_status_changed("Synchronized local " + ssd.service_name);
+
+            double num = (double) sync_complete_counter;
+            double per = (num / denm) * 100.0;
+            ssi.on_main_percentage_changed((int) per);
+            ssi.onSynchronizationCompleted(ssd);
+
+            if (per == 100.0) {
+                ssi.on_main_percentage_changed(100);
+                ssi.on_status_changed(act.getResources().getString(R.string.synchronization_complete));
+                ssi.on_secondary_progress_changed(100);
+                ssi.on_main_percentage_changed(100);
+                ssi.on_info_updated(act.getResources().getString(R.string.synchronization_complete));
+                ssi.on_status_code_changed(3);
+                ssi.onSynchronizationCompleted();
+
+            }
+        } else {
+
+            for (JSONObject obj : pending_records) {
+                obj = Main_handler.OnUploadingObject(ssd, obj);
+                if (obj == null) {
+                    continue;
+                }
+                if (ssd.storage_mode_check) {
+                    Log.e(ssd.service_name + ":: upload::", "Started storage checking ...");
+
+                    Iterator keys = obj.keys();
+                    List<String> key_list = new ArrayList<>();
+                    while (keys.hasNext()) {
+                        key_list.add((String) keys.next());
+
+                    }
+
+                    for (String k : realm.getFilePathFields(ssd.object_package, key_list)) {
+                        try {
+                            obj.put(k, DatabaseManager.get_saved_doc_base64(obj.getString(k)));
+                        } catch (Exception e) {
+                            Log.e(logTag, "Base64 conversion error:" + e.getMessage());
+                        }
+                    }
+                    Log.e(ssd.service_name + ":: upload::", "Done storage checking ...");
+
+                }
+
+                JSONObject upload_object = obj;
+//                JSONObject upload_object = sdb.load_JSON_from_object(obj);
+                Log.e(ssd.service_name + ":: upload::", " " + upload_object.toString());
+                String lid = null;
+                try {
+                    lid = upload_object.getString("lid");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String finalLid = lid;
+                new AsyncTask() {
+                    JSONObject maindata;
+
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+
+                        ssi.on_status_code_changed(2);
+                        ssi.on_status_changed(act.getResources().getString(R.string.synchronizing) + ssd.service_name);
+
+                        AndroidNetworking.post(app_config.APP_MAINLINK + ssd.upload_link)
+                                .addHeaders("Authorization", svars.Service_token(act))
+                                .addHeaders("content-type", "application/json")
+                                .addHeaders("cache-control", "no-cache")
+                                .addJSONObjectBody(upload_object)
+                                .setTag(this)
+                                .setPriority(Priority.MEDIUM)
+                                .build()
+                                .getAsJSONObject(new JSONObjectRequestListener() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        //Log.e("Response =>", "" + response.toString());
+                                        Log.e(ssd.service_name + ":: upload response ::", " " + response.toString());
+
+                                        response = Main_handler.OnUploadedObject(ssd, upload_object, response);
+                                        if (response == null) {
+                                            update_counter(ssd, pending_records_filter);
+                                            upload_counter[0]++;
+                                            if (upload_counter[0] == upload_length) {
+                                                sync_sum_counter++;
+                                                upload_(ssd);
+                                            }
+                                            return;
+                                        }
+                                        try {
+
+
+                                            if (response.getBoolean(app_config.SYNC_USE_CAPS ? "IsOkay" : "isOkay")) {
+
+
+                                                ContentValues cv = new ContentValues();
+
+                                                cv.put("sync_status", sync_status.syned.ordinal());
+                                                cv.put("sid", response.getJSONObject(app_config.SYNC_USE_CAPS ? "Result" : "result").getString("id"));
+                                                sdb.database.rawExecSQL("DELETE FROM " + table_name + " WHERE sid='" + cv.get("sid") + "' AND _id<>" + finalLid);
+                                                sdb.database.update(table_name, cv, "_id=" + finalLid, null);
+
+
+                                                update_counter(ssd, pending_records_filter);
+                                                upload_counter[0]++;
+                                                if (upload_counter[0] == upload_length) {
+                                                    sync_sum_counter++;
+                                                    upload_(ssd);
+                                                }
+
+                                            } else {
+                                                ssi.on_api_error(ssd, response.toString());
+                                                ContentValues cv = new ContentValues();
+                                                cv.put("data_status", "e");
+
+                                                sdb.database.update(table_name, cv, "_id=" + finalLid, null);
+                                                ssi.on_status_changed("Update failed ...  =>" + finalLid);
+                                                ssi.on_status_code_changed(666);
+                                                String error = " " + upload_object.toString() + "\n" + response.toString();
+                                                Log.e(ssd.service_name + ":: upload::error::", error);
+                                                sdb.log_String(act, ssd.service_name + ":: upload::error::" + error + "::Upload object::" + upload_object);
+                                            }
+                                        } catch (Exception ex) {
+                                            ssi.on_api_error(ssd, response.toString());
+                                            ssi.on_status_changed("Update failed ...  =>" + finalLid);
+                                            ssi.on_status_code_changed(666);
+                                            String error = " " + upload_object.toString() + "\n" + ex.getMessage();
+                                            Log.e(ssd.service_name + ":: upload::error::", error);
+                                            sdb.log_String(act, ssd.service_name + ":: upload::error::" + error + "::Upload object::" + upload_object);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(ANError anError) {
+                                        Log.e(ssd.service_name + ":: upload error:", ":" + anError.getErrorBody());
+                                        ssi.on_api_error(ssd, anError.getErrorBody());
+                                        sdb.log_String(act, ssd.service_name + ":: upload::error::" + anError.getErrorBody() + "::Upload object::" + upload_object);
+                                        anError = Main_handler.OnUploadedObjectError(ssd, upload_object, anError);
+                                        if (anError == null) {
+                                            update_counter(ssd, pending_records_filter);
+                                            upload_counter[0]++;
+                                            if (upload_counter[0] == upload_length) {
+                                                sync_sum_counter++;
+                                                upload_(ssd);
+                                            }
+                                            return;
+                                        }
+
+                                        ContentValues cv = new ContentValues();
+                                        if (anError.getErrorBody().contains("Record Exist")) {
+                                            ssi.on_status_changed("Synchronizing");
+
+
+                                            cv = new ContentValues();
+                                            cv.put("sync_status", sync_status.syned.ordinal());
+
+
+                                            sdb.database.update(table_name, cv, "_id=" + finalLid, null);
+                                            update_counter(ssd, pending_records_filter);
+                                            upload_counter[0]++;
+                                            if (upload_counter[0] == upload_length) {
+                                                sync_sum_counter++;
+                                                upload_(ssd);
+                                            }
+                                        } else {
+                                            ssi.on_status_code_changed(666);
+
+                                            cv.put("data_status", "e");
+
+                                            sdb.database.update(table_name, cv, "_id=" + finalLid, null);
+
+                                        }
+
+                                    }
+                                });
+
+
+                        return "";
+                    }
+
+
+                }.execute();
+
+
+            }
+        }
+
+
+    }
 
     static synchronized void update_counter(sync_service_description ssd, String[] pending_records_filter) {
         sync_complete_counter++;

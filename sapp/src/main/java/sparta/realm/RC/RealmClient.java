@@ -21,6 +21,7 @@ import java.io.RandomAccessFile;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -130,7 +131,7 @@ public class RealmClient extends SocketClient {
                     rsp.OnDataReceived(message);
 
                 } else {
-                    String inputString = new String(message);
+                    String inputString = new String(message, StandardCharsets.UTF_8);
                     LinkedHashMap<String, Map.Entry<Long, String>> fileNameSize = fileNameSizeExtension(inputString, rsp.openEncoding, rsp.closeEncoding);
                     int tot = fileNameSize.size();
                     for (Map.Entry<String, Map.Entry<Long, String>> entry : fileNameSize.entrySet()) {
