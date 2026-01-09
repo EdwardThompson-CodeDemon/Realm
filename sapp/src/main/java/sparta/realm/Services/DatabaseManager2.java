@@ -1,5 +1,7 @@
 package sparta.realm.Services;
 
+import static sparta.realm.Realm.realm;
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -103,14 +105,12 @@ import sparta.realm.spartautils.s_cryptor;
 import sparta.realm.spartautils.svars;
 import sparta.realm.utils.AppConfig;
 
-import static sparta.realm.Realm.realm;
-
 
 /**
  * Created by Thompsons on 01-Feb-17.
  */
 
-public class DatabaseManager {
+public class DatabaseManager2 {
     private static final String PACKAGE_INSTALLED_ACTION =
             "com.example.android.apis.content.SESSION_API_PACKAGE_INSTALLED";
     public static sdb_model main_db = null;
@@ -123,7 +123,7 @@ public class DatabaseManager {
     public static Gpsprobe_r gps;
     static Context act;
 
-    public DatabaseManager(Context act) {
+    public DatabaseManager2(Context act) {
         this.act = act;
         if (!loaded_db) {
             //setup_db_model();
@@ -139,7 +139,7 @@ public class DatabaseManager {
 
     }
 
-    public DatabaseManager(RealmDataClass realm) {
+    public DatabaseManager2(RealmDataClass realm) {
         this.act = SpartaApplication.getAppContext();
 
         if (!loaded_db) {
@@ -155,7 +155,428 @@ public class DatabaseManager {
 
 
     }
+/*
+I thot of using an interface ,dint work
+ */
 
+    /**
+     * Sets up database by creating and adding missing tables and missing columns and indeces in their respective tables
+     *
+     * @return void
+     * @deprecated This method is no longer used,its too cumbersum and error prone.
+     * <p> Use {@link this#setup_db_ann()} instead.
+     */
+    @Deprecated
+    static void setup_db_model() {
+        sdb_model dbm = new sdb_model();
+        dbm.db_name = svars.DB_NAME;
+        dbm.db_path = act.getExternalFilesDir(null).getAbsolutePath() + "/" + svars.DB_NAME;
+        dbm.db_password = svars.DB_PASS;
+
+        SQLiteDatabase.loadLibs(act);
+
+
+        //  SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), , null);
+        database = SQLiteDatabase.openOrCreateDatabase(dbm.db_path, dbm.db_password, null);
+
+        if (svars.version_action_done(act, svars.version_action.DB_CHECK)) {
+            loaded_db = true;
+            return;
+        }
+
+        sdb_model.sdb_table.column id = new sdb_model.sdb_table.column(false, "id", "INTEGER");
+        id.extra_params = "PRIMARY KEY AUTOINCREMENT";
+        sdb_model.sdb_table.column reg_time = new sdb_model.sdb_table.column(false, "reg_time", "DATETIME", "(datetime('now','localtime'))");
+        sdb_model.sdb_table.column sync_status = new sdb_model.sdb_table.column(false, "sync_status");
+        sdb_model.sdb_table.column transaction_no = new sdb_model.sdb_table.column(false, "transaction_no");
+        sdb_model.sdb_table.column sid = new sdb_model.sdb_table.column(true, "sid");
+        sdb_model.sdb_table.column sync_var = new sdb_model.sdb_table.column(true, "sync_var");
+        sdb_model.sdb_table.column data_status = new sdb_model.sdb_table.column(true, "data_status");
+        sdb_model.sdb_table.column user_id = new sdb_model.sdb_table.column(false, "user_id");
+        sdb_model.sdb_table.column data_usage_frequency = new sdb_model.sdb_table.column(true, "data_usage_frequency");
+        sdb_model.sdb_table.column lat = new sdb_model.sdb_table.column(false, "lat");
+        sdb_model.sdb_table.column lon = new sdb_model.sdb_table.column(false, "lon");
+
+        ArrayList<sdb_model.sdb_table.column> common_columns = new ArrayList();
+        common_columns.add(id);
+        common_columns.add(user_id);
+        common_columns.add(reg_time);
+        common_columns.add(data_status);
+        common_columns.add(transaction_no);
+        common_columns.add(sync_status);
+        common_columns.add(sid);
+        common_columns.add(sync_var);
+        common_columns.add(data_usage_frequency);
+
+
+//        List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
+//        classLoadersList.add(ClasspathHelper.contextClassLoader());
+//        classLoadersList.add(ClasspathHelper.staticClassLoader());
+//        Reflections reflections = new Reflections(new ConfigurationBuilder()
+//                .setScanners(new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner())
+//                .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+//                .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("org.your.package"))));
+        try {
+            dynamic_property dpex = new dynamic_property(null, null, null);
+            Class<?> cex = dpex.getClass();
+            String dpex_path = cex.getName();
+            Log.e("Class path =>", "" + dpex_path);
+            String package_path = dpex_path.substring(0, dpex_path.lastIndexOf('.'));
+            Log.e("Package path =>", "" + package_path);
+            final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
+                if (info.getName().startsWith(package_path)) {
+                    final Class<?> clazz = info.load();
+                    Log.e("Class reflected =>", "" + clazz.getName());
+                    // do something with your clazz
+                }
+            }
+        } catch (Exception ex) {
+        }
+        sdb_model.sdb_table member_info_table = new sdb_model.sdb_table("member_info_table");
+        member_info_table.columns.addAll(common_columns);
+        member_info_table.columns.add(new sdb_model.sdb_table.column(true, "first_name"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(true, "last_name"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(true, "full_name"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(true, "idno"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "dob"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "phone_no"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "email"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "category"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "sub_category"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "department"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "nationality"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "nfc"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "kra"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "nssf"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "nhif"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "employee_no"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "gender"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "reg_start_time"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "reg_end_time"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "site_id"));
+        member_info_table.columns.add(new sdb_model.sdb_table.column(false, "job_department"));
+
+        sdb_model.sdb_table member_data_table = new sdb_model.sdb_table("member_data_table");
+
+        member_data_table.columns.addAll(common_columns);
+        member_data_table.columns.add(new sdb_model.sdb_table.column(true, "data_type"));
+        member_data_table.columns.add(new sdb_model.sdb_table.column(false, "data_index"));
+        member_data_table.columns.add(new sdb_model.sdb_table.column(false, "data"));
+        member_data_table.columns.add(new sdb_model.sdb_table.column(false, "data_format"));
+        member_data_table.columns.add(new sdb_model.sdb_table.column(false, "data_storage_mode"));
+        member_data_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+
+
+        sdb_model.sdb_table verification_activity_table = new sdb_model.sdb_table("verification_activity_table");
+
+        verification_activity_table.columns.addAll(common_columns);
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "activity_name"));
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "activity_result_uom"));
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "workers_limit"));
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "activity_operation_mode"));
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "working_field"));
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "working_period_from"));
+        verification_activity_table.columns.add(new sdb_model.sdb_table.column(false, "working_period_to"));
+
+        sdb_model.sdb_table employee_verification_activities_table = new sdb_model.sdb_table("employee_verification_activities_table");
+
+        employee_verification_activities_table.columns.addAll(common_columns);
+        employee_verification_activities_table.columns.add(new sdb_model.sdb_table.column(true, "activity_id"));
+        employee_verification_activities_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_verification_activities_table.columns.add(new sdb_model.sdb_table.column(false, "result"));
+        employee_verification_activities_table.columns.add(new sdb_model.sdb_table.column(false, "working_field"));
+        employee_verification_activities_table.columns.add(new sdb_model.sdb_table.column(false, "result_update_time"));
+        employee_verification_activities_table.columns.add(new sdb_model.sdb_table.column(true, "site_id"));
+
+        sdb_model.sdb_table geo_fences_table = new sdb_model.sdb_table("geo_fences_table");
+
+        geo_fences_table.columns.addAll(common_columns);
+        geo_fences_table.columns.add(new sdb_model.sdb_table.column(false, "fence_type"));
+        geo_fences_table.columns.add(new sdb_model.sdb_table.column(false, "parent_type"));
+        geo_fences_table.columns.add(new sdb_model.sdb_table.column(true, "parent_id"));
+
+
+        sdb_model.sdb_table geo_fence_points_table = new sdb_model.sdb_table("geo_fence_points_table");
+
+        geo_fence_points_table.columns.addAll(common_columns);
+        geo_fence_points_table.columns.add(new sdb_model.sdb_table.column(true, "fence_id"));
+        geo_fence_points_table.columns.add(new sdb_model.sdb_table.column(false, "lat"));
+        geo_fence_points_table.columns.add(new sdb_model.sdb_table.column(false, "lon"));
+        geo_fence_points_table.columns.add(new sdb_model.sdb_table.column(false, "radius"));
+
+
+        sdb_model.sdb_table employee_verifications_table = new sdb_model.sdb_table("employee_verifications_table");
+
+        employee_verifications_table.columns.addAll(common_columns);
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(false, "verification_mode"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(false, "verification_mode_index"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(false, "verification_type"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(false, "verification_data"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(false, "lat"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(false, "lon"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(true, "verification_field"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(true, "verification_activity"));
+        employee_verifications_table.columns.add(new sdb_model.sdb_table.column(true, "site_id"));
+
+
+        sdb_model.sdb_table member_clock_table = new sdb_model.sdb_table("member_clock_table");
+
+        member_clock_table.columns.addAll(common_columns);
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_time"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_verification_mode"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_verification_mode_index"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_verification_data"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_transaction_no"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_user_id"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_lat"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_in_lon"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_lat"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_lon"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_verification_mode"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_verification_mode_index"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_verification_data"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_transaction_no"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_user_id"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "clock_out_time"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(false, "verification_field"));
+        member_clock_table.columns.add(new sdb_model.sdb_table.column(true, "site_id"));
+
+        sdb_model.sdb_table employee_checking_table = new sdb_model.sdb_table("employee_checking_table");
+
+        employee_checking_table.columns.addAll(common_columns);
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_time"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_verification_mode"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_verification_mode_index"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_verification_data"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_transaction_no"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_user_id"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_lat"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_in_lon"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_lat"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_lon"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_verification_mode"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_verification_mode_index"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_verification_data"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_transaction_no"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_user_id"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "check_out_time"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(false, "verification_field"));
+        employee_checking_table.columns.add(new sdb_model.sdb_table.column(true, "site_id"));
+
+
+        sdb_model.sdb_table weighbridge_weighment_table = new sdb_model.sdb_table("weighbridge_weighment_table");
+
+        weighbridge_weighment_table.columns.addAll(common_columns);
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_verification_mode"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_verification_mode_index"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_verification_data"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_transaction_no"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_user_id"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_lat"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight_lon"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "first_weight"));
+
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_lat"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_lon"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_verification_mode"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_verification_mode_index"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_verification_data"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_transaction_no"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_user_id"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "second_weight_time"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "verification_field"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "site_id"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(true, "vehicle_id"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "employee_vehicle_assignment_id"));
+        weighbridge_weighment_table.columns.add(new sdb_model.sdb_table.column(false, "vehicle_plate_no"));
+
+
+        sdb_model.sdb_table employee_vehicle_assignment_table = new sdb_model.sdb_table("employee_vehicle_assignment_table");
+
+        employee_vehicle_assignment_table.columns.addAll(common_columns);
+        employee_vehicle_assignment_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_vehicle_assignment_table.columns.add(new sdb_model.sdb_table.column(true, "vehicle_id"));
+        employee_vehicle_assignment_table.columns.add(new sdb_model.sdb_table.column(false, "vehicle_plate_no"));
+        employee_vehicle_assignment_table.columns.add(new sdb_model.sdb_table.column(false, "vehicle_type"));
+
+
+        sdb_model.sdb_table device_room_access_ids_table = new sdb_model.sdb_table("device_room_access_ids_table");
+
+        device_room_access_ids_table.columns.addAll(common_columns);
+        device_room_access_ids_table.columns.add(new sdb_model.sdb_table.column(true, "room_id"));
+        device_room_access_ids_table.columns.add(new sdb_model.sdb_table.column(false, "room_index"));
+        device_room_access_ids_table.columns.add(new sdb_model.sdb_table.column(false, "room_description"));
+
+
+        sdb_model.sdb_table employee_room_access_table = new sdb_model.sdb_table("employee_room_access_table");
+
+        employee_room_access_table.columns.addAll(common_columns);
+        employee_room_access_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_room_access_table.columns.add(new sdb_model.sdb_table.column(true, "room_id"));
+        employee_room_access_table.columns.add(new sdb_model.sdb_table.column(false, "room_description"));
+
+
+        sdb_model.sdb_table dyna_data_table = new sdb_model.sdb_table("dyna_data_table");
+
+        dyna_data_table.columns.addAll(common_columns);
+        dyna_data_table.columns.add(new sdb_model.sdb_table.column(true, "data_type"));
+        dyna_data_table.columns.add(new sdb_model.sdb_table.column(false, "data_code"));
+        dyna_data_table.columns.add(new sdb_model.sdb_table.column(true, "parent"));
+        dyna_data_table.columns.add(new sdb_model.sdb_table.column(false, "data"));
+
+
+        sdb_model.sdb_table activity_fields_table = new sdb_model.sdb_table("activity_fields_table");
+
+        activity_fields_table.columns.addAll(common_columns);
+        activity_fields_table.columns.add(new sdb_model.sdb_table.column(false, "field_name"));
+        activity_fields_table.columns.add(new sdb_model.sdb_table.column(true, "field_department_id"));
+
+
+        sdb_model.sdb_table user_table = new sdb_model.sdb_table("user_table");
+
+        user_table.columns.addAll(common_columns);
+        user_table.columns.add(new sdb_model.sdb_table.column(false, "user_fullname"));
+        user_table.columns.add(new sdb_model.sdb_table.column(false, "username"));
+        user_table.columns.add(new sdb_model.sdb_table.column(false, "password"));
+
+
+        sdb_model.sdb_table app_versions_table = new sdb_model.sdb_table("app_versions_table");
+
+        app_versions_table.columns.addAll(common_columns);
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "version_name"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "version_code"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "release_name"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "release_time"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "release_notes"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "creation_time"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "download_link"));
+        app_versions_table.columns.add(new sdb_model.sdb_table.column(false, "file"));
+
+
+        sdb_model.sdb_table leave_application_table = new sdb_model.sdb_table("leave_application_table");
+
+        leave_application_table.columns.addAll(common_columns);
+        leave_application_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        leave_application_table.columns.add(new sdb_model.sdb_table.column(false, "leave_id"));
+        leave_application_table.columns.add(new sdb_model.sdb_table.column(false, "from_time"));
+        leave_application_table.columns.add(new sdb_model.sdb_table.column(false, "to_time"));
+        leave_application_table.columns.add(new sdb_model.sdb_table.column(false, "note"));
+
+
+        sdb_model.sdb_table employee_leave_table = new sdb_model.sdb_table("employee_leave_table");
+
+        employee_leave_table.columns.addAll(common_columns);
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(true, "leave_id"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "leave_name"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "total_days"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "accumulated_days"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "leave_balance"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "deduction_mode"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "authenticate"));
+        employee_leave_table.columns.add(new sdb_model.sdb_table.column(false, "minimum_prior_days"));
+
+
+        sdb_model.sdb_table employee_random_calls_table = new sdb_model.sdb_table("employee_random_calls_table");
+
+        employee_random_calls_table.columns.addAll(common_columns);
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(true, "employee_id"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(true, "lat_raised"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "lon_raised"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "time_raised"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "time_checked"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "lat_checked"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "lon_checked"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "default_reason"));
+        employee_random_calls_table.columns.add(new sdb_model.sdb_table.column(false, "answered"));
+
+
+        dbm.tables.add(user_table);
+        dbm.tables.add(app_versions_table);
+
+        dbm.tables.add(dyna_data_table);
+        dbm.tables.add(activity_fields_table);
+        dbm.tables.add(verification_activity_table);
+        dbm.tables.add(employee_vehicle_assignment_table);
+        dbm.tables.add(device_room_access_ids_table);
+        dbm.tables.add(employee_room_access_table);
+        dbm.tables.add(geo_fences_table);
+        dbm.tables.add(geo_fence_points_table);
+
+        dbm.tables.add(member_info_table);
+        dbm.tables.add(member_data_table);
+        dbm.tables.add(employee_verifications_table);
+        dbm.tables.add(employee_verification_activities_table);
+        dbm.tables.add(member_clock_table);
+        dbm.tables.add(employee_checking_table);
+        dbm.tables.add(weighbridge_weighment_table);
+        dbm.tables.add(employee_random_calls_table);
+
+
+        dbm.tables.add(employee_leave_table);
+        dbm.tables.add(leave_application_table);
+
+
+        main_db = dbm;
+
+
+        for (sdb_model.sdb_table tb : dbm.tables) {
+            try {
+                Cursor cursor1 = database.rawQuery("SELECT * FROM " + tb.table_name, null);
+                cursor1.moveToFirst();
+                if (!cursor1.isAfterLast()) {
+                    do {
+                        cursor1.getString(0);
+                    } while (cursor1.moveToNext());
+                }
+                cursor1.close();
+            } catch (Exception e) {
+                database.execSQL(tb.create_statement());
+                String crt_stt = tb.create_indexes_statement();
+                if (crt_stt.length() > 1 & crt_stt.contains(";")) {
+
+                    for (String st : crt_stt.split(";")) {
+                        try {
+                            Log.e("DB :", "Index statement creating =>" + st);
+                            database.execSQL(st);
+                            Log.e("DB :", "Index statement created =>" + st);
+                        } catch (Exception ex1) {
+                        }
+
+                    }
+
+
+                }
+                continue;
+            }
+
+            for (sdb_model.sdb_table.column col : tb.columns) {
+                try {
+                    Cursor cursor1 = database.rawQuery("SELECT count(" + col.column_name + ") FROM " + tb.table_name, null);
+                    cursor1.moveToFirst();
+                    if (!cursor1.isAfterLast()) {
+                        do {
+                            cursor1.getString(0);
+                        } while (cursor1.moveToNext());
+                    }
+                    cursor1.close();
+                } catch (Exception e) {
+                    database.execSQL("ALTER TABLE " + tb.table_name + " ADD COLUMN " + col.column_name + " " + col.data_type + " " + col.default_value);
+                }
+            }
+        }
+        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
+        Log.e("DB", "Finished DB Verification");
+        main_db = null;
+        loaded_db = true;
+
+    }
 
     public static Object deepClone(Object object) {
         try {
@@ -910,6 +1331,151 @@ public class DatabaseManager {
         return database;
     }
 
+    /**
+     * Sets up database by creating and adding missing tables and missing columns and indeces in their respective tables
+     *
+     * @deprecated This method is no longer used,its slow compaired to {@link this#setup_db_ann()} which is twice as fast with annotation.
+     * <p> Use {@link this#setup_db_ann()} instead.
+     */
+    @Deprecated()
+    void setup_db() throws IOException {
+        sdb_model dbm = new sdb_model();
+        dbm.db_name = svars.DB_NAME;
+        dbm.db_path = svars.current_app_config(act).file_path_db(act);
+        //   dbm.db_path=act.getExternalFilesDir(null).getAbsolutePath()+"/"+svars.DB_NAME;
+        dbm.db_password = svars.DB_PASS;
+
+        SQLiteDatabase.loadLibs(act);
+
+
+        //  SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(databaseFile.getAbsolutePath(), , null);
+        database = SQLiteDatabase.openOrCreateDatabase(dbm.db_path, dbm.db_password, null);
+        // if(svars.version_action_done(act, svars.version_action.DB_CHECK)){  loaded_db=true;return;}
+
+        svars.set_photo_camera_type(act, svars.image_indexes.profile_photo, 1);
+
+        dynamic_property dpex = new dynamic_property(null, null, null);
+        Class<?> cex = dpex.getClass();
+        String dpex_path = cex.getName();
+
+        String package_path = dpex_path.substring(0, dpex_path.lastIndexOf('.'));
+
+        String codepath = act.getPackageCodePath();
+
+        DexFile df = new DexFile(codepath);
+        Stopwatch sw = Stopwatch.createUnstarted();
+        sw.start();
+        // List<String> resultList = Lists.newArrayList(Collections.list(df.entries())).stream().filter(s -> s.startsWith(package_path)).collect(Collectors.toList());
+//        for (String iter :resultList) {
+//            String s = iter;
+//            Log.e("Classes reflected 3 =>", "" + s);
+//
+//        }
+//        Log.e("Classes reflected 3 in :", "" + sw.elapsed(TimeUnit.MICROSECONDS));
+
+
+        sdb_model.sdb_table.column id = new sdb_model.sdb_table.column(false, "id", "INTEGER");
+        id.extra_params = "PRIMARY KEY AUTOINCREMENT";
+        sdb_model.sdb_table.column reg_time = new sdb_model.sdb_table.column(false, "reg_time", "DATETIME", "(datetime('now','localtime'))");
+        sdb_model.sdb_table.column sync_status = new sdb_model.sdb_table.column(false, "sync_status");
+        sdb_model.sdb_table.column transaction_no = new sdb_model.sdb_table.column(false, "transaction_no");
+        sdb_model.sdb_table.column sid = new sdb_model.sdb_table.column(true, "sid");
+        sdb_model.sdb_table.column sync_var = new sdb_model.sdb_table.column(true, "sync_var");
+        sdb_model.sdb_table.column data_status = new sdb_model.sdb_table.column(true, "data_status");
+        sdb_model.sdb_table.column user_id = new sdb_model.sdb_table.column(false, "user_id");
+        sdb_model.sdb_table.column data_usage_frequency = new sdb_model.sdb_table.column(true, "data_usage_frequency");
+        sdb_model.sdb_table.column lat = new sdb_model.sdb_table.column(false, "lat");
+        sdb_model.sdb_table.column lon = new sdb_model.sdb_table.column(false, "lon");
+
+        ArrayList<sdb_model.sdb_table.column> common_columns = new ArrayList();
+        common_columns.add(id);
+        common_columns.add(user_id);
+        common_columns.add(reg_time);
+        common_columns.add(data_status);
+        common_columns.add(transaction_no);
+        common_columns.add(sync_status);
+        common_columns.add(sid);
+        common_columns.add(sync_var);
+        common_columns.add(data_usage_frequency);
+
+
+        for (Enumeration<String> iter = df.entries(); iter.hasMoreElements(); ) {
+            String s = iter.nextElement();
+            if (s.startsWith(package_path)) {
+                try {
+                    Class<?> clazz = Class.forName(s);
+
+
+                    db_class db_tb_temp = new db_class("");
+                    if (db_tb_temp.getClass().isAssignableFrom(clazz) && !db_tb_temp.getClass().getName().equalsIgnoreCase(clazz.getName())) {
+                        Log.e("Classes reflected =>", "DB :" + s);
+                        sdb_model.sdb_table db_tb = table_from_dyna_property_class(clazz);
+                        if (db_tb == null) {
+                            continue;
+                        }
+                        db_tb.columns.addAll(common_columns);
+                        //   dbm.tables.add(db_tb);
+                        try {
+                            Cursor cursor1 = database.rawQuery("SELECT * FROM " + db_tb.table_name, null);
+                            cursor1.moveToFirst();
+                            if (!cursor1.isAfterLast()) {
+                                do {
+                                    cursor1.getString(0);
+                                } while (cursor1.moveToNext());
+                            }
+                            cursor1.close();
+                        } catch (Exception e) {
+                            database.execSQL(db_tb.create_statement());
+                            String crt_stt = db_tb.create_indexes_statement();
+                            if (crt_stt.length() > 1 & crt_stt.contains(";")) {
+
+                                for (String st : crt_stt.split(";")) {
+                                    try {
+                                        Log.e("DB :", "Index statement creating =>" + st);
+                                        database.execSQL(st);
+                                        Log.e("DB :", "Index statement created =>" + st);
+                                    } catch (Exception ex1) {
+                                    }
+
+                                }
+
+
+                            }
+                            continue;
+                        }
+
+                        for (sdb_model.sdb_table.column col : db_tb.columns) {
+                            try {
+                                Cursor cursor1 = database.rawQuery("SELECT count(" + col.column_name + ") FROM " + db_tb.table_name, null);
+                                cursor1.moveToFirst();
+                                if (!cursor1.isAfterLast()) {
+                                    do {
+                                        cursor1.getString(0);
+                                    } while (cursor1.moveToNext());
+                                }
+                                cursor1.close();
+                            } catch (Exception e) {
+                                database.execSQL("ALTER TABLE " + db_tb.table_name + " ADD COLUMN " + col.column_name + " " + col.data_type + " " + col.default_value);
+                            }
+                        }
+                    }
+
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // Object date = clazz.newInstance();
+            }
+
+        }
+
+        Log.e("Classes reflected :", "raw :" + sw.elapsed(TimeUnit.MICROSECONDS));
+
+        svars.set_version_action_done(act, svars.version_action.DB_CHECK);
+        Log.e("DB", "Finished DB Verification");
+        main_db = null;
+        loaded_db = true;
+
+    }
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1026,6 +1592,129 @@ public class DatabaseManager {
 
     }
 
+    sdb_model.sdb_table table_from_dyna_property_class(Class<?> main_class) {
+
+        Object main_obj = null;
+        sdb_model.sdb_table tabl = null;//new sdb_model.sdb_table();
+        try {
+            main_obj = main_class.newInstance();
+        } catch (IllegalAccessException e) {
+            return null;
+
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field ff = main_class.getField("table_name");
+            ff.setAccessible(true);
+            try {
+                String table_name_ = (String) ff.get(main_class.newInstance());
+                Log.e("TABLE CLASS ", "TABLE :" + table_name_);
+
+                tabl = new sdb_model.sdb_table(table_name_);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            // e.printStackTrace();
+        }
+        if (tabl == null || tabl.table_name == null || tabl.table_name.length() < 1) {
+            return null;
+        }
+//Field[] fields =concatenate(main_class.getSuperclass().getFields(),main_class.getDeclaredFields());
+        for (Field field : main_class.getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    Log.e("DP CLASS ", "" + field.getName());
+                    Class<?> clazz = field.get(main_obj).getClass();
+                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
+                    Field dyna_index_field = clazz.getDeclaredField("index");
+                    dyna_column_name_field.setAccessible(true);
+//                  sdb_model.sdb_table.column col=new sdb_model.sdb_table.column(true,(String) dyna_column_name_field.get(field.get(main_obj)));
+
+                    tabl.columns.add(new sdb_model.sdb_table.column((boolean) dyna_index_field.get(field.get(main_obj)), (String) dyna_column_name_field.get(field.get(main_obj))));
+
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+//                try {
+//                    Log.e("CLASS ", field.getName()+ " - " + field.getType());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+        return tabl;
+    }
+
+    sdb_model.sdb_table table_from_dyna_property_class_ann(Class<?> main_class) {
+
+        Object main_obj = null;
+        sdb_model.sdb_table tabl = null;//new sdb_model.sdb_table();
+        try {
+            main_obj = main_class.newInstance();
+        } catch (IllegalAccessException e) {
+            return null;
+
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field ff = main_class.getField("table_name");
+            ff.setAccessible(true);
+            try {
+                String table_name_ = (String) ff.get(main_class.newInstance());
+                Log.e("TABLE CLASS ", "TABLE :" + table_name_);
+
+                tabl = new sdb_model.sdb_table(table_name_);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            // e.printStackTrace();
+        }
+        if (tabl == null || tabl.table_name == null || tabl.table_name.length() < 1) {
+            return null;
+        }
+//Field[] fields =concatenate(main_class.getSuperclass().getFields(),main_class.getDeclaredFields());
+        for (Field field : main_class.getDeclaredFields()) {
+            field.setAccessible(true); // if you want to modify private fields
+            if (field.getType() == dynamic_property.class) {
+                try {
+
+                    Log.e("DP CLASS ", "" + field.getName());
+                    Class<?> clazz = field.get(main_obj).getClass();
+                    Field dyna_column_name_field = clazz.getDeclaredField("column_name");
+                    Field dyna_index_field = clazz.getDeclaredField("index");
+                    dyna_column_name_field.setAccessible(true);
+//                  sdb_model.sdb_table.column col=new sdb_model.sdb_table.column(true,(String) dyna_column_name_field.get(field.get(main_obj)));
+
+                    tabl.columns.add(new sdb_model.sdb_table.column((boolean) dyna_index_field.get(field.get(main_obj)), (String) dyna_column_name_field.get(field.get(main_obj))));
+
+
+                } catch (Exception ex) {
+                    Log.e("REFLECTION ERROR =>", "" + ex.getMessage());
+                }
+            } else {
+//                try {
+//                    Log.e("CLASS ", field.getName()+ " - " + field.getType());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+        return tabl;
+    }
 
     public long update_check_period() {
         //Date date = svars.sparta_EA_calendar().getTime();
@@ -1197,9 +1886,233 @@ public class DatabaseManager {
         return database.rawQuery("SELECT _id FROM app_versions_table WHERE sid='" + sid + "'", null).moveToFirst();
     }
 
+    public member load_employee(String sid) {
 
 
+        try {
 
+            Cursor c = database.rawQuery("SELECT * FROM member_info_table WHERE sid='" + sid + "'", null);
+
+            if (c.moveToFirst()) {
+                do {
+                    member emp = (member) load_object_from_Cursor(c, new member());
+                    c.close();
+                    return emp;
+                } while (c.moveToNext());
+            }
+
+            c.close();
+        } catch (Exception ex) {
+
+        }
+        return null;
+    }
+
+    public String validate_credentials(String username, String pass) {
+        String name = null;
+        Cursor c = database.rawQuery("SELECT * FROM user_table WHERE username=\"" + username + "\" AND password=\"" + pass + "\"", null);
+
+        if (c.moveToFirst()) {
+            do {
+
+                name = c.getString(c.getColumnIndex("user_fullname"));
+                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+                saver.putString("user_name", c.getString(c.getColumnIndex("user_fullname")));
+                saver.putString("username", c.getString(c.getColumnIndex("username")));
+                saver.putString("pass", c.getString(c.getColumnIndex("password")));
+                saver.putString("user_id", c.getString(c.getColumnIndex("sid")));
+
+                saver.commit();
+                return name == null ? username : name;
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return name;
+    }
+
+    public void save_user(String username, String password, String user_id, String user_name, String user_type_id) {
+
+        /*
+          {"$id":"1","Result":{"$id":"2","IsOkay":true,"Message":"login successfull","Result":{"$id":"3","user_id":18,"username":"00076","password":null,"full_name":"KOUASSI","account_id":1,"user_type_id":3,"status":1}},"ModuleName":"Login Module"}
+
+         */
+        ContentValues cv = new ContentValues();
+
+        try {
+
+            try {
+
+                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+
+                saver.putString("user_name", user_name);
+                saver.putString("username", username);
+                saver.putString("pass", password);
+                saver.putString("user_id", user_id);
+                saver.putString("user_type", user_type_id);
+
+
+                saver.commit();
+            } catch (Exception ex) {
+
+            }
+            // cv.put("account_id",jo.getString("account_id"));
+            cv.put("sid", user_id);
+            cv.put("username", username);
+            cv.put("password", password);
+
+
+            //   database.execSQL("DELETE FROM user_table WHERE sid='"+user_id+"'");
+            database.execSQL("DELETE FROM user_table");
+            database.insert("user_table", null, cv);
+            //   validate_credentials(username,password);
+
+        } catch (Exception e) {
+            Log.e("User saving error =>", "" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public void register_user(String users_name, String username, String password, String user_id, String activity_status) {
+
+        /*
+          {"$id":"1","Result":{"$id":"2","IsOkay":true,"Message":"login successfull","Result":{"$id":"3","user_id":18,"username":"00076","password":null,"full_name":"KOUASSI","account_id":1,"user_type_id":3,"status":1}},"ModuleName":"Login Module"}
+
+         */
+        Log.e("Password  :", "" + password);
+        ContentValues cv = new ContentValues();
+
+        try {
+
+
+            // cv.put("account_id",jo.getString("account_id"));
+            cv.put("sid", user_id);
+            cv.put("username", username);
+            cv.put("user_fullname", users_name);
+            cv.put("password", password);
+            cv.put("data_status", activity_status);
+
+
+            // database.execSQL("DELETE FROM user_table");
+            Log.e("User saving ", "" + database.insert("user_table", null, cv));
+
+
+        } catch (Exception e) {
+            Log.e("User saving error =>", "" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public void logout_user() {
+        ContentValues cv = new ContentValues();
+
+        try {
+
+            try {
+
+                SharedPreferences.Editor saver = act.getSharedPreferences(svars.sharedprefsname, act.MODE_PRIVATE).edit();
+                saver.putString("user_name", "");
+                saver.putString("user_type", "");
+                saver.putString("username", "");
+                saver.putString("pass", "");
+                saver.putString("user_id", "");
+                saver.putString("zone", "");
+
+
+                saver.commit();
+            } catch (Exception ex) {
+
+            }
+
+
+            database.execSQL("DELETE FROM user_table");
+
+        } catch (Exception e) {
+            Log.e("User logout error =>", "" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<Object> load_dynamic_records(Object obj, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ((db_class) obj).table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)), null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                objs.add(load_object_from_Cursor(c, obj));
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public ArrayList<Object> load_dynamic_records(Object obj, int limit, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ((db_class) obj).table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + limit, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                objs.add(load_object_from_Cursor(c, obj));
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
+
+    public ArrayList<Object> load_dynamic_records(sync_service_description ssd, String[] table_filters) {
+        ArrayList<Object> objs = new ArrayList<>();
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ssd.table_name + (table_filters == null ? "" : " " + conccat_sql_filters(table_filters)) + " ORDER BY data_status DESC LIMIT " + ssd.chunk_size, null);
+
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                try {
+                    objs.add(load_object_from_Cursor(c, Class.forName(ssd.object_package).newInstance()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                // objs.add(load_object_from_Cursor(c,deepClone(obj)));
+
+
+            } while (c.moveToNext());
+        }
+        c.close();
+
+
+        return objs;
+    }
 
     ////////////////////////////////////////ANN///////////////////////////////////////////////////////////////////
 
@@ -1779,7 +2692,62 @@ public class DatabaseManager {
 
     }
 
+    public ArrayList<dyna_data> load_dyna_data_annot(dyna_data_obj.operatio_data_type op_dyna_type, String parent) {
+        String dyna_type = op_dyna_type.ordinal() + "";
+        ArrayList<dyna_data> objs = new ArrayList<>();
 
+        // Cursor c=database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='"+dyna_type+"'"+(parent==null?" LIMIT 1000":" AND parent='"+parent+"' LIMIT 1000"),null);
+        Cursor c;
+        if (dyna_type.equalsIgnoreCase("orgs") && parent != null && parent.equalsIgnoreCase("11")) {
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE (data_code LIKE 'UPR%' OR data_code LIKE 'UPU%') AND data_type='" + dyna_type + "'", null);
+
+        } else {
+
+            c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "'" + (parent == null ? "" : " AND parent='" + parent + "'"), null);
+
+        }
+
+        if (c.moveToFirst()) {
+            do {
+
+
+                //  dyna_data obj=new dyna_data(c.getString(c.getColumnIndex("id")),c.getString(c.getColumnIndex("sid")),"",c.getString(c.getColumnIndex("data_type")),c.getString(c.getColumnIndex("data")),"",c.getString(c.getColumnIndex("id")));
+                dyna_data obj = (dyna_data) load_object_from_Cursor_annot(c, new dyna_data());
+
+
+                objs.add(obj);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return objs;
+    }
+
+    public ArrayList<dyna_data_obj> load_dyna_data_from_parent_of_parent(String dyna_type, String parent_type, String parent_parent) {
+        ArrayList<dyna_data_obj> objs = new ArrayList<>();
+
+
+        Cursor c;
+
+        c = database.rawQuery("SELECT * FROM dyna_data_table WHERE data_type='" + dyna_type + "' AND parent IN (SELECT sid FROM dyna_data_table WHERE data_type='" + parent_type + "' AND parent ='" + parent_parent + "')", null);
+
+        if (c.moveToFirst()) {
+            do {
+//public dyna_data_obj(String lid,String sid, String name, String data_type, String data, String parent)
+
+//                dyna_data_obj obj=new dyna_data_obj(c.getInt(c.getColumnIndex("id"))+"",c.getString(c.getColumnIndex("sid")),c.getString(c.getColumnIndex("data")),c.getString(c.getColumnIndex("data_type")),c.getString(c.getColumnIndex("data")),c.getString(c.getColumnIndex("parent")),c.getString(c.getColumnIndex("data_code")));
+//
+//              try{obj.code=c.getString(c.getColumnIndex("data_code"));}catch (Exception ex){}
+//              try{obj.data_2=c.getString(c.getColumnIndex("data_2"));}catch (Exception ex){}
+                dyna_data_obj obj = (dyna_data_obj) load_object_from_Cursor(c, new dyna_data_obj());
+
+                objs.add(obj);
+
+            } while (c.moveToNext());
+        }
+        c.close();
+        return objs;
+    }
 
     public void register_dynadata(Boolean first_record, JSONObject dyna_obj, String dyna_type, String parent) {
 

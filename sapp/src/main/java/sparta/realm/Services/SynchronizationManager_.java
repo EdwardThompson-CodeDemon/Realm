@@ -1610,8 +1610,8 @@ public class SynchronizationManager_ {
 
         }
         pending_records_filter[pending_records_filter.length - 1] = "sync_status='p'";
-        // ArrayList<Object> pending_records=sdb.load_dynamic_records(obj_class,pending_records_filter);
-        ArrayList<Object> pending_records = sdb.load_dynamic_records(ssd, pending_records_filter);
+//        ArrayList<Object> pending_records = sdb.load_dynamic_records(ssd, pending_records_filter);
+        ArrayList<Object> pending_records = new ArrayList<>();
 
         final int[] upload_counter = {0};
         final int upload_length = pending_records.size();
@@ -2464,7 +2464,7 @@ public class SynchronizationManager_ {
                                 ssi.on_status_code_changed(4);
                                 sdb.database.execSQL("DELETE FROM user_table WHERE sid ='" + svars.user_id(act) + "'");
 
-                                sdb.logout_user();
+//                                sdb.logout_user();
                                 android.os.Process.killProcess(android.os.Process.myPid());
 
                             }

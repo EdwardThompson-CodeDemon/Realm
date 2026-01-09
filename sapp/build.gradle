@@ -78,7 +78,7 @@ dependencies {
     implementation files('libs\\MSO_Secu.jar')
     implementation files('libs\\minutiaecounter-1.0.0.jar')
 
-    implementation files('libs\\TrustFinger_v2.1.0.1.jar')
+//    implementation files('libs\\TrustFinger_v2.1.0.1.jar')
     implementation files('libs\\bcprov-jdk15on-149.jar')
     implementation files('libs\\telpo_api.jar')
     implementation project(':libBioMini')

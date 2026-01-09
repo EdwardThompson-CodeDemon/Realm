@@ -608,5 +608,9 @@
     <string name="pending">Pending</string>
     <string name="erroneous">Erroneous</string>
     <string name="synchronization_report">Synchronization report</string>
+    <string name="has_already_been_captured">has already been captured</string>
+    <string name="finger_is_missing">Finger is missing</string>
+    <string name="finger_is_unreadable">Finger is unreaderble</string>
+    <string name="dd_mm_yyyy">dd-mm-yyyy</string>
 </resources>
 

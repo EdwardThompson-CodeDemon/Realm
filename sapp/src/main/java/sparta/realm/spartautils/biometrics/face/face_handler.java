@@ -20,6 +20,7 @@ import com.luxand.FSDK.*;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import sparta.realm.DataManagement.Models.Query;
 import sparta.realm.R;
 import sparta.realm.Realm;
 
@@ -71,7 +72,8 @@ ald.show();
 
                     int cnt=0;
                     String unconverted_only="id NOT IN(SELECT id FROM member_data_table WHERE data_type='"+ svars.data_type_indexes.photo+"' AND data_index='"+svars.image_indexes.croped_face+"')";
-                    for (Object o: Realm.databaseManager.load_dynamic_records(new member_data(),new String[]{"data_type='"+svars.data_type_indexes.photo+"'","data_index='"+ svars.image_indexes.profile_photo+"'",unconverted_only}))
+//                    for (Object o: Realm.databaseManager.load_dynamic_records(new member_data(),new String[]{"data_type='"+svars.data_type_indexes.photo+"'","data_index='"+ svars.image_indexes.profile_photo+"'",unconverted_only}))
+                    for (Object o: Realm.databaseManager.loadObjectArray(member_data.class,new Query().setTableFilters("data_type='"+svars.data_type_indexes.photo+"'","data_index='"+ svars.image_indexes.profile_photo+"'",unconverted_only)))
                     {
                         member_data mb=((member_data)o);
                         //	new Thread(()->{extract_face(mb,aldv.findViewById(R.id.face_img));}).start();

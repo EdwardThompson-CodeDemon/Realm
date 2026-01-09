@@ -571,7 +571,8 @@ public class CaptureHandler extends View {
 
                 @Override
                 public void on_match_found(String employee_id, String data_index, String match_time, int v_type, int verification_mode) {
-                    member discovered_member = Realm.databaseManager.load_employee(employee_id);
+//                    member discovered_member = Realm.databaseManager.load_employee(employee_id);
+                    member discovered_member = new member();
                     if (discovered_member == null) {
                         Log.e(" Face match :", "Null member :" + employee_id);
                     } else {
